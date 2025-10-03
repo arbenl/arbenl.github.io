@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Arben Lila — CV</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <meta name="description" content="Arben Lila — Program Manager @KADC, PhD candidate & Lecturer (AAB) — CV, publications, teaching & projects">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#home">Arben Lila</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#publications">Publications</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header id="home" class="hero">
+    <div class="container hero-inner">
+      <img src="img/profile.jpg" alt="Arben Lila" class="profile-photo">
+      <div class="hero-text">
+        <h1>Arben Lila</h1>
+        <p class="subtitle">Program Manager @KADC • PhD candidate & Lecturer (AAB) • ICT, resilient networks & health cybersecurity</p>
+        <p class="contact-line">✉️ <a href="mailto:you@example.com">you@example.com</a> — +383 XX XXX XXX — <a href="https://github.com/yourusername">GitHub</a></p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="about" class="card">
+      <h2>About / Recent work at AAB</h2>
+      <p>
+        Since joining AAB College, I have led a program of curriculum modernization and hands-on teaching...
+      </p>
+      <ul>
+        <li>Redesigned 15-week syllabi including Android Basics with Compose.</li>
+        <li>Authored slides, LaTeX quizzes, labs and CI/CD guides for student projects.</li>
+        <li>Supervised NurseConnect and other capstone projects; mentored CI/CD and secure coding practices.</li>
+        <li>Delivered cybersecurity workshops for healthcare IT professionals.</li>
+      </ul>
+    </section>
+
+    <section id="experience" class="card">
+      <h2>Experience</h2>
+      <article class="job">
+        <h3>Program Manager — Kosovo Advocacy & Development Centre (KADC)</h3>
+        <p class="meta">2012 — present</p>
+        <p>Leading advocacy campaigns (tobacco control), environmental and circular-economy programs; project design and donor reporting.</p>
+      </article>
+
+      <article class="job">
+        <h3>Lecturer — AAB College</h3>
+        <p class="meta">2019 — present</p>
+        <p>Courses: Computer Networks; Information Systems Architecture; Android & Modern Mobile Development; Cybersecurity for health.</p>
+      </article>
+
+      <!-- add more roles -->
+    </section>
+
+    <section id="publications" class="card">
+      <h2>Selected Publications</h2>
+      <ol>
+        <li><strong>“Cyclic Queueing Multiple Access (CQMA) for RPR Networks”</strong>, NOC 2002 — <a href="https://doi.org/..." target="_blank" rel="noopener">PDF / DOI</a></li>
+        <li><strong>“Performance Comparison of RPR MAC Proposals”</strong>, NOC 2002 — <a href="https://doi.org/..." target="_blank" rel="noopener">PDF / DOI</a></li>
+        <li><strong>“Performance Analysis of RPR in case of a Link Failure”</strong>, NOC 2003 — <a href="https://doi.org/..." target="_blank" rel="noopener">PDF / DOI</a></li>
+        <li><strong>“Towards a Zero Waste Society”</strong>, KFOS, 2012 — <a href="https://kfos.org/..." target="_blank" rel="noopener">link</a></li>
+      </ol>
+    </section>
+
+    <section id="education" class="card">
+      <h2>Education</h2>
+      <p><strong>MSc in Electrical Engineering</strong> — University of Zagreb, 1991</p>
+      <p><strong>PhD Candidate (Telecommunications)</strong> — TU Wien (Institute of Broadband Communications), 1998–2003</p>
+    </section>
+
+    <section id="contact" class="card">
+      <h2>Contact</h2>
+      <p>Email: <a href="mailto:you@example.com">you@example.com</a></p>
+      <p>LinkedIn: <a href="https://www.linkedin.com/in/yourprofile" target="_blank">yourprofile</a></p>
+      <p>GitHub: <a href="https://github.com/yourusername" target="_blank">github.com/yourusername</a></p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <small>© <!-- year automatically --> <span id="yr"></span> Arben Lila — Built with ❤️ • Hosted on GitHub Pages</small>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+    // smooth scroll for in-page links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});
+      });
+    });
+  </script>
+</body>
+</html>
