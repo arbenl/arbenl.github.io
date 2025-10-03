@@ -1,108 +1,121 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Arben Lila — CV</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <meta name="description" content="Arben Lila — Program Manager @KADC, PhD candidate & Lecturer (AAB) — CV, publications, teaching & projects">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Arben Lila — CV</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <nav class="nav">
-    <div class="container nav-inner">
-      <a class="brand" href="#home">Arben Lila</a>
-      <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#publications">Publications</a></li>
-        <li><a href="#education">Education</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <header id="home" class="hero">
-    <div class="container hero-inner">
-      <img src="img/profile.jpg" alt="Arben Lila" class="profile-photo">
-      <div class="hero-text">
-        <h1>Arben Lila</h1>
-        <p class="subtitle">Program Manager @KADC • PhD candidate & Lecturer (AAB) • ICT, resilient networks & health cybersecurity</p>
-        <p class="contact-line">✉️ <a href="mailto:you@example.com">you@example.com</a> — +383 XX XXX XXX — <a href="https://github.com/yourusername">GitHub</a></p>
-      </div>
+<main class="page">
+  <header class="header">
+    <img class="avatar" src="img/profile.jpg" alt="Arben Lila">
+    <div class="hd-text">
+      <h1 class="name">Arben Lila</h1>
+      <p class="role">Program Manager @ Kosovo Advocacy & Development Centre (KADC) · PhD candidate · Lecturer (AAB)</p>
+      <p class="contact">✉️ <a href="mailto:arben.lila@example.com">arben.lila@example.com</a> · GitHub: <a href="https://github.com/yourusername">yourusername</a> · LinkedIn: <a href="https://www.linkedin.com/in/yourprofile">yourprofile</a></p>
     </div>
   </header>
 
-  <main class="container">
-    <section id="about" class="card">
-      <h2>About / Recent work at AAB</h2>
-      <p>
-        Since joining AAB College, I have led a program of curriculum modernization and hands-on teaching...
-      </p>
-      <ul>
-        <li>Redesigned 15-week syllabi including Android Basics with Compose.</li>
-        <li>Authored slides, LaTeX quizzes, labs and CI/CD guides for student projects.</li>
-        <li>Supervised NurseConnect and other capstone projects; mentored CI/CD and secure coding practices.</li>
-        <li>Delivered cybersecurity workshops for healthcare IT professionals.</li>
-      </ul>
-    </section>
+  <section class="section">
+    <h2>education</h2>
+    <div class="card">
+      <p><strong>MSc in Electrical Engineering</strong> — University of Zagreb, Faculty of Electrical Engineering & Computing (1987–1991). Concentration: Computer Technology & Micro-processor Architecture.</p>
+      <p><strong>PhD candidate</strong> — Institute of Broadband Communications, Vienna University of Technology (TU Wien), Telecommunications & Performance Modelling (1998–2003).</p>
+    </div>
+  </section>
 
-    <section id="experience" class="card">
-      <h2>Experience</h2>
-      <article class="job">
-        <h3>Program Manager — Kosovo Advocacy & Development Centre (KADC)</h3>
-        <p class="meta">2012 — present</p>
-        <p>Leading advocacy campaigns (tobacco control), environmental and circular-economy programs; project design and donor reporting.</p>
-      </article>
+  <section class="section">
+    <h2>professional experience</h2>
+    <div class="card">
+      <h3>Program Manager — Kosovo Advocacy & Development Centre (KADC)</h3>
+      <p class="meta">2012 — present</p>
+      <p>Lead program design and implementation for public-health advocacy (tobacco control), environmental policy and circular-economy initiatives; manage donor relations, consortium partners and high-visibility media campaigns.</p>
 
-      <article class="job">
-        <h3>Lecturer — AAB College</h3>
-        <p class="meta">2019 — present</p>
-        <p>Courses: Computer Networks; Information Systems Architecture; Android & Modern Mobile Development; Cybersecurity for health.</p>
-      </article>
+      <h3>Lecturer — AAB College</h3>
+      <p class="meta">2019 — present</p>
+      <p>Teach Computer Networks, Information Systems Architecture, Android & Modern Mobile Development (Jetpack Compose), and Cybersecurity in Healthcare. Course development, supervision of capstones (NurseConnect), CI/CD mentoring.</p>
 
-      <!-- add more roles -->
-    </section>
+      <h3>Lecturer — UBT</h3>
+      <p class="meta">2016 — 2019</p>
+      <p>Network Engineering, Information Security, IT Service Management.</p>
 
-    <section id="publications" class="card">
-      <h2>Selected Publications</h2>
+      <h3>Strategic Planning Advisor — Office of the Chief State Prosecutor, Kosovo</h3>
+      <p class="meta">2011 — 2012</p>
+      <p>Strategic planning for ICT reform, donor coordination and institutional capacity building.</p>
+
+      <h3>Senior IT Advisor — USAID / NCSC (Kosovo Justice Support Program)</h3>
+      <p class="meta">2007 — 2011</p>
+      <p>Design and deployment of CMIS, justice sector ICT planning, training and mentoring of counterpart ICT teams.</p>
+
+      <h3>IT Advisor — Ministry of Justice / USAID</h3>
+      <p class="meta">2005 — 2007</p>
+
+      <h3>ICT Advisor — UNDP / KFOS Capacity Building Facility</h3>
+      <p class="meta">2005</p>
+
+      <h3>Researcher & Lecturer — Institute of Broadband Communications, TU Wien</h3>
+      <p class="meta">1999 — 2003</p>
+      <p>Experimental research on SDH/SONET, ATM, IP, MPLS and Resilient Packet Rings (RPR). Lectures in teletraffic theory and performance modelling.</p>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>selected publications</h2>
+    <div class="card">
       <ol>
-        <li><strong>“Cyclic Queueing Multiple Access (CQMA) for RPR Networks”</strong>, NOC 2002 — <a href="https://doi.org/..." target="_blank" rel="noopener">PDF / DOI</a></li>
-        <li><strong>“Performance Comparison of RPR MAC Proposals”</strong>, NOC 2002 — <a href="https://doi.org/..." target="_blank" rel="noopener">PDF / DOI</a></li>
-        <li><strong>“Performance Analysis of RPR in case of a Link Failure”</strong>, NOC 2003 — <a href="https://doi.org/..." target="_blank" rel="noopener">PDF / DOI</a></li>
-        <li><strong>“Towards a Zero Waste Society”</strong>, KFOS, 2012 — <a href="https://kfos.org/..." target="_blank" rel="noopener">link</a></li>
+        <li><strong>Lila, A.</strong> (2012). <em>Towards a Zero Waste Society</em>. Kosovo Foundation for Open Society. [KFOS publication]</li>
+        <li><strong>Lila, A.; Nikaj, B.</strong> (2011). <em>Skills Gap Analysis for Information and Communication Technology</em>. STIKK – Kosovo Association of ICT. <a href="https://stikk.org/wp-content/uploads/2018/11/Publications_2011_-_Skills_Gap_EN.pdf" target="_blank" rel="noopener">PDF</a></li>
+        <li><strong>Lila, A.</strong> (2010). <em>Information and Communications Technology Assessment Report</em>. USAID / Kosovo Justice Support Program. [institutional archive]</li>
+        <li><strong>Lila, A.; Remsak, G.; Schuringa, J.; van As, H.R.</strong> (2002). “<em>Performance Comparison of RPR MAC Proposals</em>”. In <em>NOC 2002 Proceedings</em>, pp. 301–308. <a href="https://www.ieee802.org/17/documents/presentations/mar2002/js_macperf_02.pdf" target="_blank" rel="noopener">author copy</a></li>
+        <li><strong>Schuringa, J.; Remsak, G.; van As, H.R.; Lila, A.</strong> (2002). “<em>Cyclic Queueing Multiple Access (CQMA) for RPR Networks</em>”. In <em>NOC 2002 Proceedings</em>, pp. 285–292. <a href="https://www.ieee802.org/17/documents/presentations/jul2002/js_CQMAtxt_01.pdf" target="_blank" rel="noopener">author copy</a></li>
+        <li><strong>Lila, A.; Lepaja, S.; Schuringa, J.</strong> (2003). “<em>Performance Analysis of RPR in case of a Link Failure</em>”. In <em>NOC'03 Proceedings</em>, pp. 188–195. <a href="https://doi.org/10.1007/BF03055355" target="_blank" rel="noopener">DOI</a></li>
+        <li><strong>Lepaja, S.; Lila, A.; Kryvinska, N.; Nguyen, H.</strong> (2003). “<em>A Framework for End-to-End QoS Provisioning in Mobile Internet Environment</em>”. In <em>MWCN'03 Proceedings</em>, pp. 86–89.</li>
       </ol>
-    </section>
+      <p class="muted">If you need full PDFs (USAID/KJSP reports or KFOS copies), contact me at the email above.</p>
+    </div>
+  </section>
 
-    <section id="education" class="card">
-      <h2>Education</h2>
-      <p><strong>MSc in Electrical Engineering</strong> — University of Zagreb, 1991</p>
-      <p><strong>PhD Candidate (Telecommunications)</strong> — TU Wien (Institute of Broadband Communications), 1998–2003</p>
-    </section>
+  <section class="section">
+    <h2>conferences & invited talks</h2>
+    <div class="card">
+      <ul>
+        <li>7th & 8th European Conference on Networks & Optical Communications (NOC 2002, NOC 2003) — presenter on RPR research</li>
+        <li>World Conference on Tobacco Control — Dublin, 2025 — invited speaker</li>
+        <li>Regional forums on digital governance, environmental policy and circular economy (2020–2025)</li>
+      </ul>
+    </div>
+  </section>
 
-    <section id="contact" class="card">
-      <h2>Contact</h2>
-      <p>Email: <a href="mailto:you@example.com">you@example.com</a></p>
-      <p>LinkedIn: <a href="https://www.linkedin.com/in/yourprofile" target="_blank">yourprofile</a></p>
-      <p>GitHub: <a href="https://github.com/yourusername" target="_blank">github.com/yourusername</a></p>
-    </section>
-  </main>
+  <section class="section">
+    <h2>study visits & media</h2>
+    <div class="card">
+      <p>Study visits and academic exchanges in Austria (TU Wien), Croatia, Canada (Trent University collaboration 2024–25) and the USA. Initiator of the AAB College — Trent University mobility programme. Organizer of ‘Circular Coalition’ events under KADC and frequent TV guest on RTK and Klan Kosova discussing tobacco-control, air pollution and digital transformation.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>teaching & courses (selected)</h2>
+    <div class="card">
+      <ul>
+        <li>Computer Networks — AAB College (lectures & labs)</li>
+        <li>Information Systems Architecture — AAB College</li>
+        <li>Android Basics with Compose — module development & practical labs</li>
+        <li>Cybersecurity in Healthcare — workshops & course modules</li>
+        <li>Network Engineering & Information Security — UBT</li>
+      </ul>
+    </div>
+  </section>
 
   <footer class="footer">
-    <div class="container">
-      <small>© <!-- year automatically --> <span id="yr"></span> Arben Lila — Built with ❤️ • Hosted on GitHub Pages</small>
+    <div class="card small">
+      <p>© <span id="yr"></span> — Arben Lila · Prepared for publication · Built in minimalist Nida‑Santuri-inspired style.</p>
     </div>
   </footer>
+</main>
 
-  <script>
-    document.getElementById('yr').textContent = new Date().getFullYear();
-    // smooth scroll for in-page links
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', e => {
-        e.preventDefault();
-        document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});
-      });
-    });
-  </script>
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
 </body>
 </html>
