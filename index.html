@@ -1,114 +1,354 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Arben Lila — CV</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arben Lila - Profile, Lectures, and Student Assignments</title>
+  <meta name="description" content="Professional profile, lectures across the years, and student assignment catalogues by course and year.">
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<main class="page">
-  <header class="header">
-    <img class="avatar" src="img/profile.jpg" alt="Arben Lila">
-    <div class="hd-text">
-      <h1 class="name">Arben Lila</h1>
-      <p class="role">Program Manager @ Kosovo Advocacy & Development Centre (KADC) · PhD candidate · Lecturer (AAB)</p>
-      <p class="contact">✉️ <a href="mailto:arben.lila@aab-edu.net">arben.lila@aab-edu.net</a> · GitHub: <a href="https://github.com/arbenl">arbenl</a> · LinkedIn: <a href="https://www.linkedin.com/in/arben-lila-b57a3516/">Arben Lila</a></p>
-    </div>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="Arben Lila home">
+        <span>AL</span>
+        <strong>Arben Lila</strong>
+      </a>
+      <div class="nav-links">
+        <a href="#lectures" data-i18n="nav.lectures">Lectures</a>
+        <a href="#assignments" data-i18n="nav.assignments">Assignments</a>
+        <a href="#publications" data-i18n="nav.publications">Publications</a>
+        <a href="#contact" data-i18n="nav.contact">Contact</a>
+      </div>
+      <div class="language-switch" aria-label="Language switch">
+        <button type="button" class="active" data-lang="en">ENG</button>
+        <button type="button" data-lang="sq">ALB</button>
+      </div>
+    </nav>
+
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow" data-i18n="hero.eyebrow">Lecturer · Program Manager · Researcher</p>
+        <h1 data-i18n="hero.title">Professional profile, lectures, and student assignment catalogues.</h1>
+        <p data-i18n="hero.copy">This page brings together my academic profile, public-sector and civil-society work, lectures across the years, and assignment systems students use to reserve, submit, and follow scores.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/" data-i18n="hero.assignments">Open assignment portal</a>
+          <a class="button" href="mailto:arben.lila@aab-edu.net" data-i18n="hero.contact">Contact by email</a>
+        </div>
+      </div>
+      <figure class="portrait">
+        <img src="img/profile.jpg" alt="Arben Lila">
+        <figcaption data-i18n="hero.caption">AAB lecturer and KADC program manager</figcaption>
+      </figure>
+    </section>
   </header>
 
-  <section class="section">
-    <h2>education</h2>
-    <div class="card">
-      <p><strong>Mag in Electrical Engineering</strong> — University of Zagreb, Faculty of Electrical Engineering & Computing (1987–1991). Concentration: Computer Technology & Micro-processor Architecture.</p>
-      <p><strong>PhD candidate</strong> — Institute of Broadband Communications, Vienna University of Technology (TU Wien), Telecommunications & Performance Modelling (1998–2003).</p>
-    </div>
-  </section>
+  <main>
+    <section class="section profile-section" aria-labelledby="profile-title">
+      <div>
+        <p class="eyebrow" data-i18n="profile.eyebrow">Professional profile</p>
+        <h2 id="profile-title">Arben Lila</h2>
+        <p class="lead" data-i18n="profile.lead">Program Manager at Kosovo Advocacy & Development Centre (KADC), PhD candidate, and lecturer at AAB College.</p>
+      </div>
+      <div class="fact-grid">
+        <article>
+          <strong data-i18n="profile.teachingTitle">Teaching focus</strong>
+          <span data-i18n="profile.teaching">Computer Networks, Information Systems Architecture, Android & Modern Mobile Development, Cybersecurity in Healthcare</span>
+        </article>
+        <article>
+          <strong data-i18n="profile.researchTitle">Research background</strong>
+          <span data-i18n="profile.research">Telecommunications, SDH/SONET, ATM, IP, MPLS, Resilient Packet Rings, performance modelling</span>
+        </article>
+        <article>
+          <strong data-i18n="profile.programTitle">Program work</strong>
+          <span data-i18n="profile.program">Public-health advocacy, environmental policy, circular economy, ICT reform, donor coordination</span>
+        </article>
+      </div>
+    </section>
 
-  <section class="section">
-    <h2>professional experience</h2>
-    <div class="card">
-      <h3>Program Manager — Kosovo Advocacy & Development Centre (KADC)</h3>
-      <p class="meta">2012 — present</p>
-      <p>Lead program design and implementation for public-health advocacy (tobacco control), environmental policy and circular-economy initiatives; manage donor relations, consortium partners and high-visibility media campaigns.</p>
+    <section class="section" id="assignments" aria-labelledby="assignments-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-i18n="assignments.eyebrow">For students</p>
+          <h2 id="assignments-title" data-i18n="assignments.title">Assignments by lecture and year</h2>
+        </div>
+        <a class="text-link" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/" data-i18n="assignments.all">View all catalogues</a>
+      </div>
+      <div class="assignment-grid">
+        <article class="assignment-card cloud">
+          <span class="course-year">2026</span>
+          <h3>Cloud Computing & Mobile Cloud Computing</h3>
+          <p data-i18n="assignments.cloud">A modern reservation catalogue for cloud platforms, serverless APIs, databases, DevOps, security, and MCC projects.</p>
+          <div class="card-actions">
+            <a class="button primary" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/mcc-2026.html" data-i18n="assignments.reserve">Reserve topic</a>
+            <a class="button" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/submissions-2026.html" data-i18n="assignments.scores">Submissions & scores</a>
+          </div>
+        </article>
+        <article class="assignment-card mobile">
+          <span class="course-year">2025</span>
+          <h3>Mobile Programming</h3>
+          <p data-i18n="assignments.mobile">The mobile topic pool remains available as a reference for the next mobile semester.</p>
+          <div class="card-actions">
+            <a class="button primary" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/TOPICS.md" data-i18n="assignments.openTopics">Open topics</a>
+            <a class="button" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/README.md" data-i18n="assignments.workflow">Workflow</a>
+          </div>
+        </article>
+      </div>
+    </section>
 
-      <h3>Lecturer — AAB College</h3>
-      <p class="meta">2019 — present</p>
-      <p>Teach Computer Networks, Information Systems Architecture, Android & Modern Mobile Development (Jetpack Compose), and Cybersecurity in Healthcare. Course development, supervision of capstones (NurseConnect), CI/CD mentoring.</p>
+    <section class="section split" id="lectures" aria-labelledby="lectures-title">
+      <div>
+        <p class="eyebrow" data-i18n="lectures.eyebrow">Teaching</p>
+        <h2 id="lectures-title" data-i18n="lectures.title">Lectures across the years</h2>
+      </div>
+      <div class="timeline">
+        <article>
+          <span>2019 - present</span>
+          <strong data-i18n="lectures.aabTitle">Lecturer - AAB College</strong>
+          <p data-i18n="lectures.aab">Computer Networks, Information Systems Architecture, Android & Modern Mobile Development with Jetpack Compose, Cybersecurity in Healthcare, practical labs, and capstone supervision.</p>
+        </article>
+        <article>
+          <span>2016 - 2019</span>
+          <strong data-i18n="lectures.ubtTitle">Lecturer - UBT</strong>
+          <p data-i18n="lectures.ubt">Network Engineering and Multimedia Communications, with focus on applied networking concepts and communication systems.</p>
+        </article>
+        <article>
+          <span>1999 - 2003</span>
+          <strong data-i18n="lectures.tuwienTitle">Researcher & Lecturer - TU Wien</strong>
+          <p data-i18n="lectures.tuwien">Research and lectures in teletraffic theory, performance modelling, broadband communications, and resilient packet networking.</p>
+        </article>
+      </div>
+    </section>
 
-      <h3>Lecturer — UBT</h3>
-      <p class="meta">2016 — 2019</p>
-      <p>Network Engineering, Multimedia Communications.</p>
+    <section class="section split" aria-labelledby="experience-title">
+      <div>
+        <p class="eyebrow" data-i18n="experience.eyebrow">Work</p>
+        <h2 id="experience-title" data-i18n="experience.title">Professional experience</h2>
+      </div>
+      <div class="experience-grid">
+        <article>
+          <span>2012 - present</span>
+          <strong data-i18n="experience.kadcTitle">Program Manager - Kosovo Advocacy & Development Centre (KADC)</strong>
+          <p data-i18n="experience.kadc">Program design and implementation for public-health advocacy, tobacco control, environmental policy, circular economy, donor relations, consortium partners, and media campaigns.</p>
+        </article>
+        <article>
+          <span>2011 - 2012</span>
+          <strong data-i18n="experience.prosecutorTitle">Strategic Planning Advisor - Office of the Chief State Prosecutor</strong>
+          <p data-i18n="experience.prosecutor">Strategic planning for ICT reform, donor coordination, and institutional capacity building.</p>
+        </article>
+        <article>
+          <span>2007 - 2011</span>
+          <strong data-i18n="experience.usaidTitle">Senior IT Advisor - USAID / NCSC Kosovo Justice Support Program</strong>
+          <p data-i18n="experience.usaid">Design and deployment of CMIS, justice-sector ICT planning, training, and mentoring of counterpart ICT teams.</p>
+        </article>
+        <article>
+          <span>2005 - 2007</span>
+          <strong data-i18n="experience.mojTitle">IT Advisor - Ministry of Justice / USAID</strong>
+          <p data-i18n="experience.moj">ICT advisory work for justice-sector systems and institutional reform.</p>
+        </article>
+      </div>
+    </section>
 
-      <h3>Strategic Planning Advisor — Office of the Chief State Prosecutor, Kosovo</h3>
-      <p class="meta">2011 — 2012</p>
-      <p>Strategic planning for ICT reform, donor coordination and institutional capacity building.</p>
+    <section class="section split" aria-labelledby="education-title">
+      <div>
+        <p class="eyebrow" data-i18n="education.eyebrow">Education</p>
+        <h2 id="education-title" data-i18n="education.title">Education</h2>
+      </div>
+      <div class="timeline compact">
+        <article>
+          <span>1987 - 1991</span>
+          <strong data-i18n="education.magTitle">Mag in Electrical Engineering</strong>
+          <p data-i18n="education.mag">University of Zagreb, Faculty of Electrical Engineering & Computing. Concentration: Computer Technology & Micro-processor Architecture.</p>
+        </article>
+        <article>
+          <span>1998 - 2003</span>
+          <strong data-i18n="education.phdTitle">PhD candidate</strong>
+          <p data-i18n="education.phd">Institute of Broadband Communications, Vienna University of Technology (TU Wien). Telecommunications & Performance Modelling.</p>
+        </article>
+      </div>
+    </section>
 
-      <h3>Senior IT Advisor — USAID / NCSC (Kosovo Justice Support Program)</h3>
-      <p class="meta">2007 — 2011</p>
-      <p>Design and deployment of CMIS, justice sector ICT planning, training and mentoring of counterpart ICT teams.</p>
-
-      <h3>IT Advisor — Ministry of Justice / USAID</h3>
-      <p class="meta">2005 — 2007</p>
-
-      <h3>ICT Advisor — UNDP / KFOS Capacity Building Facility</h3>
-      <p class="meta">2005</p>
-
-      <h3>Researcher & Lecturer — Institute of Broadband Communications, TU Wien</h3>
-      <p class="meta">1999 — 2003</p>
-      <p>Experimental research on SDH/SONET, ATM, IP, MPLS and Resilient Packet Rings (RPR). Lectures in teletraffic theory and performance modelling.</p>
-
-    </div>
-  </section>
-
-  <section class="section">
-    <h2>selected publications</h2>
-    <div class="card">
-      <ol>
-        <li><strong>Lila, A.</strong> (2012). <em>Towards a Zero Waste Society</em>. Kosovo Foundation for Open Society. [KFOS publication]</li>
-        <li><strong>Lila, A.; Nikaj, B.</strong> (2011). <em>Skills Gap Analysis for Information and Communication Technology</em>. STIKK – Kosovo Association of ICT. <a href="https://stikk.org/wp-content/uploads/2018/11/Publications_2011_-_Skills_Gap_EN.pdf" target="_blank" rel="noopener">PDF</a></li>
-        <li><strong>Lila, A.</strong> (2010). <em>Information and Communications Technology Assessment Report</em>. USAID / Kosovo Justice Support Program. [institutional archive]</li>
-        <li><strong>Lila, A.; Remsak, G.; Schuringa, J.; van As, H.R.</strong> (2002). “<em>Performance Comparison of RPR MAC Proposals</em>”. In <em>NOC 2002 Proceedings</em>, pp. 301–308. <a href="https://www.ieee802.org/17/documents/presentations/mar2002/js_macperf_02.pdf" target="_blank" rel="noopener">author copy</a></li>
-        <li><strong>Schuringa, J.; Remsak, G.; van As, H.R.; Lila, A.</strong> (2002). “<em>Cyclic Queueing Multiple Access (CQMA) for RPR Networks</em>”. In <em>NOC 2002 Proceedings</em>, pp. 285–292. <a href="https://www.ieee802.org/17/documents/presentations/jul2002/js_CQMAtxt_01.pdf" target="_blank" rel="noopener">author copy</a></li>
-        <li><strong>Lila, A.; Lepaja, S.; Schuringa, J.</strong> (2003). “<em>Performance Analysis of RPR in case of a Link Failure</em>”. In <em>NOC'03 Proceedings</em>, pp. 188–195. <a href="https://doi.org/10.1007/BF03055355" target="_blank" rel="noopener">DOI</a></li>
-        <li><strong>Lepaja, S.; Lila, A.; Kryvinska, N.; Nguyen, H.</strong> (2003). “<em>A Framework for End-to-End QoS Provisioning in Mobile Internet Environment</em>”. In <em>MWCN'03 Proceedings</em>, pp. 86–89.</li>
+    <section class="section" id="publications" aria-labelledby="publications-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-i18n="publications.eyebrow">Research and talks</p>
+          <h2 id="publications-title" data-i18n="publications.title">Selected publications and invited talks</h2>
+        </div>
+      </div>
+      <ol class="publication-list">
+        <li>Lila, A. (2012). <em>Towards a Zero Waste Society</em>. Kosovo Foundation for Open Society.</li>
+        <li>Lila, A.; Nikaj, B. (2011). <em>Skills Gap Analysis for Information and Communication Technology</em>. STIKK. <a href="https://stikk.org/wp-content/uploads/2018/11/Publications_2011_-_Skills_Gap_EN.pdf">PDF</a></li>
+        <li>Lila, A. (2010). <em>Information and Communications Technology Assessment Report</em>. USAID / Kosovo Justice Support Program.</li>
+        <li>Lila, A.; Remsak, G.; Schuringa, J.; van As, H.R. (2002). <em>Performance Comparison of RPR MAC Proposals</em>. NOC 2002. <a href="https://www.ieee802.org/17/documents/presentations/mar2002/js_macperf_02.pdf">Author copy</a></li>
+        <li>Lila, A.; Lepaja, S.; Schuringa, J. (2003). <em>Performance Analysis of RPR in case of a Link Failure</em>. NOC 2003. <a href="https://doi.org/10.1007/BF03055355">DOI</a></li>
       </ol>
-      <p class="muted">If you need full PDFs (USAID/KJSP reports or KFOS copies), contact me at the email above.</p>
-    </div>
-  </section>
+      <p class="notice" data-i18n="publications.note">Conferences and invited talks include NOC 2002, NOC 2003, World Conference on Tobacco Control in Dublin 2025, and regional forums on digital governance, environmental policy, and circular economy.</p>
+    </section>
+  </main>
 
-  <section class="section">
-    <h2>conferences & invited talks</h2>
-    <div class="card">
-      <ul>
-        <li>7th & 8th European Conference on Networks & Optical Communications (NOC 2002, NOC 2003) — presenter on RPR research</li>
-        <li>World Conference on Tobacco Control — Dublin, 2025 — invited speaker</li>
-        <li>Regional forums on digital governance, environmental policy and circular economy (2020–2025)</li>
-      </ul>
+  <footer class="footer" id="contact">
+    <div>
+      <strong>Arben Lila</strong>
+      <p data-i18n="footer.role">Program Manager @ KADC · PhD candidate · Lecturer at AAB</p>
     </div>
-  </section>
-
-  <section class="section">
-    <h2>teaching & courses (selected)</h2>
-    <div class="card">
-      <ul>
-        <li>Computer Science — AAB College (lectures & labs)</li>
-        <li>Information Systems — AAB College</li>
-        <li>Android Basics with Compose — module development & practical labs</li>
-        <li>Cybersecurity in Healthcare — workshops & course modules</li>
-        <li>Network Engineering & Multimedia Communications — UBT</li>
-      </ul>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="card small">
-      <p>© <span id="yr"></span> — Arben Lila · Prepared for publication ·</p>
+    <div class="footer-links">
+      <a href="mailto:arben.lila@aab-edu.net">arben.lila@aab-edu.net</a>
+      <a href="https://github.com/arbenl">GitHub</a>
+      <a href="https://www.linkedin.com/in/arben-lila-b57a3516/">LinkedIn</a>
     </div>
   </footer>
-</main>
 
-<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+  <script>
+    const translations = {
+      en: {
+        pageTitle: 'Arben Lila - Profile, Lectures, and Student Assignments',
+        pageDescription: 'Professional profile, lectures across the years, and student assignment catalogues by course and year.',
+        'nav.lectures': 'Lectures',
+        'nav.assignments': 'Assignments',
+        'nav.publications': 'Publications',
+        'nav.contact': 'Contact',
+        'hero.eyebrow': 'Lecturer · Program Manager · Researcher',
+        'hero.title': 'Professional profile, lectures, and student assignment catalogues.',
+        'hero.copy': 'This page brings together my academic profile, public-sector and civil-society work, lectures across the years, and assignment systems students use to reserve, submit, and follow scores.',
+        'hero.assignments': 'Open assignment portal',
+        'hero.contact': 'Contact by email',
+        'hero.caption': 'AAB lecturer and KADC program manager',
+        'profile.eyebrow': 'Professional profile',
+        'profile.lead': 'Program Manager at Kosovo Advocacy & Development Centre (KADC), PhD candidate, and lecturer at AAB College.',
+        'profile.teachingTitle': 'Teaching focus',
+        'profile.teaching': 'Computer Networks, Information Systems Architecture, Android & Modern Mobile Development, Cybersecurity in Healthcare',
+        'profile.researchTitle': 'Research background',
+        'profile.research': 'Telecommunications, SDH/SONET, ATM, IP, MPLS, Resilient Packet Rings, performance modelling',
+        'profile.programTitle': 'Program work',
+        'profile.program': 'Public-health advocacy, environmental policy, circular economy, ICT reform, donor coordination',
+        'assignments.eyebrow': 'For students',
+        'assignments.title': 'Assignments by lecture and year',
+        'assignments.all': 'View all catalogues',
+        'assignments.cloud': 'A modern reservation catalogue for cloud platforms, serverless APIs, databases, DevOps, security, and MCC projects.',
+        'assignments.mobile': 'The mobile topic pool remains available as a reference for the next mobile semester.',
+        'assignments.reserve': 'Reserve topic',
+        'assignments.scores': 'Submissions & scores',
+        'assignments.openTopics': 'Open topics',
+        'assignments.workflow': 'Workflow',
+        'lectures.eyebrow': 'Teaching',
+        'lectures.title': 'Lectures across the years',
+        'lectures.aabTitle': 'Lecturer - AAB College',
+        'lectures.aab': 'Computer Networks, Information Systems Architecture, Android & Modern Mobile Development with Jetpack Compose, Cybersecurity in Healthcare, practical labs, and capstone supervision.',
+        'lectures.ubtTitle': 'Lecturer - UBT',
+        'lectures.ubt': 'Network Engineering and Multimedia Communications, with focus on applied networking concepts and communication systems.',
+        'lectures.tuwienTitle': 'Researcher & Lecturer - TU Wien',
+        'lectures.tuwien': 'Research and lectures in teletraffic theory, performance modelling, broadband communications, and resilient packet networking.',
+        'experience.eyebrow': 'Work',
+        'experience.title': 'Professional experience',
+        'experience.kadcTitle': 'Program Manager - Kosovo Advocacy & Development Centre (KADC)',
+        'experience.kadc': 'Program design and implementation for public-health advocacy, tobacco control, environmental policy, circular economy, donor relations, consortium partners, and media campaigns.',
+        'experience.prosecutorTitle': 'Strategic Planning Advisor - Office of the Chief State Prosecutor',
+        'experience.prosecutor': 'Strategic planning for ICT reform, donor coordination, and institutional capacity building.',
+        'experience.usaidTitle': 'Senior IT Advisor - USAID / NCSC Kosovo Justice Support Program',
+        'experience.usaid': 'Design and deployment of CMIS, justice-sector ICT planning, training, and mentoring of counterpart ICT teams.',
+        'experience.mojTitle': 'IT Advisor - Ministry of Justice / USAID',
+        'experience.moj': 'ICT advisory work for justice-sector systems and institutional reform.',
+        'education.eyebrow': 'Education',
+        'education.title': 'Education',
+        'education.magTitle': 'Mag in Electrical Engineering',
+        'education.mag': 'University of Zagreb, Faculty of Electrical Engineering & Computing. Concentration: Computer Technology & Micro-processor Architecture.',
+        'education.phdTitle': 'PhD candidate',
+        'education.phd': 'Institute of Broadband Communications, Vienna University of Technology (TU Wien). Telecommunications & Performance Modelling.',
+        'publications.eyebrow': 'Research and talks',
+        'publications.title': 'Selected publications and invited talks',
+        'publications.note': 'Conferences and invited talks include NOC 2002, NOC 2003, World Conference on Tobacco Control in Dublin 2025, and regional forums on digital governance, environmental policy, and circular economy.',
+        'footer.role': 'Program Manager @ KADC · PhD candidate · Lecturer at AAB',
+      },
+      sq: {
+        pageTitle: 'Arben Lila - Profili, Ligjeratat dhe Detyrat e Studentëve',
+        pageDescription: 'Profil profesional, ligjerata ndër vite dhe katalogë detyrash për studentë sipas lëndës dhe vitit.',
+        'nav.lectures': 'Ligjeratat',
+        'nav.assignments': 'Detyrat',
+        'nav.publications': 'Publikimet',
+        'nav.contact': 'Kontakti',
+        'hero.eyebrow': 'Ligjërues · Menaxher programi · Hulumtues',
+        'hero.title': 'Profil profesional, ligjerata dhe katalogë detyrash për studentë.',
+        'hero.copy': 'Kjo faqe bashkon profilin tim akademik, punën në sektor publik dhe shoqëri civile, ligjeratat ndër vite dhe sistemet që studentët përdorin për të rezervuar, dorëzuar dhe parë pikët.',
+        'hero.assignments': 'Hap portalin e detyrave',
+        'hero.contact': 'Kontakto me email',
+        'hero.caption': 'Ligjërues në AAB dhe menaxher programi në KADC',
+        'profile.eyebrow': 'Profil profesional',
+        'profile.lead': 'Menaxher programi në Kosovo Advocacy & Development Centre (KADC), kandidat për PhD dhe ligjërues në Kolegjin AAB.',
+        'profile.teachingTitle': 'Fokusi në mësimdhënie',
+        'profile.teaching': 'Rrjeta kompjuterike, Arkitekturë e sistemeve informative, Android & zhvillim modern mobil, Siguri kibernetike në shëndetësi',
+        'profile.researchTitle': 'Sfondi hulumtues',
+        'profile.research': 'Telekomunikacion, SDH/SONET, ATM, IP, MPLS, Resilient Packet Rings dhe modelim i performancës',
+        'profile.programTitle': 'Puna programore',
+        'profile.program': 'Avokim në shëndet publik, politika mjedisore, ekonomi qarkore, reformë TIK, koordinim me donatorë',
+        'assignments.eyebrow': 'Për studentë',
+        'assignments.title': 'Detyrat sipas ligjeratës dhe vitit',
+        'assignments.all': 'Shiko të gjithë katalogët',
+        'assignments.cloud': 'Katalog modern rezervimi për platforma cloud, API serverless, baza të të dhënave, DevOps, siguri dhe projekte MCC.',
+        'assignments.mobile': 'Katalogu i temave mobile mbetet i ruajtur si referencë për semestrin e ardhshëm të Mobile.',
+        'assignments.reserve': 'Rezervo temën',
+        'assignments.scores': 'Dorëzimet dhe pikët',
+        'assignments.openTopics': 'Hap temat',
+        'assignments.workflow': 'Procesi',
+        'lectures.eyebrow': 'Mësimdhënie',
+        'lectures.title': 'Ligjeratat ndër vite',
+        'lectures.aabTitle': 'Ligjërues - Kolegji AAB',
+        'lectures.aab': 'Rrjeta kompjuterike, Arkitekturë e sistemeve informative, Android & zhvillim modern mobil me Jetpack Compose, Siguri kibernetike në shëndetësi, ushtrime praktike dhe mentorim projektesh.',
+        'lectures.ubtTitle': 'Ligjërues - UBT',
+        'lectures.ubt': 'Network Engineering dhe Multimedia Communications, me fokus në koncepte praktike të rrjeteve dhe sistemeve të komunikimit.',
+        'lectures.tuwienTitle': 'Hulumtues & Ligjërues - TU Wien',
+        'lectures.tuwien': 'Hulumtim dhe ligjerata në teletraffic theory, modelim të performancës, broadband communications dhe rrjete reziliente të paketave.',
+        'experience.eyebrow': 'Puna',
+        'experience.title': 'Përvoja profesionale',
+        'experience.kadcTitle': 'Menaxher programi - Kosovo Advocacy & Development Centre (KADC)',
+        'experience.kadc': 'Dizajnim dhe zbatim programesh për avokim në shëndet publik, kontroll të duhanit, politika mjedisore, ekonomi qarkore, marrëdhënie me donatorë, partnerë konsorciumi dhe kampanja mediale.',
+        'experience.prosecutorTitle': 'Këshilltar për planifikim strategjik - Zyra e Kryeprokurorit të Shtetit',
+        'experience.prosecutor': 'Planifikim strategjik për reformë në TIK, koordinim me donatorë dhe ngritje të kapaciteteve institucionale.',
+        'experience.usaidTitle': 'Këshilltar i lartë për IT - USAID / NCSC Kosovo Justice Support Program',
+        'experience.usaid': 'Dizajn dhe implementim i CMIS, planifikim TIK për sektorin e drejtësisë, trajnime dhe mentorim i ekipeve partnere.',
+        'experience.mojTitle': 'Këshilltar për IT - Ministria e Drejtësisë / USAID',
+        'experience.moj': 'Këshillim për sisteme TIK në sektorin e drejtësisë dhe reformë institucionale.',
+        'education.eyebrow': 'Edukimi',
+        'education.title': 'Edukimi',
+        'education.magTitle': 'Magjistër në Inxhinieri Elektrike',
+        'education.mag': 'Universiteti i Zagrebit, Fakulteti i Inxhinierisë Elektrike dhe Kompjuterike. Përqendrimi: Teknologji kompjuterike dhe arkitekturë e mikroprocesorëve.',
+        'education.phdTitle': 'Kandidat për PhD',
+        'education.phd': 'Institute of Broadband Communications, Vienna University of Technology (TU Wien). Telekomunikacion dhe modelim i performancës.',
+        'publications.eyebrow': 'Hulumtim dhe fjalime',
+        'publications.title': 'Publikime dhe fjalime të zgjedhura',
+        'publications.note': 'Konferencat dhe fjalimet e ftuara përfshijnë NOC 2002, NOC 2003, World Conference on Tobacco Control në Dublin 2025 dhe forume rajonale për qeverisje digjitale, politika mjedisore dhe ekonomi qarkore.',
+        'footer.role': 'Menaxher programi në KADC · Kandidat për PhD · Ligjërues në AAB',
+      },
+    };
+
+    let currentLanguage = localStorage.getItem('arben-profile-language') || 'en';
+
+    function translate(key) {
+      return translations[currentLanguage][key] || translations.en[key] || key;
+    }
+
+    function applyLanguage(language) {
+      currentLanguage = language;
+      localStorage.setItem('arben-profile-language', language);
+      document.documentElement.lang = language === 'sq' ? 'sq' : 'en';
+      document.title = translate('pageTitle');
+      document.querySelector('meta[name="description"]').setAttribute('content', translate('pageDescription'));
+      document.querySelectorAll('[data-i18n]').forEach((node) => {
+        node.textContent = translate(node.dataset.i18n);
+      });
+      document.querySelectorAll('[data-lang]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.lang === language);
+      });
+    }
+
+    document.querySelectorAll('[data-lang]').forEach((button) => {
+      button.addEventListener('click', () => applyLanguage(button.dataset.lang));
+    });
+
+    applyLanguage(currentLanguage);
+  </script>
 </body>
 </html>
