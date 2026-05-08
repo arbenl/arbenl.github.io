@@ -255,18 +255,20 @@ main {
 
 .fact-grid,
 .assignment-grid,
-.experience-grid {
+.experience-grid,
+.project-grid {
   display: grid;
   gap: 14px;
 }
 
 .fact-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .fact-grid article,
 .timeline article,
-.experience-grid article {
+.experience-grid article,
+.project-grid article {
   border-left: 4px solid var(--teal);
   background: #fbfcfe;
   padding: 13px 14px;
@@ -277,16 +279,56 @@ main {
 .timeline span,
 .timeline strong,
 .experience-grid span,
-.experience-grid strong {
+.experience-grid strong,
+.project-grid strong {
   display: block;
 }
 
 .fact-grid span,
 .timeline p,
 .experience-grid p,
+.project-grid p,
 .assignment-card p,
 .notice {
   color: var(--muted);
+}
+
+.highlight-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.highlight-list li {
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  background: #fbfcfe;
+  padding: 12px 14px;
+  color: var(--ink);
+  font-weight: 750;
+}
+
+.compact-list {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.source-link {
+  display: inline-flex;
+  margin-top: 8px;
+  color: var(--blue);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.project-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .assignment-grid {
@@ -441,7 +483,9 @@ main {
   .contact-section,
   .split,
   .fact-grid,
+  .highlight-list,
   .assignment-grid,
+  .project-grid,
   .timeline.compact {
     grid-template-columns: 1fr;
   }
