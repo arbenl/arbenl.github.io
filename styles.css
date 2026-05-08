@@ -331,6 +331,37 @@ main {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.reference-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.reference-grid a {
+  display: grid;
+  gap: 6px;
+  min-height: 92px;
+  align-content: center;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  background: #fbfcfe;
+  padding: 13px 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.reference-grid span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.reference-grid strong {
+  overflow-wrap: anywhere;
+}
+
 .assignment-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -486,6 +517,7 @@ main {
   .highlight-list,
   .assignment-grid,
   .project-grid,
+  .reference-grid,
   .timeline.compact {
     grid-template-columns: 1fr;
   }
