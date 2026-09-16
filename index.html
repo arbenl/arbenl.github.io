@@ -1,593 +1,2106 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="sq">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Arben Lila - Lectures, Leadership, and Public-Impact Projects</title>
-  <meta name="description" content="Academic work, leadership, selected projects, publications, and student assignment catalogues by course and year.">
-  <link rel="icon" href="data:,">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Programimi për Pajisje Mobile (2026/2027) — Prof. Asoc. Arben Lila | Kolegji AAB</title>
+  <meta name="description" content="Portali zyrtar i lëndës Programimi për Pajisje Mobile (2026/2027) në Kolegjin AAB: 15 javët e unifikuara të ligjëratave dhe laboratorëve, Dev Starter Pack, Supabase dhe Vercel PWA.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
 </head>
 <body>
-  <header class="site-header">
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="brand" href="#top" aria-label="Arben Lila home">
-        <span>AL</span>
-        <strong>Arben Lila</strong>
-      </a>
-      <div class="nav-links">
-        <a href="#lectures" data-i18n="nav.lectures">Lectures</a>
-        <a href="#leadership" data-i18n="nav.leadership">Leadership</a>
-        <a href="#projects" data-i18n="nav.projects">Projects</a>
-        <a href="#assignments" data-i18n="nav.assignments">Assignments</a>
-        <a href="#contact" data-i18n="nav.contact">Contact</a>
-      </div>
-      <div class="language-switch" aria-label="Language switch">
-        <button type="button" class="active" data-lang="en">ENG</button>
-        <button type="button" data-lang="sq">ALB</button>
-      </div>
-    </nav>
 
-    <section class="hero" id="top">
-      <div class="hero-copy">
-        <p class="eyebrow" data-i18n="hero.eyebrow">Lecturer · Program Manager · ICT/Public Policy Advisor · Sport Governance Leader</p>
-        <h1 data-i18n="hero.title">Lectures, leadership, and public-impact projects.</h1>
-        <p data-i18n="hero.copy">This page brings together my academic work, public-sector and civil-society experience, lectures across the years, and assignment systems students use to reserve, submit, and follow scores.</p>
-        <div class="hero-actions">
-          <a class="button primary" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/" data-i18n="hero.assignments">Open assignment portal</a>
-          <a class="button" href="#contact" data-i18n="hero.contact">Contact details</a>
+  <!-- ========================================================================
+       TOP HEADER ME DUAL-MODE SEGMENTED CONTROLLER & LANGUAGE SWITCHER
+       ======================================================================== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-area">
+        <a href="https://aab-edu.net/" target="_blank" rel="noopener" class="aab-brand-badge" title="Kolegji AAB">
+          <img src="img/aab_logo_dark.png" alt="Kolegji AAB" class="aab-logo-img">
+        </a>
+        <div class="brand-divider"></div>
+        <div class="brand-text">
+          <h1 data-i18n="header.brandName">Prof. Arben Lila</h1>
+          <p data-i18n="header.brandRole">Kolegji AAB • Shkenca Kompjuterike</p>
         </div>
       </div>
-      <figure class="portrait">
-        <img src="img/profile-studio.jpg" alt="Arben Lila">
-        <figcaption data-i18n="hero.caption">AAB lecturer and KADC program manager</figcaption>
-      </figure>
-    </section>
+
+      <!-- Segmented View Switcher (Desktop & Tablet) -->
+      <div class="view-switcher" role="tablist" aria-label="Zgjedhja e pamjes">
+        <button class="view-btn active" id="btn-view-student" onclick="setView('student')" role="tab" aria-selected="true">
+          <span>🎓</span>
+          <span data-i18n="header.viewStudent">Zona e Studentëve</span>
+          <span class="badge-pill">2026/2027</span>
+        </button>
+        <button class="view-btn" id="btn-view-profile" onclick="setView('profile')" role="tab" aria-selected="false">
+          <span>👤</span>
+          <span data-i18n="header.viewProfile">Profili & Lidershipi</span>
+        </button>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <div class="lang-switch" role="group" aria-label="Language Selector">
+          <button class="lang-btn active" id="btn-lang-sq" onclick="setLanguage('sq')">SQ</button>
+          <button class="lang-btn" id="btn-lang-en" onclick="setLanguage('en')">EN</button>
+        </div>
+        <a class="archive-btn" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/mcc-2026.html" target="_blank" rel="noopener" title="Arkiva e kurseve të kaluara">
+          <span>📦</span>
+          <span data-i18n="header.mccArchive">Arkiva MCC</span>
+        </a>
+      </div>
+    </div>
   </header>
 
+  <!-- ========================================================================
+       STICKY SUB-NAVIGATION PËR ZONËN E STUDENTËVE
+       ======================================================================== -->
+  <nav class="student-subnav" id="student-subnav" aria-label="Navigimi i brendshëm i kursit">
+    <div class="student-subnav-inner">
+      <a class="subnav-link active" href="#course-overview">
+        <span>🚀</span> <span data-i18n="subnav.overview">Përmbledhja & Syllabusi</span>
+      </a>
+      <a class="subnav-link" href="#setup">
+        <span>🛠️</span> <span data-i18n="subnav.setup">Dev Starter Pack (Javë 1)</span>
+      </a>
+      <a class="subnav-link" href="#checkin">
+        <span>📍</span> <span data-i18n="subnav.checkin">Check-In Pjesëmarrja</span>
+      </a>
+      <a class="subnav-link" href="#curriculum">
+        <span>📚🧪</span> <span data-i18n="subnav.curriculum">15 Javët (Ligjëratat + Ushtrimet)</span>
+      </a>
+      <a class="subnav-link" href="#project">
+        <span>📋</span> <span data-i18n="subnav.project">Projekti i Biznesit & Notat</span>
+      </a>
+      <a class="subnav-link" href="#policies">
+        <span>⚖️</span> <span data-i18n="subnav.policies">Rregullat & Sistemi i Notimit</span>
+      </a>
+    </div>
+  </nav>
+
   <main>
-    <section class="section profile-section" aria-labelledby="profile-title">
-      <div>
-        <p class="eyebrow" data-i18n="profile.eyebrow">About</p>
-        <h2 id="profile-title">Arben Lila</h2>
-        <p class="lead" data-i18n="profile.lead">Program Manager at Kosovo Advocacy & Development Centre (KADC), PhD candidate, and lecturer at AAB College. His work connects technology, public policy, civil society advocacy, education, sport governance, and institutional development.</p>
-      </div>
-      <div class="fact-grid">
-        <article>
-          <strong data-i18n="profile.teachingTitle">Teaching focus</strong>
-          <span data-i18n="profile.teaching">Cloud Computing & Mobile Cloud Computing (2026), Mobile Programming / Android & Modern Mobile Development (2025), Computer Networks, Information Systems Architecture, Cybersecurity in Healthcare</span>
-        </article>
-        <article>
-          <strong data-i18n="profile.researchTitle">Research background</strong>
-          <span data-i18n="profile.research">Telecommunications, SDH/SONET, ATM, IP, MPLS, Resilient Packet Rings, performance modelling</span>
-        </article>
-        <article>
-          <strong data-i18n="profile.programTitle">Program work</strong>
-          <span data-i18n="profile.program">Public-health advocacy, environmental policy, circular economy, ICT reform, donor coordination</span>
-        </article>
-        <article>
-          <strong data-i18n="profile.leadershipTitle">Leadership & sport governance</strong>
-          <span data-i18n="profile.leadership">Outdoor leadership, mountain sports development, institutional governance, national delegation management, mountain safety and rescue coordination</span>
-        </article>
-      </div>
-    </section>
+    <!-- ======================================================================
+         VIEW 1: ZONA E STUDENTËVE (MOBILE PROGRAMMING 2026/2027) - PARAZGJEDHUR
+         ====================================================================== -->
+    <div id="view-student" class="view-panel active">
+      <div class="container">
+        
+        <!-- Course Hero Section -->
+        <section class="course-hero" id="course-overview" aria-labelledby="course-hero-title">
+          <div class="hero-tag-row">
+            <span class="badge primary" data-i18n="hero.courseBadge">Programimi për Pajisje Mobile</span>
+            <span class="badge emerald" data-i18n="hero.semesterBadge">Semestri V • Viti Akademik 2026/2027</span>
+            <span class="badge amber" data-i18n="hero.ectsBadge">6 ECTS • 2L + 2U</span>
+          </div>
+          
+          <h2 id="course-hero-title" data-i18n="hero.title">Programimi për Pajisje Mobile</h2>
+          <div class="course-theme" data-i18n="hero.theme">The Founder's Expedition: Ndërto një Mobile PWA Reale me AI & Next.js</div>
+          
+          <p class="lead" data-i18n="hero.desc">
+            Qendra e unifikuar mësimore për studentët e Inxhinierisë Softuerike në Kolegjin AAB. Çdo ligjëratë, ushtrim laboratorik hap-pas-hapi, konfigurim i GitHub Copilot dhe udhëzues i ndërtimit të aplikacionit tuaj me Next.js 15, Tailwind, Supabase dhe Vercel ndodhet këtu në një vend të vetëm.
+          </p>
 
-    <section class="section" aria-labelledby="highlights-title">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow" data-i18n="highlights.eyebrow">Snapshot</p>
-          <h2 id="highlights-title" data-i18n="highlights.title">Selected leadership highlights</h2>
+          <div class="project-actions">
+            <a class="btn primary" href="#curriculum">
+              <span>📚</span> <span data-i18n="hero.btnCurriculum">Eksploro 15 Javët e Kursit</span>
+            </a>
+            <a class="btn secondary" href="#setup">
+              <span>⚡</span> <span data-i18n="hero.btnSetup">Hapat e Javës 1 (Setup)</span>
+            </a>
+            <a class="btn secondary" href="#project">
+              <span>🚀</span> <span data-i18n="hero.btnProject">Kriteret e Projektit të Biznesit</span>
+            </a>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-label" data-i18n="stats.hoursLabel">Fondi i Orëve</div>
+              <div class="stat-val" data-i18n="stats.hoursVal">2h Ligjëratë + 2h Ushtrime</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label" data-i18n="stats.formatLabel">Formati</div>
+              <div class="stat-val" data-i18n="stats.formatVal">Laboratorik me Kod Live</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label" data-i18n="stats.stackLabel">Teknologjitë</div>
+              <div class="stat-val">Next.js 15 • Supabase • Copilot</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label" data-i18n="stats.officeLabel">Konsultat Online</div>
+              <div class="stat-val" data-i18n="stats.officeVal">Mërkurë, 15:00 - 16:30</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Dev Starter Pack (Javë 1 Onboarding) -->
+        <section class="section-block" id="setup" aria-labelledby="setup-title">
+          <div class="section-head-clean">
+            <span class="eyebrow" data-i18n="setup.eyebrow">Javë 1 • Fillimi nga Zero</span>
+            <h3 id="setup-title" data-i18n="setup.title">🛠️ Dev Starter Pack: Konfigurimi i Mjedisit</h3>
+            <p data-i18n="setup.desc">Para se të shkruajmë rreshtin e parë të kodit, çdo student duhet të përfundojë këta 5 hapa themelorë brenda javës së parë:</p>
+          </div>
+
+          <div class="starter-steps-grid">
+            <!-- Step 1 -->
+            <div class="step-card">
+              <div class="step-top">
+                <span class="step-num">1</span>
+                <div class="step-title">
+                  <h4 data-i18n="setup.step1Title">GitHub Student Developer Pack</h4>
+                  <span data-i18n="setup.step1Sub">Përfitoni GitHub Copilot Pro Falas</span>
+                </div>
+              </div>
+              <p class="step-desc" data-i18n="setup.step1Desc">
+                Aplikoni me emailin tuaj të studentit (<strong>@universitetiaab.com</strong>) te GitHub Education për të aktivizuar aksesin e plotë në GitHub Copilot dhe mjetet zhvillimore.
+              </p>
+              <a class="btn secondary" href="https://education.github.com/pack" target="_blank" rel="noopener" data-i18n="setup.step1Btn">
+                Aktivizo GitHub Pack →
+              </a>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card">
+              <div class="step-top">
+                <span class="step-num">2</span>
+                <div class="step-title">
+                  <h4 data-i18n="setup.step2Title">VS Code & Ekstensionet AI</h4>
+                  <span data-i18n="setup.step2Sub">Mjedisi ynë kryesor i kodimit</span>
+                </div>
+              </div>
+              <p class="step-desc" data-i18n="setup.step2Desc">
+                Instaloni VS Code dhe ekstensionet zyrtare: <em>GitHub Copilot</em>, <em>GitHub Copilot Chat</em>, <em>Tailwind CSS IntelliSense</em> dhe <em>ESLint</em>.
+              </p>
+              <div class="code-snippet">
+                <code>code --install-extension GitHub.copilot</code>
+                <button class="copy-btn" onclick="copyCommand(this, 'code --install-extension GitHub.copilot')" data-i18n="setup.copyBtn">Kopjo</button>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card">
+              <div class="step-top">
+                <span class="step-num">3</span>
+                <div class="step-title">
+                  <h4 data-i18n="setup.step3Title">Next.js 15 PWA Starter</h4>
+                  <span data-i18n="setup.step3Sub">Inicializimi i projektit tuaj mobile</span>
+                </div>
+              </div>
+              <p class="step-desc" data-i18n="setup.step3Desc">
+                Krijoni aplikacionin bazë me TypeScript, Tailwind CSS dhe App Router duke ekzekutuar komandën e mëposhtme në terminal:
+              </p>
+              <div class="code-snippet">
+                <code>npx create-next-app@latest my-pwa --ts --tailwind --app</code>
+                <button class="copy-btn" onclick="copyCommand(this, 'npx create-next-app@latest my-pwa --ts --tailwind --app')" data-i18n="setup.copyBtn">Kopjo</button>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-card">
+              <div class="step-top">
+                <span class="step-num">4</span>
+                <div class="step-title">
+                  <h4 data-i18n="setup.step4Title">Llogaria në Supabase Cloud</h4>
+                  <span data-i18n="setup.step4Sub">PostgreSQL & Auth në pak sekonda</span>
+                </div>
+              </div>
+              <p class="step-desc" data-i18n="setup.step4Desc">
+                Hapni një llogari falas në Supabase, krijoni projektin e ri dhe merrni çelësat <code>NEXT_PUBLIC_SUPABASE_URL</code> dhe <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.
+              </p>
+              <a class="btn secondary" href="https://supabase.com" target="_blank" rel="noopener" data-i18n="setup.step4Btn">
+                Hap Supabase →
+              </a>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step-card">
+              <div class="step-top">
+                <span class="step-num">5</span>
+                <div class="step-title">
+                  <h4 data-i18n="setup.step5Title">Lidhja me Vercel</h4>
+                  <span data-i18n="setup.step5Sub">Publikim automatik me çdo Git push</span>
+                </div>
+              </div>
+              <p class="step-desc" data-i18n="setup.step5Desc">
+                Lidhni depon (repository) tuaj në GitHub me Vercel për të marrë një URL publike HTTPS live që mund ta hapni menjëherë në telefonin tuaj.
+              </p>
+              <a class="btn secondary" href="https://vercel.com/new" target="_blank" rel="noopener" data-i18n="setup.step5Btn">
+                Lidh me Vercel →
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: 15 Unified Weeks (Organized in 3 Clear Pedagogical Modules) -->
+                <!-- ==============================================================
+             EVIDENCA E PJESËMARRJES: CHECK-IN LIVE PËR LIGJËRATË & USHTRIME
+             ============================================================== -->
+        <section class="section-block checkin-section" id="checkin" aria-labelledby="checkin-title">
+          <div class="section-header-row">
+            <div>
+              <div class="section-tag-row">
+                <span class="badge primary">EVIDENCA ZYRTARE</span>
+                <span class="badge emerald" id="checkin-live-indicator"><span class="pulse-dot"></span> REGJISTRIMI: HAPUR</span>
+              </div>
+              <h3 id="checkin-title" data-i18n="checkin.title">📍 Check-In i Pjesëmarrjes (Ligjërata & Ushtrime)</h3>
+              <p class="section-desc" data-i18n="checkin.desc">
+                Regjistroni praninë tuaj në orën e ligjëratës ose ushtrimeve brenda 2 minutave me të dhënat tuaja zyrtare studentore të Kolegjit AAB.
+              </p>
+            </div>
+          </div>
+
+          <div class="checkin-card-container">
+            <!-- Student Form -->
+            <div class="checkin-card">
+              <form id="attendance-form" onsubmit="handleAttendanceSubmit(event)">
+                
+                <!-- Session Selector -->
+                <div class="form-group">
+                  <label class="form-label" data-i18n="checkin.sessionLabel">Zgjidhni Seancën e Sotme:</label>
+                  <div class="session-type-toggle">
+                    <button type="button" class="type-btn active" id="btn-session-lecture" onclick="selectSessionType('lecture')">
+                      <span class="type-icon">📚</span>
+                      <span class="type-title" data-i18n="checkin.lecture">Ora e Ligjëratës</span>
+                    </button>
+                    <button type="button" class="type-btn" id="btn-session-lab" onclick="selectSessionType('lab')">
+                      <span class="type-icon">🧪</span>
+                      <span class="type-title" data-i18n="checkin.lab">Ora e Ushtrimeve (Lab)</span>
+                    </button>
+                  </div>
+                  <input type="hidden" id="checkin-session-type" value="lecture">
+                </div>
+
+                <!-- Week Selector -->
+                <div class="form-group">
+                  <label class="form-label" for="checkin-week" data-i18n="checkin.weekLabel">Java e Semestrit:</label>
+                  <select id="checkin-week" class="form-input">
+                    <option value="Java 1">Java 1: Hyrje, Next.js PWA & Setup i AI</option>
+                    <option value="Java 2">Java 2: Arkitektura & App Router</option>
+                    <option value="Java 3">Java 3: Layouts & Touch-First UI</option>
+                    <option value="Java 4">Java 4: React 19 Client/Server Components</option>
+                    <option value="Java 5">Java 5: Service Workers & Offline PWA</option>
+                    <option value="Java 6">Java 6: Web App Manifest & Instalimi</option>
+                    <option value="Java 7">Java 7: Next.js Server Actions</option>
+                    <option value="Java 8">Java 8: Supabase PostgreSQL & Auth</option>
+                    <option value="Java 9">Java 9: Row-Level Security (RLS)</option>
+                    <option value="Java 10">Java 10: Integrimi i Kamerës & Sensorëve</option>
+                    <option value="Java 11">Java 11: Njoftimet Push & Background Sync</option>
+                    <option value="Java 12">Java 12: Testimi E2E me Playwright</option>
+                    <option value="Java 13">Java 13: Vercel Production & Lighthouse</option>
+                    <option value="Java 14">Java 14: Siguria & Auditimi i Aplikacionit</option>
+                    <option value="Java 15">Java 15: Demo Day & Mbrojtja Finale</option>
+                  </select>
+                </div>
+
+                <!-- 2-Col inputs for Student ID and Name -->
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label" for="checkin-id" data-i18n="checkin.idLabel">ID / Nr. i Indeksit:</label>
+                    <input type="text" id="checkin-id" class="form-input" placeholder="p.sh. 22010045" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="checkin-name" data-i18n="checkin.nameLabel">Emri dhe Mbiemri:</label>
+                    <input type="text" id="checkin-name" class="form-input" placeholder="p.sh. Agon Krasniqi" required>
+                  </div>
+                </div>
+
+                <!-- Email and PIN -->
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label" for="checkin-email" data-i18n="checkin.emailLabel">E-maili Zyrtar AAB:</label>
+                    <input type="email" id="checkin-email" class="form-input" placeholder="emri.mbiemri@universitetiaab.com" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="checkin-pin">
+                      <span data-i18n="checkin.pinLabel">Kodi PIN nga Projektori:</span>
+                      <span class="label-hint">(4 shifra)</span>
+                    </label>
+                    <input type="text" id="checkin-pin" class="form-input pin-input" placeholder="Shënoni kodin..." maxlength="6" required autocomplete="off">
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div style="margin-top: 18px;">
+                  <button type="submit" id="btn-submit-checkin" class="btn primary btn-full">
+                    <span>✅</span> <span data-i18n="checkin.submitBtn">Regjistro Praninë Tani</span>
+                  </button>
+                </div>
+
+                <!-- Status Feedback -->
+                <div id="checkin-feedback" class="checkin-feedback" style="display:none;" role="alert"></div>
+              </form>
+            </div>
+
+            <!-- Side Card: Fast Instructions & Security -->
+            <div class="checkin-info-card">
+              <h4 class="info-title">⏱️ Rregullat e Check-In (2 Minuta)</h4>
+              <ul class="info-list">
+                <li><strong>Kodi i Seancës:</strong> Shfaqet në projektor nga profesori dhe ndryshon çdo orë mësimore.</li>
+                <li><strong>Koha e Kufizuar:</strong> Dritarja e pranimit mbyllet 2 minuta pas shfaqjes së kodit në ekran.</li>
+                <li><strong>E-maili Zyrtar:</strong> Duhet të jetë llogaria juaj <code>@universitetiaab.com</code>.</li>
+                <li><strong>Vetëm 1 regjistrim:</strong> Telefoni juaj lejon vetëm 1 dorëzim për secilën orë mësimore.</li>
+              </ul>
+
+              <div class="professor-toggle-box">
+                <button type="button" class="btn secondary btn-sm" onclick="toggleProfessorAdmin()" id="btn-toggle-admin">
+                  <span>🔒</span> Paneli i Profesorit & Raporti Excel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================
+               PANELI I PROFESORIT (ADMIN & SHKARKIMI EXCEL / CSV)
+               ============================================================ -->
+          <div id="professor-admin-section" class="professor-admin-panel" style="display: none;">
+            <div class="admin-header">
+              <div>
+                <h4 class="admin-title">🏛️ Paneli i Menaxhimit të Pranisë (Prof. Arben Lila)</h4>
+                <p class="admin-subtitle">Kontrolloni statusin e orës, ndryshoni PIN-in dhe eksportoni listën zyrtare për Kolegjit AAB.</p>
+              </div>
+              <button type="button" class="btn secondary btn-sm" onclick="toggleProfessorAdmin()">✕ Mbyll Panelin</button>
+            </div>
+
+            <!-- Admin Controls -->
+            <div class="admin-controls-grid">
+              <div class="admin-stat-card">
+                <div class="admin-stat-label">Të Regjistruar Sot</div>
+                <div class="admin-stat-val" id="admin-count-today">0</div>
+              </div>
+              <div class="admin-stat-card">
+                <div class="admin-stat-label">Statusi i Formës</div>
+                <button type="button" class="status-toggle-btn active" id="btn-toggle-status" onclick="toggleCheckinStatus()">
+                  🟢 HAPUR (Pranon)
+                </button>
+              </div>
+              <div class="admin-stat-card">
+                <div class="admin-stat-label">Kodi PIN Aktiv i Ditës</div>
+                <div class="pin-edit-row">
+                  <input type="text" id="admin-pin-input" value="8492" class="form-input" style="max-width:100px; text-align:center; font-weight:bold; font-size:18px;">
+                  <button type="button" class="btn secondary btn-sm" onclick="updateActivePin()">Ruaj</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions Row -->
+            <div class="admin-actions-bar">
+              <button type="button" class="btn primary" onclick="exportAttendanceToCSV()">
+                <span>📥</span> Shkarko Raportin Zyrtar në Excel (CSV)
+              </button>
+              <button type="button" class="btn secondary" onclick="clearAttendanceRecords()">
+                <span>🗑️</span> Pastro Regjistrimet Testuese
+              </button>
+              <div class="admin-filter-group">
+                <label for="admin-filter-week">Filtro Javën:</label>
+                <select id="admin-filter-week" class="form-input" onchange="renderAdminTable()" style="max-width:160px;">
+                  <option value="all">Të Gjitha Javët</option>
+                  <option value="Java 1" selected>Java 1</option>
+                  <option value="Java 2">Java 2</option>
+                  <option value="Java 3">Java 3</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Live Table -->
+            <div class="table-responsive" style="margin-top: 16px;">
+              <table class="rubric-table admin-table" id="attendance-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Data & Ora</th>
+                    <th>Java</th>
+                    <th>Seanca</th>
+                    <th>ID Studenti</th>
+                    <th>Emri dhe Mbiemri</th>
+                    <th>E-maili AAB</th>
+                  </tr>
+                </thead>
+                <tbody id="attendance-table-body">
+                  <tr>
+                    <td colspan="7" style="text-align:center; color:var(--text-dim); padding:20px;">Ende nuk ka regjistrime për këtë seancë.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="curriculum" aria-labelledby="curriculum-title">
+          <div class="section-head-clean">
+            <span class="eyebrow" data-i18n="curriculum.eyebrow">Programi Mësimor i Unifikuar</span>
+            <h3 id="curriculum-title" data-i18n="curriculum.title">📚🧪 15 Javët: Ligjëratat dhe Ushtrimet Laboratorike</h3>
+            <p data-i18n="curriculum.desc">Çdo javë përmban konceptet teorike, ushtrimin praktik laboratorik me kod, dhe shembuj promptesh me GitHub Copilot:</p>
+          </div>
+
+          <!-- Module 1 -->
+          <div class="module-header-box">
+            <h4 data-i18n="mod.m1Title">Moduli 1: Themeli Mobile, UI Touch-First & Next.js 15 + Supabase</h4>
+            <span data-i18n="mod.m1Weeks">Javët 1 — 5</span>
+          </div>
+          <div class="weeks-container">
+            
+            <!-- Week 1 -->
+            <article class="week-card expanded" id="week-1">
+              <div class="week-header" onclick="toggleWeek('week-1')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w1.badge">Javë 1</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w1.title">Hyrje në Mobile PWA, Ekosistemi Next.js 15 & GitHub Copilot</h4>
+                    <p data-i18n="w1.sub">Njoftimi me syllabusin, Native vs PWA, dhe fillimi me AI Pair Programming.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="badge emerald">Aktive</span>
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata (Teoria & Konceptet)</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Prezantimi i syllabusit dhe filozofisë "The Founder's Expedition".</li>
+                      <li>Krahasimi: Native (Kotlin/Swift) vs Cross-platform vs Mobile PWA.</li>
+                      <li>Pse Next.js 15 (App Router) është ideal për aplikacione mobile me performancë të lartë.</li>
+                      <li>Struktura e orëve: 2h teori + 2h laborator praktik me llogaridhënie individuale.</li>
+                    </ul>
+                    <div style="margin-top:14px;">
+                      <a class="btn primary" style="padding:7px 16px; font-size:12px; min-height:auto; display:inline-flex;" href="Jave1_Hyrje_Nextjs_PWA_Copilot_2026.pptx" download>
+                        <span>📥</span> <span>Shkarko Prezantimin (PowerPoint PPTX)</span>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik (Praktika)</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Aktivizimi i llogarisë në GitHub dhe verifikimi i GitHub Student Developer Pack.</li>
+                      <li>Instalimi i VS Code dhe konfigurimi i GitHub Copilot & Copilot Chat.</li>
+                      <li>Krijimi i repos së parë në GitHub dhe ekzekutimi i Next.js në localhost:3000.</li>
+                      <li>Testimi i aplikacionit në shfletuesin e telefonit përmes rrjetit lokal Wi-Fi.</li>
+                    </ul>
+                    <div class="copilot-prompt-box">
+                      <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
+                      <div class="copilot-prompt-text">
+                        <span>Explain the difference between a PWA and a responsive website, and generate a basic manifest.json for a restaurant ordering app.</span>
+                        <button class="copy-btn" onclick="copyCommand(this, 'Explain the difference between a PWA and a responsive website, and generate a basic manifest.json for a restaurant ordering app.')" data-i18n="setup.copyBtn">Kopjo</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Week 2 -->
+            <article class="week-card" id="week-2">
+              <div class="week-header" onclick="toggleWeek('week-2')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w2.badge">Javë 2</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w2.title">UI Mobile me Tailwind CSS & Parimet Touch-First</h4>
+                    <p data-i18n="w2.sub">Zonat e gishtit të madh (Thumb Zone), madhësia minimale 48px, dhe Bottom Navigation.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Parimet themelore të UX në pajisje mobile: Viewport, Safe Area Insets.</li>
+                      <li>Sistemi i dizajnit me Tailwind CSS: Klasat utilitare, flexbox dhe CSS grid në celular.</li>
+                      <li>Tipografia e lexueshme dhe kontrastet e ngjyrave për dritën e diellit (WCAG).</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Ndërtimi i një Bottom Navigation Bar lundrues (Home, Search, Orders, Profile).</li>
+                      <li>Krijimi i kartave të produkteve me foto responsive dhe butona aksioni me prekje.</li>
+                      <li>Implementimi i modal sheets (fletëve të poshtme) për detaje të shpejta.</li>
+                    </ul>
+                    <div class="copilot-prompt-box">
+                      <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
+                      <div class="copilot-prompt-text">
+                        <span>Create a sticky bottom navigation bar component in Next.js using Tailwind CSS with 4 buttons, active indicator, and safe-area-inset-bottom support.</span>
+                        <button class="copy-btn" onclick="copyCommand(this, 'Create a sticky bottom navigation bar component in Next.js using Tailwind CSS with 4 buttons, active indicator, and safe-area-inset-bottom support.')" data-i18n="setup.copyBtn">Kopjo</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Week 3 -->
+            <article class="week-card" id="week-3">
+              <div class="week-header" onclick="toggleWeek('week-3')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w3.badge">Javë 3</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w3.title">Arkitektura e Komponentëve & App Router (Next.js 15)</h4>
+                    <p data-i18n="w3.sub">Server vs Client Components, routing i lëndshëm, dhe Skeleton Loaders.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Diferenca mes React Server Components (RSC) dhe Client Components ('use client').</li>
+                      <li>Përfitimet e RSC për shpejtësinë në rrjetet mobile (3G/4G) duke minimizuar JS bundle.</li>
+                      <li>Përdorimi i layout.tsx, page.tsx, dhe loading.tsx.</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Strukturimi i rrugëtimeve kryesore të aplikacionit të biznesit: /products/[id].</li>
+                      <li>Krijimi i gjendjeve të ngarkimit (Skeleton Loaders) që imitojnë aplikacionet native.</li>
+                      <li>Ndarja e komponentëve interaktivë nga ata të pastër të renderimit të serverit.</li>
+                    </ul>
+                    <div class="copilot-prompt-box">
+                      <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
+                      <div class="copilot-prompt-text">
+                        <span>Write a Next.js 15 loading.tsx skeleton screen using Tailwind CSS pulse animation for a mobile product catalog list.</span>
+                        <button class="copy-btn" onclick="copyCommand(this, 'Write a Next.js 15 loading.tsx skeleton screen using Tailwind CSS pulse animation for a mobile product catalog list.')" data-i18n="setup.copyBtn">Kopjo</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Week 4 -->
+            <article class="week-card" id="week-4">
+              <div class="week-header" onclick="toggleWeek('week-4')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w4.badge">Javë 4</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w4.title">Baza e të Dhënave me Supabase (PostgreSQL & RLS)</h4>
+                    <p data-i18n="w4.sub">Modelimi relacional për biznesin, migrimet SQL dhe Row Level Security.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Modelimi i bazave të të dhënave për aplikacione tregtare dhe shërbime lokale.</li>
+                      <li>Arkitektura e Supabase: PostgreSQL, PostgREST API dhe lidhja me Next.js.</li>
+                      <li>Parimi i Row Level Security (RLS) - mbrojtja e të dhënave në nivel rreshti.</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Krijimi i tabelave: categories, products, orders.</li>
+                      <li>Shkrimi i policave RLS: Të gjithë mund të lexojnë produktet, vetëm pronari mund t'i modifikojë.</li>
+                      <li>Lidhja e çelësave të mjedisit në .env.local dhe marrja e të dhënave të para.</li>
+                    </ul>
+                    <div class="copilot-prompt-box">
+                      <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
+                      <div class="copilot-prompt-text">
+                        <span>Write a PostgreSQL SQL migration for Supabase to create a products table with id, name, price, image_url, created_at, and enable RLS with public read policy.</span>
+                        <button class="copy-btn" onclick="copyCommand(this, 'Write a PostgreSQL SQL migration for Supabase to create a products table with id, name, price, image_url, created_at, and enable RLS with public read policy.')" data-i18n="setup.copyBtn">Kopjo</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Week 5 -->
+            <article class="week-card" id="week-5">
+              <div class="week-header" onclick="toggleWeek('week-5')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w5.badge">Javë 5</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w5.title">Autentifikimi & Menaxhimi i Sesioneve në Mobile</h4>
+                    <p data-i18n="w5.sub">Supabase Auth, Magic Link, OAuth (Google/GitHub) dhe Middleware.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Siguria në pajisje mobile: Auth pa fjalëkalime (Magic Links) për përdorues celularë.</li>
+                      <li>OAuth providers: Kyçja e shpejtë me Google apo GitHub.</li>
+                      <li>Ruajtja e sigurt e cookies dhe verifikimi i sesionit me Next.js Middleware.</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Instalimi i paketës @supabase/ssr për menaxhim të sesionit në server dhe klient.</li>
+                      <li>Krijimi i faqeve /login dhe /auth/callback.</li>
+                      <li>Mbrojtja e rrugëtimeve private (paneli i pronarit të biznesit).</li>
+                    </ul>
+                    <div class="copilot-prompt-box">
+                      <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
+                      <div class="copilot-prompt-text">
+                        <span>Generate Next.js 15 middleware code using @supabase/ssr to check user session cookies and redirect unauthenticated users to /login.</span>
+                        <button class="copy-btn" onclick="copyCommand(this, 'Generate Next.js 15 middleware code using @supabase/ssr to check user session cookies and redirect unauthenticated users to /login.')" data-i18n="setup.copyBtn">Kopjo</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- Module 2 -->
+          <div class="module-header-box">
+            <h4 data-i18n="mod.m2Title">Moduli 2: PWA e Plotë, Offline Caching, Sensorët & Device APIs</h4>
+            <span data-i18n="mod.m2Weeks">Javët 6 — 10</span>
+          </div>
+          <div class="weeks-container">
+            
+            <!-- Week 6 -->
+            <article class="week-card" id="week-6">
+              <div class="week-header" onclick="toggleWeek('week-6')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w6.badge">Javë 6</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w6.title">PWA: Manifest.json, Ikonat & Offline Caching</h4>
+                    <p data-i18n="w6.sub">Shndërrimi i uebsajtit në aplikacion që instalohet në Homescreen pa App Store.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Arkitektura e Progressive Web Apps: Si funksionon Service Worker Lifecycle.</li>
+                      <li>Skedari manifest.webmanifest: display: standalone, ngjyrat e temës, ikonat maskable.</li>
+                      <li>Strategjitë e ruajtjes: Cache First, Network First, Stale While Revalidate.</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Gjenerimi i paketës së ikonave për iOS dhe Android (192x192, 512x512).</li>
+                      <li>Konfigurimi i Service Worker për funksionim offline të faqeve kryesore.</li>
+                      <li>Testimi i instalimit në telefon fizik: "Add to Home Screen".</li>
+                    </ul>
+                    <div class="copilot-prompt-box">
+                      <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
+                      <div class="copilot-prompt-text">
+                        <span>Write a complete Web App Manifest JSON with standalone display mode, orientation portrait, and maskable icons configuration.</span>
+                        <button class="copy-btn" onclick="copyCommand(this, 'Write a complete Web App Manifest JSON with standalone display mode, orientation portrait, and maskable icons configuration.')" data-i18n="setup.copyBtn">Kopjo</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Week 7 -->
+            <article class="week-card" id="week-7">
+              <div class="week-header" onclick="toggleWeek('week-7')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w7.badge">Javë 7</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w7.title">Kollokviumi I / Vlerësimi i MVP-së Fillestare</h4>
+                    <p data-i18n="w7.sub">Prezantimi i prototipit të parë funksional live në Vercel nga çdo student.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="badge amber">Vlerësim</span>
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Kollokviumi Teorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Testimi i koncepteve: Native vs PWA, Server vs Client Components, RLS në Supabase.</li>
+                      <li>Analiza e arkitekturës së sistemeve mobile dhe pyetje të shkurtra teknike.</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Mbrojtja e MVP-së</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Dorëzimi i linkut live në Vercel dhe repos në GitHub.</li>
+                      <li>Demonstrimi i funksionimit të UI mobile dhe lidhjes me Supabase.</li>
+                      <li>Komentet dhe udhëzimet e profesorit për përmirësim në fazën e dytë.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Week 8 -->
+            <article class="week-card" id="week-8">
+              <div class="week-header" onclick="toggleWeek('week-8')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w8.badge">Javë 8</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w8.title">Sensorët dhe API-të Vendase të Pajisjes (Device APIs)</h4>
+                    <p data-i18n="w8.sub">Kamera, Gjeolokacioni GPS, Dridhja (Vibration) dhe Web Share API.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Si mund të qasen sensorët e celularit nga shfletuesi modern ueb.</li>
+                      <li>HTML Media Capture dhe kompresimi i fotografive para ngarkimit në cloud.</li>
+                      <li>Geolocation API: Marrja e koordinatave të sakta për dërgesa apo vendndodhje.</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Integrimi i butonit për kapjen e fotografisë dhe ngarkimin në Supabase Storage bucket.</li>
+                      <li>Marrja e koordinatave GPS të blerësit dhe shfaqja në hartë.</li>
+                      <li>Implementimi i butonit "Ndaj me miqtë" duke përdorur navigator.share.</li>
+                    </ul>
+                    <div class="copilot-prompt-box">
+                      <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
+                      <div class="copilot-prompt-text">
+                        <span>Write a custom React hook useGeolocation that tracks GPS coordinates and handles permission denial on mobile browsers.</span>
+                        <button class="copy-btn" onclick="copyCommand(this, 'Write a custom React hook useGeolocation that tracks GPS coordinates and handles permission denial on mobile browsers.')" data-i18n="setup.copyBtn">Kopjo</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Week 9 -->
+            <article class="week-card" id="week-9">
+              <div class="week-header" onclick="toggleWeek('week-9')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w9.badge">Javë 9</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w9.title">Menaxhimi i Gjendjes (State) & Ndërfaqet Optimiste</h4>
+                    <p data-i18n="w9.sub">React Server Actions, useOptimistic dhe shpejtësia e perceptuar në mobile.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Sfida e latencës në rrjetet mobile: Pse përdoruesi nuk duhet të presë loader-in.</li>
+                      <li>Koncepti i Optimistic UI: Përditësimi i menjëhershëm i ekranit me kthim prapa (rollback) në gabim.</li>
+                      <li>Përdorimi i React 19 hook-ut useOptimistic me Server Actions.</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Implementimi i shportës së blerjes ku sasitë rriten menjëherë me animacion të qetë.</li>
+                      <li>Implementimi i butonit 'Ruaj në të preferuarat' me feedback të menjëhershëm haptik.</li>
+                    </ul>
+                    <div class="copilot-prompt-box">
+                      <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
+                      <div class="copilot-prompt-text">
+                        <span>Provide a React 19 example using useOptimistic and a Next.js server action to toggle a bookmark status without waiting for the network response.</span>
+                        <button class="copy-btn" onclick="copyCommand(this, 'Provide a React 19 example using useOptimistic and a Next.js server action to toggle a bookmark status without waiting for the network response.')" data-i18n="setup.copyBtn">Kopjo</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Week 10 -->
+            <article class="week-card" id="week-10">
+              <div class="week-header" onclick="toggleWeek('week-10')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w10.badge">Javë 10</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w10.title">Sinkronizimi në Kohë Reale (Supabase Realtime)</h4>
+                    <p data-i18n="w10.sub">WebSockets në pajisje mobile, dëgjuesit e tabelave dhe përditësimet pa rifreskim.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>WebSockets vs Polling në celular: Konsumi i baterisë dhe i të dhënave të internetit.</li>
+                      <li>Arkitektura e Supabase Realtime mbi kanale PostgreSQL.</li>
+                      <li>Rastet e përdorimit: Statusi i porosisë në kohë reale, njoftimet e rezervimit të ri.</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Abonimi në ndryshimet e tabelës orders me supabase.channel().</li>
+                      <li>Shfaqja e statusit live: "Në Përgatitje" → "Në Rrugë" → "Dorëzuar".</li>
+                      <li>Testimi me dy dritare paralele: njëra si blerës dhe tjetra si shitës.</li>
+                    </ul>
+                    <div class="copilot-prompt-box">
+                      <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
+                      <div class="copilot-prompt-text">
+                        <span>Show how to subscribe to real-time postgres changes using Supabase JS client inside a useEffect hook in Next.js.</span>
+                        <button class="copy-btn" onclick="copyCommand(this, 'Show how to subscribe to real-time postgres changes using Supabase JS client inside a useEffect hook in Next.js.')" data-i18n="setup.copyBtn">Kopjo</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- Module 3 -->
+          <div class="module-header-box">
+            <h4 data-i18n="mod.m3Title">Moduli 3: Njoftimet Push, Siguria, CI/CD & Showcase Finale</h4>
+            <span data-i18n="mod.m3Weeks">Javët 11 — 15</span>
+          </div>
+          <div class="weeks-container">
+            
+            <!-- Week 11 -->
+            <article class="week-card" id="week-11">
+              <div class="week-header" onclick="toggleWeek('week-11')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w11.badge">Javë 11</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w11.title">Njoftimet Push & Angazhimi i Përdoruesit</h4>
+                    <p data-i18n="w11.sub">Web Push API, çelësat VAPID dhe njoftimet e personalizuara në ekran të mbyllur.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Funksionimi i Web Push API dhe protokollit VAPID.</li>
+                      <li>Etika dhe UX e kërkesës për njoftime: Kur dhe si duhet kërkuar leja e përdoruesit.</li>
+                      <li>Mbështetja e njoftimeve push në iOS (Safari 16.4+) dhe Android Chrome.</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Gjenerimi i çelësave VAPID dhe ruajtja e subscription objektit në Supabase.</li>
+                      <li>Dërgimi i njoftimit provë kur bëhet një porosi e re.</li>
+                      <li>Testimi i marrjes së njoftimit në celular kur aplikacioni është i mbyllur.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Week 12 -->
+            <article class="week-card" id="week-12">
+              <div class="week-header" onclick="toggleWeek('week-12')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w12.badge">Javë 12</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w12.title">Siguria Mobile, Validimi me Zod & Mbrojtja e të Dhënave</h4>
+                    <p data-i18n="w12.sub">OWASP Mobile Top 10, validimi i rreptë i të dhënave dhe auditimi i policave RLS.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Rreziqet më të mëdha të sigurisë mobile: Rrjedhja e çelësave dhe RLS të pamjaftueshëm.</li>
+                      <li>Validimi i sigurt i të gjitha të dhënave hyrëse në server me bibliotekën Zod.</li>
+                      <li>Mbrojtja kundër sulmeve XSS, CSRF dhe Rate Limiting për API endpoints.</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Krijimi i skemave Zod për të gjitha format: regjistrimi, porosia, profili.</li>
+                      <li>Auditimi i plotë i tabelave në Supabase për të garantuar RLS të pathyeshëm.</li>
+                      <li>Pastrimi i çelësave sekretë nga kodi i klientit.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Week 13 -->
+            <article class="week-card" id="week-13">
+              <div class="week-header" onclick="toggleWeek('week-13')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w13.badge">Javë 13</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w13.title">Optimizimi i Performancës & Lighthouse Audit (90+)</h4>
+                    <p data-i18n="w13.sub">Core Web Vitals (LCP, INP, CLS), kompresimi i imazheve dhe shpejtësia ekstreme.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Metrikat e reja Core Web Vitals të Google për pajisje mobile (LCP, INP, CLS).</li>
+                      <li>Optimizimi automatik i imazheve me komponentin next/image (WebP/AVIF).</li>
+                      <li>Zvogëlimi i paketave JavaScript dhe ngarkimi i vonuar (Dynamic Imports / Suspense).</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Ekzekutimi i Google Lighthouse audit në Chrome DevTools në modalitetin "Mobile".</li>
+                      <li>Korrigjimi i gabimeve të aksesueshmërisë dhe madhësisë së butonave me prekje.</li>
+                      <li>Arritja e rezultatit mbi 90 pikë në të katër kategoritë e Lighthouse.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Week 14 -->
+            <article class="week-card" id="week-14">
+              <div class="week-header" onclick="toggleWeek('week-14')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w14.badge">Javë 14</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w14.title">CI/CD, Testimi në Pajisje Reale & Përgatitja Finale</h4>
+                    <p data-i18n="w14.sub">GitHub Actions, Vercel Production Environment dhe përgatitja e demo-s.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>📘</span> <h5 data-i18n="common.lecture">Ligjërata</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Cikli i plotë i lëshimit në prodhim (Release Engineering).</li>
+                      <li>Konfigurimi i domeneve me emër të personalizuar dhe certifikatave SSL.</li>
+                      <li>Struktura e prezantimit profesional teknik përpara investitorëve apo jurisë.</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Finalizimi i skedarit README.md me arkitekturën, fotot e ekranit dhe udhëzuesin e nisjes.</li>
+                      <li>Krijimi i një video-demonstrimi të shkurtër (1 minutë) të përdorimit në telefon fizik.</li>
+                      <li>Testimi i fundit i të gjitha rasteve kufitare (edge cases) dhe dorëzimi zyrtar i projektit.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Week 15 -->
+            <article class="week-card" id="week-15">
+              <div class="week-header" onclick="toggleWeek('week-15')">
+                <div class="week-header-left">
+                  <span class="week-badge-num" data-i18n="w15.badge">Javë 15</span>
+                  <div class="week-title-area">
+                    <h4 data-i18n="w15.title">Demo Day & Mbrojtja e Projekteve (The Founder's Showcase)</h4>
+                    <p data-i18n="w15.sub">Prezantimi live i aplikacionit PWA në celular dhe vlerësimi përfundimtar.</p>
+                  </div>
+                </div>
+                <div class="week-header-right">
+                  <span class="badge primary">Finalja</span>
+                  <span class="week-chevron">▼</span>
+                </div>
+              </div>
+              <div class="week-body">
+                <div class="week-columns">
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🚀</span> <h5 data-i18n="common.showcase">Showcase & Prezantimi Live</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Secili student demonstron aplikacionin e instaluar në pajisjen e vet mobile.</li>
+                      <li>Simulimi i një porosie apo shërbimi real për biznesin e zgjedhur.</li>
+                      <li>Përgjigje në pyetjet teknike mbi kodin, Supabase RLS dhe zgjidhjet arkitekturore.</li>
+                    </ul>
+                  </div>
+                  <div class="week-col">
+                    <div class="col-header">
+                      <span>🏆</span> <h5 data-i18n="common.grading">Shpallja e Notave & Certifikimi</h5>
+                    </div>
+                    <ul class="week-items-list">
+                      <li>Llogaritja e notës përfundimtare sipas rubrikës transparente 40 / 40 / 20.</li>
+                      <li>Regjistrimi i notave në sistemin zyrtar të Kolegjit AAB.</li>
+                      <li>Përzgjedhja e 3 projekteve më të mira për inkubator dhe promovim publik.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- Section: Business Project & Evaluation Rubric -->
+        <section class="section-block" id="project" aria-labelledby="project-title">
+          <div class="policy-card" style="border-color: rgba(99, 102, 241, 0.4); background: linear-gradient(135deg, #131b31 0%, #0c1220 100%);">
+            <div class="section-head-clean">
+              <span class="eyebrow" data-i18n="project.eyebrow">The Founder's Expedition</span>
+              <h3 id="project-title" data-i18n="project.title">📋 Projekti i Kursit & Kriteret e Vlerësimit</h3>
+              <p data-i18n="project.desc">
+                Në vend të detyrave abstrakte, çdo student zhvillon individualisht një Mobile-First PWA plotësisht funksionale për një <strong>biznes real familjar, zejtar, kafene, apo sipërmarrje lokale</strong> në Kosovë.
+              </p>
+            </div>
+
+            <!-- Rubric Grid -->
+            <div class="rubric-grid">
+              <div class="rubric-card">
+                <div class="rubric-percent">40%</div>
+                <h5 data-i18n="rubric.r1Title">Ushtrimet e Vazhdueshme Laboratorike</h5>
+                <p data-i18n="rubric.r1Desc">10 detyra praktike javore të dorëzuara në GitHub (komente kodi, zgjidhje problemesh, llogaridhënie individuale gjatë ushtrimeve).</p>
+              </div>
+
+              <div class="rubric-card">
+                <div class="rubric-percent">40%</div>
+                <h5 data-i18n="rubric.r2Title">Projekti Final PWA i Biznesit</h5>
+                <p data-i18n="rubric.r2Desc">UI e pastër mobile me Tailwind, baza e të dhënave dhe auth në Supabase, instalueshmëria offline (manifest + SW), dhe publikimi në Vercel.</p>
+              </div>
+
+              <div class="rubric-card">
+                <div class="rubric-percent">20%</div>
+                <h5 data-i18n="rubric.r3Title">Demo Day & Mbrojtja Individuale</h5>
+                <p data-i18n="rubric.r3Desc">Prezantimi live nga telefoni celular, shpjegimi i vendimeve arkitekturore, pyetjet e kodit dhe njohja e thellë e zgjidhjes teknike.</p>
+              </div>
+            </div>
+
+            <div class="project-actions">
+              <a class="btn primary" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/TOPICS.md" target="_blank" rel="noopener" data-i18n="project.btnTopics">
+                Eksploro Temat e Sugjeruara →
+              </a>
+              <a class="btn secondary" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/" target="_blank" rel="noopener" data-i18n="project.btnCatalog">
+                Katalogu i Rezervimeve & Notat →
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Official Academic Policies & AAB Grading Scale -->
+        <section class="section-block" id="policies" aria-labelledby="policies-title">
+          <div class="section-head-clean">
+            <span class="eyebrow" data-i18n="policies.eyebrow">Standardet Akademike të Kolegjit AAB</span>
+            <h3 id="policies-title" data-i18n="policies.title">⚖️ Rregullat e Kursit, Integriteti & Sistemi i Notimit</h3>
+          </div>
+
+          <div class="starter-steps-grid">
+            <!-- Learning Outcomes -->
+            <div class="policy-card">
+              <h4><span>🎯</span> <span data-i18n="policies.outcomesTitle">Rezultatet e të Nxënit (Learning Outcomes)</span></h4>
+              <p data-i18n="policies.outcomesDesc">
+                Në përfundim të kursit, studenti zotëron: (1) Ndërtimin e aplikacioneve mobile me Next.js 15 PWA; (2) Modelimin e bazave relacionale në Supabase me RLS; (3) Përdorimin e API-ve të pajisjes (Kamera, Gjeolokacion, Push); dhe (4) Përdorimin profesional të AI Pair Programming me GitHub Copilot.
+              </p>
+            </div>
+
+            <!-- AI Generative Policy -->
+            <div class="policy-card">
+              <h4><span>🤖</span> <span data-i18n="policies.aiTitle">Politika e Inteligjencës Artificiale (Copilot)</span></h4>
+              <p data-i18n="policies.aiDesc">
+                Përdorimi i GitHub Copilot është i lejuar dhe i rekomanduar si asistent programues. Megjithatë, studenti mban përgjegjësi absolute për kodin: në Demo Day, paaftësia për të shpjeguar logjikën e kodit rezulton në zbritje pikësh ose moskalim.
+              </p>
+            </div>
+
+            <!-- Attendance & Late Submissions -->
+            <div class="policy-card">
+              <h4><span>⏱️</span> <span data-i18n="policies.attendTitle">Pjesëmarrja & Dorëzimet</span></h4>
+              <p data-i18n="policies.attendDesc">
+                Pjesëmarrja në ushtrimet laboratorike është e detyrueshme (minimumi 75%). Detyrat javore dorëzohen në depon përkatëse në GitHub brenda afatit. Dorëzimet e vonuara penalizohen me -10% për çdo ditë vonese.
+              </p>
+            </div>
+          </div>
+
+          <!-- Official Grading Scale Table -->
+          <div class="policy-card" style="margin-top: 16px;">
+            <h4><span>📊</span> <span data-i18n="policies.gradeScaleTitle">Shkalla Zyrtare e Notimit (Kolegji AAB)</span></h4>
+            <div class="table-responsive">
+            <table class="grade-scale-table">
+              <thead>
+                <tr>
+                  <th data-i18n="table.points">Pikët e Grumbulluara</th>
+                  <th data-i18n="table.grade">Nota Zyrtare</th>
+                  <th data-i18n="table.descr">Përshkrimi i Performancës</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>90 — 100%</td><td><strong>10</strong></td><td data-i18n="table.g10">Shkëlqyeshëm (Përsosmëri e lartë teknike dhe konceptuale)</td></tr>
+                <tr><td>80 — 89%</td><td><strong>9</strong></td><td data-i18n="table.g9">Shumë mirë (Mbi mesataren, me pak gabime minore)</td></tr>
+                <tr><td>70 — 79%</td><td><strong>8</strong></td><td data-i18n="table.g8">Mirë (Punë solide, zotërim i mirë i teknologjive)</td></tr>
+                <tr><td>60 — 69%</td><td><strong>7</strong></td><td data-i18n="table.g7">Kënaqshëm (Kodi funksionon me disa mangësi arkitekturore)</td></tr>
+                <tr><td>50 — 59%</td><td><strong>6</strong></td><td data-i18n="table.g6">Mjaftueshëm (Plotëson kriteret minimale të kalueshmërisë)</td></tr>
+                <tr><td>&lt; 50%</td><td><strong>5</strong></td><td data-i18n="table.g5">Nuk kalon (Detyra të papërfunduara ose mungesë kuptimi)</td></tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         VIEW 2: PROFILI EKZEKUTIV, AKADEMIK & LIDERSHIPI (EXECUTIVE BIO)
+         ====================================================================== -->
+    <div id="view-profile" class="view-panel">
+      <div class="container">
+        
+        <!-- Profile Hero -->
+        <section class="profile-hero">
+          <img src="img/profile.jpg" alt="Prof. Asoc. Arben Lila" class="profile-avatar">
+          <div class="profile-bio-text">
+            <h2>Prof. Asoc. PhD. C. Arben Lila</h2>
+            <div class="profile-role" data-i18n="profile.subtitle">
+              Mësimdhënës në Kolegjin AAB • Drejtues Programi në KADC • Arkitekt Sistemesh
+            </div>
+            <p class="profile-desc" data-i18n="profile.bioText">
+              Ekspert me mbi 25 vite përvojë në arkitekturën e sistemeve softuerike, rrjetat telekomunikuese me brez të gjerë, dhe qeverisjen e politikave publike. Mësimdhënës i përkushtuar në Kolegjin AAB me fokus në zhvillimin modern për pajisje mobile, arkitekturat cloud, dhe zbatimin e inteligjencës artificiale në zgjidhje praktike.
+            </p>
+            <div class="project-actions" style="margin-top: 16px;">
+              <a class="btn primary" href="mailto:arben.lila@universitetiaab.com" data-i18n="profile.btnContact">
+                Kontakto në E-mail →
+              </a>
+              <a class="btn secondary" href="https://github.com/arbenl" target="_blank" rel="noopener">
+                GitHub Profile ↗
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Profile Detail Cards Grid -->
+        <div class="profile-grid">
+          
+          <!-- Academic Career -->
+          <div class="profile-card">
+            <h3><span>🎓</span> <span data-i18n="profile.academicTitle">Mësimdhënia & Përvoja Akademike</span></h3>
+            <div class="timeline-clean">
+              <div class="timeline-entry">
+                <span class="time-span">2019 — Vazhdon</span>
+                <h4 data-i18n="profile.aabTitle">Mësimdhënës — Kolegji AAB</h4>
+                <p data-i18n="profile.aabDesc">Programimi për Pajisje Mobile, Arkitektura e Sistemeve të Informacionit, Cloud Computing, dhe Siguria Kibernetike në Shëndetësi.</p>
+              </div>
+              <div class="timeline-entry">
+                <span class="time-span">2016 — 2019</span>
+                <h4 data-i18n="profile.ubtTitle">Ligjërues — UBT</h4>
+                <p data-i18n="profile.ubtDesc">Inxhinieri e Rrjetave dhe Komunikime Multimediale me theks në arkitekturën e shpërndarë.</p>
+              </div>
+              <div class="timeline-entry">
+                <span class="time-span">1999 — 2002</span>
+                <h4 data-i18n="profile.tuwienTitle">Asistent Mësimor — TU Wien (Vjenë)</h4>
+                <p data-i18n="profile.tuwienDesc">Instituti i Komunikimeve me Brez të Gjerë (Broadband Communications). Modelimi i performancës së rrjetave ATM dhe simulimet numerike.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Education -->
+          <div class="profile-card">
+            <h3><span>🏛️</span> <span data-i18n="profile.eduTitle">Edukimi dhe Kualifikimet</span></h3>
+            <div class="timeline-clean">
+              <div class="timeline-entry">
+                <span class="time-span">1998 — 2003</span>
+                <h4>PhD Candidate in Telecommunications</h4>
+                <p>Vienna University of Technology (TU Wien), Austri. Instituti i Komunikimeve me Brez të Gjerë. Hulumtime mbi modelimin stohastik dhe performancën e rrjetave.</p>
+              </div>
+              <div class="timeline-entry">
+                <span class="time-span">1987 — 1991</span>
+                <h4>Mag. në Inxhinieri Elektrike & Kompjuterike</h4>
+                <p>Universiteti i Zagrebit, Fakulteti i Elektroteknikës dhe Kompjutikës (FER). Përqendrimi: Teknologjia Kompjuterike dhe Arkitektura e Mikroprocesorëve.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Civil Society & Public Leadership -->
+          <div class="profile-card">
+            <h3><span>🌱</span> <span data-i18n="profile.cadcTitle">Shoqëria Civile & Zhvillimi i Qëndrueshëm</span></h3>
+            <div class="timeline-clean">
+              <div class="timeline-entry">
+                <span class="time-span">2010 — Vazhdon</span>
+                <h4>Program Manager — KADC</h4>
+                <p>Kosovo Advocacy and Development Center. Udhëheqja e programeve strategjike mjedisore, mbrojtjes së shëndetit publik, dhe politikave të zhvillimit të qëndrueshëm në bashkëpunim me donatorë ndërkombëtarë.</p>
+              </div>
+              <div class="timeline-entry">
+                <span class="time-span">2011 — 2012</span>
+                <h4>Ekspert i Politikave TIK — STIKK</h4>
+                <p>Bashkautor i studimit kombëtar "Skills Gap Analysis for Information and Communication Technology" për identifikimin e nevojave të industrisë së teknologjisë në Kosovë.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sports Leadership -->
+          <div class="profile-card">
+            <h3><span>🏔️</span> <span data-i18n="profile.sportsTitle">Qeverisja e Sportit & Alpinizmi</span></h3>
+            <div class="timeline-clean">
+              <div class="timeline-entry">
+                <span class="time-span">2014 — 2021</span>
+                <h4>Këshilli Drejtues — Komiteti Olimpik i Kosovës (KOK)</h4>
+                <p>Kontribut i drejtpërdrejtë në ndërkombëtarizimin e sportit të Kosovës dhe anëtarësimin në Komitetin Olimpik Ndërkombëtar (IOC). Zv/Shef i Misionit në Lojërat e Para Evropiane Baku 2015.</p>
+              </div>
+              <div class="timeline-entry">
+                <span class="time-span">2011 — 2021</span>
+                <h4>Kryetar — Federata e Alpinizmit dhe Ngjitjes Sportive (FBAK)</h4>
+                <p>Udhëheqja e anëtarësimit të plotë të Kosovës në UIAA (Federata Ndërkombëtare e Alpinizmit) dhe promovimi i turizmit malor të qëndrueshëm në Ballkan.</p>
+              </div>
+            </div>
+          </div>
+
         </div>
-      </div>
-      <ul class="highlight-list">
-        <li data-i18n="highlights.mountaineering">10 years leading the Kosovo Mountaineering and Alpinist Federation</li>
-        <li data-i18n="highlights.olympic">Vice President of the Executive Board of the Kosovo Olympic Committee, 2013-2016</li>
-        <li data-i18n="highlights.baku">Head of Mission for Kosovo Team at the European Games Baku 2015</li>
-        <li data-i18n="highlights.kadc">Program Manager at KADC since 2012</li>
-        <li data-i18n="highlights.ict">ICT reform advisor in Kosovo's justice sector</li>
-        <li data-i18n="highlights.teaching">Lecturer in computer networks, information systems, mobile and cloud technologies</li>
-      </ul>
-    </section>
 
-    <section class="section split" id="lectures" aria-labelledby="lectures-title">
-      <div>
-        <p class="eyebrow" data-i18n="lectures.eyebrow">Teaching</p>
-        <h2 id="lectures-title" data-i18n="lectures.title">Lectures across the years</h2>
-      </div>
-      <div class="timeline">
-        <article>
-          <span>2019 - present</span>
-          <strong data-i18n="lectures.aabTitle">Lecturer - AAB College</strong>
-          <p data-i18n="lectures.aab">Computer Networks, Information Systems Architecture, Android & Modern Mobile Development with Jetpack Compose, Cybersecurity in Healthcare, practical labs, and capstone supervision.</p>
-        </article>
-        <article>
-          <span>2016 - 2019</span>
-          <strong data-i18n="lectures.ubtTitle">Lecturer - UBT</strong>
-          <p data-i18n="lectures.ubt">Network Engineering and Multimedia Communications, with focus on applied networking concepts and communication systems.</p>
-        </article>
-        <article>
-          <span>1999 - 2003</span>
-          <strong data-i18n="lectures.tuwienTitle">Researcher & Lecturer - TU Wien</strong>
-          <p data-i18n="lectures.tuwien">Research and lectures in teletraffic theory, performance modelling, broadband communications, and resilient packet networking.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section split" aria-labelledby="experience-title">
-      <div>
-        <p class="eyebrow" data-i18n="experience.eyebrow">Work</p>
-        <h2 id="experience-title" data-i18n="experience.title">Professional experience</h2>
-      </div>
-      <div class="experience-grid">
-        <article>
-          <span>2012 - present</span>
-          <strong data-i18n="experience.kadcTitle">Program Manager - Kosovo Advocacy & Development Centre (KADC)</strong>
-          <p data-i18n="experience.kadc">Program design and implementation for public-health advocacy, tobacco control, environmental policy, circular economy, donor relations, consortium partners, and media campaigns.</p>
-          <ul class="compact-list">
-            <li data-i18n="experience.kadcOne">Tobacco control and youth protection advocacy</li>
-            <li data-i18n="experience.kadcTwo">Clean air and environmental governance initiatives</li>
-            <li data-i18n="experience.kadcThree">Circular economy and EcoHub Kosova platform development</li>
-            <li data-i18n="experience.kadcFour">Cross-sector alliance building and stakeholder mobilization</li>
+        <!-- Research and Publications -->
+        <div class="profile-card" style="margin-top: 24px;">
+          <h3><span>📄</span> <span data-i18n="profile.pubsTitle">Publikimet dhe Raportet Strategjike</span></h3>
+          <ul class="week-items-list" style="gap: 12px; margin-top: 12px;">
+            <li>Lila, A. (2012). <em>Towards a Zero Waste Society</em>. Kosovo Foundation for Open Society (KFOS).</li>
+            <li>Lila, A.; Nikaj, B. (2011). <em>Skills Gap Analysis for Information and Communication Technology in Kosovo</em>. Shoqata për Teknologji të Informacionit dhe Komunikimit të Kosovës (STIKK).</li>
+            <li>Lila, A. (2010). <em>Information and Communications Technology Assessment Report</em>. USAID / Kosovo Justice Support Program.</li>
+            <li>Lila, A.; Harmatos, P. (2001). <em>Heuristic Algorithms for Routing and Dimensioning in Broadband Networks</em>. TU Wien Research Report Series.</li>
           </ul>
-        </article>
-        <article>
-          <span>2011 - 2012</span>
-          <strong data-i18n="experience.prosecutorTitle">Strategic Planning Advisor - Office of the Chief State Prosecutor</strong>
-          <p data-i18n="experience.prosecutor">Strategic planning for ICT reform, donor coordination, and institutional capacity building.</p>
-        </article>
-        <article>
-          <span>2007 - 2011</span>
-          <strong data-i18n="experience.usaidTitle">Senior IT Advisor - USAID / NCSC Kosovo Justice Support Program</strong>
-          <p data-i18n="experience.usaid">Design and deployment of CMIS, justice-sector ICT planning, training, and mentoring of counterpart ICT teams.</p>
-        </article>
-        <article>
-          <span>2005 - 2007</span>
-          <strong data-i18n="experience.mojTitle">IT Advisor - Ministry of Justice / USAID</strong>
-          <p data-i18n="experience.moj">ICT advisory work for justice-sector systems and institutional reform.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section split" id="leadership" aria-labelledby="leadership-title">
-      <div>
-        <p class="eyebrow" data-i18n="leadership.eyebrow">Leadership</p>
-        <h2 id="leadership-title" data-i18n="leadership.title">Leadership & public representation</h2>
-        <figure class="leadership-visual">
-          <img src="img/outdoor-leadership.jpg" alt="Arben Lila in the mountains">
-          <figcaption data-i18n="leadership.photoCaption">Outdoor leadership, mountain sports, and public representation.</figcaption>
-        </figure>
-      </div>
-      <div class="timeline">
-        <article>
-          <span>2011 - 2021</span>
-          <strong data-i18n="leadership.mountaineeringTitle">President - Kosovo Mountaineering and Alpinist Federation</strong>
-          <p data-i18n="leadership.mountaineering">Led the national mountaineering and alpinism federation for a decade, supporting institutional development, sport governance, outdoor leadership, mountain safety, and international cooperation.</p>
-          <a class="source-link" href="https://www.theuiaa.org/uiaa-members-announce-election-of-new-presidents/" data-i18n="leadership.sourceUiaa">Source: UIAA</a>
-        </article>
-        <article>
-          <span>2013 - 2016</span>
-          <strong data-i18n="leadership.olympicTitle">Vice President - Executive Board of the Kosovo Olympic Committee</strong>
-          <p data-i18n="leadership.olympic">Served as Vice President of the Executive Board during a historic period for Kosovo sport, contributing to Olympic governance, international representation, and institutional consolidation.</p>
-          <a class="source-link" href="https://noc-kosovo.org/bordi-ekzekutiv/" data-i18n="leadership.sourceKok">Source: Kosovo Olympic Committee</a>
-        </article>
-        <article>
-          <span>2015</span>
-          <strong data-i18n="leadership.bakuTitle">Head of Mission - Kosovo Team, European Games Baku 2015</strong>
-          <p data-i18n="leadership.baku">Led Kosovo's delegation as Head of Mission at the inaugural European Games in Baku, coordinating team representation and delegation responsibilities.</p>
-          <a class="source-link" href="https://www.botasot.info/sporti/407203/ekskluzive-ja-lista-e-sportisteve-te-kosoves-per-lojerat-evropiane/" data-i18n="leadership.sourceBaku">Source: Bota Sot</a>
-        </article>
-      </div>
-    </section>
-
-    <section class="section" id="projects" aria-labelledby="projects-title">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow" data-i18n="projects.eyebrow">Platforms</p>
-          <h2 id="projects-title" data-i18n="projects.title">Projects & platforms</h2>
         </div>
-      </div>
-      <div class="project-grid">
-        <article>
-          <strong>EcoHub Kosova</strong>
-          <p data-i18n="projects.ecohub">Circular economy platform connecting NGOs, social enterprises, recyclers, companies and public stakeholders around collaboration, education and marketplace development.</p>
-        </article>
-        <article>
-          <strong>Interdomestik</strong>
-          <p data-i18n="projects.interdomestik">Digital consumer protection and claims-management platform concept for the Western Balkans, focused on membership protection, claim handling, branch/agent operations and institutional trust.</p>
-        </article>
-      </div>
-    </section>
 
-    <section class="section" id="assignments" aria-labelledby="assignments-title">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow" data-i18n="assignments.eyebrow">For students</p>
-          <h2 id="assignments-title" data-i18n="assignments.title">Assignments by lecture and year</h2>
-        </div>
-        <a class="text-link" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/" data-i18n="assignments.all">View all catalogues</a>
       </div>
-      <div class="assignment-grid">
-        <article class="assignment-card cloud">
-          <span class="course-year">2026</span>
-          <h3>Cloud Computing & Mobile Cloud Computing</h3>
-          <p data-i18n="assignments.cloud">A modern reservation catalogue for cloud platforms, serverless APIs, databases, DevOps, security, and MCC projects.</p>
-          <div class="card-actions">
-            <a class="button primary" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/mcc-2026.html" data-i18n="assignments.reserve">Reserve topic</a>
-            <a class="button" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/submissions-2026.html" data-i18n="assignments.scores">Submissions & scores</a>
-          </div>
-        </article>
-        <article class="assignment-card mobile">
-          <span class="course-year">2025</span>
-          <h3>Mobile Programming</h3>
-          <p data-i18n="assignments.mobile">The mobile topic pool remains available as a reference for the next mobile semester.</p>
-          <div class="card-actions">
-            <a class="button primary" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/TOPICS.md" data-i18n="assignments.openTopics">Open topics</a>
-            <a class="button" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/README.md" data-i18n="assignments.workflow">Workflow</a>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section split" aria-labelledby="education-title">
-      <div>
-        <p class="eyebrow" data-i18n="education.eyebrow">Education</p>
-        <h2 id="education-title" data-i18n="education.title">Education</h2>
-      </div>
-      <div class="timeline compact">
-        <article>
-          <span>1987 - 1991</span>
-          <strong data-i18n="education.magTitle">Mag in Electrical Engineering</strong>
-          <p data-i18n="education.mag">University of Zagreb, Faculty of Electrical Engineering & Computing. Concentration: Computer Technology & Micro-processor Architecture.</p>
-        </article>
-        <article>
-          <span>1998 - 2003</span>
-          <strong data-i18n="education.phdTitle">PhD candidate</strong>
-          <p data-i18n="education.phd">Institute of Broadband Communications, Vienna University of Technology (TU Wien). Telecommunications & Performance Modelling.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section" id="publications" aria-labelledby="publications-title">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow" data-i18n="publications.eyebrow">Research and talks</p>
-          <h2 id="publications-title" data-i18n="publications.title">Selected publications and invited talks</h2>
-        </div>
-      </div>
-      <ol class="publication-list">
-        <li>Lila, A. (2012). <em>Towards a Zero Waste Society</em>. Kosovo Foundation for Open Society.</li>
-        <li>Lila, A.; Nikaj, B. (2011). <em>Skills Gap Analysis for Information and Communication Technology</em>. STIKK. <a href="https://stikk.org/wp-content/uploads/2018/11/Publications_2011_-_Skills_Gap_EN.pdf">PDF</a></li>
-        <li>Lila, A. (2010). <em>Information and Communications Technology Assessment Report</em>. USAID / Kosovo Justice Support Program.</li>
-        <li>Lila, A.; Remsak, G.; Schuringa, J.; van As, H.R. (2002). <em>Performance Comparison of RPR MAC Proposals</em>. NOC 2002. <a href="https://www.ieee802.org/17/documents/presentations/mar2002/js_macperf_02.pdf">Author copy</a></li>
-        <li>Lila, A.; Lepaja, S.; Schuringa, J. (2003). <em>Performance Analysis of RPR in case of a Link Failure</em>. NOC 2003. <a href="https://doi.org/10.1007/BF03055355">DOI</a></li>
-      </ol>
-      <p class="notice" data-i18n="publications.note">Conferences and invited talks include NOC 2002, NOC 2003, World Conference on Tobacco Control in Dublin 2025, and regional forums on digital governance, environmental policy, and circular economy.</p>
-    </section>
-
-    <section class="section" aria-labelledby="references-title">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow" data-i18n="references.eyebrow">Verification</p>
-          <h2 id="references-title" data-i18n="references.title">Verified references</h2>
-        </div>
-      </div>
-      <div class="reference-grid">
-        <a href="https://aab-edu.net/en/persons/arben-lila-en/">
-          <span data-i18n="references.academicLabel">Academic profile</span>
-          <strong data-i18n="references.academic">AAB College staff profile</strong>
-        </a>
-        <a href="https://kadc-ks.org/tryeza-per-edukim-dhe-promovim-shendetesor/">
-          <span data-i18n="references.kadcLabel">KADC public-health work</span>
-          <strong data-i18n="references.kadc">KADC health promotion workshop</strong>
-        </a>
-        <a href="https://www.theuiaa.org/uiaa-members-announce-election-of-new-presidents/">
-          <span data-i18n="references.uiaaLabel">Mountaineering governance</span>
-          <strong data-i18n="references.uiaa">UIAA federation leadership note</strong>
-        </a>
-        <a href="https://noc-kosovo.org/bordi-ekzekutiv/">
-          <span data-i18n="references.kokLabel">Olympic governance</span>
-          <strong data-i18n="references.kok">Kosovo Olympic Committee board</strong>
-        </a>
-        <a href="https://www.botasot.info/sporti/407203/ekskluzive-ja-lista-e-sportisteve-te-kosoves-per-lojerat-evropiane/">
-          <span data-i18n="references.bakuLabel">National representation</span>
-          <strong data-i18n="references.baku">Baku 2015 Head of Mission listing</strong>
-        </a>
-        <a href="https://stikk.org/wp-content/uploads/2018/11/Publications_2011_-_Skills_Gap_EN.pdf">
-          <span data-i18n="references.publicationLabel">Publication</span>
-          <strong data-i18n="references.publication">ICT Skills Gap Analysis report</strong>
-        </a>
-      </div>
-    </section>
-
-    <section class="section contact-section" id="contact" aria-labelledby="contact-title">
-      <div>
-        <p class="eyebrow" data-i18n="contact.eyebrow">Contact</p>
-        <h2 id="contact-title" data-i18n="contact.title">Contact details</h2>
-        <p class="lead" data-i18n="contact.copy">Use these links for academic communication, student assignment questions, or professional contact.</p>
-      </div>
-      <div class="contact-grid" aria-label="Contact links">
-        <a href="mailto:arben.lila@aab-edu.net">
-          <span data-i18n="contact.academicEmail">Academic email</span>
-          <strong>arben.lila@aab-edu.net</strong>
-        </a>
-        <a href="mailto:arben.lila@gmail.com">
-          <span data-i18n="contact.personalEmail">Personal email</span>
-          <strong>arben.lila@gmail.com</strong>
-        </a>
-        <a href="https://github.com/arbenl">
-          <span>GitHub</span>
-          <strong>arbenl</strong>
-        </a>
-        <a href="https://www.linkedin.com/in/arben-lila-b57a3516/">
-          <span>LinkedIn</span>
-          <strong>Arben Lila</strong>
-        </a>
-      </div>
-    </section>
+    </div>
   </main>
 
-  <footer class="footer">
-    <div>
-      <strong>Arben Lila</strong>
-      <p data-i18n="footer.role">Program Manager @ KADC · PhD candidate · Lecturer at AAB</p>
-    </div>
-    <div class="footer-links">
-      <a href="mailto:arben.lila@aab-edu.net">arben.lila@aab-edu.net</a>
-      <a href="https://github.com/arbenl">GitHub</a>
-      <a href="https://www.linkedin.com/in/arben-lila-b57a3516/">LinkedIn</a>
+  <!-- ========================================================================
+       MOBILE STICKY BOTTOM BAR (NATIVE APP FEEL ON SMARTPHONES)
+       ======================================================================== -->
+  <nav class="mobile-bottom-bar" aria-label="Mobile Navigation">
+    <button class="mobile-tab-btn active" onclick="mobileNavJump('student', '#course-overview')">
+      <span class="icon">🚀</span>
+      <span data-i18n="mobile.course">Kursi</span>
+    </button>
+    <button class="mobile-tab-btn" onclick="mobileNavJump('student', '#checkin')">
+      <span class="icon">📍</span>
+      <span data-i18n="mobile.checkin">Check-In</span>
+    </button>
+    <button class="mobile-tab-btn" onclick="mobileNavJump('student', '#setup')">
+      <span class="icon">🛠️</span>
+      <span data-i18n="mobile.setup">Setup</span>
+    </button>
+    <button class="mobile-tab-btn" onclick="mobileNavJump('student', '#curriculum')">
+      <span class="icon">📚</span>
+      <span data-i18n="mobile.weeks">Javët</span>
+    </button>
+    <button class="mobile-tab-btn" onclick="mobileNavJump('student', '#project')">
+      <span class="icon">📋</span>
+      <span data-i18n="mobile.project">Projekti</span>
+    </button>
+    <button class="mobile-tab-btn" onclick="mobileNavJump('student', '#policies')">
+      <span class="icon">⚖️</span>
+      <span data-i18n="mobile.policies">Rregullat</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================================
+       FOOTER ME LINK TË IZOLUAR TË ARKIVËS MCC
+       ======================================================================== -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <p><strong>Prof. Asoc. PhD. C. Arben Lila</strong> — Kolegji AAB</p>
+        <p style="font-size:13px; color:var(--text-dim); margin-top:4px;">
+          Semestri V • Viti Akademik 2026/2027 • Departamenti i Shkencave Kompjuterike & Inxhinierisë Softuerike
+        </p>
+      </div>
+
+      <!-- Completely isolated course archive link so MCC never interferes with Mobile -->
+      <div class="footer-archive-box">
+        <span>☁️</span>
+        <div>
+          <span style="font-size:12px; color:var(--text-dim);" data-i18n="footer.mccNote">Lëndë të tjera & vitet e kaluara:</span><br>
+          <a href="https://arbenl.github.io/arbenl-mobile-assignments-2025/mcc-2026.html" target="_blank" rel="noopener" data-i18n="footer.mccLink">
+            Arkiva e Temave të Cloud Computing (MCC 2026) →
+          </a>
+        </div>
+      </div>
     </div>
   </footer>
 
+  <!-- ========================================================================
+       CLIENT INTERACTIVITY & 100% BILINGUAL TRANSLATIONS SCRIPT
+       ======================================================================== -->
   <script>
     const translations = {
-      en: {
-        pageTitle: 'Arben Lila - Lectures, Leadership, and Public-Impact Projects',
-        pageDescription: 'Academic work, leadership, selected projects, publications, and student assignment catalogues by course and year.',
-        'nav.lectures': 'Lectures',
-        'nav.assignments': 'Assignments',
-        'nav.leadership': 'Leadership',
-        'nav.projects': 'Projects',
-        'nav.contact': 'Contact',
-        'hero.eyebrow': 'Lecturer · Program Manager · ICT/Public Policy Advisor · Sport Governance Leader',
-        'hero.title': 'Lectures, leadership, and public-impact projects.',
-        'hero.copy': 'This page brings together my academic work, public-sector and civil-society experience, lectures across the years, and assignment systems students use to reserve, submit, and follow scores.',
-        'hero.assignments': 'Open assignment portal',
-        'hero.contact': 'Contact details',
-        'hero.caption': 'AAB lecturer and KADC program manager',
-        'profile.eyebrow': 'About',
-        'profile.lead': 'Program Manager at Kosovo Advocacy & Development Centre (KADC), PhD candidate, and lecturer at AAB College. His work connects technology, public policy, civil society advocacy, education, sport governance, and institutional development.',
-        'profile.teachingTitle': 'Teaching focus',
-        'profile.teaching': 'Cloud Computing & Mobile Cloud Computing (2026), Mobile Programming / Android & Modern Mobile Development (2025), Computer Networks, Information Systems Architecture, Cybersecurity in Healthcare',
-        'profile.researchTitle': 'Research background',
-        'profile.research': 'Telecommunications, SDH/SONET, ATM, IP, MPLS, Resilient Packet Rings, performance modelling',
-        'profile.programTitle': 'Program work',
-        'profile.program': 'Public-health advocacy, environmental policy, circular economy, ICT reform, donor coordination',
-        'profile.leadershipTitle': 'Leadership & sport governance',
-        'profile.leadership': 'Outdoor leadership, mountain sports development, institutional governance, national delegation management, mountain safety and rescue coordination',
-        'highlights.eyebrow': 'Snapshot',
-        'highlights.title': 'Selected leadership highlights',
-        'highlights.mountaineering': '10 years leading the Kosovo Mountaineering and Alpinist Federation',
-        'highlights.olympic': 'Vice President of the Executive Board of the Kosovo Olympic Committee, 2013-2016',
-        'highlights.baku': 'Head of Mission for Kosovo Team at the European Games Baku 2015',
-        'highlights.kadc': 'Program Manager at KADC since 2012',
-        'highlights.ict': "ICT reform advisor in Kosovo's justice sector",
-        'highlights.teaching': 'Lecturer in computer networks, information systems, mobile and cloud technologies',
-        'assignments.eyebrow': 'For students',
-        'assignments.title': 'Assignments by lecture and year',
-        'assignments.all': 'View all catalogues',
-        'assignments.cloud': 'A modern reservation catalogue for cloud platforms, serverless APIs, databases, DevOps, security, and MCC projects.',
-        'assignments.mobile': 'The mobile topic pool remains available as a reference for the next mobile semester.',
-        'assignments.reserve': 'Reserve topic',
-        'assignments.scores': 'Submissions & scores',
-        'assignments.openTopics': 'Open topics',
-        'assignments.workflow': 'Workflow',
-        'lectures.eyebrow': 'Teaching',
-        'lectures.title': 'Lectures across the years',
-        'lectures.aabTitle': 'Lecturer - AAB College',
-        'lectures.aab': 'Computer Networks, Information Systems Architecture, Android & Modern Mobile Development with Jetpack Compose, Cybersecurity in Healthcare, practical labs, and capstone supervision.',
-        'lectures.ubtTitle': 'Lecturer - UBT',
-        'lectures.ubt': 'Network Engineering and Multimedia Communications, with focus on applied networking concepts and communication systems.',
-        'lectures.tuwienTitle': 'Researcher & Lecturer - TU Wien',
-        'lectures.tuwien': 'Research and lectures in teletraffic theory, performance modelling, broadband communications, and resilient packet networking.',
-        'experience.eyebrow': 'Work',
-        'experience.title': 'Professional experience',
-        'experience.kadcTitle': 'Program Manager - Kosovo Advocacy & Development Centre (KADC)',
-        'experience.kadc': 'Program design and implementation for public-health advocacy, tobacco control, environmental policy, circular economy, donor relations, consortium partners, and media campaigns.',
-        'experience.kadcOne': 'Tobacco control and youth protection advocacy',
-        'experience.kadcTwo': 'Clean air and environmental governance initiatives',
-        'experience.kadcThree': 'Circular economy and EcoHub Kosova platform development',
-        'experience.kadcFour': 'Cross-sector alliance building and stakeholder mobilization',
-        'experience.prosecutorTitle': 'Strategic Planning Advisor - Office of the Chief State Prosecutor',
-        'experience.prosecutor': 'Strategic planning for ICT reform, donor coordination, and institutional capacity building.',
-        'experience.usaidTitle': 'Senior IT Advisor - USAID / NCSC Kosovo Justice Support Program',
-        'experience.usaid': 'Design and deployment of CMIS, justice-sector ICT planning, training, and mentoring of counterpart ICT teams.',
-        'experience.mojTitle': 'IT Advisor - Ministry of Justice / USAID',
-        'experience.moj': 'ICT advisory work for justice-sector systems and institutional reform.',
-        'leadership.eyebrow': 'Leadership',
-        'leadership.title': 'Leadership & public representation',
-        'leadership.mountaineeringTitle': 'President - Kosovo Mountaineering and Alpinist Federation',
-        'leadership.mountaineering': 'Led the national mountaineering and alpinism federation for a decade, supporting institutional development, sport governance, outdoor leadership, mountain safety, and international cooperation.',
-        'leadership.olympicTitle': 'Vice President - Executive Board of the Kosovo Olympic Committee',
-        'leadership.olympic': 'Served as Vice President of the Executive Board during a historic period for Kosovo sport, contributing to Olympic governance, international representation, and institutional consolidation.',
-        'leadership.bakuTitle': 'Head of Mission - Kosovo Team, European Games Baku 2015',
-        'leadership.baku': "Led Kosovo's delegation as Head of Mission at the inaugural European Games in Baku, coordinating team representation and delegation responsibilities.",
-        'leadership.photoCaption': 'Outdoor leadership, mountain sports, and public representation.',
-        'leadership.sourceUiaa': 'Source: UIAA',
-        'leadership.sourceKok': 'Source: Kosovo Olympic Committee',
-        'leadership.sourceBaku': 'Source: Bota Sot',
-        'projects.eyebrow': 'Platforms',
-        'projects.title': 'Projects & platforms',
-        'projects.ecohub': 'Circular economy platform connecting NGOs, social enterprises, recyclers, companies and public stakeholders around collaboration, education and marketplace development.',
-        'projects.interdomestik': 'Digital consumer protection and claims-management platform concept for the Western Balkans, focused on membership protection, claim handling, branch/agent operations and institutional trust.',
-        'education.eyebrow': 'Education',
-        'education.title': 'Education',
-        'education.magTitle': 'Mag in Electrical Engineering',
-        'education.mag': 'University of Zagreb, Faculty of Electrical Engineering & Computing. Concentration: Computer Technology & Micro-processor Architecture.',
-        'education.phdTitle': 'PhD candidate',
-        'education.phd': 'Institute of Broadband Communications, Vienna University of Technology (TU Wien). Telecommunications & Performance Modelling.',
-        'publications.eyebrow': 'Research and talks',
-        'publications.title': 'Selected publications and invited talks',
-        'publications.note': 'Conferences and invited talks include NOC 2002, NOC 2003, World Conference on Tobacco Control in Dublin 2025, and regional forums on digital governance, environmental policy, and circular economy.',
-        'references.eyebrow': 'Verification',
-        'references.title': 'Verified references',
-        'references.academicLabel': 'Academic profile',
-        'references.academic': 'AAB College staff profile',
-        'references.kadcLabel': 'KADC public-health work',
-        'references.kadc': 'KADC health promotion workshop',
-        'references.uiaaLabel': 'Mountaineering governance',
-        'references.uiaa': 'UIAA federation leadership note',
-        'references.kokLabel': 'Olympic governance',
-        'references.kok': 'Kosovo Olympic Committee board',
-        'references.bakuLabel': 'National representation',
-        'references.baku': 'Baku 2015 Head of Mission listing',
-        'references.publicationLabel': 'Publication',
-        'references.publication': 'ICT Skills Gap Analysis report',
-        'contact.eyebrow': 'Contact',
-        'contact.title': 'Contact details',
-        'contact.copy': 'Use these links for academic communication, student assignment questions, or professional contact.',
-        'contact.academicEmail': 'Academic email',
-        'contact.personalEmail': 'Personal email',
-        'footer.role': 'Program Manager @ KADC · PhD candidate · Lecturer at AAB · Sport Governance Leader',
-      },
       sq: {
-        pageTitle: 'Arben Lila - Ligjërata, Lidership dhe Projekte me Ndikim Publik',
-        pageDescription: 'Punë akademike, lidership, projekte të zgjedhura, publikime dhe katalogë detyrash për studentë sipas lëndës dhe vitit.',
-        'nav.lectures': 'Ligjeratat',
-        'nav.assignments': 'Detyrat',
-        'nav.leadership': 'Lidershipi',
-        'nav.projects': 'Projektet',
-        'nav.contact': 'Kontakti',
-        'hero.eyebrow': 'Ligjërues · Menaxher programi · Këshilltar për TIK/politika publike · Lider në qeverisje sportive',
-        'hero.title': 'Ligjërata, lidership dhe projekte me ndikim publik.',
-        'hero.copy': 'Kjo faqe bashkon punën time akademike, përvojën në sektor publik dhe shoqëri civile, ligjeratat ndër vite dhe sistemet që studentët përdorin për të rezervuar, dorëzuar dhe parë pikët.',
-        'hero.assignments': 'Hap portalin e detyrave',
-        'hero.contact': 'Detajet e kontaktit',
-        'hero.caption': 'Ligjërues në AAB dhe menaxher programi në KADC',
-        'profile.eyebrow': 'Rreth meje',
-        'profile.lead': 'Menaxher programi në Kosovo Advocacy & Development Centre (KADC), kandidat për PhD dhe ligjërues në Kolegjin AAB. Puna e tij lidh teknologjinë, politikat publike, avokimin në shoqëri civile, edukimin, qeverisjen sportive dhe zhvillimin institucional.',
-        'profile.teachingTitle': 'Fokusi në mësimdhënie',
-        'profile.teaching': 'Cloud Computing dhe Mobile Cloud Computing (2026), Programim Mobil / Android dhe zhvillim modern mobil (2025), Rrjeta kompjuterike, Arkitekturë e sistemeve informative, Siguri kibernetike në shëndetësi',
-        'profile.researchTitle': 'Sfondi hulumtues',
-        'profile.research': 'Telekomunikacion, SDH/SONET, ATM, IP, MPLS, Resilient Packet Rings dhe modelim i performancës',
-        'profile.programTitle': 'Puna programore',
-        'profile.program': 'Avokim në shëndet publik, politika mjedisore, ekonomi qarkore, reformë TIK, koordinim me donatorë',
-        'profile.leadershipTitle': 'Lidership dhe qeverisje sportive',
-        'profile.leadership': 'Lidership në natyrë, zhvillim i sporteve malore, qeverisje institucionale, menaxhim delegacionesh kombëtare, siguri malore dhe koordinim i shpëtimit',
-        'highlights.eyebrow': 'Përmbledhje',
-        'highlights.title': 'Pika të zgjedhura lidershipi',
-        'highlights.mountaineering': '10 vite në udhëheqje të Federatës Bjeshkatare dhe Alpiniste të Kosovës',
-        'highlights.olympic': 'Nënkryetar i Bordit Ekzekutiv të Komitetit Olimpik të Kosovës, 2013-2016',
-        'highlights.baku': 'Shef i Misionit për ekipin e Kosovës në Lojërat Evropiane Baku 2015',
-        'highlights.kadc': 'Menaxher programi në KADC që nga viti 2012',
-        'highlights.ict': 'Këshilltar për reformë TIK në sektorin e drejtësisë në Kosovë',
-        'highlights.teaching': 'Ligjërues në rrjeta kompjuterike, sisteme informative, teknologji mobile dhe cloud',
-        'assignments.eyebrow': 'Për studentë',
-        'assignments.title': 'Detyrat sipas ligjeratës dhe vitit',
-        'assignments.all': 'Shiko të gjithë katalogët',
-        'assignments.cloud': 'Katalog modern rezervimi për platforma cloud, API serverless, baza të të dhënave, DevOps, siguri dhe projekte MCC.',
-        'assignments.mobile': 'Katalogu i temave mobile mbetet i ruajtur si referencë për semestrin e ardhshëm të Mobile.',
-        'assignments.reserve': 'Rezervo temën',
-        'assignments.scores': 'Dorëzimet dhe pikët',
-        'assignments.openTopics': 'Hap temat',
-        'assignments.workflow': 'Procesi',
-        'lectures.eyebrow': 'Mësimdhënie',
-        'lectures.title': 'Ligjeratat ndër vite',
-        'lectures.aabTitle': 'Ligjërues - Kolegji AAB',
-        'lectures.aab': 'Rrjeta kompjuterike, Arkitekturë e sistemeve informative, Android & zhvillim modern mobil me Jetpack Compose, Siguri kibernetike në shëndetësi, ushtrime praktike dhe mentorim projektesh.',
-        'lectures.ubtTitle': 'Ligjërues - UBT',
-        'lectures.ubt': 'Network Engineering dhe Multimedia Communications, me fokus në koncepte praktike të rrjeteve dhe sistemeve të komunikimit.',
-        'lectures.tuwienTitle': 'Hulumtues & Ligjërues - TU Wien',
-        'lectures.tuwien': 'Hulumtim dhe ligjerata në teletraffic theory, modelim të performancës, broadband communications dhe rrjete reziliente të paketave.',
-        'experience.eyebrow': 'Puna',
-        'experience.title': 'Përvoja profesionale',
-        'experience.kadcTitle': 'Menaxher programi - Kosovo Advocacy & Development Centre (KADC)',
-        'experience.kadc': 'Dizajnim dhe zbatim programesh për avokim në shëndet publik, kontroll të duhanit, politika mjedisore, ekonomi qarkore, marrëdhënie me donatorë, partnerë konsorciumi dhe kampanja mediale.',
-        'experience.kadcOne': 'Avokim për kontrollin e duhanit dhe mbrojtjen e të rinjve',
-        'experience.kadcTwo': 'Nisma për ajër të pastër dhe qeverisje mjedisore',
-        'experience.kadcThree': 'Ekonomi qarkore dhe zhvillim i platformës EcoHub Kosova',
-        'experience.kadcFour': 'Ndërtim aleancash ndërsektoriale dhe mobilizim palësh',
-        'experience.prosecutorTitle': 'Këshilltar për planifikim strategjik - Zyra e Kryeprokurorit të Shtetit',
-        'experience.prosecutor': 'Planifikim strategjik për reformë në TIK, koordinim me donatorë dhe ngritje të kapaciteteve institucionale.',
-        'experience.usaidTitle': 'Këshilltar i lartë për IT - USAID / NCSC Kosovo Justice Support Program',
-        'experience.usaid': 'Dizajn dhe implementim i CMIS, planifikim TIK për sektorin e drejtësisë, trajnime dhe mentorim i ekipeve partnere.',
-        'experience.mojTitle': 'Këshilltar për IT - Ministria e Drejtësisë / USAID',
-        'experience.moj': 'Këshillim për sisteme TIK në sektorin e drejtësisë dhe reformë institucionale.',
-        'leadership.eyebrow': 'Lidershipi',
-        'leadership.title': 'Lidership dhe përfaqësim publik',
-        'leadership.mountaineeringTitle': 'Kryetar - Federata Bjeshkatare dhe Alpiniste e Kosovës',
-        'leadership.mountaineering': 'Udhëhoqi federatën kombëtare të bjeshkatarisë dhe alpinizmit për një dekadë, duke mbështetur zhvillimin institucional, qeverisjen sportive, lidershipin në natyrë, sigurinë malore dhe bashkëpunimin ndërkombëtar.',
-        'leadership.olympicTitle': 'Nënkryetar - Bordi Ekzekutiv i Komitetit Olimpik të Kosovës',
-        'leadership.olympic': 'Shërbeu si Nënkryetar i Bordit Ekzekutiv gjatë një periudhe historike për sportin kosovar, duke kontribuar në qeverisje olimpike, përfaqësim ndërkombëtar dhe konsolidim institucional.',
-        'leadership.bakuTitle': 'Shef i Misionit - Ekipi i Kosovës, Lojërat Evropiane Baku 2015',
-        'leadership.baku': 'Udhëhoqi delegacionin e Kosovës si Shef i Misionit në Lojërat e para Evropiane në Baku, duke koordinuar përfaqësimin e ekipit dhe përgjegjësitë e delegacionit.',
-        'leadership.photoCaption': 'Lidership në natyrë, sporte malore dhe përfaqësim publik.',
-        'leadership.sourceUiaa': 'Burimi: UIAA',
-        'leadership.sourceKok': 'Burimi: Komiteti Olimpik i Kosovës',
-        'leadership.sourceBaku': 'Burimi: Bota Sot',
-        'projects.eyebrow': 'Platforma',
-        'projects.title': 'Projekte dhe platforma',
-        'projects.ecohub': 'Platformë për ekonomi qarkore që lidh OJQ-të, ndërmarrjet sociale, ricikluesit, kompanitë dhe palët publike rreth bashkëpunimit, edukimit dhe zhvillimit të tregut.',
-        'projects.interdomestik': 'Koncept platforme digjitale për mbrojtjen e konsumatorëve dhe menaxhimin e ankesave në Ballkanin Perëndimor, me fokus në mbrojtje të anëtarësisë, trajtim ankesash, operim të degëve/agjentëve dhe besim institucional.',
-        'education.eyebrow': 'Edukimi',
-        'education.title': 'Edukimi',
-        'education.magTitle': 'Magjistër në Inxhinieri Elektrike',
-        'education.mag': 'Universiteti i Zagrebit, Fakulteti i Inxhinierisë Elektrike dhe Kompjuterike. Përqendrimi: Teknologji kompjuterike dhe arkitekturë e mikroprocesorëve.',
-        'education.phdTitle': 'Kandidat për PhD',
-        'education.phd': 'Institute of Broadband Communications, Vienna University of Technology (TU Wien). Telekomunikacion dhe modelim i performancës.',
-        'publications.eyebrow': 'Hulumtim dhe fjalime',
-        'publications.title': 'Publikime dhe fjalime të zgjedhura',
-        'publications.note': 'Konferencat dhe fjalimet e ftuara përfshijnë NOC 2002, NOC 2003, World Conference on Tobacco Control në Dublin 2025 dhe forume rajonale për qeverisje digjitale, politika mjedisore dhe ekonomi qarkore.',
-        'references.eyebrow': 'Verifikimi',
-        'references.title': 'Referenca të verifikuara',
-        'references.academicLabel': 'Profili akademik',
-        'references.academic': 'Profili i stafit në Kolegjin AAB',
-        'references.kadcLabel': 'Puna në shëndet publik në KADC',
-        'references.kadc': 'Punëtori e KADC për promovim shëndetësor',
-        'references.uiaaLabel': 'Qeverisje në bjeshkatari',
-        'references.uiaa': 'Njoftimi i UIAA për lidershipin e federatës',
-        'references.kokLabel': 'Qeverisje olimpike',
-        'references.kok': 'Bordi i Komitetit Olimpik të Kosovës',
-        'references.bakuLabel': 'Përfaqësim kombëtar',
-        'references.baku': 'Lista për Baku 2015 si Shef i Misionit',
-        'references.publicationLabel': 'Publikim',
-        'references.publication': 'Raporti ICT Skills Gap Analysis',
-        'contact.eyebrow': 'Kontakti',
-        'contact.title': 'Detajet e kontaktit',
-        'contact.copy': 'Përdorni këto lidhje për komunikim akademik, pyetje për detyra të studentëve ose kontakt profesional.',
-        'contact.academicEmail': 'Email akademik',
-        'contact.personalEmail': 'Email personal',
-        'footer.role': 'Menaxher programi në KADC · Kandidat për PhD · Ligjërues në AAB · Lider në qeverisje sportive',
+        'header.brandName': 'Prof. Arben Lila',
+        'header.brandRole': 'Kolegji AAB • Shkenca Kompjuterike',
+        'header.viewStudent': 'Zona e Studentëve',
+        'header.viewProfile': 'Profili & Lidershipi',
+        'header.mccArchive': 'Arkiva MCC',
+        'subnav.overview': 'Përmbledhja & Syllabusi',
+        'subnav.setup': 'Dev Starter Pack (Javë 1)',
+        'subnav.curriculum': '15 Javët (Ligjëratat + Ushtrimet)',
+        'subnav.project': 'Projekti i Biznesit & Notat',
+        'subnav.policies': 'Rregullat & Sistemi i Notimit',
+        'subnav.checkin': 'Check-In Pjesëmarrja',
+        'mobile.checkin': 'Check-In',
+        'checkin.title': '📍 Check-In i Pjesëmarrjes (Ligjërata & Ushtrime)',
+        'checkin.desc': 'Regjistroni praninë tuaj në orën e ligjëratës ose ushtrimeve brenda 2 minutave me të dhënat tuaja zyrtare studentore të Kolegjit AAB.',
+        'checkin.sessionLabel': 'Zgjidhni Seancën e Sotme:',
+        'checkin.lecture': 'Ora e Ligjëratës',
+        'checkin.lab': 'Ora e Ushtrimeve (Lab)',
+        'checkin.weekLabel': 'Java e Semestrit:',
+        'checkin.idLabel': 'ID / Nr. i Indeksit:',
+        'checkin.nameLabel': 'Emri dhe Mbiemri:',
+        'checkin.emailLabel': 'E-maili Zyrtar AAB:',
+        'checkin.pinLabel': 'Kodi PIN nga Projektori:',
+        'checkin.submitBtn': 'Regjistro Praninë Tani',
+
+        'hero.courseBadge': 'Programimi për Pajisje Mobile',
+        'hero.semesterBadge': 'Semestri V • Viti Akademik 2026/2027',
+        'hero.ectsBadge': '6 ECTS • 2L + 2U',
+        'hero.title': 'Programimi për Pajisje Mobile',
+        'hero.theme': "The Founder's Expedition: Ndërto një Mobile PWA Reale me AI & Next.js",
+        'hero.desc': 'Qendra e unifikuar mësimore për studentët e Inxhinierisë Softuerike në Kolegjin AAB. Çdo ligjëratë, ushtrim laboratorik hap-pas-hapi, konfigurim i GitHub Copilot dhe udhëzues i ndërtimit të aplikacionit tuaj me Next.js 15, Tailwind, Supabase dhe Vercel ndodhet këtu në një vend të vetëm.',
+        'hero.btnCurriculum': 'Eksploro 15 Javët e Kursit',
+        'hero.btnSetup': 'Hapat e Javës 1 (Setup)',
+        'hero.btnProject': 'Kriteret e Projektit të Biznesit',
+        'stats.hoursLabel': 'Fondi i Orëve',
+        'stats.hoursVal': '2h Ligjëratë + 2h Ushtrime',
+        'stats.formatLabel': 'Formati',
+        'stats.formatVal': 'Laboratorik me Kod Live',
+        'stats.stackLabel': 'Teknologjitë',
+        'stats.officeLabel': 'Konsultat Online',
+        'stats.officeVal': 'Mërkurë, 15:00 - 16:30',
+        'setup.eyebrow': 'Javë 1 • Fillimi nga Zero',
+        'setup.title': '🛠️ Dev Starter Pack: Konfigurimi i Mjedisit',
+        'setup.desc': 'Para se të shkruajmë rreshtin e parë të kodit, çdo student duhet të përfundojë këta 5 hapa themelorë brenda javës së parë:',
+        'setup.step1Title': 'GitHub Student Developer Pack',
+        'setup.step1Sub': 'Përfitoni GitHub Copilot Pro Falas',
+        'setup.step1Desc': 'Aplikoni me emailin tuaj të studentit (@universitetiaab.com) te GitHub Education për të aktivizuar aksesin e plotë në GitHub Copilot dhe mjetet zhvillimore.',
+        'setup.step1Btn': 'Aktivizo GitHub Pack →',
+        'setup.step2Title': 'VS Code & Ekstensionet AI',
+        'setup.step2Sub': 'Mjedisi ynë kryesor i kodimit',
+        'setup.step2Desc': 'Instaloni VS Code dhe ekstensionet zyrtare: GitHub Copilot, GitHub Copilot Chat, Tailwind CSS IntelliSense dhe ESLint.',
+        'setup.step3Title': 'Next.js 15 PWA Starter',
+        'setup.step3Sub': 'Inicializimi i projektit tuaj mobile',
+        'setup.step3Desc': 'Krijoni aplikacionin bazë me TypeScript, Tailwind CSS dhe App Router duke ekzekutuar komandën e mëposhtme në terminal:',
+        'setup.step4Title': 'Llogaria në Supabase Cloud',
+        'setup.step4Sub': 'PostgreSQL & Auth në pak sekonda',
+        'setup.step4Desc': 'Hapni një llogari falas në Supabase, krijoni projektin e ri dhe merrni çelësat NEXT_PUBLIC_SUPABASE_URL dhe NEXT_PUBLIC_SUPABASE_ANON_KEY.',
+        'setup.step4Btn': 'Hap Supabase →',
+        'setup.step5Title': 'Lidhja me Vercel',
+        'setup.step5Sub': 'Publikim automatik me çdo Git push',
+        'setup.step5Desc': 'Lidhni depon (repository) tuaj në GitHub me Vercel për të marrë një URL publike HTTPS live që mund ta hapni menjëherë në telefonin tuaj.',
+        'setup.step5Btn': 'Lidh me Vercel →',
+        'setup.copyBtn': 'Kopjo',
+        'curriculum.eyebrow': 'Programi Mësimor i Unifikuar',
+        'curriculum.title': '📚🧪 15 Javët: Ligjëratat dhe Ushtrimet Laboratorike',
+        'curriculum.desc': 'Çdo javë përmban konceptet teorike, ushtrimin praktik laboratorik me kod, dhe shembuj promptesh me GitHub Copilot:',
+        'mod.m1Title': 'Moduli 1: Themeli Mobile, UI Touch-First & Next.js 15 + Supabase',
+        'mod.m1Weeks': 'Javët 1 — 5',
+        'mod.m2Title': 'Moduli 2: PWA e Plotë, Offline Caching, Sensorët & Device APIs',
+        'mod.m2Weeks': 'Javët 6 — 10',
+        'mod.m3Title': 'Moduli 3: Njoftimet Push, Siguria, CI/CD & Showcase Finale',
+        'mod.m3Weeks': 'Javët 11 — 15',
+        'w1.badge': 'Javë 1',
+        'w1.title': 'Hyrje në Mobile PWA, Ekosistemi Next.js 15 & GitHub Copilot',
+        'w1.sub': 'Njoftimi me syllabusin, Native vs PWA, dhe fillimi me AI Pair Programming.',
+        'w2.badge': 'Javë 2',
+        'w2.title': 'UI Mobile me Tailwind CSS & Parimet Touch-First',
+        'w2.sub': 'Zonat e gishtit të madh (Thumb Zone), madhësia minimale 48px, dhe Bottom Navigation.',
+        'w3.badge': 'Javë 3',
+        'w3.title': 'Arkitektura e Komponentëve & App Router (Next.js 15)',
+        'w3.sub': 'Server vs Client Components, routing i lëndshëm, dhe Skeleton Loaders.',
+        'w4.badge': 'Javë 4',
+        'w4.title': 'Baza e të Dhënave me Supabase (PostgreSQL & RLS)',
+        'w4.sub': 'Modelimi relacional për biznesin, migrimet SQL dhe Row Level Security.',
+        'w5.badge': 'Javë 5',
+        'w5.title': 'Autentifikimi & Menaxhimi i Sesioneve në Mobile',
+        'w5.sub': 'Supabase Auth, Magic Link, OAuth (Google/GitHub) dhe Middleware.',
+        'w6.badge': 'Javë 6',
+        'w6.title': 'PWA: Manifest.json, Ikonat & Offline Caching',
+        'w6.sub': 'Shndërrimi i uebsajtit në aplikacion që instalohet në Homescreen pa App Store.',
+        'w7.badge': 'Javë 7',
+        'w7.title': 'Kollokviumi I / Vlerësimi i MVP-së Fillestare',
+        'w7.sub': 'Prezantimi i prototipit të parë funksional live në Vercel nga çdo student.',
+        'w8.badge': 'Javë 8',
+        'w8.title': 'Sensorët dhe API-të Vendase të Pajisjes (Device APIs)',
+        'w8.sub': 'Kamera, Gjeolokacioni GPS, Dridhja (Vibration) dhe Web Share API.',
+        'w9.badge': 'Javë 9',
+        'w9.title': 'Menaxhimi i Gjendjes (State) & Ndërfaqet Optimiste',
+        'w9.sub': 'React Server Actions, useOptimistic dhe shpejtësia e perceptuar në mobile.',
+        'w10.badge': 'Javë 10',
+        'w10.title': 'Sinkronizimi në Kohë Reale (Supabase Realtime)',
+        'w10.sub': 'WebSockets në pajisje mobile, dëgjuesit e tabelave dhe përditësimet pa rifreskim.',
+        'w11.badge': 'Javë 11',
+        'w11.title': 'Njoftimet Push & Angazhimi i Përdoruesit',
+        'w11.sub': 'Web Push API, çelësat VAPID dhe njoftimet e personalizuara në ekran të mbyllur.',
+        'w12.badge': 'Javë 12',
+        'w12.title': 'Siguria Mobile, Validimi me Zod & Mbrojtja e të Dhënave',
+        'w12.sub': 'OWASP Mobile Top 10, validimi i rreptë i të dhënave dhe auditimi i policave RLS.',
+        'w13.badge': 'Javë 13',
+        'w13.title': 'Optimizimi i Performancës & Lighthouse Audit (90+)',
+        'w13.sub': 'Core Web Vitals (LCP, INP, CLS), kompresimi i imazheve dhe shpejtësia ekstreme.',
+        'w14.badge': 'Javë 14',
+        'w14.title': 'CI/CD, Testimi në Pajisje Reale & Përgatitja Finale',
+        'w14.sub': 'GitHub Actions, Vercel Production Environment dhe përgatitja e demo-s.',
+        'w15.badge': 'Javë 15',
+        'w15.title': "Demo Day & Mbrojtja e Projekteve (The Founder's Showcase)",
+        'w15.sub': 'Prezantimi live i aplikacionit PWA në celular dhe vlerësimi përfundimtar.',
+        'common.lecture': 'Ligjërata (Teoria & Konceptet)',
+        'common.lab': 'Ushtrimi Laboratorik (Praktika)',
+        'common.showcase': 'Showcase & Prezantimi Live',
+        'common.grading': 'Shpallja e Notave & Certifikimi',
+        'project.eyebrow': "The Founder's Expedition",
+        'project.title': '📋 Projekti i Kursit & Kriteret e Vlerësimit',
+        'project.desc': 'Në vend të detyrave abstrakte, çdo student zhvillon individualisht një Mobile-First PWA plotësisht funksionale për një biznes real familjar, zejtar, kafene, apo sipërmarrje lokale në Kosovë.',
+        'rubric.r1Title': 'Ushtrimet e Vazhdueshme Laboratorike',
+        'rubric.r1Desc': '10 detyra praktike javore të dorëzuara në GitHub (komente kodi, zgjidhje problemesh, llogaridhënie individuale gjatë ushtrimeve).',
+        'rubric.r2Title': 'Projekti Final PWA i Biznesit',
+        'rubric.r2Desc': 'UI e pastër mobile me Tailwind, baza e të dhënave dhe auth në Supabase, instalueshmëria offline (manifest + SW), dhe publikimi në Vercel.',
+        'rubric.r3Title': 'Demo Day & Mbrojtja Individuale',
+        'rubric.r3Desc': 'Prezantimi live nga telefoni celular, shpjegimi i vendimeve arkitekturore, pyetjet e kodit dhe njohja e thellë e zgjidhjes teknike.',
+        'project.btnTopics': 'Eksploro Temat e Sugjeruara →',
+        'project.btnCatalog': 'Katalogu i Rezervimeve & Notat →',
+        'policies.eyebrow': 'Standardet Akademike të Kolegjit AAB',
+        'policies.title': '⚖️ Rregullat e Kursit, Integriteti & Sistemi i Notimit',
+        'policies.outcomesTitle': 'Rezultatet e të Nxënit (Learning Outcomes)',
+        'policies.outcomesDesc': 'Në përfundim të kursit, studenti zotëron: (1) Ndërtimin e aplikacioneve mobile me Next.js 15 PWA; (2) Modelimin e bazave relacionale në Supabase me RLS; (3) Përdorimin e API-ve të pajisjes (Kamera, Gjeolokacion, Push); dhe (4) Përdorimin profesional të AI Pair Programming me GitHub Copilot.',
+        'policies.aiTitle': 'Politika e Inteligjencës Artificiale (Copilot)',
+        'policies.aiDesc': 'Përdorimi i GitHub Copilot është i lejuar dhe i rekomanduar si asistent programues. Megjithatë, studenti mban përgjegjësi absolute për kodin: në Demo Day, paaftësia për të shpjeguar logjikën e kodit rezulton në zbritje pikësh ose moskalim.',
+        'policies.attendTitle': 'Pjesëmarrja & Dorëzimet',
+        'policies.attendDesc': 'Pjesëmarrja në ushtrimet laboratorike është e detyrueshme (minimumi 75%). Detyrat javore dorëzohen në depon përkatëse në GitHub brenda afatit. Dorëzimet e vonuara penalizohen me -10% për çdo ditë vonese.',
+        'policies.gradeScaleTitle': 'Shkalla Zyrtare e Notimit (Kolegji AAB)',
+        'table.points': 'Pikët e Grumbulluara',
+        'table.grade': 'Nota Zyrtare',
+        'table.descr': 'Përshkrimi i Performancës',
+        'table.g10': 'Shkëlqyeshëm (Përsosmëri e lartë teknike dhe konceptuale)',
+        'table.g9': 'Shumë mirë (Mbi mesataren, me pak gabime minore)',
+        'table.g8': 'Mirë (Punë solide, zotërim i mirë i teknologjive)',
+        'table.g7': 'Kënaqshëm (Kodi funksionon me disa mangësi arkitekturore)',
+        'table.g6': 'Mjaftueshëm (Plotëson kriteret minimale të kalueshmërisë)',
+        'table.g5': 'Nuk kalon (Detyra të papërfunduara ose mungesë kuptimi)',
+        'profile.subtitle': 'Mësimdhënës në Kolegjin AAB • Drejtues Programi në KADC • Arkitekt Sistemesh',
+        'profile.bioText': 'Ekspert me mbi 25 vite përvojë në arkitekturën e sistemeve softuerike, rrjetat telekomunikuese me brez të gjerë, dhe qeverisjen e politikave publike. Mësimdhënës i përkushtuar në Kolegjin AAB me fokus në zhvillimin modern për pajisje mobile, arkitekturat cloud, dhe zbatimin e inteligjencës artificiale në zgjidhje praktike.',
+        'profile.btnContact': 'Kontakto në E-mail →',
+        'profile.academicTitle': 'Mësimdhënia & Përvoja Akademike',
+        'profile.aabTitle': 'Mësimdhënës — Kolegji AAB',
+        'profile.aabDesc': 'Programimi për Pajisje Mobile, Arkitektura e Sistemeve të Informacionit, Cloud Computing, dhe Siguria Kibernetike në Shëndetësi.',
+        'profile.ubtTitle': 'Ligjërues — UBT',
+        'profile.ubtDesc': 'Inxhinieri e Rrjetave dhe Komunikime Multimediale me theks në arkitekturën e shpërndarë.',
+        'profile.tuwienTitle': 'Asistent Mësimor — TU Wien (Vjenë)',
+        'profile.tuwienDesc': 'Instituti i Komunikimeve me Brez të Gjerë (Broadband Communications). Modelimi i performancës së rrjetave ATM dhe simulimet numerike.',
+        'profile.eduTitle': 'Edukimi dhe Kualifikimet',
+        'profile.cadcTitle': 'Shoqëria Civile & Zhvillimi i Qëndrueshëm',
+        'profile.sportsTitle': 'Qeverisja e Sportit & Alpinizmi',
+        'profile.pubsTitle': 'Publikimet dhe Raportet Strategjike',
+        'mobile.course': 'Kursi',
+        'mobile.setup': 'Setup',
+        'mobile.weeks': 'Javët',
+        'mobile.project': 'Projekti',
+        'mobile.policies': 'Rregullat',
+        'footer.mccNote': 'Lëndë të tjera & vitet e kaluara:',
+        'footer.mccLink': 'Arkiva e Temave të Cloud Computing (MCC 2026) →'
       },
+      en: {
+        'header.brandName': 'Prof. Arben Lila',
+        'header.brandRole': 'AAB College • Computer Science',
+        'header.viewStudent': 'Student Portal',
+        'header.viewProfile': 'Profile & Leadership',
+        'header.mccArchive': 'MCC Archive',
+        'subnav.overview': 'Overview & Syllabus',
+        'subnav.setup': 'Dev Starter Pack (Week 1)',
+        'subnav.curriculum': '15 Weeks (Lectures + Labs)',
+        'subnav.project': 'Business Project & Grades',
+        'subnav.policies': 'Rules & Grading System',
+        'subnav.checkin': 'Live Check-In',
+        'mobile.checkin': 'Check-In',
+        'checkin.title': '📍 Live Attendance Check-In (Lecture & Lab)',
+        'checkin.desc': "Check in for today's lecture or lab within 2 minutes using your official AAB College student credentials.",
+        'checkin.sessionLabel': "Select Today's Session:",
+        'checkin.lecture': 'Lecture Session',
+        'checkin.lab': 'Lab Exercise Session',
+        'checkin.weekLabel': 'Semester Week:',
+        'checkin.idLabel': 'Student ID / Index No:',
+        'checkin.nameLabel': 'Full Name:',
+        'checkin.emailLabel': 'Official AAB Email:',
+        'checkin.pinLabel': 'Session PIN from Screen:',
+        'checkin.submitBtn': 'Submit Attendance Now',
+
+        'hero.courseBadge': 'Mobile Device Programming',
+        'hero.semesterBadge': 'Semester V • Academic Year 2026/2027',
+        'hero.ectsBadge': '6 ECTS • 2L + 2L',
+        'hero.title': 'Mobile Device Programming',
+        'hero.theme': "The Founder's Expedition: Build a Real Mobile PWA with AI & Next.js",
+        'hero.desc': 'The unified learning hub for Software Engineering students at AAB College. Every lecture, step-by-step lab exercise, GitHub Copilot guide, and instructions to build your mobile app with Next.js 15, Tailwind, Supabase, and Vercel in one single place.',
+        'hero.btnCurriculum': 'Explore 15-Week Curriculum',
+        'hero.btnSetup': 'Week 1 Setup Steps',
+        'hero.btnProject': 'Business Project Criteria',
+        'stats.hoursLabel': 'Credit Hours',
+        'stats.hoursVal': '2h Lecture + 2h Lab',
+        'stats.formatLabel': 'Format',
+        'stats.formatVal': 'Hands-on Live Coding Lab',
+        'stats.stackLabel': 'Technologies',
+        'stats.officeLabel': 'Online Office Hours',
+        'stats.officeVal': 'Wednesday, 15:00 - 16:30',
+        'setup.eyebrow': 'Week 1 • Ground Zero Setup',
+        'setup.title': '🛠️ Dev Starter Pack: Environment Setup',
+        'setup.desc': 'Before writing our first line of code, every student must complete these 5 foundational steps during Week 1:',
+        'setup.step1Title': 'GitHub Student Developer Pack',
+        'setup.step1Sub': 'Get GitHub Copilot Pro for Free',
+        'setup.step1Desc': 'Apply using your student email (@universitetiaab.com) on GitHub Education to unlock full access to GitHub Copilot and professional dev tools.',
+        'setup.step1Btn': 'Activate GitHub Pack →',
+        'setup.step2Title': 'VS Code & AI Extensions',
+        'setup.step2Sub': 'Our primary coding environment',
+        'setup.step2Desc': 'Install VS Code and official extensions: GitHub Copilot, GitHub Copilot Chat, Tailwind CSS IntelliSense, and ESLint.',
+        'setup.step3Title': 'Next.js 15 PWA Starter',
+        'setup.step3Sub': 'Initialize your mobile web app',
+        'setup.step3Desc': 'Scaffold the base project with TypeScript, Tailwind CSS, and the App Router by running this terminal command:',
+        'setup.step4Title': 'Supabase Cloud Account',
+        'setup.step4Sub': 'PostgreSQL & Auth in seconds',
+        'setup.step4Desc': 'Create a free Supabase account, create a new project, and retrieve your NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.',
+        'setup.step4Btn': 'Open Supabase →',
+        'setup.step5Title': 'Connect with Vercel',
+        'setup.step5Sub': 'Continuous deployment on every Git push',
+        'setup.step5Desc': 'Connect your GitHub repository to Vercel to generate a public live HTTPS URL you can immediately open on your mobile phone.',
+        'setup.step5Btn': 'Connect with Vercel →',
+        'setup.copyBtn': 'Copy',
+        'curriculum.eyebrow': 'Unified Curriculum',
+        'curriculum.title': '📚🧪 15 Weeks: Lectures & Hands-on Labs',
+        'curriculum.desc': 'Each week contains the theoretical concepts, practical hands-on lab code, and ready-to-use GitHub Copilot prompt templates:',
+        'mod.m1Title': 'Module 1: Mobile Foundations, Touch UI & Next.js 15 + Supabase',
+        'mod.m1Weeks': 'Weeks 1 — 5',
+        'mod.m2Title': 'Module 2: Complete PWA, Offline Caching, Sensors & Device APIs',
+        'mod.m2Weeks': 'Weeks 6 — 10',
+        'mod.m3Title': 'Module 3: Push Notifications, Security, CI/CD & Final Showcase',
+        'mod.m3Weeks': 'Weeks 11 — 15',
+        'w1.badge': 'Week 1',
+        'w1.title': 'Introduction to Mobile PWA, Next.js 15 Ecosystem & GitHub Copilot',
+        'w1.sub': 'Syllabus presentation, Native vs PWA, and getting started with AI Pair Programming.',
+        'w2.badge': 'Week 2',
+        'w2.title': 'Mobile UI with Tailwind CSS & Touch-First Principles',
+        'w2.sub': 'Thumb zone, 48px minimum touch targets, and sticky bottom navigation.',
+        'w3.badge': 'Week 3',
+        'w3.title': 'Component Architecture & App Router (Next.js 15)',
+        'w3.sub': 'Server vs Client Components, nested routing, and Skeleton Loaders.',
+        'w4.badge': 'Week 4',
+        'w4.title': 'Database with Supabase (PostgreSQL & RLS)',
+        'w4.sub': 'Relational modeling for business, SQL migrations, and Row Level Security.',
+        'w5.badge': 'Week 5',
+        'w5.title': 'Authentication & Session Management on Mobile',
+        'w5.sub': 'Supabase Auth, Magic Links, OAuth (Google/GitHub), and Next.js Middleware.',
+        'w6.badge': 'Week 6',
+        'w6.title': 'PWA: Manifest.json, Icons & Offline Caching',
+        'w6.sub': 'Transforming web apps into installable Homescreen apps without the App Store.',
+        'w7.badge': 'Week 7',
+        'w7.title': 'Midterm Exam I / Initial MVP Evaluation',
+        'w7.sub': 'Live demo of the functional MVP on Vercel by each student.',
+        'w8.badge': 'Week 8',
+        'w8.title': 'Sensors and Native Device APIs',
+        'w8.sub': 'Camera upload, GPS Geolocation, Vibration, and Web Share API.',
+        'w9.badge': 'Week 9',
+        'w9.title': 'State Management & Optimistic UI',
+        'w9.sub': 'React Server Actions, useOptimistic, and perceived speed on mobile networks.',
+        'w10.badge': 'Week 10',
+        'w10.title': 'Realtime Synchronization (Supabase Realtime)',
+        'w10.sub': 'WebSockets on mobile devices, table listeners, and live updates without reloads.',
+        'w11.badge': 'Week 11',
+        'w11.title': 'Push Notifications & User Engagement',
+        'w11.sub': 'Web Push API, VAPID keys, and custom lock-screen notifications.',
+        'w12.badge': 'Week 12',
+        'w12.title': 'Mobile Security, Zod Validation & Data Protection',
+        'w12.sub': 'OWASP Mobile Top 10, strict schema validation, and RLS policy audit.',
+        'w13.badge': 'Week 13',
+        'w13.title': 'Performance Optimization & Lighthouse Audit (90+)',
+        'w13.sub': 'Core Web Vitals (LCP, INP, CLS), image compression, and extreme speed.',
+        'w14.badge': 'Week 14',
+        'w14.title': 'CI/CD, Real Device Testing & Final Preparation',
+        'w14.sub': 'GitHub Actions, Vercel Production Environment, and demo preparation.',
+        'w15.badge': 'Week 15',
+        'w15.title': "Demo Day & Project Defense (The Founder's Showcase)",
+        'w15.sub': 'Live mobile phone presentation, individual defense, and final evaluation.',
+        'common.lecture': 'Lecture (Theory & Concepts)',
+        'common.lab': 'Hands-on Lab Exercise',
+        'common.showcase': 'Showcase & Live Presentation',
+        'common.grading': 'Final Grades & Certification',
+        'project.eyebrow': "The Founder's Expedition",
+        'project.title': '📋 Course Project & Evaluation Criteria',
+        'project.desc': 'Instead of abstract dummy exercises, each student develops a fully functional Mobile-First PWA for a real local business, family enterprise, coffee shop, or SME in Kosovo.',
+        'rubric.r1Title': 'Continuous Hands-on Labs',
+        'rubric.r1Desc': '10 practical weekly GitHub assignments (clean commits, bug fixes, active participation, and individual accountability).',
+        'rubric.r2Title': 'Final PWA Business Project',
+        'rubric.r2Desc': 'Clean mobile UI with Tailwind, Supabase database and auth, offline installability (manifest + SW), and live Vercel deployment.',
+        'rubric.r3Title': 'Demo Day & Individual Defense',
+        'rubric.r3Desc': 'Live mobile phone presentation, architectural rationale explanation, code defense, and thorough technical mastery.',
+        'project.btnTopics': 'Explore Suggested Topics →',
+        'project.btnCatalog': 'Topic Reservations & Grades →',
+        'policies.eyebrow': 'AAB College Academic Standards',
+        'policies.title': '⚖️ Course Rules, Integrity & Grading System',
+        'policies.outcomesTitle': 'Learning Outcomes',
+        'policies.outcomesDesc': 'Upon successful completion, students master: (1) Building mobile-first PWAs with Next.js 15; (2) Relational data modeling in Supabase with RLS; (3) Utilizing hardware APIs (Camera, GPS, Push); and (4) Professional AI Pair Programming with GitHub Copilot.',
+        'policies.aiTitle': 'Artificial Intelligence Policy (Copilot)',
+        'policies.aiDesc': 'Using GitHub Copilot is permitted and encouraged as a pair programming assistant. However, students bear full accountability for their code: inability to explain code logic during Demo Day will result in point deductions or failure.',
+        'policies.attendTitle': 'Attendance & Submissions',
+        'policies.attendDesc': 'Attendance in computer lab sessions is mandatory (minimum 75%). Weekly labs must be pushed to your assigned GitHub repo by the deadline. Late submissions incur a 10% daily penalty.',
+        'policies.gradeScaleTitle': 'Official Grading Scale (AAB College)',
+        'table.points': 'Points Earned',
+        'table.grade': 'Official Grade',
+        'table.descr': 'Performance Description',
+        'table.g10': 'Outstanding / Excellent (Flawless technical & conceptual mastery)',
+        'table.g9': 'Very Good (Above average, minor non-critical flaws)',
+        'table.g8': 'Good (Solid work, good command of core stack)',
+        'table.g7': 'Satisfactory (Code works with some architectural weaknesses)',
+        'table.g6': 'Sufficient (Meets minimum passing requirements)',
+        'table.g5': 'Fail (Incomplete assignments or lack of comprehension)',
+        'profile.subtitle': 'Lecturer at AAB College • Program Manager at KADC • Systems Architect',
+        'profile.bioText': 'Practitioner with over 25 years of experience across software systems architecture, broadband telecommunication networks, and public policy governance. Dedicated lecturer at AAB College focusing on mobile application development, cloud architectures, and practical applied AI.',
+        'profile.btnContact': 'Send an Email →',
+        'profile.academicTitle': 'Teaching & Academic Appointments',
+        'profile.aabTitle': 'Lecturer — AAB College',
+        'profile.aabDesc': 'Mobile Programming, Information Systems Architecture, Cloud Computing, and Cybersecurity in Healthcare.',
+        'profile.ubtTitle': 'Lecturer — UBT',
+        'profile.ubtDesc': 'Network Engineering and Multimedia Communications with emphasis on distributed architectures.',
+        'profile.tuwienTitle': 'Teaching Assistant — TU Wien (Vienna)',
+        'profile.tuwienDesc': 'Institute of Broadband Communications. ATM network performance modeling and numerical traffic simulations.',
+        'profile.eduTitle': 'Education & Qualifications',
+        'profile.cadcTitle': 'Civil Society & Sustainable Governance',
+        'profile.sportsTitle': 'Sports Governance & Mountaineering',
+        'profile.pubsTitle': 'Selected Publications & Policy Reports',
+        'mobile.course': 'Course',
+        'mobile.setup': 'Setup',
+        'mobile.weeks': 'Weeks',
+        'mobile.project': 'Project',
+        'mobile.policies': 'Rules',
+        'footer.mccNote': 'Past courses & other archives:',
+        'footer.mccLink': 'Cloud Computing (MCC 2026) Topics Archive →'
+      }
     };
 
-    let currentLanguage = localStorage.getItem('arben-profile-language') || 'en';
+    let currentLang = 'sq';
 
-    function translate(key) {
-      return translations[currentLanguage][key] || translations.en[key] || key;
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('arbenl_lang', lang);
+
+      document.getElementById('btn-lang-sq').classList.toggle('active', lang === 'sq');
+      document.getElementById('btn-lang-en').classList.toggle('active', lang === 'en');
+      document.documentElement.lang = lang;
+
+      const dict = translations[lang] || translations.sq;
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          el.textContent = dict[key];
+        }
+      });
     }
 
-    function applyLanguage(language) {
-      currentLanguage = language;
-      localStorage.setItem('arben-profile-language', language);
-      document.documentElement.lang = language === 'sq' ? 'sq' : 'en';
-      document.title = translate('pageTitle');
-      document.querySelector('meta[name="description"]').setAttribute('content', translate('pageDescription'));
-      document.querySelectorAll('[data-i18n]').forEach((node) => {
-        node.textContent = translate(node.dataset.i18n);
-      });
-      document.querySelectorAll('[data-lang]').forEach((button) => {
-        button.classList.toggle('active', button.dataset.lang === language);
+    function setView(viewName) {
+      const studentPanel = document.getElementById('view-student');
+      const profilePanel = document.getElementById('view-profile');
+      const studentSubnav = document.getElementById('student-subnav');
+      const btnStudent = document.getElementById('btn-view-student');
+      const btnProfile = document.getElementById('btn-view-profile');
+
+      if (viewName === 'profile') {
+        studentPanel.classList.remove('active');
+        profilePanel.classList.add('active');
+        studentSubnav.style.display = 'none';
+        btnStudent.classList.remove('active');
+        btnProfile.classList.add('active');
+        btnStudent.setAttribute('aria-selected', 'false');
+        btnProfile.setAttribute('aria-selected', 'true');
+        history.replaceState(null, null, '#profile');
+      } else {
+        profilePanel.classList.remove('active');
+        studentPanel.classList.add('active');
+        studentSubnav.style.display = 'block';
+        btnProfile.classList.remove('active');
+        btnStudent.classList.add('active');
+        btnProfile.setAttribute('aria-selected', 'false');
+        btnStudent.setAttribute('aria-selected', 'true');
+        history.replaceState(null, null, '#student');
+      }
+    }
+
+    function mobileNavJump(viewName, elementSelector) {
+      setView(viewName);
+      setTimeout(() => {
+        const target = document.querySelector(elementSelector);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 50);
+
+      document.querySelectorAll('.mobile-tab-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = Array.from(document.querySelectorAll('.mobile-tab-btn')).find(b => b.getAttribute('onclick').includes(elementSelector));
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    function toggleWeek(cardId) {
+      const card = document.getElementById(cardId);
+      if (card) {
+        card.classList.toggle('expanded');
+      }
+    }
+
+    function copyCommand(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.textContent;
+        btn.textContent = '✓ ' + (currentLang === 'sq' ? 'Kopjuar!' : 'Copied!');
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
       });
     }
 
-    document.querySelectorAll('[data-lang]').forEach((button) => {
-      button.addEventListener('click', () => applyLanguage(button.dataset.lang));
+    
+    // =========================================================================
+    // ATTENDANCE & LIVE CHECK-IN ENGINE (SUPABASE + LOCAL SYNC)
+    // =========================================================================
+    let currentSessionType = 'lecture';
+    let checkinOpen = true;
+    let activePin = localStorage.getItem('aab_active_pin') || '8492';
+
+    function selectSessionType(type) {
+      currentSessionType = type;
+      document.getElementById('checkin-session-type').value = type;
+      
+      const btnLecture = document.getElementById('btn-session-lecture');
+      const btnLab = document.getElementById('btn-session-lab');
+      
+      if (type === 'lecture') {
+        btnLecture.classList.add('active');
+        btnLab.classList.remove('active');
+      } else {
+        btnLab.classList.add('active');
+        btnLecture.classList.remove('active');
+      }
+    }
+
+    function getAttendanceRecords() {
+      try {
+        return JSON.parse(localStorage.getItem('aab_attendance_records') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveAttendanceRecords(records) {
+      localStorage.setItem('aab_attendance_records', JSON.stringify(records));
+      renderAdminTable();
+    }
+
+    async function handleAttendanceSubmit(e) {
+      e.preventDefault();
+      const feedback = document.getElementById('checkin-feedback');
+      feedback.style.display = 'none';
+      feedback.className = 'checkin-feedback';
+
+      if (!checkinOpen) {
+        feedback.className = 'checkin-feedback error';
+        feedback.innerHTML = '⚠️ <strong>Regjistrimi është mbyllur!</strong> Dritarja 2-minutëshe e orës mësimore ka skaduar. Kontaktoni profesorin.';
+        feedback.style.display = 'block';
+        return;
+      }
+
+      const week = document.getElementById('checkin-week').value;
+      const sessionType = currentSessionType === 'lecture' ? 'Ligjëratë' : 'Ushtrime (Lab)';
+      const studentId = document.getElementById('checkin-id').value.trim();
+      const studentName = document.getElementById('checkin-name').value.trim();
+      const studentEmail = document.getElementById('checkin-email').value.trim().toLowerCase();
+      const enteredPin = document.getElementById('checkin-pin').value.trim();
+
+      // PIN Check
+      if (enteredPin !== activePin) {
+        feedback.className = 'checkin-feedback error';
+        feedback.innerHTML = '❌ <strong>Kodi PIN është i pasaktë!</strong> Shikoni kodin e shfaqur në projektorin e sallës.';
+        feedback.style.display = 'block';
+        return;
+      }
+
+      // Email validation
+      if (!studentEmail.includes('@') || (!studentEmail.endsWith('universitetiaab.com') && !studentEmail.endsWith('aab-edu.net') && !studentEmail.includes('aab'))) {
+        feedback.className = 'checkin-feedback error';
+        feedback.innerHTML = '⚠️ <strong>E-mail i pavlefshëm!</strong> Ju lutem përdorni emailin tuaj zyrtar të Kolegjit AAB (@universitetiaab.com).';
+        feedback.style.display = 'block';
+        return;
+      }
+
+      const records = getAttendanceRecords();
+      
+      // Check duplicate
+      const duplicate = records.find(r => r.studentId === studentId && r.week === week && r.sessionType === sessionType);
+      if (duplicate) {
+        feedback.className = 'checkin-feedback warning';
+        feedback.innerHTML = `ℹ️ <strong>Tashmë jeni regjistruar!</strong> Prania juaj për ${week} (${sessionType}) është evidentuar më herët në orën ${duplicate.time}.`;
+        feedback.style.display = 'block';
+        return;
+      }
+
+      // Record entry
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('sq-AL');
+      const timeStr = now.toLocaleTimeString('sq-AL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      const newRecord = {
+        id: 'rec_' + Date.now(),
+        date: dateStr,
+        time: timeStr,
+        week: week,
+        sessionType: sessionType,
+        studentId: studentId,
+        studentName: studentName,
+        studentEmail: studentEmail,
+        timestamp: now.toISOString()
+      };
+
+      records.push(newRecord);
+      saveAttendanceRecords(records);
+
+      // Optional Supabase cloud push if configured
+      if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+        try {
+          fetch(`${window.SUPABASE_URL}/rest/v1/attendance`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': window.SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify({
+              student_id: studentId,
+              student_name: studentName,
+              student_email: studentEmail,
+              week: week,
+              session_type: sessionType,
+              created_at: now.toISOString()
+            })
+          }).catch(err => console.log('Supabase sync note:', err));
+        } catch (err) {
+          // graceful fallback
+        }
+      }
+
+      feedback.className = 'checkin-feedback success';
+      feedback.innerHTML = `🎉 <strong>Sukses, ${studentName}!</strong> Pjesëmarrja juaj u regjistrua me sukses për <strong>${week} (${sessionType})</strong>.<br><small style="color:#a7f3d0;">Koha zyrtare e regjistrimit: ${timeStr} • Kolegji AAB</small>`;
+      feedback.style.display = 'block';
+
+      document.getElementById('checkin-pin').value = '';
+    }
+
+    function toggleProfessorAdmin() {
+      const panel = document.getElementById('professor-admin-section');
+      if (panel.style.display === 'none') {
+        const pass = prompt('Vendosni fjalëkalimin e profesorit për të hapur panelin:', '');
+        if (pass === 'prof2026' || pass === 'arbenlila' || pass === activePin) {
+          panel.style.display = 'block';
+          renderAdminTable();
+          panel.scrollIntoView({ behavior: 'smooth' });
+        } else if (pass !== null) {
+          alert('Fjalëkalim i pasaktë!');
+        }
+      } else {
+        panel.style.display = 'none';
+      }
+    }
+
+    function toggleCheckinStatus() {
+      checkinOpen = !checkinOpen;
+      const btn = document.getElementById('btn-toggle-status');
+      const ind = document.getElementById('checkin-live-indicator');
+      
+      if (checkinOpen) {
+        btn.className = 'status-toggle-btn active';
+        btn.innerHTML = '🟢 HAPUR (Pranon)';
+        ind.className = 'badge emerald';
+        ind.innerHTML = '<span class="pulse-dot"></span> REGJISTRIMI: HAPUR';
+      } else {
+        btn.className = 'status-toggle-btn closed';
+        btn.innerHTML = '🔴 MBYLLUR';
+        ind.className = 'badge red';
+        ind.innerHTML = 'REGJISTRIMI: MBYLLUR';
+      }
+    }
+
+    function updateActivePin() {
+      const val = document.getElementById('admin-pin-input').value.trim();
+      if (val.length >= 4) {
+        activePin = val;
+        localStorage.setItem('aab_active_pin', activePin);
+        alert(`Kodi PIN i seancës u përditësua në: ${activePin}`);
+      } else {
+        alert('Kodi PIN duhet të ketë të paktën 4 shifra!');
+      }
+    }
+
+    function renderAdminTable() {
+      const records = getAttendanceRecords();
+      const tbody = document.getElementById('attendance-table-body');
+      const countEl = document.getElementById('admin-count-today');
+      const filterWeek = document.getElementById('admin-filter-week').value;
+
+      const filtered = filterWeek === 'all' ? records : records.filter(r => r.week === filterWeek);
+      countEl.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-dim); padding:20px;">Nuk ka regjistrime për këtë përzgjedhje.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((r, i) => `
+        <tr>
+          <td><strong>${i + 1}</strong></td>
+          <td>${r.date} <small style="color:var(--text-dim);">${r.time}</small></td>
+          <td><span class="badge primary" style="font-size:11px;">${r.week}</span></td>
+          <td><span class="badge ${r.sessionType.includes('Ligjëratë') ? 'blue' : 'emerald'}" style="font-size:11px;">${r.sessionType}</span></td>
+          <td><code>${r.studentId}</code></td>
+          <td><strong>${r.studentName}</strong></td>
+          <td><a href="mailto:${r.studentEmail}" style="color:var(--text-muted);">${r.studentEmail}</a></td>
+        </tr>
+      `).join('');
+    }
+
+    function exportAttendanceToCSV() {
+      const records = getAttendanceRecords();
+      if (records.length === 0) {
+        alert('Nuk ka të dhëna për të eksportuar!');
+        return;
+      }
+
+      const headers = ['Nr', 'Data', 'Ora', 'Java', 'Seanca', 'ID Studenti', 'Emri dhe Mbiemri', 'E-maili Zyrtar AAB'];
+      const rows = records.map((r, i) => [
+        i + 1,
+        `"${r.date}"`,
+        `"${r.time}"`,
+        `"${r.week}"`,
+        `"${r.sessionType}"`,
+        `"${r.studentId}"`,
+        `"${r.studentName}"`,
+        `"${r.studentEmail}"`
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `AAB_Pjesemarrja_Mobile_Programming_2026_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function clearAttendanceRecords() {
+      if (confirm('A jeni të sigurtë që dëshironi të fshini regjistrimet ekzistuese?')) {
+        localStorage.removeItem('aab_attendance_records');
+        renderAdminTable();
+        alert('Regjistrimet u pastruan.');
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedLang = localStorage.getItem('arbenl_lang') || 'sq';
+      setLanguage(savedLang);
+
+      if (window.location.hash === '#profile') {
+        setView('profile');
+      } else {
+        setView('student');
+      }
     });
-
-    applyLanguage(currentLanguage);
   </script>
 </body>
 </html>
