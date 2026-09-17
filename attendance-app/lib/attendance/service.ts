@@ -1034,6 +1034,79 @@ async function getLiveSession(
   };
 }
 
+async function getSessionRecords(
+  session: Session | null,
+  sessionId: string,
+) {
+  const db = await database();
+  await requireStaffActor(db, session);
+  const [classSession] = await db
+    .select({
+      id: classSessions.id,
+      title: classSessions.title,
+      state: classSessions.state,
+      weekNumber: classSessions.weekNumber,
+      kind: classSessions.kind,
+      groupName: classSessions.groupName,
+      checkinEndsAt: classSessions.checkinEndsAt,
+    })
+    .from(classSessions)
+    .where(eq(classSessions.id, sessionId))
+    .limit(1);
+  if (!classSession) {
+    throw new AttendanceServiceError(404, "session_not_found", "Class session not found");
+  }
+
+  const rows = await db
+    .select({
+      id: attendanceRecords.id,
+      rosterId: roster.id,
+      fullName: roster.fullName,
+      studentId: roster.studentId,
+      githubUsername: users.githubUsername,
+      status: attendanceRecords.status,
+      scannedAt: attendanceRecords.scannedAt,
+      verifiedAt: attendanceRecords.verifiedAt,
+    })
+    .from(roster)
+    .leftJoin(users, eq(users.id, roster.userId))
+    .leftJoin(
+      attendanceRecords,
+      and(
+        eq(attendanceRecords.rosterId, roster.id),
+        eq(attendanceRecords.sessionId, sessionId),
+      ),
+    )
+    .where(
+      and(
+        eq(roster.semesterId, sql`(select semester_id from class_sessions where id = ${sessionId})`),
+        eq(roster.groupName, classSession.groupName),
+      ),
+    )
+    .orderBy(asc(roster.studentId), asc(roster.id));
+
+  return {
+    session: {
+      ...classSession,
+      checkinEndsAt: classSession.checkinEndsAt
+        ? toIso(classSession.checkinEndsAt)
+        : null,
+    },
+    records: rows.map((row) => ({
+      id: row.id,
+      rosterId: row.rosterId,
+      fullName: row.fullName,
+      studentId: row.studentId,
+      githubUsername: row.githubUsername,
+      status: row.status ?? "absent",
+      recordedAt:
+        row.scannedAt || row.verifiedAt
+          ? toIso(row.scannedAt ?? row.verifiedAt ?? "")
+          : null,
+    })),
+  };
+}
+
 async function createManualRecord(
   session: Session | null,
   sessionId: string,
@@ -1251,6 +1324,7 @@ export const attendanceService = {
   createManualRecord,
   createSemester,
   exportSemester,
+  getSessionRecords,
   getStudentHistory,
   getLiveSession,
   importRoster,

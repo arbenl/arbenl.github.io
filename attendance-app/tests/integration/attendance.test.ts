@@ -25,7 +25,10 @@ import { POST as checkInRoute } from "../../app/api/check-in/route";
 import { POST as classSessionCreateRoute } from "../../app/api/class-sessions/route";
 import { POST as challengeRoute } from "../../app/api/class-sessions/[id]/challenge/route";
 import { GET as liveRoute } from "../../app/api/class-sessions/[id]/live/route";
-import { POST as manualRecordRoute } from "../../app/api/class-sessions/[id]/records/route";
+import {
+  GET as sessionRecordsRoute,
+  POST as manualRecordRoute,
+} from "../../app/api/class-sessions/[id]/records/route";
 import { PATCH as classSessionStateRoute } from "../../app/api/class-sessions/[id]/state/route";
 import { PATCH as correctRecordRoute } from "../../app/api/records/[id]/route";
 import { POST as activateRoute } from "../../app/api/roster/activate/route";
@@ -1240,6 +1243,74 @@ describe("student history", () => {
 });
 
 describe("manual records and CSV evidence", () => {
+  it("returns full private session identities only while staff membership is current", async () => {
+    const semester = await createActiveSemester();
+    const linked = await importAndActivate(
+      semester.id,
+      studentA,
+      "A-1",
+      "Arta Kola",
+      "G1",
+    );
+    const [unlinked] = await attendanceService.importRoster(professor, {
+      semesterId: semester.id,
+      rows: [{ studentId: "B-1", fullName: "Besa Dema", groupName: "G1" }],
+    });
+    const classSession = await createOpenSession(semester.id);
+    await attendanceService.createManualRecord(professor, classSession.id, {
+      rosterId: linked.id,
+      status: "present",
+      reason: "Verified in class",
+    });
+
+    routeSession.current = professor;
+    const response = await sessionRecordsRoute(
+      new Request(
+        `http://attendance.test/api/class-sessions/${classSession.id}/records`,
+      ),
+      { params: Promise.resolve({ id: classSession.id }) },
+    );
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      session: { id: classSession.id, title: "Lecture 1", state: "open" },
+      records: [
+        {
+          rosterId: linked.id,
+          fullName: "Arta Kola",
+          studentId: "A-1",
+          githubUsername: "student-a",
+          status: "present",
+        },
+        {
+          rosterId: unlinked.id,
+          fullName: "Besa Dema",
+          studentId: "B-1",
+          githubUsername: null,
+          status: "absent",
+        },
+      ],
+    });
+
+    routeSession.current = studentA;
+    const denied = await sessionRecordsRoute(
+      new Request(
+        `http://attendance.test/api/class-sessions/${classSession.id}/records`,
+      ),
+      { params: Promise.resolve({ id: classSession.id }) },
+    );
+    expect(denied.status).toBe(403);
+
+    await sql`delete from staff`;
+    routeSession.current = professor;
+    const revoked = await sessionRecordsRoute(
+      new Request(
+        `http://attendance.test/api/class-sessions/${classSession.id}/records`,
+      ),
+      { params: Promise.resolve({ id: classSession.id }) },
+    );
+    expect(revoked.status).toBe(403);
+  });
+
   it("creates attendance for a student without a phone, corrects it with reasons, exports safe CSV, and audits every action", async () => {
     const semester = await createActiveSemester("=Unsafe semester");
     const [phoneLess] = await attendanceService.importRoster(professor, {

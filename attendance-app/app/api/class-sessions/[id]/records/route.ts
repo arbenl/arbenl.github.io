@@ -14,6 +14,26 @@ const recordSchema = z.object({
 
 type RouteContext = { params: Promise<{ id: string }> };
 
+export async function GET(
+  _request: Request,
+  context: RouteContext,
+): Promise<Response> {
+  try {
+    const identifier = z.string().uuid().safeParse((await context.params).id);
+    if (!identifier.success) {
+      return invalidRequest();
+    }
+    return Response.json(
+      await attendanceService.getSessionRecords(
+        await getCurrentSession(),
+        identifier.data,
+      ),
+    );
+  } catch (error) {
+    return attendanceServiceErrorResponse(error);
+  }
+}
+
 export async function POST(
   request: Request,
   context: RouteContext,

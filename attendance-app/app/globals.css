@@ -235,6 +235,311 @@ h1 {
   color: #176b2c !important;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.admin-shell {
+  width: min(100% - 2rem, 88rem);
+  margin-inline: auto;
+  padding-block: clamp(2rem, 5vw, 4rem);
+}
+
+.admin-page-header {
+  margin-bottom: 2rem;
+}
+
+.admin-page-header h1 {
+  max-width: none;
+}
+
+.admin-page-header > p:last-child,
+.session-admin .admin-heading p {
+  color: #4b596c;
+}
+
+.admin-stack,
+.admin-form,
+.private-records {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.admin-section {
+  min-width: 0;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid #d8dee8;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 0.5rem 1.5rem rgb(24 33 47 / 6%);
+}
+
+.admin-section h2 {
+  margin-top: 0;
+}
+
+.admin-form-inline {
+  grid-template-columns: auto minmax(12rem, 1fr) auto 6rem auto;
+  align-items: center;
+}
+
+.admin-form label,
+.session-actions label {
+  font-weight: 700;
+}
+
+.admin-form input,
+.admin-form select,
+.admin-form textarea,
+.semester-row input,
+.session-actions input,
+.record-controls input,
+.record-controls select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #aeb8c7;
+  border-radius: 0.6rem;
+  background: #ffffff;
+  color: inherit;
+  font: inherit;
+}
+
+.admin-form textarea {
+  resize: vertical;
+}
+
+.admin-section button,
+.admin-link {
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  border: 1px solid #24549b;
+  border-radius: 0.6rem;
+  background: #315da8;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+.admin-section button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.admin-section .secondary-action {
+  border-color: #aeb8c7;
+  background: #ffffff;
+  color: #27364a;
+}
+
+.admin-message {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border-radius: 0.75rem;
+  background: #e8f0fc;
+}
+
+.semester-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.semester-row {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1fr) auto minmax(10rem, 18rem) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.85rem;
+  border-radius: 0.75rem;
+  background: #f4f6f8;
+}
+
+.semester-row > div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.semester-row span {
+  color: #4b596c;
+  font-size: 0.875rem;
+}
+
+.admin-heading,
+.projector-list-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.session-actions {
+  display: grid;
+  grid-template-columns: auto minmax(12rem, 1fr) auto auto;
+  gap: 0.75rem;
+  align-items: center;
+  margin-block: 1rem;
+}
+
+.private-record-header,
+.private-record-row {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1.2fr) minmax(7rem, 0.7fr) minmax(8rem, 0.8fr) minmax(18rem, 2fr);
+  gap: 1rem;
+  align-items: center;
+  padding: 0.85rem;
+}
+
+.private-record-header {
+  color: #4b596c;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.private-record-row {
+  border: 1px solid #d8dee8;
+  border-radius: 0.75rem;
+}
+
+.record-controls {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.7fr) minmax(10rem, 1fr) auto;
+  gap: 0.5rem;
+}
+
+.projector-shell {
+  display: grid;
+  grid-template-columns: minmax(20rem, 0.9fr) minmax(25rem, 1.1fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  min-height: 100vh;
+  padding: clamp(1.5rem, 4vw, 4rem);
+  background: #0e1724;
+  color: #f8fbff;
+}
+
+.projector-qr,
+.projector-roster {
+  min-width: 0;
+}
+
+.projector-shell .eyebrow {
+  color: #8eb8ff;
+}
+
+.projector-countdown {
+  margin-block: 1rem;
+  color: #8eb8ff;
+  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.projector-qr-image,
+.projector-qr-placeholder {
+  display: grid;
+  width: min(100%, 34rem);
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 1rem;
+  background: #ffffff;
+}
+
+.projector-qr-image {
+  height: auto;
+}
+
+.projector-qr-placeholder {
+  padding: 2rem;
+  color: #18212f;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 800;
+  text-align: center;
+}
+
+.projector-guidance {
+  max-width: 42rem;
+  color: #c4d0df;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  line-height: 1.5;
+}
+
+.projector-roster h2 {
+  margin-top: 0;
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.projector-total {
+  margin: 0;
+  color: #c4d0df;
+  font-size: 1.25rem;
+}
+
+.projector-total strong {
+  display: block;
+  color: #ffffff;
+  font-size: clamp(2rem, 5vw, 4rem);
+  text-align: right;
+}
+
+.projector-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding-left: 3.25rem;
+  font-size: clamp(1.15rem, 2.5vw, 2rem);
+  transition: opacity 180ms ease;
+}
+
+.projector-list.is-stale {
+  opacity: 0.42;
+}
+
+.projector-list li {
+  padding: 0.8rem 1rem;
+  border-radius: 0.65rem;
+  background: #172639;
+}
+
+.projector-list li::marker {
+  color: #8eb8ff;
+  font-weight: 800;
+}
+
+.projector-list li time {
+  float: right;
+  color: #aebdce;
+  font-size: 0.65em;
+  font-variant-numeric: tabular-nums;
+}
+
+.stale-label,
+.unconfirmed-close {
+  padding: 0.75rem 1rem;
+  border-radius: 0.6rem;
+  background: #453713;
+  color: #ffe69c;
+  font-weight: 700;
+}
+
 @media (max-width: 30rem) {
   .page-shell {
     width: min(100% - 1rem, 48rem);
@@ -252,5 +557,29 @@ h1 {
   .history-list li {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+@media (max-width: 62rem) {
+  .admin-grid,
+  .projector-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form-inline,
+  .semester-row,
+  .session-actions,
+  .private-record-header,
+  .private-record-row,
+  .record-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .private-record-header {
+    display: none;
+  }
+
+  .projector-shell {
+    gap: 2rem;
   }
 }
