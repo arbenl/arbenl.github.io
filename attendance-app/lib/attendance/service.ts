@@ -394,7 +394,7 @@ async function ensureCurrentCourseSetup(session: Session | null) {
       .where(
         and(
           eq(semesters.status, "archived"),
-          sql`${semesters.title} like '[PILOT SYNTHETIC]%'`,
+          sql`${semesters.title} like '[PILOT SYNTHETIC%'`,
         ),
       );
     const pilotSemesterIds = pilotSemesters.map(({ id }) => id);
