@@ -145,7 +145,7 @@ const translations = {
       "Evidentim i menjëhershëm me QR kod në sallë. Pragu minimal 70% është kusht eliminues për të fituar të drejtën e mbrojtjes në Demo Day.",
     "rubric.r1Title": "Ushtrimet & GitHub Autograding",
     "rubric.r1Desc":
-      "10 detyra praktike javore të vlerësuara automatikisht me GitHub Classroom dhe GitHub Actions CI/CD në çdo git push pa ngarkesë manuale.",
+      "10 detyra në aplikacionin tuaj, nga 3 pikë secila. Testet dhe publikimi javor i pikëve presin aktivizimin.",
     "rubric.r2Title": "Projekti Final PWA i Biznesit",
     "rubric.r2Desc":
       "Mobile PWA funksionale për biznes real familjar me Tailwind, Supabase DB & Auth, instalueshmëri offline dhe publikim në Vercel.",
@@ -155,7 +155,7 @@ const translations = {
     "autograding.title":
       "Automatizimi i Vlerësimit Javor (GitHub Classroom + Actions Autograding)",
     "autograding.desc":
-      "Për të eliminuar pritjet e gjata dhe ngarkesën e korrigjimit manual për qindra studentë, çdo detyrë javore vlerësohet automatikisht me GitHub Actions në çdo push dhe sinkronizohet në Gradebook.",
+      "Sistemi i notimit automatik është në përgatitje. Rubrika dhe testet e çdo detyre do të publikohen para afatit. Rezultatet javore dhe totali do të shfaqen në llogarinë personale të studentit.",
     "project.btnTopics": "Eksploro Temat e Sugjeruara →",
     "project.btnCatalog": "Katalogu i Rezervimeve & Notat →",
     "policies.eyebrow": "Standardet Akademike të Kolegjit AAB",
@@ -168,7 +168,7 @@ const translations = {
       "Përdorimi i GitHub Copilot është i lejuar dhe i rekomanduar si asistent programues. Megjithatë, studenti mban përgjegjësi absolute për kodin: në Demo Day, paaftësia për të shpjeguar logjikën e kodit rezulton në zbritje pikësh ose moskalim.",
     "policies.attendTitle": "Pjesëmarrja & Dorëzimet",
     "policies.attendDesc":
-      "Vijueshmëria (10%) regjistrohet përmes modulit QR Check-In në portal me prag minimal prej 70% (kriter eliminues për Demo Day). 10 ushtrimet praktike (30%) menaxhohen me GitHub Classroom dhe vlerësohen automatikisht në çdo git push me GitHub Actions CI/CD.",
+      "Vijueshmëria ka 10% dhe 10 ushtrimet praktike kanë gjithsej 30%. Regjistrimi QR dhe publikimi automatik i pikëve kërkojnë aktivizimin e shërbimeve të lëndës.",
     "policies.gradeScaleTitle": "Shkalla Zyrtare e Notimit (Kolegji AAB)",
     "table.points": "Pikët e Grumbulluara",
     "table.grade": "Nota Zyrtare",
@@ -354,7 +354,7 @@ const translations = {
       "Live dynamic QR check-in during lectures and labs. Minimum 70% attendance threshold is strictly required to qualify for Demo Day.",
     "rubric.r1Title": "Weekly Labs & GitHub Autograding",
     "rubric.r1Desc":
-      "10 practical assignments automatically graded via GitHub Classroom and Actions CI/CD on every git push without manual overhead.",
+      "10 assignments in your own application, worth 3 points each. Automated tests and weekly score publication await activation.",
     "rubric.r2Title": "Final PWA Business Project",
     "rubric.r2Desc":
       "Production-ready mobile PWA for a real family/local business with Tailwind, Supabase DB & Auth, offline mode, and Vercel hosting.",
@@ -364,7 +364,7 @@ const translations = {
     "autograding.title":
       "Automated Weekly Grading (GitHub Classroom + Actions Autograding)",
     "autograding.desc":
-      "To eliminate manual grading delays for hundreds of students, assignments are automatically graded on every git push via GitHub Actions CI/CD, syncing instantly into the professor gradebook.",
+      "Automatic grading is being prepared. Each assignment rubric and tests will be available before its deadline. Weekly results and cumulative points will appear in the student’s personal account.",
     "project.btnTopics": "Explore Suggested Topics →",
     "project.btnCatalog": "Topic Reservations & Grades →",
     "policies.eyebrow": "AAB College Academic Standards",
@@ -377,7 +377,7 @@ const translations = {
       "Using GitHub Copilot is permitted and encouraged as a pair programming assistant. However, students bear full accountability for their code: inability to explain code logic during Demo Day will result in point deductions or failure.",
     "policies.attendTitle": "Attendance & Submissions",
     "policies.attendDesc":
-      "Attendance (10%) is tracked via the live QR Check-In module with a strict 70% minimum threshold to qualify for Demo Day. 10 practical labs (30%) are automated through GitHub Classroom and Actions CI/CD on every git push.",
+      "Attendance contributes 10% and ten practical assignments contribute 30%. QR registration and automatic score publication require activation of the course services.",
     "policies.gradeScaleTitle": "Official Grading Scale (AAB College)",
     "table.points": "Points Earned",
     "table.grade": "Official Grade",

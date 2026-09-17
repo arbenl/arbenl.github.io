@@ -1,0 +1,149 @@
+{
+  "course": "Programimi për Pajisje Mobile · AAB 2026/2027",
+  "timezone": "Europe/Belgrade",
+  "semesterStart": "2026-09-17",
+  "weeklyDeadline": "Sunday 23:59",
+  "visibility": "student-private",
+  "labPoints": 30,
+  "weeks": [
+    {
+      "week": 1,
+      "title": "Hyrje në Mobile PWA dhe ambienti i punës",
+      "lab": "Faqja e parë në telefon dhe profili i biznesit",
+      "graded": false,
+      "date": "2026-09-17",
+      "lectureHours": 2,
+      "labHours": 0
+    },
+    {
+      "week": 2,
+      "title": "Problemi, përdoruesi dhe PRD",
+      "lab": "Intervistat, PRD, repo dhe publikimi i parë i aplikacionit të biznesit",
+      "graded": true,
+      "date": "2026-09-24",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 3,
+      "title": "Komponentët dhe App Router",
+      "lab": "Navigimi dhe rrugët e aplikacionit",
+      "graded": true,
+      "date": "2026-10-01",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 4,
+      "title": "PostgreSQL, Supabase dhe RLS",
+      "lab": "Modeli i pronësisë dhe qasja në të dhëna",
+      "graded": true,
+      "date": "2026-10-08",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 5,
+      "title": "Autentifikimi dhe sesionet",
+      "lab": "Vendimet e qasjes për përdorues të identifikuar",
+      "graded": true,
+      "date": "2026-10-15",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 6,
+      "title": "PWA dhe puna offline",
+      "lab": "Politika e cache-it për kërkesat e aplikacionit",
+      "graded": true,
+      "date": "2026-10-22",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 7,
+      "title": "Kollokviumi I dhe kontrolli i MVP-së",
+      "lab": "Demonstrimi i rrjedhës kryesore dhe korrigjimet",
+      "graded": false,
+      "date": "2026-10-29",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 8,
+      "title": "Sensorët dhe Device APIs",
+      "lab": "Vendndodhja me leje të përdoruesit",
+      "graded": true,
+      "date": "2026-11-05",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 9,
+      "title": "Gjendja dhe ndërfaqet optimiste",
+      "lab": "Përditësimi dhe rikthimi i listës së preferuar",
+      "graded": true,
+      "date": "2026-11-12",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 10,
+      "title": "Sinkronizimi në kohë reale",
+      "lab": "Zbatimi idempotent i ngjarjeve të databazës",
+      "graded": true,
+      "date": "2026-11-19",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 11,
+      "title": "Njoftimet dhe angazhimi",
+      "lab": "Leja për njoftime dhe alternativat pa push",
+      "graded": false,
+      "date": "2026-11-26",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 12,
+      "title": "Validimi dhe siguria mobile",
+      "lab": "Validimi i rezervimit pa besuar të dhënat e klientit",
+      "graded": true,
+      "date": "2026-12-03",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 13,
+      "title": "Performanca dhe auditimi mobile",
+      "lab": "Matja e ngarkimit dhe korrigjimi i pengesave",
+      "graded": false,
+      "date": "2026-12-10",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 14,
+      "title": "Testimi dhe CI/CD",
+      "lab": "Kushtet e publikimit të versionit",
+      "graded": true,
+      "date": "2026-12-17",
+      "lectureHours": 2,
+      "labHours": 2
+    },
+    {
+      "week": 15,
+      "title": "Demo Day dhe mbrojtja individuale",
+      "lab": "Demonstrimi, arsyetimi dhe dorëzimi final",
+      "graded": false,
+      "date": "2026-12-24",
+      "lectureHours": 2,
+      "labHours": 2
+    }
+  ],
+  "semesterEnd": "2026-12-24",
+  "deadlineStatus": "proposed",
+  "calendarStatus": "AAB institutional breaks require confirmation",
+  "project": "One Next.js application for a real family or local business throughout the semester"
+}
