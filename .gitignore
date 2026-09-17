@@ -4,3 +4,14 @@ arben_aab_site/
 
 node_modules/
 supabase/.temp/
+/.worktrees/
+
+attendance-app/.env*
+!attendance-app/.env.example
+attendance-app/.next/
+attendance-app/node_modules/
+attendance-app/test-results/
+attendance-app/playwright-report/
+attendance-app/blob-report/
+attendance-app/.vercel/
+attendance-app/*.tsbuildinfo
