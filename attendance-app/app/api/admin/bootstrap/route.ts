@@ -66,7 +66,7 @@ export async function bootstrapProfessor(
   });
 }
 
-const databaseBootstrapRepository: BootstrapRepository = {
+export const databaseBootstrapRepository: BootstrapRepository = {
   async transaction(work) {
     const [{ db }, { auditLog, bootstrapState, staff, users }, { eq }] =
       await Promise.all([

@@ -560,6 +560,9 @@ async function transitionClassSession(
   return db.transaction(async (transaction) => {
     const actor = await requireStaffActor(transaction, session);
     await cleanExpiredRateLimits(transaction);
+    await transaction.execute(
+      sql`select pg_advisory_xact_lock(hashtextextended(${sessionId}, 0))`,
+    );
     const [current] = await transaction
       .select()
       .from(classSessions)
@@ -682,6 +685,25 @@ async function checkIn(
 
   return db.transaction(async (transaction) => {
     const actor = await requireActor(transaction, session);
+    const initial = await transaction.execute(sql`
+      select session_id as "sessionId"
+      from qr_challenges
+      where token_hash = ${tokenHash}
+    `);
+    const initialChallenge = initial[0] as unknown as {
+      sessionId: string;
+    } | undefined;
+    if (!initialChallenge) {
+      throw new AttendanceServiceError(
+        409,
+        "invalid_challenge",
+        "This QR code is no longer valid",
+      );
+    }
+
+    await transaction.execute(
+      sql`select pg_advisory_xact_lock_shared(hashtextextended(${initialChallenge.sessionId}, 0))`,
+    );
     const result = await transaction.execute(sql`
       select
         q.session_id as "sessionId",
@@ -695,7 +717,7 @@ async function checkIn(
       from qr_challenges q
       inner join class_sessions cs on cs.id = q.session_id
       where q.token_hash = ${tokenHash}
-      for update of cs
+        and q.session_id = ${initialChallenge.sessionId}
     `);
     const challenge = result[0] as unknown as {
       sessionId: string;
@@ -758,38 +780,124 @@ async function checkIn(
       );
     }
 
-    const inserted = await transaction
-      .insert(attendanceRecords)
-      .values({
-        sessionId: challenge.sessionId,
-        rosterId: entry.id,
-        status: "present",
-        scannedAt: sql`statement_timestamp()`,
-      })
-      .onConflictDoNothing({
-        target: [attendanceRecords.sessionId, attendanceRecords.rosterId],
-      })
-      .returning();
-    const [record] = inserted.length
-      ? inserted
-      : await transaction
-          .select()
-          .from(attendanceRecords)
-          .where(
-            and(
-              eq(attendanceRecords.sessionId, challenge.sessionId),
-              eq(attendanceRecords.rosterId, entry.id),
-            ),
-          )
-          .limit(1);
+    const accepted = await transaction.execute(sql`
+      with accepted as (
+        select q.session_id, statement_timestamp() as scanned_at
+        from qr_challenges q
+        inner join class_sessions cs on cs.id = q.session_id
+        where q.token_hash = ${tokenHash}
+          and q.session_id = ${challenge.sessionId}
+          and q.expires_at > statement_timestamp()
+          and cs.state = 'open'
+          and cs.checkin_ends_at > statement_timestamp()
+      ), inserted as (
+        insert into attendance_records (
+          session_id,
+          roster_id,
+          status,
+          scanned_at
+        )
+        select session_id, ${entry.id}, 'present', scanned_at
+        from accepted
+        on conflict (session_id, roster_id) do nothing
+        returning
+          id,
+          status,
+          scanned_at as "scannedAt",
+          verified_at as "verifiedAt",
+          created_at as "createdAt"
+      )
+      select
+        id,
+        status,
+        "scannedAt",
+        "verifiedAt",
+        "createdAt",
+        false as duplicate
+      from inserted
+      union all
+      select
+        null::uuid as id,
+        null::text as status,
+        null::timestamp with time zone as "scannedAt",
+        null::timestamp with time zone as "verifiedAt",
+        null::timestamp with time zone as "createdAt",
+        true as duplicate
+      from accepted
+      where not exists (select 1 from inserted)
+      limit 1
+    `);
+    let record = accepted[0] as unknown as {
+      id: string | null;
+      status: string | null;
+      scannedAt: Date | string | null;
+      verifiedAt: Date | string | null;
+      createdAt: Date | string | null;
+      duplicate: boolean;
+    } | undefined;
+    if (record?.duplicate && !record.id) {
+      const [existing] = await transaction
+        .select()
+        .from(attendanceRecords)
+        .where(
+          and(
+            eq(attendanceRecords.sessionId, challenge.sessionId),
+            eq(attendanceRecords.rosterId, entry.id),
+          ),
+        )
+        .limit(1);
+      record = existing ? { ...existing, duplicate: true } : undefined;
+    }
+    if (!record) {
+      const latest = await transaction.execute(sql`
+        select
+          q.expires_at as "expiresAt",
+          cs.state,
+          cs.checkin_ends_at as "checkinEndsAt",
+          statement_timestamp() as "serverTime"
+        from qr_challenges q
+        inner join class_sessions cs on cs.id = q.session_id
+        where q.token_hash = ${tokenHash}
+          and q.session_id = ${challenge.sessionId}
+      `);
+      const current = latest[0] as unknown as {
+        expiresAt: Date | string;
+        state: string;
+        checkinEndsAt: Date | string | null;
+        serverTime: Date | string;
+      } | undefined;
+      if (
+        current &&
+        (current.state !== "open" ||
+          !current.checkinEndsAt ||
+          dateMilliseconds(current.checkinEndsAt) <=
+            dateMilliseconds(current.serverTime))
+      ) {
+        throw new AttendanceServiceError(
+          409,
+          "checkin_closed",
+          "Check-in is closed",
+        );
+      }
+      throw new AttendanceServiceError(
+        409,
+        "invalid_challenge",
+        "This QR code is no longer valid",
+      );
+    }
+    if (!record.id || !record.status) {
+      throw new Error("Attendance insert returned an incomplete record");
+    }
 
     return {
       recordId: record.id,
       sessionId: challenge.sessionId,
       sessionTitle: challenge.title,
       status: record.status,
-      recordedAt: toIso(record.scannedAt ?? record.verifiedAt ?? record.createdAt),
-      duplicate: inserted.length === 0,
+      recordedAt: toIso(
+        record.scannedAt ?? record.verifiedAt ?? record.createdAt ?? challenge.serverTime,
+      ),
+      duplicate: record.duplicate,
     };
   });
 }

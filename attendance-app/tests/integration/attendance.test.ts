@@ -2,18 +2,38 @@ import { createHash, createHmac } from "node:crypto";
 
 import type { Session } from "next-auth";
 import postgres from "postgres";
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+const routeSession = vi.hoisted(() => ({ current: null as Session | null }));
+
+vi.mock("../../lib/auth/session", async (importOriginal) => {
+  const original = await importOriginal<
+    typeof import("../../lib/auth/session")
+  >();
+
+  return {
+    ...original,
+    getCurrentSession: async () => routeSession.current,
+  };
+});
 
 import {
   bootstrapProfessor,
-  type BootstrapRepository,
-  type BootstrapTransaction,
+  databaseBootstrapRepository,
 } from "../../app/api/admin/bootstrap/route";
+import { POST as checkInRoute } from "../../app/api/check-in/route";
+import { POST as challengeRoute } from "../../app/api/class-sessions/[id]/challenge/route";
+import { GET as liveRoute } from "../../app/api/class-sessions/[id]/live/route";
+import { POST as manualRecordRoute } from "../../app/api/class-sessions/[id]/records/route";
+import { PATCH as classSessionStateRoute } from "../../app/api/class-sessions/[id]/state/route";
+import { PATCH as correctRecordRoute } from "../../app/api/records/[id]/route";
 import { POST as activateRoute } from "../../app/api/roster/activate/route";
+import { POST as rosterImportRoute } from "../../app/api/roster/import/route";
+import { GET as semesterExportRoute } from "../../app/api/semesters/[id]/export/route";
+import { PATCH as semesterStateRoute } from "../../app/api/semesters/[id]/state/route";
 import {
   AttendanceServiceError,
   attendanceService,
-  attendanceServiceErrorResponse,
   firstForwardedIp,
 } from "../../lib/attendance/service";
 
@@ -107,11 +127,131 @@ async function createOpenSession(
   );
 }
 
+function jsonRequest(
+  url: string,
+  body: unknown,
+  ipAddress: string,
+  method = "POST",
+): Request {
+  return new Request(url, {
+    method,
+    headers: {
+      "content-type": "application/json",
+      "x-forwarded-for": `${ipAddress}, 10.0.0.1`,
+    },
+    body: JSON.stringify(body),
+  });
+}
+
+async function waitForAdvisoryWaiters(
+  expected: number,
+  timeoutMilliseconds = 2_000,
+): Promise<"blocked"> {
+  const deadline = Date.now() + timeoutMilliseconds;
+
+  while (Date.now() < deadline) {
+    const [row] = await sql`
+      select count(*)::integer as count
+      from pg_locks
+      where locktype = 'advisory' and not granted
+    `;
+    if (Number(row.count) >= expected) {
+      return "blocked";
+    }
+    await new Promise((resolve) => setTimeout(resolve, 5));
+  }
+
+  throw new Error(`Timed out waiting for ${expected} advisory lock waiter(s)`);
+}
+
+async function observeAdvisoryWaiters(
+  expected: number,
+  timeoutMilliseconds = 100,
+): Promise<"blocked" | "not-blocked"> {
+  const deadline = Date.now() + timeoutMilliseconds;
+
+  while (Date.now() < deadline) {
+    const [row] = await sql`
+      select count(*)::integer as count
+      from pg_locks
+      where locktype = 'advisory' and not granted
+    `;
+    if (Number(row.count) >= expected) {
+      return "blocked";
+    }
+    await new Promise((resolve) => setTimeout(resolve, 5));
+  }
+
+  return "not-blocked";
+}
+
+async function rateLimitEvidence(
+  action: "activation" | "scan" | "challenge" | "live",
+  keyMaterial: string,
+  windowSeconds: number,
+) {
+  const expectedHash = createHmac(
+    "sha256",
+    "integration-rate-limit-secret",
+  )
+    .update(keyMaterial)
+    .digest("hex");
+  const [row] = await sql`
+    select
+      action,
+      encode(key_hash, 'hex') as key_hash,
+      count,
+      greatest(
+        1,
+        ceil(extract(epoch from (
+          window_start + make_interval(secs => ${windowSeconds}) - updated_at
+        )))::integer
+      ) as retry_after
+    from request_limits
+    where action = ${action} and key_hash = decode(${expectedHash}, 'hex')
+  `;
+
+  return row as {
+    action: string;
+    key_hash: string;
+    count: number;
+    retry_after: number;
+  };
+}
+
+function errorChainMessages(error: unknown): string[] {
+  const messages: string[] = [];
+  let current = error;
+
+  while (current instanceof Error) {
+    messages.push(current.message);
+    current = (current as Error & { cause?: unknown }).cause;
+  }
+
+  return messages;
+}
+
+async function expectHttpRateLimit(
+  response: Response | undefined,
+  retryAfter: number,
+): Promise<void> {
+  expect(response).toBeDefined();
+  if (!response) {
+    throw new Error("Expected an HTTP rate-limit response");
+  }
+  expect(response.status).toBe(429);
+  expect(response.headers.get("Retry-After")).toBe(String(retryAfter));
+  expect(await response.json()).toEqual({
+    error: { code: "rate_limited", message: "Too many requests" },
+  });
+}
+
 beforeAll(async () => {
   await sql`select 1`;
 });
 
 beforeEach(async () => {
+  routeSession.current = professor;
   await sql`
     truncate table
       audit_log,
@@ -145,22 +285,197 @@ describe("HTTP route contracts", () => {
     });
   });
 
-  it("preserves an exact positive Retry-After and uses only the first forwarded IP", async () => {
-    const request = new Request("http://attendance.test", {
-      headers: { "x-forwarded-for": "203.0.113.4, 10.0.0.1" },
+  it("enforces every exact rate limit at the HTTP boundary with DB-derived retry headers and per-session keys", async () => {
+    const semester = await createActiveSemester();
+    await attendanceService.importRoster(professor, {
+      semesterId: semester.id,
+      rows: [{ studentId: "A-1", fullName: "Arta Kola", groupName: "G1" }],
     });
-    expect(firstForwardedIp(request)).toBe("203.0.113.4");
 
-    const response = attendanceServiceErrorResponse(
-      new AttendanceServiceError(
-        429,
-        "rate_limited",
-        "Too many requests",
-        17,
+    const activationIp = "203.0.113.4";
+    const request = new Request("http://attendance.test", {
+      headers: { "x-forwarded-for": `${activationIp}, 10.0.0.1` },
+    });
+    expect(firstForwardedIp(request)).toBe(activationIp);
+    routeSession.current = studentA;
+    const activationResponses = await Promise.all(
+      Array.from({ length: 6 }, () =>
+        activateRoute(
+          jsonRequest(
+            "http://attendance.test/api/roster/activate",
+            {
+              semesterId: semester.id,
+              studentId: "A-1",
+              firstName: "Arta",
+              lastName: "Kola",
+            },
+            activationIp,
+          ),
+        ),
       ),
     );
-    expect(response.status).toBe(429);
-    expect(response.headers.get("Retry-After")).toBe("17");
+    expect(activationResponses.filter(({ status }) => status === 200)).toHaveLength(5);
+    const activationLimited = activationResponses.find(
+      ({ status }) => status === 429,
+    );
+    expect(activationLimited).toBeDefined();
+    const activationEvidence = await rateLimitEvidence(
+      "activation",
+      `200|${activationIp}`,
+      600,
+    );
+    expect(activationEvidence).toMatchObject({ count: 6 });
+    await expectHttpRateLimit(
+      activationLimited,
+      activationEvidence.retry_after,
+    );
+    expect(activationEvidence.retry_after).toBeGreaterThan(0);
+
+    routeSession.current = professor;
+    const firstSession = await createOpenSession(semester.id);
+    const secondSession = await createOpenSession(semester.id);
+    const challengeIp = "203.0.113.5";
+    const challengeResponses = await Promise.all(
+      Array.from({ length: 11 }, () =>
+        challengeRoute(
+          jsonRequest(
+            `http://attendance.test/api/class-sessions/${firstSession.id}/challenge`,
+            {},
+            challengeIp,
+          ),
+          { params: Promise.resolve({ id: firstSession.id }) },
+        ),
+      ),
+    );
+    expect(challengeResponses.filter(({ status }) => status === 201)).toHaveLength(10);
+    const challengeLimited = challengeResponses.find(
+      ({ status }) => status === 429,
+    );
+    expect(challengeLimited).toBeDefined();
+    const challengeEvidence = await rateLimitEvidence(
+      "challenge",
+      `100|${challengeIp}|${firstSession.id}`,
+      60,
+    );
+    expect(challengeEvidence).toMatchObject({ count: 11 });
+    await expectHttpRateLimit(
+      challengeLimited,
+      challengeEvidence.retry_after,
+    );
+    expect(challengeEvidence.retry_after).toBeGreaterThan(0);
+
+    const secondChallengeResponse = await challengeRoute(
+      jsonRequest(
+        `http://attendance.test/api/class-sessions/${secondSession.id}/challenge`,
+        {},
+        challengeIp,
+      ),
+      { params: Promise.resolve({ id: secondSession.id }) },
+    );
+    expect(secondChallengeResponse.status).toBe(201);
+    expect(
+      await rateLimitEvidence(
+        "challenge",
+        `100|${challengeIp}|${secondSession.id}`,
+        60,
+      ),
+    ).toMatchObject({ count: 1 });
+
+    const activeChallenge = await sql`
+      select encode(token_hash, 'hex') as token_hash
+      from qr_challenges where session_id = ${firstSession.id}
+    `;
+    const challengeBodies = await Promise.all(
+      challengeResponses
+        .filter(({ status }) => status === 201)
+        .map((response) => response.json() as Promise<{ token: string }>),
+    );
+    const token = challengeBodies.find(
+      ({ token: candidate }) =>
+        createHash("sha256").update(candidate).digest("hex") ===
+        activeChallenge[0].token_hash,
+    )?.token;
+    expect(token).toBeTruthy();
+
+    routeSession.current = studentA;
+    const scanIp = "203.0.113.6";
+    const scanResponses = await Promise.all(
+      Array.from({ length: 11 }, () =>
+        checkInRoute(
+          jsonRequest(
+            "http://attendance.test/api/check-in",
+            { token },
+            scanIp,
+          ),
+        ),
+      ),
+    );
+    expect(scanResponses.filter(({ status }) => status === 200)).toHaveLength(10);
+    const scanLimited = scanResponses.find(({ status }) => status === 429);
+    expect(scanLimited).toBeDefined();
+    const scanEvidence = await rateLimitEvidence(
+      "scan",
+      `200|${scanIp}`,
+      60,
+    );
+    expect(scanEvidence).toMatchObject({ count: 11 });
+    await expectHttpRateLimit(
+      scanLimited,
+      scanEvidence.retry_after,
+    );
+    expect(scanEvidence.retry_after).toBeGreaterThan(0);
+
+    routeSession.current = professor;
+    const liveIp = "203.0.113.7";
+    const liveResponses = await Promise.all(
+      Array.from({ length: 91 }, () =>
+        liveRoute(
+          new Request(
+            `http://attendance.test/api/class-sessions/${firstSession.id}/live`,
+            { headers: { "x-forwarded-for": `${liveIp}, 10.0.0.1` } },
+          ),
+          { params: Promise.resolve({ id: firstSession.id }) },
+        ),
+      ),
+    );
+    expect(liveResponses.filter(({ status }) => status === 200)).toHaveLength(90);
+    const liveLimited = liveResponses.find(({ status }) => status === 429);
+    expect(liveLimited).toBeDefined();
+    const liveEvidence = await rateLimitEvidence(
+      "live",
+      `100|${liveIp}|${firstSession.id}`,
+      60,
+    );
+    expect(liveEvidence).toMatchObject({ count: 91 });
+    await expectHttpRateLimit(
+      liveLimited,
+      liveEvidence.retry_after,
+    );
+    expect(liveEvidence.retry_after).toBeGreaterThan(0);
+
+    const secondLiveResponse = await liveRoute(
+      new Request(
+        `http://attendance.test/api/class-sessions/${secondSession.id}/live`,
+        { headers: { "x-forwarded-for": `${liveIp}, 10.0.0.1` } },
+      ),
+      { params: Promise.resolve({ id: secondSession.id }) },
+    );
+    expect(secondLiveResponse.status).toBe(200);
+    expect(
+      await rateLimitEvidence(
+        "live",
+        `100|${liveIp}|${secondSession.id}`,
+        60,
+      ),
+    ).toMatchObject({ count: 1 });
+
+    const persistedLimits = await sql`
+      select action, encode(key_hash, 'hex') as key_hash from request_limits
+    `;
+    const persistedText = JSON.stringify(persistedLimits);
+    for (const rawIp of [activationIp, challengeIp, scanIp, liveIp]) {
+      expect(persistedText).not.toContain(rawIp);
+    }
   });
 });
 
@@ -286,6 +601,159 @@ describe("protected semester and roster management", () => {
       code: "roster_mismatch",
       message: "The supplied details do not match an available roster entry",
     });
+  });
+
+  it("denies every protected management operation to nonstaff and immediately revoked staff", async () => {
+    const semester = await createActiveSemester();
+    const [recordedRoster, emptyRoster] = await attendanceService.importRoster(
+      professor,
+      {
+        semesterId: semester.id,
+        rows: [
+          { studentId: "A-1", fullName: "Arta Kola", groupName: "G1" },
+          { studentId: "B-1", fullName: "Besa Dema", groupName: "G1" },
+        ],
+      },
+    );
+    const classSession = await createOpenSession(semester.id);
+    const record = await attendanceService.createManualRecord(
+      professor,
+      classSession.id,
+      {
+        rosterId: recordedRoster.id,
+        status: "present",
+        reason: "Initial evidence",
+      },
+    );
+
+    const operations: Array<[string, () => Promise<Response>]> = [
+      [
+        "roster import",
+        () =>
+          rosterImportRoute(
+            jsonRequest(
+              "http://attendance.test/api/roster/import",
+              {
+                semesterId: semester.id,
+                rows: [
+                  {
+                    studentId: "DENIED",
+                    fullName: "Denied User",
+                    groupName: "G1",
+                  },
+                ],
+              },
+              "198.51.100.80",
+            ),
+          ),
+      ],
+      [
+        "challenge rotation",
+        () =>
+          challengeRoute(
+            jsonRequest(
+              `http://attendance.test/api/class-sessions/${classSession.id}/challenge`,
+              {},
+              "198.51.100.80",
+            ),
+            { params: Promise.resolve({ id: classSession.id }) },
+          ),
+      ],
+      [
+        "class session state",
+        () =>
+          classSessionStateRoute(
+            jsonRequest(
+              `http://attendance.test/api/class-sessions/${classSession.id}/state`,
+              { state: "closed", reason: "Denied close" },
+              "198.51.100.80",
+              "PATCH",
+            ),
+            { params: Promise.resolve({ id: classSession.id }) },
+          ),
+      ],
+      [
+        "semester state",
+        () =>
+          semesterStateRoute(
+            jsonRequest(
+              `http://attendance.test/api/semesters/${semester.id}/state`,
+              { state: "archived", reason: "Denied archive" },
+              "198.51.100.80",
+              "PATCH",
+            ),
+            { params: Promise.resolve({ id: semester.id }) },
+          ),
+      ],
+      [
+        "manual record",
+        () =>
+          manualRecordRoute(
+            jsonRequest(
+              `http://attendance.test/api/class-sessions/${classSession.id}/records`,
+              {
+                rosterId: emptyRoster.id,
+                status: "excused",
+                reason: "Denied manual entry",
+              },
+              "198.51.100.80",
+            ),
+            { params: Promise.resolve({ id: classSession.id }) },
+          ),
+      ],
+      [
+        "record correction",
+        () =>
+          correctRecordRoute(
+            jsonRequest(
+              `http://attendance.test/api/records/${record.id}`,
+              { status: "rejected", reason: "Denied correction" },
+              "198.51.100.80",
+              "PATCH",
+            ),
+            { params: Promise.resolve({ id: record.id }) },
+          ),
+      ],
+      [
+        "CSV export",
+        () =>
+          semesterExportRoute(
+            new Request(
+              `http://attendance.test/api/semesters/${semester.id}/export`,
+            ),
+            { params: Promise.resolve({ id: semester.id }) },
+          ),
+      ],
+    ];
+
+    routeSession.current = studentA;
+    for (const [label, operation] of operations) {
+      const response = await operation();
+      expect(response.status, `${label} must deny nonstaff`).toBe(403);
+      expect(await response.json()).toEqual({
+        error: {
+          code: "staff_required",
+          message: "Staff access required",
+        },
+      });
+    }
+
+    await sql`delete from staff`;
+
+    routeSession.current = professor;
+    for (const [label, operation] of operations) {
+      const response = await operation();
+      expect(
+        response.status,
+        `${label} must recheck a revoked staff membership`,
+      ).toBe(403);
+      expect(await response.json()).toEqual({
+        error: {
+          code: "staff_required",
+          message: "Staff access required",
+        },
+      });
+    }
   });
 });
 
@@ -451,6 +919,144 @@ describe("challenge acceptance and live attendance", () => {
     ).rejects.toMatchObject({ code: "checkin_closed" });
   });
 
+  it("queues a scan behind challenge rotation and rejects the token removed by the winning rotation", async () => {
+    const semester = await createActiveSemester();
+    await importAndActivate(semester.id, studentA, "A-1", "Arta Kola", "G1");
+    const classSession = await createOpenSession(semester.id);
+    const original = await attendanceService.createChallenge(
+      professor,
+      classSession.id,
+      "192.0.2.20",
+    );
+    let rotationPromise:
+      | ReturnType<typeof attendanceService.createChallenge>
+      | undefined;
+    let scanPromise: ReturnType<typeof attendanceService.checkIn> | undefined;
+    let observedWhileLocked: "blocked" | "settled" | undefined;
+
+    await sql.begin(async (holder) => {
+      await holder`
+        select pg_advisory_xact_lock(hashtextextended(${classSession.id}, 0))
+      `;
+      rotationPromise = attendanceService.createChallenge(
+        professor,
+        classSession.id,
+        "192.0.2.21",
+      );
+      await waitForAdvisoryWaiters(1);
+      scanPromise = attendanceService.checkIn(
+        studentA,
+        { token: original.token },
+        "192.0.2.22",
+      );
+      observedWhileLocked = await Promise.race([
+        waitForAdvisoryWaiters(2),
+        scanPromise.then(
+          () => "settled" as const,
+          () => "settled" as const,
+        ),
+      ]);
+    });
+
+    if (!rotationPromise || !scanPromise) {
+      throw new Error("Concurrent operations were not started");
+    }
+    const [rotated, scanOutcome] = await Promise.all([
+      rotationPromise,
+      scanPromise.then(
+        (value) => ({ status: "fulfilled" as const, value }),
+        (reason: unknown) => ({ status: "rejected" as const, reason }),
+      ),
+    ]);
+    expect(observedWhileLocked).toBe("blocked");
+    expect(rotated.token).not.toBe(original.token);
+    expect(scanOutcome).toMatchObject({
+      status: "rejected",
+      reason: { code: "invalid_challenge" },
+    });
+    expect(await sql`select 1 from attendance_records`).toHaveLength(0);
+  });
+
+  it.each([
+    ["challenge", "invalid_challenge"],
+    ["session", "checkin_closed"],
+  ] as const)(
+    "rechecks the %s deadline after waiting for the synchronization lock",
+    async (boundary, expectedCode) => {
+      const semester = await createActiveSemester();
+      await importAndActivate(
+        semester.id,
+        studentA,
+        "A-1",
+        "Arta Kola",
+        "G1",
+      );
+      const classSession = await createOpenSession(semester.id);
+      const challenge = await attendanceService.createChallenge(
+        professor,
+        classSession.id,
+        `192.0.2.${boundary === "challenge" ? "30" : "31"}`,
+      );
+      let scanPromise: ReturnType<typeof attendanceService.checkIn> | undefined;
+      let observedWhileLocked:
+        | "blocked"
+        | "not-blocked"
+        | "settled"
+        | undefined;
+
+      await sql.begin(async (holder) => {
+        await holder`
+          select pg_advisory_xact_lock(hashtextextended(${classSession.id}, 0))
+        `;
+        if (boundary === "challenge") {
+          await holder`
+            update qr_challenges
+            set expires_at = clock_timestamp() + interval '150 milliseconds'
+            where session_id = ${classSession.id}
+          `;
+        } else {
+          await holder`
+            update qr_challenges
+            set expires_at = clock_timestamp() + interval '1 minute'
+            where session_id = ${classSession.id}
+          `;
+          await holder`
+            update class_sessions
+            set checkin_ends_at = clock_timestamp() + interval '150 milliseconds'
+            where id = ${classSession.id}
+          `;
+        }
+        scanPromise = attendanceService.checkIn(
+          studentA,
+          { token: challenge.token },
+          `192.0.2.${boundary === "challenge" ? "32" : "33"}`,
+        );
+        observedWhileLocked = await Promise.race([
+          observeAdvisoryWaiters(1),
+          scanPromise.then(
+            () => "settled" as const,
+            () => "settled" as const,
+          ),
+        ]);
+        await holder`select pg_sleep(0.25)`;
+      });
+
+      if (!scanPromise) {
+        throw new Error("Scan was not started");
+      }
+      const outcome = await scanPromise.then(
+        (value) => ({ status: "fulfilled" as const, value }),
+        (reason: unknown) => ({ status: "rejected" as const, reason }),
+      );
+      expect(observedWhileLocked).toBe("blocked");
+      expect(outcome).toMatchObject({
+        status: "rejected",
+        reason: { code: expectedCode },
+      });
+      expect(await sql`select 1 from attendance_records`).toHaveLength(0);
+    },
+  );
+
   it("returns a masked, stable live order while keeping students isolated", async () => {
     const semester = await createActiveSemester();
     const firstRoster = await importAndActivate(
@@ -561,69 +1167,49 @@ describe("manual records and CSV evidence", () => {
 });
 
 describe("database-backed professor bootstrap", () => {
-  function repository(failAudit = false): BootstrapRepository {
-    return {
-      async transaction<T>(
-        work: (transaction: BootstrapTransaction) => Promise<T>,
-      ): Promise<T> {
-        return sql.begin(async (transaction) =>
-          work({
-            async findUserByGithubId(githubId) {
-              const [row] = await transaction`
-                select id, github_id from users where github_id = ${githubId}
-              `;
-              return row
-                ? { id: row.id as string, githubId: row.github_id as string }
-                : null;
-            },
-            async claimCompletion(userId) {
-              const rows = await transaction`
-                insert into bootstrap_state (completed_by)
-                values (${userId}) on conflict (singleton) do nothing
-                returning singleton
-              `;
-              return rows.length === 1;
-            },
-            async addProfessor(userId) {
-              await transaction`
-                insert into staff (user_id, role, added_by)
-                values (${userId}, 'professor', ${userId})
-                on conflict (user_id) do nothing
-              `;
-            },
-            async recordBootstrapAudit(actorUserId, subjectId) {
-              if (failAudit) {
-                throw new Error("injected audit failure");
-              }
-              await transaction`
-                insert into audit_log (
-                  actor_user_id, action, subject_type, subject_id, reason
-                ) values (
-                  ${actorUserId}, 'staff.bootstrap', 'staff', ${subjectId},
-                  'Initial professor bootstrap'
-                )
-              `;
-            },
-          }),
-        ) as Promise<T>;
-      },
-    };
-  }
-
-  it("rolls back the marker and role when its audit write fails", async () => {
+  it("rolls back the production adapter marker and role when PostgreSQL rejects its audit write", async () => {
     await sql`delete from staff`;
-    await expect(
-      bootstrapProfessor(professor, "100", repository(true)),
-    ).rejects.toThrow("injected audit failure");
-    expect(await sql`select 1 from bootstrap_state`).toHaveLength(0);
-    expect(await sql`select 1 from staff`).toHaveLength(0);
+    await sql`
+      create function reject_bootstrap_audit() returns trigger
+      language plpgsql as $$
+      begin
+        raise exception 'injected bootstrap audit failure';
+      end
+      $$
+    `;
+    await sql`
+      create trigger reject_bootstrap_audit
+      before insert on audit_log
+      for each row when (new.action = 'staff.bootstrap')
+      execute function reject_bootstrap_audit()
+    `;
+
+    try {
+      const failure = await bootstrapProfessor(
+        professor,
+        "100",
+        databaseBootstrapRepository,
+      ).then(
+        () => null,
+        (error: unknown) => error,
+      );
+      expect(failure).toBeInstanceOf(Error);
+      expect(errorChainMessages(failure)).toContain(
+        "injected bootstrap audit failure",
+      );
+      expect(await sql`select 1 from bootstrap_state`).toHaveLength(0);
+      expect(await sql`select 1 from staff`).toHaveLength(0);
+    } finally {
+      await sql`drop trigger if exists reject_bootstrap_audit on audit_log`;
+      await sql`drop function if exists reject_bootstrap_audit()`;
+    }
   });
 
-  it("allows exactly one concurrent bootstrap winner", async () => {
+  it("allows exactly one concurrent winner through the production adapter", async () => {
     await sql`delete from staff`;
     const results = await Promise.all([
-      bootstrapProfessor(professor, "100", repository()),
-      bootstrapProfessor(professor, "100", repository()),
+      bootstrapProfessor(professor, "100", databaseBootstrapRepository),
+      bootstrapProfessor(professor, "100", databaseBootstrapRepository),
     ]);
     expect(results.map(({ status }) => status).sort()).toEqual([
       "already-completed",
