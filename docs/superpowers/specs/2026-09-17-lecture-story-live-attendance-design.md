@@ -1,7 +1,7 @@
 # Ligjërata 1 dhe check-in-i live — dizajni
 
-**Data:** 17 shtator 2026  
-**Statusi:** Dizajn i miratuar në bisedë; në pritje të rishikimit të dokumentit  
+**Data:** 17 shtator 2026
+**Statusi:** Dizajn i miratuar në bisedë; në pritje të rishikimit të dokumentit
 **Fusha:** Ligjërata 1, regjistrimi fillestar i studentit dhe pamja live e pjesëmarrjes
 
 ## Qëllimi

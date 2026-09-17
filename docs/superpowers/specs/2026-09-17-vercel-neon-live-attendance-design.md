@@ -1,7 +1,7 @@
 # Vijueshmëria live në Vercel dhe Neon — dizajni
 
-**Data:** 17 shtator 2026  
-**Statusi:** Miratuar nga profesori  
+**Data:** 17 shtator 2026
+**Statusi:** Miratuar nga profesori
 **Zëvendëson:** Pjesët e Supabase/OTP në `2026-09-17-lecture-story-live-attendance-design.md`
 
 ## Qëllimi
