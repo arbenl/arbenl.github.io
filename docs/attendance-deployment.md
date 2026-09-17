@@ -41,11 +41,16 @@ Në një instalim të ri, profesori hyn fillimisht me llogarinë GitHub që për
 
 ## Përgatitja e semestrit
 
-1. Hyr në `/staff` me llogarinë GitHub të autorizuar.
-2. Krijo semestrin me titull të qartë dhe numrin e javëve. Semestri fillon si `draft`.
-3. Importo listën zyrtare para aktivizimit dhe para orës së parë.
-4. Kontrollo listën dhe aktivizo semestrin duke shkruar një arsye auditi.
-5. Krijo sesione vetëm brenda semestrit aktiv. Në fund të semestrit, eksporto evidencën dhe arkivoje me arsye.
+Kur profesori hap `/staff`, sistemi sinkronizon automatikisht semestrin **Programimi për Pajisje Mobile · Semestri Dimëror 2026/27** dhe 29 sesionet e grupit `G1`. Java 1 ka vetëm ligjëratë më 17 shtator. Javët 2–15 kanë ligjëratë në 16:30 dhe ushtrime në 18:30 çdo të enjte, deri më 24 dhjetor 2026. Sinkronizimi është idempotent: hapja e përsëritur e panelit nuk krijon dublikatë. Semestrat e arkivuar me prefiksin e rezervuar `[PILOT SYNTHETIC]` pastrohen nga databaza gjatë këtij sinkronizimi.
+
+Ligji i Kosovës për festat zyrtare nuk ka festë zyrtare të enjten brenda kësaj periudhe; Krishtlindjet Katolike janë të premten, 25 dhjetor. Nëse AAB shpall ndryshim të veçantë akademik, anulo sesionin përkatës ose krijo një orë zëvendësuese nga seksioni **Ndryshime manuale**.
+
+Për përgatitjen operative:
+
+1. Hyr në `/staff` me llogarinë GitHub të autorizuar; kalendari krijohet vetë.
+2. Importo listën zyrtare para orës së parë, duke përdorur grupin `G1`.
+3. Kontrollo listën e sesioneve dhe përdor **Ndryshime manuale** vetëm për orë shtesë, zëvendësime ose një semestër tjetër.
+4. Në fund të semestrit, eksporto evidencën dhe arkivoje me arsye.
 
 Lista pranon 1–2,000 rreshta për kërkesë. Formati aktual është me presje ose tab, me një student në secilin rresht:
 
@@ -78,7 +83,7 @@ Faqja `/student` i tregon studentit vetëm historikun e vet. Aplikacioni ruan Gi
 
 ## Rrjedha në çdo ligjëratë ose ushtrim
 
-1. Në `/staff`, krijo sesionin me semestrin, titullin, javën, llojin (`lecture` ose `lab`) dhe grupin e saktë.
+1. Në `/staff`, zgjidh sesionin e datës së sotme nga kalendari i krijuar automatikisht dhe shtyp **Menaxho**.
 2. Hape pamjen **Hap projektorin** ndërsa sesioni është ende `draft`. Vetëm stafi i autentikuar mund ta hapë QR-në dhe listën live.
 3. Në momentin e zgjedhur gjatë orës, shkruaj arsyen dhe hape sesionin nga paneli privat. **Aty nis afati dyminutësh sipas orës së serverit.** Mos e hap sesionin para se projektori dhe studentët të jenë gati.
 4. Projektori krijon QR të ri çdo 25 sekonda. Secili QR vlen deri në 40 sekonda dhe asnjëherë pas fundit të afatit dyminutësh.

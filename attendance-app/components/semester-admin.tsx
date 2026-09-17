@@ -51,6 +51,21 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
       ]);
       setSemesters(semesters);
       setSessions(sessions);
+      setSelectedSessionId((current) => {
+        if (current || sessions.length === 0) {
+          return current;
+        }
+        const today = new Intl.DateTimeFormat("de-DE", {
+          timeZone: "Europe/Belgrade",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }).format(new Date());
+        const todaysSessions = sessions.filter(({ title }) => title.startsWith(`${today} ·`));
+        return todaysSessions.find(({ state }) => state === "open")?.id
+          ?? todaysSessions.find(({ state }) => state === "draft")?.id
+          ?? todaysSessions[0]?.id;
+      });
       setMessage(null);
       return true;
     } catch (error) {
@@ -62,7 +77,15 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
   }
 
   useEffect(() => {
-    void Promise.resolve().then(loadSemesters);
+    void Promise.resolve().then(async () => {
+      try {
+        await jsonRequest("/api/admin/course-setup", { method: "POST" });
+        await loadSemesters();
+      } catch (error) {
+        setMessage(error instanceof Error ? error.message : "Kalendari nuk mund të përgatitet.");
+        setLoading(false);
+      }
+    });
   }, []);
 
   async function createSemester(event: FormEvent<HTMLFormElement>) {
@@ -153,13 +176,7 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
 
       <section className="admin-section" aria-labelledby="semesters-title">
         <h2 id="semesters-title">Semestrat</h2>
-        <form className="admin-form admin-form-inline" onSubmit={createSemester}>
-          <label htmlFor="semester-title">Titulli</label>
-          <input id="semester-title" name="title" maxLength={200} required />
-          <label htmlFor="semester-weeks">Javë</label>
-          <input id="semester-weeks" name="weekCount" type="number" min={1} max={52} defaultValue={15} required />
-          <button type="submit">Krijo semestrin</button>
-        </form>
+        <p>Semestri aktual dhe kalendari 15-javor sinkronizohen automatikisht.</p>
         <div className="semester-list">
           {semesters.map((semester) => (
             <SemesterRow key={semester.id} semester={semester} onChanged={async () => { await loadSemesters(); }} onError={setMessage} />
@@ -185,23 +202,35 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
         </section>
 
         <section className="admin-section" aria-labelledby="new-session-title">
-          <h2 id="new-session-title">Krijo sesion</h2>
-          <form className="admin-form" onSubmit={createSession}>
-            <label htmlFor="session-semester">Semestri aktiv</label>
-            <select id="session-semester" name="semesterId" required>
-              <option value="">Zgjidh</option>
-              {activeSemesters.map((semester) => <option key={semester.id} value={semester.id}>{semester.title}</option>)}
-            </select>
-            <label htmlFor="session-title">Titulli</label>
-            <input id="session-title" name="title" maxLength={200} required />
-            <label htmlFor="session-week">Java</label>
-            <input id="session-week" name="weekNumber" type="number" min={1} max={52} required />
-            <label htmlFor="session-kind">Lloji</label>
-            <select id="session-kind" name="kind"><option value="lecture">Ligjëratë</option><option value="lab">Ushtrime</option></select>
-            <label htmlFor="session-group">Grupi</label>
-            <input id="session-group" name="groupName" maxLength={100} required />
-            <button type="submit">Krijo sesionin</button>
-          </form>
+          <h2 id="new-session-title">Ndryshime manuale</h2>
+          <details className="admin-manual-tools">
+            <summary>Orë zëvendësuese ose semestër tjetër</summary>
+            <h3>Krijo sesion shtesë</h3>
+            <form className="admin-form" onSubmit={createSession}>
+              <label htmlFor="session-semester">Semestri aktiv</label>
+              <select id="session-semester" name="semesterId" required>
+                <option value="">Zgjidh</option>
+                {activeSemesters.map((semester) => <option key={semester.id} value={semester.id}>{semester.title}</option>)}
+              </select>
+              <label htmlFor="session-title">Titulli</label>
+              <input id="session-title" name="title" maxLength={200} required />
+              <label htmlFor="session-week">Java</label>
+              <input id="session-week" name="weekNumber" type="number" min={1} max={52} required />
+              <label htmlFor="session-kind">Lloji</label>
+              <select id="session-kind" name="kind"><option value="lecture">Ligjëratë</option><option value="lab">Ushtrime</option></select>
+              <label htmlFor="session-group">Grupi</label>
+              <input id="session-group" name="groupName" maxLength={100} defaultValue="G1" required />
+              <button type="submit">Krijo sesionin</button>
+            </form>
+            <h3>Krijo semestër tjetër</h3>
+            <form className="admin-form" onSubmit={createSemester}>
+              <label htmlFor="semester-title">Titulli</label>
+              <input id="semester-title" name="title" maxLength={200} required />
+              <label htmlFor="semester-weeks">Javë</label>
+              <input id="semester-weeks" name="weekCount" type="number" min={1} max={52} defaultValue={15} required />
+              <button type="submit">Krijo semestrin</button>
+            </form>
+          </details>
         </section>
       </div>
 

@@ -97,6 +97,38 @@ h1 {
   min-width: 0;
 }
 
+.student-checkin-guide {
+  margin: 1.25rem 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(38, 217, 164, 0.38);
+  border-radius: 0.9rem;
+  background: rgba(38, 217, 164, 0.08);
+}
+
+.student-checkin-guide strong {
+  color: #67e8c4;
+}
+
+.student-checkin-guide p {
+  margin: 0.4rem 0 0;
+  color: #dbe6f5;
+  line-height: 1.55;
+}
+
+.admin-manual-tools summary {
+  cursor: pointer;
+  color: #67e8c4;
+  font-weight: 800;
+}
+
+.admin-manual-tools[open] summary {
+  margin-bottom: 1rem;
+}
+
+.admin-manual-tools h3 {
+  margin: 1.25rem 0 0.65rem;
+}
+
 .student-form label {
   font-weight: 700;
 }
