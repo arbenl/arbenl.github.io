@@ -289,9 +289,14 @@ describe("automatic current-course setup", () => {
       state: "archived",
       reason: "Pilot completed",
     });
+    const finalPilot = await createActiveSemester("[PILOT SYNTHETIC FINAL] 1789669554104");
+    await attendanceService.transitionSemester(professor, finalPilot.id, {
+      state: "archived",
+      reason: "Final pilot completed",
+    });
 
     const first = await attendanceService.ensureCurrentCourseSetup(professor);
-    expect(first).toMatchObject({ createdSessions: 29, removedPilotSemesters: 1 });
+    expect(first).toMatchObject({ createdSessions: 29, removedPilotSemesters: 2 });
 
     const [semester] = await sql`
       select id, title, week_count, status
@@ -320,7 +325,7 @@ describe("automatic current-course setup", () => {
     const second = await attendanceService.ensureCurrentCourseSetup(professor);
     expect(second).toMatchObject({ createdSessions: 0, removedPilotSemesters: 0 });
     expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(29);
-    expect(await sql`select id from semesters where title like '[PILOT SYNTHETIC]%'`).toHaveLength(0);
+    expect(await sql`select id from semesters where title like '[PILOT SYNTHETIC%'`).toHaveLength(0);
   });
 
   it("does not reactivate or repopulate the course after the professor archives it", async () => {
