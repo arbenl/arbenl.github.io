@@ -621,6 +621,42 @@ async function createClassSession(
   });
 }
 
+async function listClassSessions(
+  session: Session | null,
+  semesterId?: string,
+) {
+  const db = await database();
+  await requireStaffActor(db, session);
+  const query = db
+    .select({
+      id: classSessions.id,
+      semesterId: classSessions.semesterId,
+      semesterTitle: semesters.title,
+      title: classSessions.title,
+      state: classSessions.state,
+      weekNumber: classSessions.weekNumber,
+      kind: classSessions.kind,
+      groupName: classSessions.groupName,
+      checkinEndsAt: classSessions.checkinEndsAt,
+    })
+    .from(classSessions)
+    .innerJoin(semesters, eq(semesters.id, classSessions.semesterId))
+    .orderBy(
+      asc(semesters.createdAt),
+      asc(classSessions.weekNumber),
+      asc(classSessions.createdAt),
+      asc(classSessions.id),
+    );
+  const rows = semesterId
+    ? await query.where(eq(classSessions.semesterId, semesterId))
+    : await query;
+
+  return rows.map((row) => ({
+    ...row,
+    checkinEndsAt: row.checkinEndsAt ? toIso(row.checkinEndsAt) : null,
+  }));
+}
+
 async function transitionClassSession(
   session: Session | null,
   sessionId: string,
@@ -1328,6 +1364,7 @@ export const attendanceService = {
   getStudentHistory,
   getLiveSession,
   importRoster,
+  listClassSessions,
   listSemesters,
   transitionClassSession,
   transitionSemester,

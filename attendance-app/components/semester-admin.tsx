@@ -16,6 +16,13 @@ interface CreatedSession {
   title: string;
 }
 
+interface ExistingSession extends CreatedSession {
+  semesterTitle: string;
+  weekNumber: number;
+  groupName: string;
+  state: "draft" | "open" | "closed" | "cancelled";
+}
+
 interface ErrorBody {
   error?: { message?: string };
 }
@@ -29,18 +36,26 @@ async function jsonRequest<T>(url: string, init?: RequestInit): Promise<T> {
   return body as T;
 }
 
-export function SemesterAdmin() {
+export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string }) {
   const [semesters, setSemesters] = useState<Semester[]>([]);
-  const [selectedSession, setSelectedSession] = useState<CreatedSession | null>(null);
+  const [sessions, setSessions] = useState<ExistingSession[]>([]);
+  const [selectedSessionId, setSelectedSessionId] = useState(initialSessionId);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   async function loadSemesters() {
     try {
-      setSemesters(await jsonRequest<Semester[]>("/api/semesters", { cache: "no-store" }));
+      const [semesters, sessions] = await Promise.all([
+        jsonRequest<Semester[]>("/api/semesters", { cache: "no-store" }),
+        jsonRequest<ExistingSession[]>("/api/class-sessions", { cache: "no-store" }),
+      ]);
+      setSemesters(semesters);
+      setSessions(sessions);
       setMessage(null);
+      return true;
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Semestrat nuk mund të ngarkohen.");
+      setMessage(error instanceof Error ? error.message : "Paneli nuk mund të ngarkohet.");
+      return false;
     } finally {
       setLoading(false);
     }
@@ -52,7 +67,8 @@ export function SemesterAdmin() {
 
   async function createSemester(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     try {
       await jsonRequest<Semester>("/api/semesters", {
         method: "POST",
@@ -62,8 +78,10 @@ export function SemesterAdmin() {
           weekCount: Number(form.get("weekCount")),
         }),
       });
-      event.currentTarget.reset();
-      await loadSemesters();
+      formElement.reset();
+      if (await loadSemesters()) {
+        setMessage("Semestri u krijua.");
+      }
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Semestri nuk mund të krijohet.");
     }
@@ -71,7 +89,8 @@ export function SemesterAdmin() {
 
   async function importRoster(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const rows = String(form.get("rows") ?? "")
       .split(/\r?\n/u)
       .map((line) => line.trim())
@@ -89,8 +108,10 @@ export function SemesterAdmin() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ semesterId: form.get("semesterId"), rows }),
       });
-      event.currentTarget.reset();
-      setMessage(`${rows.length} studentë u importuan në një transaksion.`);
+      formElement.reset();
+      if (await loadSemesters()) {
+        setMessage(`${rows.length} studentë u importuan në një transaksion.`);
+      }
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Regjistri nuk mund të importohet.");
     }
@@ -98,7 +119,8 @@ export function SemesterAdmin() {
 
   async function createSession(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     try {
       const created = await jsonRequest<CreatedSession>("/api/class-sessions", {
         method: "POST",
@@ -111,8 +133,12 @@ export function SemesterAdmin() {
           title: form.get("title"),
         }),
       });
-      setSelectedSession(created);
-      setMessage("Sesioni u krijua. Jep arsyen dhe hape kur të fillojë ora.");
+      setSelectedSessionId(created.id);
+      window.history.replaceState(null, "", `/staff?sessionId=${encodeURIComponent(created.id)}`);
+      formElement.reset();
+      if (await loadSemesters()) {
+        setMessage("Sesioni u krijua. Jep arsyen dhe hape kur të fillojë ora.");
+      }
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Sesioni nuk mund të krijohet.");
     }
@@ -136,7 +162,7 @@ export function SemesterAdmin() {
         </form>
         <div className="semester-list">
           {semesters.map((semester) => (
-            <SemesterRow key={semester.id} semester={semester} onChanged={loadSemesters} onError={setMessage} />
+            <SemesterRow key={semester.id} semester={semester} onChanged={async () => { await loadSemesters(); }} onError={setMessage} />
           ))}
         </div>
       </section>
@@ -179,7 +205,23 @@ export function SemesterAdmin() {
         </section>
       </div>
 
-      {selectedSession ? <SessionAdmin sessionId={selectedSession.id} /> : null}
+      <section className="admin-section" aria-labelledby="existing-sessions-title">
+        <h2 id="existing-sessions-title">Sesionet ekzistuese</h2>
+        {!loading && sessions.length === 0 ? <p>Nuk ka sesione.</p> : null}
+        <div className="semester-list">
+          {sessions.map((session) => (
+            <article className="semester-row" key={session.id}>
+              <div>
+                <strong>{session.title}</strong>
+                <span>{session.semesterTitle} · Java {session.weekNumber} · {session.groupName} · {session.state}</span>
+              </div>
+              <a href={`/staff?sessionId=${encodeURIComponent(session.id)}`}>Menaxho {session.title}</a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {selectedSessionId ? <SessionAdmin key={selectedSessionId} sessionId={selectedSessionId} /> : null}
     </div>
   );
 }

@@ -120,12 +120,14 @@ export function LiveProjector({ sessionId }: LiveProjectorProps) {
             void rotateChallenge();
           }
           pollTimer = window.setTimeout(loadSnapshot, POLL_MILLISECONDS);
-        } else {
+        } else if (incoming.state === "closed" || incoming.state === "cancelled") {
           if (challengeTimer !== undefined) {
             window.clearTimeout(challengeTimer);
           }
           setChallenge(null);
           setQrImage(null);
+        } else {
+          pollTimer = window.setTimeout(loadSnapshot, POLL_MILLISECONDS);
         }
       } catch {
         if (!active) {
@@ -195,6 +197,8 @@ export function LiveProjector({ sessionId }: LiveProjectorProps) {
           <div className="projector-qr-placeholder" aria-live="polite">
             {snapshot?.state === "closed" || snapshot?.state === "cancelled"
               ? "Check-in u mbyll"
+              : snapshot?.state === "draft"
+                ? "Në pritje që sesioni të hapet"
               : remainingSeconds === 0 && snapshot
                 ? "Afati për check-in përfundoi"
                 : "Duke përgatitur QR-në…"}

@@ -14,6 +14,26 @@ const sessionSchema = z.object({
   title: z.string().trim().min(1).max(200),
 });
 
+export async function GET(request: Request): Promise<Response> {
+  try {
+    const rawSemesterId = new URL(request.url).searchParams.get("semesterId");
+    const semesterId = rawSemesterId
+      ? z.string().uuid().safeParse(rawSemesterId)
+      : null;
+    if (semesterId && !semesterId.success) {
+      return invalidRequest();
+    }
+    return Response.json(
+      await attendanceService.listClassSessions(
+        await getCurrentSession(),
+        semesterId?.data,
+      ),
+    );
+  } catch (error) {
+    return attendanceServiceErrorResponse(error);
+  }
+}
+
 export async function POST(request: Request): Promise<Response> {
   try {
     const parsed = sessionSchema.safeParse(await request.json());

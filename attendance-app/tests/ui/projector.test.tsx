@@ -67,6 +67,7 @@ async function settle() {
 
 beforeEach(() => {
   vi.useFakeTimers();
+  window.history.replaceState(null, "", "/staff");
   vi.setSystemTime(new Date("2031-01-01T00:00:00.000Z"));
   vi.restoreAllMocks();
   qr.toDataURL.mockResolvedValue("data:image/png;base64,qr");
@@ -222,6 +223,49 @@ describe("live projector", () => {
     expect(fetchMock.mock.calls).toHaveLength(callsAtClose);
   });
 
+  it("keeps polling a draft session, starts its challenge when opened, and freezes on confirmed close", async () => {
+    let liveAttempt = 0;
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      const url = String(input);
+      if (url.endsWith("/challenge")) {
+        return response(challenge({ serverTime: "2026-09-17T10:00:01.000Z" }));
+      }
+      liveAttempt += 1;
+      if (liveAttempt === 1) {
+        return response(snapshot({ state: "draft", checkinEndsAt: null }));
+      }
+      if (liveAttempt === 2) {
+        return response(snapshot({
+          state: "open",
+          serverTime: "2026-09-17T10:00:01.000Z",
+          checkinEndsAt: "2026-09-17T10:02:01.000Z",
+        }));
+      }
+      return response(snapshot({
+        state: "closed",
+        serverTime: "2026-09-17T10:00:02.000Z",
+        checkinEndsAt: "2026-09-17T10:02:01.000Z",
+      }));
+    });
+
+    render(<LiveProjector sessionId={SESSION_ID} />);
+    await settle();
+    expect(screen.getByText("Në pritje që sesioni të hapet")).toBeTruthy();
+    expect(fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/challenge")))
+      .toHaveLength(0);
+
+    await advance(1_000);
+    expect(screen.getByAltText("QR për check-in")).toBeTruthy();
+    expect(fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/challenge")))
+      .toHaveLength(1);
+
+    await advance(1_000);
+    expect(screen.getByText("Check-in u mbyll")).toBeTruthy();
+    const callsAtClose = fetchMock.mock.calls.length;
+    await advance(10_000);
+    expect(fetchMock.mock.calls).toHaveLength(callsAtClose);
+  });
+
   it("withholds a final total when closure cannot be confirmed", async () => {
     let liveAttempt = 0;
     vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
@@ -296,6 +340,9 @@ describe("staff administration", () => {
           { id: draftId, title: "Pranverë 2027", weekCount: 15, status: "draft" },
         ]);
       }
+      if (url === "/api/class-sessions" && (!init?.method || init.method === "GET")) {
+        return response([]);
+      }
       if (url.endsWith(`/semesters/${draftId}/state`)) {
         return response({ id: draftId, status: "active" });
       }
@@ -366,6 +413,117 @@ describe("staff administration", () => {
     fireEvent.click(screen.getByRole("button", { name: "Krijo sesionin" }));
     await settle();
     expect(fetchMock.mock.calls.some(([url]) => String(url) === "/api/class-sessions")).toBe(true);
+    expect(window.location.pathname + window.location.search).toBe(`/staff?sessionId=${SESSION_ID}`);
+    cleanup();
+    render(await StaffPage({ searchParams: Promise.resolve({
+      sessionId: new URLSearchParams(window.location.search).get("sessionId")!,
+    }) }));
+    await settle();
+    expect(screen.getByText("Ligjërata 1", { selector: "#session-admin-title" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Hap projektorin" }).getAttribute("href"))
+      .toBe(`/staff/project/${SESSION_ID}`);
+  });
+
+  it("captures forms before requests, resets on success, reports success, and refreshes options", async () => {
+    const activeId = "44444444-4444-4444-8444-444444444444";
+    let semesterGets = 0;
+    let sessionGets = 0;
+    let resolveSemester!: (value: Response) => void;
+    let resolveRoster!: (value: Response) => void;
+    const semesterCreated = new Promise<Response>((resolve) => { resolveSemester = resolve; });
+    const rosterImported = new Promise<Response>((resolve) => { resolveRoster = resolve; });
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url === "/api/semesters" && (!init?.method || init.method === "GET")) {
+        semesterGets += 1;
+        return response([{ id: activeId, title: "Vjeshtë 2026", weekCount: 15, status: "active" }]);
+      }
+      if (url === "/api/class-sessions" && (!init?.method || init.method === "GET")) {
+        sessionGets += 1;
+        return response([]);
+      }
+      if (url === "/api/semesters" && init?.method === "POST") {
+        return semesterCreated;
+      }
+      if (url === "/api/roster/import") {
+        return rosterImported;
+      }
+      return response({});
+    });
+
+    render(<SemesterAdmin />);
+    await settle();
+
+    const semesterTitle = screen.getByLabelText("Titulli", { selector: "#semester-title" }) as HTMLInputElement;
+    fireEvent.change(semesterTitle, { target: { value: "Pranverë 2027" } });
+    fireEvent.click(screen.getByRole("button", { name: "Krijo semestrin" }));
+    await settle();
+    expect(semesterTitle.value).toBe("Pranverë 2027");
+    await act(async () => resolveSemester(response({ id: "new", title: "Pranverë 2027" }, 201)));
+    await settle();
+    expect(semesterTitle.value).toBe("");
+    expect(screen.getByText("Semestri u krijua.")).toBeTruthy();
+    expect(semesterGets).toBe(2);
+    expect(sessionGets).toBe(2);
+
+    const semesterSelect = screen.getByLabelText("Semestri", { selector: "select" }) as HTMLSelectElement;
+    const rosterRows = screen.getByLabelText("Student ID, Emri i plotë, Grupi") as HTMLTextAreaElement;
+    fireEvent.change(semesterSelect, { target: { value: activeId } });
+    fireEvent.change(rosterRows, { target: { value: "A-1, Arta Kola, G1" } });
+    fireEvent.click(screen.getByRole("button", { name: "Importo të gjithë rreshtat" }));
+    await settle();
+    expect(rosterRows.value).toBe("A-1, Arta Kola, G1");
+    await act(async () => resolveRoster(response({ rows: [] }, 201)));
+    await settle();
+    expect(rosterRows.value).toBe("");
+    expect(screen.getByText("1 studentë u importuan në një transaksion.")).toBeTruthy();
+    expect(semesterGets).toBe(3);
+    expect(sessionGets).toBe(3);
+  });
+
+  it("lists existing sessions and restores durable private navigation from the URL selection", async () => {
+    const activeId = "44444444-4444-4444-8444-444444444444";
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      const url = String(input);
+      if (url === "/api/semesters") {
+        return response([{ id: activeId, title: "Vjeshtë 2026", weekCount: 15, status: "active" }]);
+      }
+      if (url === "/api/class-sessions") {
+        return response([{
+          id: SESSION_ID,
+          semesterId: activeId,
+          semesterTitle: "Vjeshtë 2026",
+          title: "Ligjërata e vjetër",
+          state: "closed",
+          weekNumber: 3,
+          kind: "lecture",
+          groupName: "G1",
+          checkinEndsAt: "2026-09-17T10:02:00.000Z",
+        }]);
+      }
+      if (url.endsWith(`/class-sessions/${SESSION_ID}/records`)) {
+        return response({
+          session: {
+            id: SESSION_ID,
+            title: "Ligjërata e vjetër",
+            state: "closed",
+            weekNumber: 3,
+            kind: "lecture",
+            groupName: "G1",
+            checkinEndsAt: "2026-09-17T10:02:00.000Z",
+          },
+          records: [],
+        });
+      }
+      return response({});
+    });
+
+    render(await StaffPage({ searchParams: Promise.resolve({ sessionId: SESSION_ID }) }));
+    await settle();
+
+    expect(screen.getByRole("link", { name: "Menaxho Ligjërata e vjetër" }).getAttribute("href"))
+      .toBe(`/staff?sessionId=${SESSION_ID}`);
+    expect(screen.getByText("Ligjërata e vjetër", { selector: "#session-admin-title" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Hap projektorin" }).getAttribute("href"))
       .toBe(`/staff/project/${SESSION_ID}`);
   });
@@ -417,5 +575,145 @@ describe("private staff session", () => {
       "/api/records/22222222-2222-4222-8222-222222222222",
       expect.objectContaining({ method: "PATCH" }),
     );
+  });
+
+  it("refreshes an open roster, preserves edits, and reconciles a concurrent student check-in", async () => {
+    const rosterId = "33333333-3333-4333-8333-333333333333";
+    const recordId = "22222222-2222-4222-8222-222222222222";
+    let recordsGet = 0;
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/records") && (!init?.method || init.method === "GET")) {
+        recordsGet += 1;
+        return response({
+          session: {
+            id: SESSION_ID,
+            title: "Ligjërata 1",
+            state: "open",
+            weekNumber: 1,
+            kind: "lecture",
+            groupName: "G1",
+            checkinEndsAt: "2026-09-17T10:02:00.000Z",
+          },
+          records: [{
+            id: recordsGet === 1 ? null : recordId,
+            rosterId,
+            fullName: "Arta Kola",
+            studentId: "A-1",
+            githubUsername: "student-a",
+            status: recordsGet === 1 ? "absent" : "present",
+            recordedAt: recordsGet === 1 ? null : SERVER_TIME,
+          }],
+        });
+      }
+      return response({ id: recordId, status: "excused" });
+    });
+
+    render(<SessionAdmin sessionId={SESSION_ID} />);
+    await settle();
+    expect(screen.getByText("Pa regjistrim")).toBeTruthy();
+    fireEvent.change(screen.getByLabelText("Statusi për Arta Kola"), {
+      target: { value: "excused" },
+    });
+    fireEvent.change(screen.getByLabelText("Arsyeja për Arta Kola"), {
+      target: { value: "Arsyetim në shqyrtim" },
+    });
+
+    await advance(1_000);
+    expect(recordsGet).toBe(2);
+    expect(screen.queryByText("Pa regjistrim")).toBeNull();
+    expect(screen.getByText("I pranishëm", { selector: "span" })).toBeTruthy();
+    expect((screen.getByLabelText("Statusi për Arta Kola") as HTMLSelectElement).value)
+      .toBe("excused");
+    expect((screen.getByLabelText("Arsyeja për Arta Kola") as HTMLInputElement).value)
+      .toBe("Arsyetim në shqyrtim");
+
+    fireEvent.click(screen.getByRole("button", { name: "Ruaj Arta Kola" }));
+    await settle();
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      `/api/records/${recordId}`,
+      expect.objectContaining({ method: "PATCH" }),
+    );
+  });
+
+  it("reconciles untouched status controls and stops refreshing on confirmed closure", async () => {
+    let reads = 0;
+    vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+      reads += 1;
+      return response({
+        session: { id: SESSION_ID, title: "Ligjërata 1", state: reads < 3 ? "open" : "closed",
+          weekNumber: 1, kind: "lecture", groupName: "G1", checkinEndsAt: null },
+        records: [{ id: "record", rosterId: "roster", fullName: "Arta Kola", studentId: "A-1",
+          githubUsername: "student-a", status: reads === 1 ? "present" : "excused", recordedAt: SERVER_TIME }],
+      });
+    });
+    render(<SessionAdmin sessionId={SESSION_ID} />);
+    await settle();
+    const status = screen.getByLabelText("Statusi për Arta Kola") as HTMLSelectElement;
+    expect(status.value).toBe("present");
+    await advance(1_000);
+    expect(status.value).toBe("excused");
+    await advance(1_000);
+    expect(screen.getByText("Java 1 · G1 · closed")).toBeTruthy();
+    await advance(5_000);
+    expect(reads).toBe(3);
+  });
+
+  it("reloads records when a manual insert races with a student check-in", async () => {
+    const rosterId = "33333333-3333-4333-8333-333333333333";
+    const recordId = "22222222-2222-4222-8222-222222222222";
+    let recordsGet = 0;
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
+      const url = String(input);
+      if (url.endsWith("/records") && (!init?.method || init.method === "GET")) {
+        recordsGet += 1;
+        return response({
+          session: {
+            id: SESSION_ID,
+            title: "Ligjërata 1",
+            state: "open",
+            weekNumber: 1,
+            kind: "lecture",
+            groupName: "G1",
+            checkinEndsAt: "2026-09-17T10:02:00.000Z",
+          },
+          records: [{
+            id: recordsGet === 1 ? null : recordId,
+            rosterId,
+            fullName: "Arta Kola",
+            studentId: "A-1",
+            githubUsername: "student-a",
+            status: recordsGet === 1 ? "absent" : "present",
+            recordedAt: recordsGet === 1 ? null : SERVER_TIME,
+          }],
+        });
+      }
+      if (url.endsWith("/records") && init?.method === "POST") {
+        return response({ error: { code: "record_exists", message: "Attendance record already exists" } }, 409);
+      }
+      return response({ id: recordId, status: "excused" });
+    });
+
+    render(<SessionAdmin sessionId={SESSION_ID} />);
+    await settle();
+    fireEvent.change(screen.getByLabelText("Arsyeja për Arta Kola"), {
+      target: { value: "Shtim manual" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Ruaj Arta Kola" }));
+    await settle();
+
+    expect(recordsGet).toBe(2);
+    expect(screen.getByRole("status").textContent).toContain("rifreskua");
+    fireEvent.change(screen.getByLabelText("Statusi për Arta Kola"), {
+      target: { value: "excused" },
+    });
+    fireEvent.change(screen.getByLabelText("Arsyeja për Arta Kola"), {
+      target: { value: "Korrigjim pas check-in" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Ruaj Arta Kola" }));
+    await settle();
+    expect(vi.mocked(fetch).mock.calls.some(([url, init]) =>
+      String(url) === `/api/records/${recordId}` && init?.method === "PATCH",
+    )).toBe(true);
   });
 });

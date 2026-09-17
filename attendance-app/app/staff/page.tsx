@@ -5,7 +5,9 @@ import { requireCurrentStaff } from "../../lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
-export default async function StaffPage() {
+export default async function StaffPage({ searchParams }: {
+  searchParams?: Promise<{ sessionId?: string | string[] }>;
+} = {}) {
   try {
     await requireCurrentStaff();
   } catch {
@@ -21,6 +23,9 @@ export default async function StaffPage() {
     );
   }
 
+  const params = await searchParams;
+  const sessionId = typeof params?.sessionId === "string" ? params.sessionId : undefined;
+
   return (
     <main className="admin-shell" id="permbajtja-kryesore">
       <header className="admin-page-header">
@@ -28,7 +33,7 @@ export default async function StaffPage() {
         <h1>Paneli i vijueshmërisë</h1>
         <p>Krijo semestrat dhe sesionet, menaxho regjistrin dhe ruaj çdo ndryshim me arsye.</p>
       </header>
-      <SemesterAdmin />
+      <SemesterAdmin key={sessionId} initialSessionId={sessionId} />
     </main>
   );
 }

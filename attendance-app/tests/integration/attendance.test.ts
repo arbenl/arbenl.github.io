@@ -22,7 +22,10 @@ import {
   databaseBootstrapRepository,
 } from "../../app/api/admin/bootstrap/route";
 import { POST as checkInRoute } from "../../app/api/check-in/route";
-import { POST as classSessionCreateRoute } from "../../app/api/class-sessions/route";
+import {
+  GET as classSessionListRoute,
+  POST as classSessionCreateRoute,
+} from "../../app/api/class-sessions/route";
 import { POST as challengeRoute } from "../../app/api/class-sessions/[id]/challenge/route";
 import { GET as liveRoute } from "../../app/api/class-sessions/[id]/live/route";
 import {
@@ -486,6 +489,63 @@ describe("HTTP route contracts", () => {
 });
 
 describe("protected semester and roster management", () => {
+  it("lists existing class sessions for current staff and rechecks revoked membership", async () => {
+    const semester = await createActiveSemester();
+    const first = await attendanceService.createClassSession(professor, {
+      semesterId: semester.id,
+      weekNumber: 1,
+      kind: "lecture",
+      groupName: "G1",
+      title: "Lecture 1",
+    });
+    await attendanceService.createClassSession(professor, {
+      semesterId: semester.id,
+      weekNumber: 2,
+      kind: "lab",
+      groupName: "G1",
+      title: "Lab 2",
+    });
+
+    const otherSemester = await createActiveSemester("Spring 2027");
+    await createOpenSession(otherSemester.id);
+
+    routeSession.current = professor;
+    const allSessions = await classSessionListRoute(new Request("http://attendance.test/api/class-sessions"));
+    expect(await allSessions.json()).toHaveLength(3);
+    const invalid = await classSessionListRoute(new Request("http://attendance.test/api/class-sessions?semesterId=invalid"));
+    expect(invalid.status).toBe(400);
+    const allowed = await classSessionListRoute(new Request(
+      `http://attendance.test/api/class-sessions?semesterId=${semester.id}`,
+    ));
+    expect(allowed.status).toBe(200);
+    expect(await allowed.json()).toEqual([
+      expect.objectContaining({
+        id: first.id,
+        semesterId: semester.id,
+        semesterTitle: "Fall 2026",
+        title: "Lecture 1",
+        state: "draft",
+      }),
+      expect.objectContaining({ title: "Lab 2", state: "draft" }),
+    ]);
+
+    routeSession.current = studentA;
+    const denied = await classSessionListRoute(
+      new Request("http://attendance.test/api/class-sessions"),
+    );
+    expect(denied.status).toBe(403);
+    routeSession.current = null;
+    const anonymous = await classSessionListRoute(new Request("http://attendance.test/api/class-sessions"));
+    expect(anonymous.status).toBe(401);
+
+    await sql`delete from staff`;
+    routeSession.current = professor;
+    const revoked = await classSessionListRoute(
+      new Request("http://attendance.test/api/class-sessions"),
+    );
+    expect(revoked.status).toBe(403);
+  });
+
   it("denies nonstaff mutations, exposes only active semesters to students, and audits explicit state transitions", async () => {
     await expect(
       attendanceService.createSemester(studentA, {
@@ -1243,6 +1303,28 @@ describe("student history", () => {
 });
 
 describe("manual records and CSV evidence", () => {
+  it("reloads a real student check-in after an absent private snapshot and exposes the correction id", async () => {
+    const semester = await createActiveSemester();
+    const student = await importAndActivate(semester.id, studentA, "A-1", "Arta Kola", "G1");
+    const classSession = await createOpenSession(semester.id);
+    routeSession.current = professor;
+    const read = () => sessionRecordsRoute(
+      new Request(`http://attendance.test/api/class-sessions/${classSession.id}/records`),
+      { params: Promise.resolve({ id: classSession.id }) },
+    );
+    expect(await (await read()).json()).toMatchObject({
+      records: [{ rosterId: student.id, id: null, status: "absent" }],
+    });
+    const challenge = await attendanceService.createChallenge(professor, classSession.id, "192.0.2.10");
+    const checkedIn = await attendanceService.checkIn(studentA, { token: challenge.token }, "192.0.2.11");
+    await expect(attendanceService.createManualRecord(professor, classSession.id, {
+      rosterId: student.id, status: "present", reason: "Concurrent staff insert",
+    })).rejects.toMatchObject({ status: 409, code: "record_exists" });
+    expect(await (await read()).json()).toMatchObject({
+      records: [{ rosterId: student.id, id: checkedIn.recordId, status: "present", fullName: "Arta Kola" }],
+    });
+  });
+
   it("returns full private session identities only while staff membership is current", async () => {
     const semester = await createActiveSemester();
     const linked = await importAndActivate(

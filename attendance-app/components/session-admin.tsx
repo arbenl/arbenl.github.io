@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 
 type SessionState = "draft" | "open" | "closed" | "cancelled";
 type AttendanceStatus = "present" | "rejected" | "excused";
@@ -35,7 +35,7 @@ interface SessionAdminProps {
 }
 
 interface ErrorBody {
-  error?: { message?: string };
+  error?: { code?: string; message?: string };
 }
 
 const statusLabels = {
@@ -49,8 +49,12 @@ export function SessionAdmin({ sessionId }: SessionAdminProps) {
   const [error, setError] = useState<string | null>(null);
   const [stateReason, setStateReason] = useState("");
   const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const loadVersion = useRef(0);
 
   const load = useCallback(async () => {
+    const version = ++loadVersion.current;
     try {
       const response = await fetch(`/api/class-sessions/${sessionId}/records`, {
         cache: "no-store",
@@ -59,16 +63,41 @@ export function SessionAdmin({ sessionId }: SessionAdminProps) {
       if (!response.ok) {
         throw new Error((body as ErrorBody).error?.message ?? "Sesioni nuk mund të ngarkohet.");
       }
-      setData(body as RecordsResponse);
-      setError(null);
+      if (version !== loadVersion.current) return null;
+      const records = body as RecordsResponse;
+      setData(records);
+      setLoadError(null);
+      return records.session.state;
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : "Sesioni nuk mund të ngarkohet.");
+      if (version === loadVersion.current) {
+        setLoadError(loadError instanceof Error ? loadError.message : "Sesioni nuk mund të ngarkohet.");
+      }
+      return null;
     }
   }, [sessionId]);
 
   useEffect(() => {
     void Promise.resolve().then(load);
+    return () => { loadVersion.current += 1; };
   }, [load]);
+
+  const sessionState = data?.session.state;
+  useEffect(() => {
+    if (busy || (sessionState !== "draft" && sessionState !== "open")) return;
+    let active = true;
+    let timer: number;
+    async function refresh() {
+      const state = await load();
+      if (active && state !== "closed" && state !== "cancelled") {
+        timer = window.setTimeout(refresh, 1_000);
+      }
+    }
+    timer = window.setTimeout(refresh, 1_000);
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [busy, load, sessionState]);
 
   async function transition(state: Exclude<SessionState, "draft">) {
     if (!stateReason.trim()) {
@@ -76,6 +105,8 @@ export function SessionAdmin({ sessionId }: SessionAdminProps) {
       return;
     }
     setBusy(true);
+    loadVersion.current += 1; // Ignore snapshots started before this mutation.
+    setNotice(null);
     try {
       const response = await fetch(`/api/class-sessions/${sessionId}/state`, {
         method: "PATCH",
@@ -87,6 +118,7 @@ export function SessionAdmin({ sessionId }: SessionAdminProps) {
         throw new Error((body as ErrorBody).error?.message ?? "Gjendja nuk mund të ndryshohet.");
       }
       setStateReason("");
+      setError(null);
       await load();
     } catch (transitionError) {
       setError(transitionError instanceof Error ? transitionError.message : "Ndodhi një gabim.");
@@ -102,9 +134,11 @@ export function SessionAdmin({ sessionId }: SessionAdminProps) {
   ) {
     if (!reason.trim()) {
       setError(`Shkruaj arsyen për ${record.fullName}.`);
-      return;
+      return false;
     }
     setBusy(true);
+    loadVersion.current += 1; // Ignore snapshots started before this mutation.
+    setNotice(null);
     try {
       const response = await fetch(
         record.id
@@ -120,6 +154,14 @@ export function SessionAdmin({ sessionId }: SessionAdminProps) {
       );
       const body = (await response.json()) as { id?: string; status?: AttendanceStatus } | ErrorBody;
       if (!response.ok) {
+        if ((body as ErrorBody).error?.code === "record_exists") {
+          const refreshed = await load();
+          setError(null);
+          if (refreshed) {
+            setNotice("Regjistri u rifreskua pas një check-in. Rishiko dhe ruaj korrigjimin me arsye.");
+          }
+          return false;
+        }
         throw new Error((body as ErrorBody).error?.message ?? "Regjistrimi nuk mund të ruhet.");
       }
       const saved = body as { id?: string; status?: AttendanceStatus };
@@ -130,14 +172,16 @@ export function SessionAdmin({ sessionId }: SessionAdminProps) {
           : item),
       } : current);
       setError(null);
+      return true;
     } catch (recordError) {
       setError(recordError instanceof Error ? recordError.message : "Ndodhi një gabim.");
+      return false;
     } finally {
       setBusy(false);
     }
   }
 
-  if (!data && !error) {
+  if (!data && !error && !loadError) {
     return <p role="status">Duke ngarkuar sesionin…</p>;
   }
 
@@ -175,6 +219,8 @@ export function SessionAdmin({ sessionId }: SessionAdminProps) {
       ) : null}
 
       {error ? <p role="alert">{error}</p> : null}
+      {loadError ? <p role="alert">{loadError}</p> : null}
+      {notice ? <p role="status">{notice}</p> : null}
       {data ? (
         <div className="private-records" role="table" aria-label="Regjistri privat i sesionit">
           <div className="private-record-header" role="row">
@@ -196,16 +242,18 @@ function RecordEditor({
 }: {
   record: PrivateRecord;
   busy: boolean;
-  onSave: (record: PrivateRecord, status: AttendanceStatus, reason: string) => Promise<void>;
+  onSave: (record: PrivateRecord, status: AttendanceStatus, reason: string) => Promise<boolean>;
 }) {
-  const [status, setStatus] = useState<AttendanceStatus>(
-    record.status === "absent" ? "present" : record.status,
-  );
+  const [editedStatus, setEditedStatus] = useState<AttendanceStatus | null>(null);
+  const status = editedStatus ?? (record.status === "absent" ? "present" : record.status);
   const [reason, setReason] = useState("");
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    void onSave(record, status, reason);
+    if (await onSave(record, status, reason)) {
+      setEditedStatus(null);
+      setReason("");
+    }
   }
 
   return (
@@ -214,11 +262,12 @@ function RecordEditor({
       <span role="cell">{record.studentId}</span>
       <span role="cell">{record.githubUsername ? `@${record.githubUsername}` : "Pa lidhje"}</span>
       <div className="record-controls" role="cell">
+        <span>{record.status === "absent" ? "Pa regjistrim" : statusLabels[record.status]}</span>
         <label className="sr-only" htmlFor={`status-${record.rosterId}`}>Statusi për {record.fullName}</label>
         <select
           id={`status-${record.rosterId}`}
           value={status}
-          onChange={(event) => setStatus(event.target.value as AttendanceStatus)}
+          onChange={(event) => setEditedStatus(event.target.value as AttendanceStatus)}
         >
           {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
         </select>
