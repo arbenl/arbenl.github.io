@@ -61,6 +61,12 @@
        ======================================================================== -->
   <nav class="student-subnav" id="student-subnav" aria-label="Navigimi i brendshëm i kursit">
     <div class="student-subnav-inner">
+      <a class="subnav-link active" href="#mission-control">
+        <span>⚡</span> <span>Veprimi i Radhës</span>
+      </a>
+      <a class="subnav-link" href="#templates-hub">
+        <span>📥</span> <span>Shabllonet & PRD</span>
+      </a>
       <a class="subnav-link active" href="#course-overview">
         <span>🚀</span> <span data-i18n="subnav.overview">Përmbledhja & Syllabusi</span>
       </a>
@@ -132,6 +138,159 @@
             <div class="stat-box">
               <div class="stat-label" data-i18n="stats.officeLabel">Konsultat Online</div>
               <div class="stat-val" data-i18n="stats.officeVal">Mërkurë, 15:00 - 16:30</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             MISSION CONTROL: VEPRIMI I RADHËS (Next Action Dashboard)
+             ================================================================== -->
+        <section class="section-block mission-control-block" id="mission-control" aria-labelledby="mission-control-title">
+          <div class="mission-header">
+            <div class="mission-badge">JAVA AKTUALE: JAVË 01 & JAVË 02</div>
+            <h3 id="mission-control-title">⚡ Mission Control: Udhëzuesi i Veprimit të Radhës</h3>
+            <p class="mission-subtitle">Përgjigjet e menjëhershme për studentin: ku jemi, çfarë dorëzohet dhe si ecet përpara.</p>
+          </div>
+
+          <div class="mission-grid">
+            <!-- Box 1: Çfarë bëj këtë javë -->
+            <div class="mission-card action-card">
+              <div class="card-icon">🎯</div>
+              <h4>1. Çfarë bëj këtë javë?</h4>
+              <ul class="mission-checklist">
+                <li><strong>Në Ushtrime:</strong> Cikli 45-minutësh "First Win" (Repo ➔ Commit ➔ Vercel Deploy ➔ Celular).</li>
+                <li><strong>Pas Ligjëratës:</strong> Zhvilloni 3 biseda të shkurtra me kolegë rreth një problemi real udhëtimi/shpenzimi.</li>
+                <li><strong>Aplikoni:</strong> GitHub Student Pack për Copilot Pro falas.</li>
+              </ul>
+              <a class="btn primary btn-sm" href="#setup">Hap Hapat e Setup-it ➔</a>
+            </div>
+
+            <!-- Box 2: Çfarë dorëzoj deri të premten -->
+            <div class="mission-card deadline-card">
+              <div class="card-icon">📅</div>
+              <h4>2. Çfarë dorëzoj deri të premten?</h4>
+              <div class="deadline-badge">AFATI: E Premte, ora 23:59</div>
+              <ul class="mission-checklist">
+                <li><strong>Faqen e Parë Live:</strong> Linkun tuaj <code>*.vercel.app</code> nga ushtrimet e para.</li>
+                <li><strong>Exit Ticket:</strong> Formulari me 3 pyetjet e shpejta të orës së parë.</li>
+                <li><strong>Drafti i PRD-së:</strong> Dokumenti 1-faqësh me idenë tuaj për Javën 2.</li>
+              </ul>
+              <a class="btn secondary btn-sm" href="#templates-hub">Shkarko Shabllonin PRD ➔</a>
+            </div>
+
+            <!-- Box 3: Ku kërkoj ndihmë -->
+            <div class="mission-card help-card">
+              <div class="card-icon">🤝</div>
+              <h4>3. Ku kërkoj ndihmë?</h4>
+              <ul class="mission-checklist">
+                <li><strong>Asistenti në Laborator:</strong> Protokolli 10-minutësh i zgjidhjes pa ngecje teknike.</li>
+                <li><strong>Konsultat e Profesorit:</strong> Çdo të mërkurë, 15:00 - 16:30 (Online / Kampus).</li>
+                <li><strong>Protokolli Fallback:</strong> Nëse vonohet Copilot, vazhdohet me editorin në shfletues.</li>
+              </ul>
+              <a class="btn secondary btn-sm" href="#policies">Rregullorja e Kursit ➔</a>
+            </div>
+
+            <!-- Box 4: Pjesëmarrja & Check-in -->
+            <div class="mission-card checkin-card">
+              <div class="card-icon">📍</div>
+              <h4>4. Pjesëmarrja ime (Check-in)</h4>
+              <p class="checkin-note">Regjistrimi i pranisë bëhet me QR Code në fillim të çdo ligjërate në sistemin Supabase.</p>
+              <div class="checkin-status-box">
+                <span class="status-indicator live"></span>
+                <span>Sesioni 01: <strong>I HAPUR PËR CHECK-IN</strong></span>
+              </div>
+              <a class="btn emerald btn-sm" href="#checkin">Shëno Praninë me QR ➔</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             RESOURCE HUB: SHABLLONET DHE DOKUMENTET ZYRTARE (DOWNLOADS)
+             ================================================================== -->
+        <section class="section-block templates-hub-block" id="templates-hub" aria-labelledby="templates-hub-title">
+          <div class="section-head-clean">
+            <span class="eyebrow">Dokumentacioni Zyrtar • Shkarkime Direkte</span>
+            <h3 id="templates-hub-title">📥 Qendra e Shablloneve Inxhinierike (Templates Hub)</h3>
+            <p>Çdo shabllon është i standardizuar me kritere rigoroze pranimi. Shkarkoni, plotësoni në Markdown dhe dorëzoni në GitHub:</p>
+          </div>
+
+          <div class="templates-grid">
+            <!-- Template 1: PRD -->
+            <div class="template-card">
+              <div class="template-icon">📄</div>
+              <div class="template-info">
+                <h4>PRD 1-Faqësh (Product Requirements Document)</h4>
+                <p>Përcakton problemin real, 3 bisedat e vëzhgimit, hipotezën e vlerës dhe kriteret e pranimit. Përfshin shembullin e plotësuar AAB RideShare.</p>
+                <div class="template-meta">Format: Markdown (.md) • Përdoret në Javën 2</div>
+              </div>
+              <div class="template-action">
+                <a class="btn primary btn-sm" href="templates/PRD_Template_AAB_Mobile_2026.md" download>Shkarko PRD Template</a>
+              </div>
+            </div>
+
+            <!-- Template 2: Scope Contract -->
+            <div class="template-card">
+              <div class="template-icon">⚖️</div>
+              <div class="template-info">
+                <h4>Kontrata e Fushëveprimit (Scope Contract)</h4>
+                <p>Kufizon MVP-në në maksimumi 3 aftësi kyçe dhe deklaron shprehimisht veçoritë e përjashtuara (pa pagesa, pa harta GPS) për të garantuar suksesin.</p>
+                <div class="template-meta">Format: Markdown (.md) • Dorëzohet në Javën 3</div>
+              </div>
+              <div class="template-action">
+                <a class="btn secondary btn-sm" href="templates/Scope_Contract_Template.md" download>Shkarko Scope Contract</a>
+              </div>
+            </div>
+
+            <!-- Template 3: AI Note -->
+            <div class="template-card">
+              <div class="template-icon">🤖</div>
+              <div class="template-info">
+                <h4>Shënimi i Përdorimit dhe Verifikimit të AI-së</h4>
+                <p>Formulari i detyrueshëm për çdo detyrë: çfarë e pyetët Copilot-in, çfarë kodi propozoi, si e modifikuat dhe si e testuat në telefon.</p>
+                <div class="template-meta">Format: Markdown (.md) • Bashkëngjitet në çdo PR</div>
+              </div>
+              <div class="template-action">
+                <a class="btn secondary btn-sm" href="templates/AI_Usage_Verification_Note.md" download>Shkarko AI Note</a>
+              </div>
+            </div>
+
+            <!-- Template 4: Exit Ticket -->
+            <div class="template-card">
+              <div class="template-icon">🎟️</div>
+              <div class="template-info">
+                <h4>Exit Ticket: Ligjërata 1 (2 Minuta)</h4>
+                <p>3 pyetjet e shpejta të mbylljes së orës së parë: Problemi i vëzhguar, përdoruesi me dhimbje dhe 1 veçori e përjashtuar nga MVP.</p>
+                <div class="template-meta">Format: Markdown (.md) • Dorëzohet në Javën 1</div>
+              </div>
+              <div class="template-action">
+                <a class="btn secondary btn-sm" href="templates/Exit_Ticket_Lecture1.md" download>Shkarko Exit Ticket</a>
+              </div>
+            </div>
+
+            <!-- Template 5: Lab 1 Worksheet -->
+            <div class="template-card highlight-card">
+              <div class="template-icon">🧪</div>
+              <div class="template-info">
+                <h4>Fleta e Punës: Ushtrimet 1 ("First Win në 45 Minuta")</h4>
+                <p>Udhëzuesi i plotë laboratorik nga repo template te publikimi live në Vercel, së bashku me protokollin 10-minutësh të asistentit.</p>
+                <div class="template-meta">Format: Markdown (.md) • Përdoret në Ushtrimet 1</div>
+              </div>
+              <div class="template-action">
+                <a class="btn emerald btn-sm" href="templates/Lab1_First_Win_Worksheet_45min.md" download>Shkarko Fletën e Ushtrimeve</a>
+              </div>
+            </div>
+
+            <!-- Template 6: Prezantimi Zyrtar PPTX -->
+            <div class="template-card">
+              <div class="template-icon">📊</div>
+              <div class="template-info">
+                <h4>Prezantimi Zyrtar i Ligjëratës 1 (21 Slajde Master)</h4>
+                <p>Skedar i plotë PowerPoint në format widescreen 16:9 me skicën e karriges, skicën e RideShare, arkitekturën, stakun dhe rregullat e kursit.</p>
+                <div class="template-meta">Format: PowerPoint (.pptx) • 21 Slajde me Temë Obsidian</div>
+              </div>
+              <div class="template-action">
+                <a class="btn primary btn-sm" href="Jave1_Hyrje_Nextjs_PWA_Copilot_2026.pptx" download>Shkarko Prezantimin PPTX</a>
+              </div>
             </div>
           </div>
         </section>
