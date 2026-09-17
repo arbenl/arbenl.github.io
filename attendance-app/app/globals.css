@@ -583,3 +583,285 @@ h1 {
     gap: 2rem;
   }
 }
+
+/* Shared Student Zone visual language */
+:root {
+  color-scheme: dark;
+  --portal-bg: #090d16;
+  --portal-panel: #111827;
+  --portal-panel-raised: #152238;
+  --portal-input: #1b2438;
+  --portal-border: #293449;
+  --portal-border-strong: #526078;
+  --portal-text: #f8fafc;
+  --portal-muted: #cbd5e1;
+  --portal-dim: #94a3b8;
+  --portal-primary: #4f46e5;
+  --portal-primary-hover: #4338ca;
+  --portal-cyan: #38bdf8;
+  --portal-green: #10b981;
+  background: var(--portal-bg);
+  color: var(--portal-text);
+}
+
+body {
+  background:
+    radial-gradient(circle at 88% 4%, rgb(79 70 229 / 18%), transparent 30rem),
+    radial-gradient(circle at 8% 88%, rgb(16 185 129 / 9%), transparent 28rem),
+    var(--portal-bg);
+  color: var(--portal-text);
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--portal-border);
+  background: rgb(9 13 22 / 92%);
+  backdrop-filter: blur(16px);
+}
+
+.app-header-inner {
+  display: flex;
+  width: min(100% - 2rem, 88rem);
+  min-height: 4.25rem;
+  margin-inline: auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.app-brand,
+.app-nav,
+.home-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-brand {
+  min-width: 0;
+  color: var(--portal-text);
+  text-decoration: none;
+}
+
+.aab-mark {
+  display: grid;
+  min-width: 3.25rem;
+  min-height: 2.25rem;
+  place-items: center;
+  border: 1px solid rgb(235 33 40 / 55%);
+  border-radius: 0.55rem;
+  background: rgb(235 33 40 / 14%);
+  color: #ff7378;
+  font-size: 0.84rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.app-brand-copy {
+  display: grid;
+  min-width: 0;
+}
+
+.app-brand-copy strong {
+  overflow: hidden;
+  font-size: 0.92rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-brand-copy small {
+  color: var(--portal-dim);
+  font-size: 0.72rem;
+}
+
+.app-nav a,
+.secondary-link {
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--portal-border);
+  border-radius: 999px;
+  color: var(--portal-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.app-nav a:hover,
+.secondary-link:hover {
+  border-color: #6366f1;
+  background: var(--portal-input);
+  color: var(--portal-text);
+}
+
+.page-shell {
+  min-height: calc(100vh - 4.25rem);
+}
+
+.status-card,
+.admin-section {
+  border-color: var(--portal-border);
+  background: linear-gradient(145deg, rgb(21 34 56 / 96%), rgb(17 24 39 / 96%));
+  box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 35%);
+}
+
+.status-card {
+  border-radius: 1.25rem;
+}
+
+.status-card::before {
+  display: block;
+  width: 3.5rem;
+  height: 0.25rem;
+  margin-bottom: 1.5rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--portal-primary), var(--portal-cyan));
+  content: "";
+}
+
+.eyebrow,
+.projector-shell .eyebrow {
+  color: #a5b4fc;
+}
+
+.status-card > p:not(.eyebrow),
+.form-guidance,
+.admin-page-header > p:last-child,
+.session-admin .admin-heading p,
+.semester-row span,
+.private-record-header,
+.history-list li span,
+.history-totals dt {
+  color: var(--portal-muted);
+}
+
+.home-actions {
+  flex-wrap: wrap;
+  margin-top: 1.75rem;
+}
+
+.home-actions .primary-action,
+.home-actions .secondary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.student-form input,
+.student-form select,
+.admin-form input,
+.admin-form select,
+.admin-form textarea,
+.semester-row input,
+.session-actions input,
+.record-controls input,
+.record-controls select {
+  border-color: var(--portal-border-strong);
+  background: var(--portal-input);
+  color: var(--portal-text);
+}
+
+.student-card button,
+.primary-action,
+.admin-section button,
+.admin-link {
+  border-color: #6366f1;
+  background: var(--portal-primary);
+  color: #ffffff;
+  box-shadow: 0 0.4rem 1rem rgb(79 70 229 / 25%);
+}
+
+.student-card button:hover,
+.primary-action:hover,
+.admin-section button:hover,
+.admin-link:hover {
+  background: var(--portal-primary-hover);
+}
+
+.admin-section .secondary-action {
+  border-color: var(--portal-border-strong);
+  background: #253147;
+  color: var(--portal-text);
+}
+
+.admin-message {
+  border: 1px solid rgb(56 189 248 / 35%);
+  background: rgb(56 189 248 / 12%);
+  color: #bae6fd;
+}
+
+.semester-row,
+.history-totals div,
+.attendance-status {
+  background: var(--portal-input);
+}
+
+.private-record-row,
+.history-list li {
+  border-color: var(--portal-border);
+}
+
+.status-present,
+.success-mark {
+  background: rgb(16 185 129 / 18%);
+  color: #6ee7b7 !important;
+}
+
+.projector-shell {
+  background:
+    radial-gradient(circle at 20% 10%, rgb(79 70 229 / 22%), transparent 32rem),
+    var(--portal-bg);
+}
+
+.projector-countdown,
+.projector-list li::marker {
+  color: var(--portal-cyan);
+}
+
+.projector-list li {
+  border: 1px solid var(--portal-border);
+  background: var(--portal-panel-raised);
+}
+
+body:has(.projector-shell) .app-header {
+  display: none;
+}
+
+:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 4px;
+}
+
+@media (max-width: 42rem) {
+  .app-header-inner {
+    width: min(100% - 1rem, 88rem);
+    min-height: 3.75rem;
+  }
+
+  .app-brand-copy small,
+  .app-nav a:first-child {
+    display: none;
+  }
+
+  .app-brand-copy strong {
+    max-width: 44vw;
+    font-size: 0.78rem;
+  }
+
+  .aab-mark {
+    min-width: 2.7rem;
+    min-height: 2rem;
+    font-size: 0.72rem;
+  }
+
+  .app-nav a {
+    padding-inline: 0.7rem;
+    font-size: 0.74rem;
+  }
+
+  .home-actions > * {
+    width: 100%;
+  }
+}
