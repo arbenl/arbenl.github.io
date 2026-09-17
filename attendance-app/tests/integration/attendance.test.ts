@@ -30,6 +30,7 @@ import { PATCH as classSessionStateRoute } from "../../app/api/class-sessions/[i
 import { PATCH as correctRecordRoute } from "../../app/api/records/[id]/route";
 import { POST as activateRoute } from "../../app/api/roster/activate/route";
 import { POST as rosterImportRoute } from "../../app/api/roster/import/route";
+import { GET as studentHistoryRoute } from "../../app/api/student/history/route";
 import { GET as semesterExportRoute } from "../../app/api/semesters/[id]/export/route";
 import { PATCH as semesterStateRoute } from "../../app/api/semesters/[id]/state/route";
 import { POST as semesterCreateRoute } from "../../app/api/semesters/route";
@@ -1153,6 +1154,88 @@ describe("challenge acceptance and live attendance", () => {
     await expect(
       attendanceService.getLiveSession(studentA, classSession.id, "192.0.2.14"),
     ).rejects.toMatchObject({ status: 403 });
+  });
+});
+
+describe("student history", () => {
+  it("derives identity from the session and ignores client parameters that name another student", async () => {
+    const semester = await createActiveSemester();
+    await importAndActivate(semester.id, studentA, "A-1", "Arta Kola", "G1");
+    await importAndActivate(semester.id, studentB, "B-1", "Besa Dema", "G1");
+
+    const lecture = await createOpenSession(semester.id);
+    const lectureChallenge = await attendanceService.createChallenge(
+      professor,
+      lecture.id,
+      "192.0.2.60",
+    );
+    await attendanceService.checkIn(
+      studentA,
+      { token: lectureChallenge.token },
+      "192.0.2.61",
+    );
+
+    const lab = await attendanceService.createClassSession(professor, {
+      semesterId: semester.id,
+      weekNumber: 2,
+      kind: "lab",
+      groupName: "G1",
+      title: "Lab 2",
+    });
+    await attendanceService.transitionClassSession(professor, lab.id, {
+      state: "open",
+      reason: "Lab started",
+    });
+    const labChallenge = await attendanceService.createChallenge(
+      professor,
+      lab.id,
+      "192.0.2.62",
+    );
+    await attendanceService.checkIn(
+      studentB,
+      { token: labChallenge.token },
+      "192.0.2.63",
+    );
+
+    routeSession.current = studentA;
+    const ordinary = await studentHistoryRoute(
+      new Request("http://attendance.test/api/student/history"),
+    );
+    const attemptedOverride = await studentHistoryRoute(
+      new Request(
+        "http://attendance.test/api/student/history?githubId=300&userId=student-b",
+      ),
+    );
+    expect(ordinary.status).toBe(200);
+    expect(attemptedOverride.status).toBe(200);
+    const expected = {
+      sessions: expect.arrayContaining([
+        expect.objectContaining({
+          id: lecture.id,
+          kind: "lecture",
+          status: "present",
+        }),
+        expect.objectContaining({
+          id: lab.id,
+          kind: "lab",
+          status: "absent",
+        }),
+      ]),
+      totals: {
+        sessions: 2,
+        present: 1,
+        excused: 0,
+        rejected: 0,
+        absent: 1,
+      },
+    };
+    const body = await ordinary.json();
+    const overriddenBody = await attemptedOverride.json();
+    expect(body).toEqual(expected);
+    expect(overriddenBody).toEqual(body);
+    expect(JSON.stringify(body)).not.toContain("Besa Dema");
+    expect(JSON.stringify(body)).not.toContain("B-1");
+    expect(JSON.stringify(body)).not.toContain("student-b");
   });
 });
 

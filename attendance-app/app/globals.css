@@ -77,3 +77,180 @@ h1 {
   font-size: clamp(1rem, 2.5vw, 1.125rem);
   line-height: 1.65;
 }
+
+.student-card {
+  overflow-wrap: anywhere;
+}
+
+.student-card h1 {
+  margin-bottom: 1.5rem;
+}
+
+.student-card h2 {
+  margin-block: 0 0.5rem;
+}
+
+.student-stack,
+.student-form {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.student-form label {
+  font-weight: 700;
+}
+
+.form-guidance {
+  margin: 0 0 0.5rem;
+  color: #4b596c;
+  line-height: 1.55;
+}
+
+.student-control,
+.student-stack button,
+.student-form input,
+.student-form select,
+.student-form button {
+  min-height: 44px;
+  max-width: 100%;
+  border: 1px solid #aeb8c7;
+  border-radius: 0.6rem;
+  font: inherit;
+}
+
+.student-form input,
+.student-form select {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  background: #ffffff;
+  color: inherit;
+}
+
+.student-card button,
+.primary-action {
+  padding: 0.65rem 1rem;
+  border-color: #24549b;
+  background: #315da8;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.student-card button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.check-in-success {
+  display: grid;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.check-in-success > * {
+  margin: 0;
+}
+
+.success-mark {
+  display: grid;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-inline: auto;
+  place-items: center;
+  border-radius: 50%;
+  background: #d9f4df;
+  color: #176b2c;
+  font-size: 2rem;
+}
+
+.history-totals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr));
+  gap: 0.75rem;
+  margin-block: 0 1.5rem;
+}
+
+.history-totals div {
+  min-width: 0;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: #eef2f7;
+}
+
+.history-totals dt {
+  color: #4b596c;
+  font-size: 0.8rem;
+}
+
+.history-totals dd {
+  margin: 0.25rem 0 0;
+  font-weight: 700;
+}
+
+.history-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid #d8dee8;
+  border-radius: 0.75rem;
+}
+
+.history-list li > div {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.history-list li span {
+  color: #4b596c;
+}
+
+.history-semester {
+  font-size: 0.8rem;
+}
+
+.attendance-status {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: #eef2f7;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.status-present {
+  background: #d9f4df;
+  color: #176b2c !important;
+}
+
+@media (max-width: 30rem) {
+  .page-shell {
+    width: min(100% - 1rem, 48rem);
+    padding-block: 1rem;
+  }
+
+  .status-card {
+    padding: 1rem;
+  }
+
+  .history-totals {
+    grid-template-columns: 1fr;
+  }
+
+  .history-list li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

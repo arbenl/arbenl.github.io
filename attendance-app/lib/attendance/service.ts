@@ -4,6 +4,7 @@ import {
   and,
   asc,
   eq,
+  inArray,
   isNull,
   sql,
 } from "drizzle-orm";
@@ -327,6 +328,75 @@ async function listSemesters(session: Session | null) {
     .orderBy(asc(semesters.createdAt), asc(semesters.id));
 
   return membership ? query : query.where(eq(semesters.status, "active"));
+}
+
+async function getStudentHistory(session: Session | null) {
+  const db = await database();
+  const actor = await requireActor(db, session);
+  const rows = await db
+    .select({
+      id: classSessions.id,
+      semesterTitle: semesters.title,
+      title: classSessions.title,
+      weekNumber: classSessions.weekNumber,
+      kind: classSessions.kind,
+      status: attendanceRecords.status,
+      scannedAt: attendanceRecords.scannedAt,
+      verifiedAt: attendanceRecords.verifiedAt,
+    })
+    .from(roster)
+    .innerJoin(semesters, eq(semesters.id, roster.semesterId))
+    .innerJoin(
+      classSessions,
+      and(
+        eq(classSessions.semesterId, roster.semesterId),
+        eq(classSessions.groupName, roster.groupName),
+      ),
+    )
+    .leftJoin(
+      attendanceRecords,
+      and(
+        eq(attendanceRecords.sessionId, classSessions.id),
+        eq(attendanceRecords.rosterId, roster.id),
+      ),
+    )
+    .where(
+      and(
+        eq(roster.userId, actor.userId),
+        inArray(classSessions.state, ["open", "closed"]),
+      ),
+    )
+    .orderBy(
+      asc(semesters.createdAt),
+      asc(classSessions.weekNumber),
+      asc(classSessions.createdAt),
+      asc(classSessions.id),
+    );
+
+  const sessions = rows.map((row) => ({
+    id: row.id,
+    semesterTitle: row.semesterTitle,
+    title: row.title,
+    weekNumber: row.weekNumber,
+    kind: row.kind as "lecture" | "lab",
+    status: (row.status ?? "absent") as AttendanceStatus | "absent",
+    recordedAt:
+      row.scannedAt || row.verifiedAt
+        ? toIso(row.scannedAt ?? row.verifiedAt ?? "")
+        : null,
+  }));
+  const totals = {
+    sessions: sessions.length,
+    present: 0,
+    excused: 0,
+    rejected: 0,
+    absent: 0,
+  };
+  for (const item of sessions) {
+    totals[item.status] += 1;
+  }
+
+  return { sessions, totals };
 }
 
 async function transitionSemester(
@@ -1181,6 +1251,7 @@ export const attendanceService = {
   createManualRecord,
   createSemester,
   exportSemester,
+  getStudentHistory,
   getLiveSession,
   importRoster,
   listSemesters,
