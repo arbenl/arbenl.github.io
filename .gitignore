@@ -4,3 +4,4 @@ arben_aab_site/
 
 node_modules/
 supabase/.temp/
+/.worktrees/
