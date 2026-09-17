@@ -2,16 +2,16 @@
 <html lang="sq">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Programimi për Pajisje Mobile (2026/2027) — Prof. Asoc. Arben Lila | Kolegji AAB</title>
   <meta name="description" content="Portali zyrtar i lëndës Programimi për Pajisje Mobile (2026/2027) në Kolegjin AAB: 15 javët e unifikuara të ligjëratave dhe laboratorëve, Dev Starter Pack, Supabase dhe Vercel PWA.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="assets/portal.css?v=22fa2477799a">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
 </head>
 <body>
+  <a class="portal-skip" href="#student-start">Kalo te veprimet e studentit</a>
 
   <!-- ========================================================================
        TOP HEADER ME DUAL-MODE SEGMENTED CONTROLLER & LANGUAGE SWITCHER
@@ -20,7 +20,7 @@
     <div class="header-inner">
       <div class="brand-area">
         <a href="https://aab-edu.net/" target="_blank" rel="noopener" class="aab-brand-badge" title="Kolegji AAB">
-          <img src="img/aab_logo_dark.png" alt="Kolegji AAB" class="aab-logo-img">
+          <img src="img/aab_logo_dark.png" alt="Kolegji AAB" class="aab-logo-img" width="410" height="81" decoding="async">
         </a>
         <div class="brand-divider"></div>
         <div class="brand-text">
@@ -31,12 +31,12 @@
 
       <!-- Segmented View Switcher (Desktop & Tablet) -->
       <div class="view-switcher" role="tablist" aria-label="Zgjedhja e pamjes">
-        <button class="view-btn active" id="btn-view-student" onclick="setView('student')" role="tab" aria-selected="true">
+        <button class="view-btn active" id="btn-view-student" data-view="student" role="tab" aria-selected="true">
           <span>🎓</span>
           <span data-i18n="header.viewStudent">Zona e Studentëve</span>
           <span class="badge-pill">2026/2027</span>
         </button>
-        <button class="view-btn" id="btn-view-profile" onclick="setView('profile')" role="tab" aria-selected="false">
+        <button class="view-btn" id="btn-view-profile" data-view="profile" role="tab" aria-selected="false">
           <span>👤</span>
           <span data-i18n="header.viewProfile">Profili & Lidershipi</span>
         </button>
@@ -45,8 +45,8 @@
       <!-- Header Actions -->
       <div class="header-actions">
         <div class="lang-switch" role="group" aria-label="Language Selector">
-          <button class="lang-btn active" id="btn-lang-sq" onclick="setLanguage('sq')">SQ</button>
-          <button class="lang-btn" id="btn-lang-en" onclick="setLanguage('en')">EN</button>
+          <button class="lang-btn active" id="btn-lang-sq" data-language="sq">SQ</button>
+          <button class="lang-btn" id="btn-lang-en" data-language="en">EN</button>
         </div>
         <a class="archive-btn" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/mcc-2026.html" target="_blank" rel="noopener" title="Arkiva e kurseve të kaluara">
           <span>📦</span>
@@ -61,19 +61,19 @@
        ======================================================================== -->
   <nav class="student-subnav" id="student-subnav" aria-label="Navigimi i brendshëm i kursit">
     <div class="student-subnav-inner">
-      <a class="subnav-link active" href="#mission-control">
+      <a class="subnav-link active" href="#student-start">
         <span>⚡</span> <span>Veprimi i Radhës</span>
       </a>
       <a class="subnav-link" href="#templates-hub">
         <span>📥</span> <span>Shabllonet & PRD</span>
       </a>
-      <a class="subnav-link active" href="#course-overview">
+      <a class="subnav-link" href="#course-overview">
         <span>🚀</span> <span data-i18n="subnav.overview">Përmbledhja & Syllabusi</span>
       </a>
       <a class="subnav-link" href="#setup">
         <span>🛠️</span> <span data-i18n="subnav.setup">Dev Starter Pack (Javë 1)</span>
       </a>
-      <a class="subnav-link" href="#checkin">
+      <a class="subnav-link" href="attendance.html">
         <span>📍</span> <span data-i18n="subnav.checkin">Check-In Pjesëmarrja</span>
       </a>
       <a class="subnav-link" href="#curriculum">
@@ -95,6 +95,17 @@
     <div id="view-student" class="view-panel active">
       <div class="container">
         
+        <section id="student-start" class="student-start" aria-labelledby="student-start-title" tabindex="-1">
+          <div><span class="eyebrow">PORTALI I STUDENTIT · 2026/2027</span>
+          <h2 id="student-start-title">Gati për orën e sotme?</h2>
+          <p>Materialet, detyrat dhe vijueshmëria në një vend.</p></div>
+          <div class="student-shortcuts">
+            <a href="attendance.html"><span>01 · VIJUESHMËRIA</span><strong>Regjistrohu në orë ↗</strong><small>Hyr para skanimit të QR-së</small></a>
+            <a href="#curriculum"><span>02 · MATERIALET</span><strong>Ligjërata dhe ushtrime ↓</strong><small>Zgjidh javën e kursit</small></a>
+            <a href="#templates-hub"><span>03 · DORËZIMET</span><strong>Detyrat dhe shabllonet ↓</strong><small>PRD, Exit Ticket dhe laboratori</small></a>
+          </div>
+          <div class="week-jump"><label for="week-jump">Hap javën</label><select id="week-jump"><option value="week-1">Java 01</option><option value="week-2">Java 02</option><option value="week-3">Java 03</option><option value="week-4">Java 04</option><option value="week-5">Java 05</option><option value="week-6">Java 06</option><option value="week-7">Java 07</option><option value="week-8">Java 08</option><option value="week-9">Java 09</option><option value="week-10">Java 10</option><option value="week-11">Java 11</option><option value="week-12">Java 12</option><option value="week-13">Java 13</option><option value="week-14">Java 14</option><option value="week-15">Java 15</option></select><button class="btn secondary" id="open-week">Hap materialet →</button></div>
+        </section>
         <!-- Course Hero Section -->
         <section class="course-hero" id="course-overview" aria-labelledby="course-hero-title">
           <div class="hero-tag-row">
@@ -147,7 +158,7 @@
              ================================================================== -->
         <section class="section-block mission-control-block" id="mission-control" aria-labelledby="mission-control-title">
           <div class="mission-header">
-            <div class="mission-badge">JAVA AKTUALE: JAVË 01 & JAVË 02</div>
+            <div class="mission-badge">FILLIMI I KURSIT · JAVËT 01 & 02</div>
             <h3 id="mission-control-title">⚡ Mission Control: Udhëzuesi i Veprimit të Radhës</h3>
             <p class="mission-subtitle">Përgjigjet e menjëhershme për studentin: ku jemi, çfarë dorëzohet dhe si ecet përpara.</p>
           </div>
@@ -160,7 +171,7 @@
               <ul class="mission-checklist">
                 <li><strong>Në Ushtrime:</strong> Cikli 45-minutësh "First Win" (Repo ➔ Commit ➔ Vercel Deploy ➔ Celular).</li>
                 <li><strong>Pas Ligjëratës:</strong> Zhvilloni 3 biseda të shkurtra me kolegë rreth një problemi real udhëtimi/shpenzimi.</li>
-                <li><strong>Aplikoni:</strong> GitHub Student Pack për Copilot Pro falas.</li>
+                <li><strong>Aplikoni:</strong> GitHub Student Pack për Copilot Student pas verifikimit nga GitHub Education.</li>
               </ul>
               <a class="btn primary btn-sm" href="#setup">Hap Hapat e Setup-it ➔</a>
             </div>
@@ -168,8 +179,8 @@
             <!-- Box 2: Çfarë dorëzoj deri të premten -->
             <div class="mission-card deadline-card">
               <div class="card-icon">📅</div>
-              <h4>2. Çfarë dorëzoj deri të premten?</h4>
-              <div class="deadline-badge">AFATI: E Premte, ora 23:59</div>
+              <h4>2. Çfarë duhet të dorëzoj?</h4>
+              <div class="deadline-badge">AFATI: Sipas njoftimit të pedagogut</div>
               <ul class="mission-checklist">
                 <li><strong>Faqen e Parë Live:</strong> Linkun tuaj <code>*.vercel.app</code> nga ushtrimet e para.</li>
                 <li><strong>Exit Ticket:</strong> Formulari me 3 pyetjet e shpejta të orës së parë.</li>
@@ -194,12 +205,11 @@
             <div class="mission-card checkin-card">
               <div class="card-icon">📍</div>
               <h4>4. Pjesëmarrja ime (Check-in)</h4>
-              <p class="checkin-note">Regjistrimi i pranisë bëhet me QR Code në fillim të çdo ligjërate në sistemin Supabase.</p>
+              <p class="checkin-note">Skanoni QR në projektor gjatë ligjëratës ose ushtrimeve. Skanimi regjistron menjëherë praninë për atë orë.</p>
               <div class="checkin-status-box">
-                <span class="status-indicator live"></span>
-                <span>Sesioni 01: <strong>I HAPUR PËR CHECK-IN</strong></span>
+                <span>Gjendjen e sesionit e kontrolloni në panelin e vijueshmërisë.</span>
               </div>
-              <a class="btn emerald btn-sm" href="#checkin">Shëno Praninë me QR ➔</a>
+              <a class="btn emerald btn-sm" href="attendance.html">Hap Vijueshmërinë ➔</a>
             </div>
           </div>
         </section>
@@ -284,12 +294,12 @@
             <div class="template-card">
               <div class="template-icon">📊</div>
               <div class="template-info">
-                <h4>Prezantimi Zyrtar i Ligjëratës 1 (21 Slajde Master)</h4>
-                <p>Skedar i plotë PowerPoint në format widescreen 16:9 me skicën e karriges, skicën e RideShare, arkitekturën, stakun dhe rregullat e kursit.</p>
-                <div class="template-meta">Format: PowerPoint (.pptx) • 21 Slajde me Temë Obsidian</div>
+                <h4>Ligjërata 1: Aplikacioni juaj për një biznes real</h4>
+                <p>Prezantimi me logon e AAB-së, projektin Next.js për një biznes real, rezultatet e semestrit dhe mënyrën e zhvillimit të ushtrimeve.</p>
+                <div class="template-meta">Format: PowerPoint (.pptx) • 29 slajde • Përditësuar më 17.09.2026</div>
               </div>
               <div class="template-action">
-                <a class="btn primary btn-sm" href="Jave1_Hyrje_Nextjs_PWA_Copilot_2026.pptx" download>Shkarko Prezantimin PPTX</a>
+                <a class="btn primary btn-sm" href="materials/lectures/ligjerata-01-aab-biznes-real-2026-v2.pptx" download>Shkarko Prezantimin PPTX</a>
               </div>
             </div>
           </div>
@@ -310,7 +320,7 @@
                 <span class="step-num">1</span>
                 <div class="step-title">
                   <h4 data-i18n="setup.step1Title">GitHub Student Developer Pack</h4>
-                  <span data-i18n="setup.step1Sub">Përfitoni GitHub Copilot Pro Falas</span>
+                  <span data-i18n="setup.step1Sub">Përfitoni GitHub Copilot Student Falas</span>
                 </div>
               </div>
               <p class="step-desc" data-i18n="setup.step1Desc">
@@ -335,7 +345,7 @@
               </p>
               <div class="code-snippet">
                 <code>code --install-extension GitHub.copilot</code>
-                <button class="copy-btn" onclick="copyCommand(this, 'code --install-extension GitHub.copilot')" data-i18n="setup.copyBtn">Kopjo</button>
+                <button class="copy-btn" data-copy="code --install-extension GitHub.copilot" data-i18n="setup.copyBtn">Kopjo</button>
               </div>
             </div>
 
@@ -353,7 +363,7 @@
               </p>
               <div class="code-snippet">
                 <code>npx create-next-app@latest my-pwa --ts --tailwind --app</code>
-                <button class="copy-btn" onclick="copyCommand(this, 'npx create-next-app@latest my-pwa --ts --tailwind --app')" data-i18n="setup.copyBtn">Kopjo</button>
+                <button class="copy-btn" data-copy="npx create-next-app@latest my-pwa --ts --tailwind --app" data-i18n="setup.copyBtn">Kopjo</button>
               </div>
             </div>
 
@@ -398,193 +408,10 @@
              EVIDENCA E PJESËMARRJES: CHECK-IN LIVE PËR LIGJËRATË & USHTRIME
              ============================================================== -->
         <section class="section-block checkin-section" id="checkin" aria-labelledby="checkin-title">
-          <div class="section-header-row">
-            <div>
-              <div class="section-tag-row">
-                <span class="badge primary">EVIDENCA ZYRTARE</span>
-                <span class="badge emerald" id="checkin-live-indicator"><span class="pulse-dot"></span> REGJISTRIMI: HAPUR</span>
-              </div>
-              <h3 id="checkin-title" data-i18n="checkin.title">📍 Check-In i Pjesëmarrjes (Ligjërata & Ushtrime)</h3>
-              <p class="section-desc" data-i18n="checkin.desc">
-                Regjistroni praninë tuaj në orën e ligjëratës ose ushtrimeve brenda 2 minutave me të dhënat tuaja zyrtare studentore të Kolegjit AAB.
-              </p>
-            </div>
-          </div>
-
-          <div class="checkin-card-container">
-            <!-- Student Form -->
-            <div class="checkin-card">
-              <form id="attendance-form" onsubmit="handleAttendanceSubmit(event)">
-                
-                <!-- Session Selector -->
-                <div class="form-group">
-                  <label class="form-label" data-i18n="checkin.sessionLabel">Zgjidhni Seancën e Sotme:</label>
-                  <div class="session-type-toggle">
-                    <button type="button" class="type-btn active" id="btn-session-lecture" onclick="selectSessionType('lecture')">
-                      <span class="type-icon">📚</span>
-                      <span class="type-title" data-i18n="checkin.lecture">Ora e Ligjëratës</span>
-                    </button>
-                    <button type="button" class="type-btn" id="btn-session-lab" onclick="selectSessionType('lab')">
-                      <span class="type-icon">🧪</span>
-                      <span class="type-title" data-i18n="checkin.lab">Ora e Ushtrimeve (Lab)</span>
-                    </button>
-                  </div>
-                  <input type="hidden" id="checkin-session-type" value="lecture">
-                </div>
-
-                <!-- Week Selector -->
-                <div class="form-group">
-                  <label class="form-label" for="checkin-week" data-i18n="checkin.weekLabel">Java e Semestrit:</label>
-                  <select id="checkin-week" class="form-input">
-                    <option value="Java 1">Java 1: Hyrje, Next.js PWA & Setup i AI</option>
-                    <option value="Java 2">Java 2: Arkitektura & App Router</option>
-                    <option value="Java 3">Java 3: Layouts & Touch-First UI</option>
-                    <option value="Java 4">Java 4: React 19 Client/Server Components</option>
-                    <option value="Java 5">Java 5: Service Workers & Offline PWA</option>
-                    <option value="Java 6">Java 6: Web App Manifest & Instalimi</option>
-                    <option value="Java 7">Java 7: Next.js Server Actions</option>
-                    <option value="Java 8">Java 8: Supabase PostgreSQL & Auth</option>
-                    <option value="Java 9">Java 9: Row-Level Security (RLS)</option>
-                    <option value="Java 10">Java 10: Integrimi i Kamerës & Sensorëve</option>
-                    <option value="Java 11">Java 11: Njoftimet Push & Background Sync</option>
-                    <option value="Java 12">Java 12: Testimi E2E me Playwright</option>
-                    <option value="Java 13">Java 13: Vercel Production & Lighthouse</option>
-                    <option value="Java 14">Java 14: Siguria & Auditimi i Aplikacionit</option>
-                    <option value="Java 15">Java 15: Demo Day & Mbrojtja Finale</option>
-                  </select>
-                </div>
-
-                <!-- 2-Col inputs for Student ID and Name -->
-                <div class="form-grid-2">
-                  <div class="form-group">
-                    <label class="form-label" for="checkin-id" data-i18n="checkin.idLabel">ID / Nr. i Indeksit:</label>
-                    <input type="text" id="checkin-id" class="form-input" placeholder="p.sh. 22010045" required>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="checkin-name" data-i18n="checkin.nameLabel">Emri dhe Mbiemri:</label>
-                    <input type="text" id="checkin-name" class="form-input" placeholder="p.sh. Agon Krasniqi" required>
-                  </div>
-                </div>
-
-                <!-- Email and PIN -->
-                <div class="form-grid-2">
-                  <div class="form-group">
-                    <label class="form-label" for="checkin-email" data-i18n="checkin.emailLabel">E-maili (Zyrtar AAB ose Sekondar):</label>
-                    <input type="email" id="checkin-email" class="form-input" placeholder="p.sh. arben.lila@gmail.com ose studenti@universitetiaab.com" required>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="checkin-pin">
-                      <span data-i18n="checkin.pinLabel">Kodi PIN nga Projektori:</span>
-                      <span class="label-hint">(4 shifra)</span>
-                    </label>
-                    <input type="text" id="checkin-pin" class="form-input pin-input" placeholder="Shënoni kodin..." maxlength="6" required autocomplete="off">
-                  </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div style="margin-top: 18px;">
-                  <button type="submit" id="btn-submit-checkin" class="btn primary btn-full">
-                    <span>✅</span> <span data-i18n="checkin.submitBtn">Regjistro Praninë Tani</span>
-                  </button>
-                </div>
-
-                <!-- Status Feedback -->
-                <div id="checkin-feedback" class="checkin-feedback" style="display:none;" role="alert"></div>
-              </form>
-            </div>
-
-            <!-- Side Card: Fast Instructions & Security -->
-            <div class="checkin-info-card">
-              <h4 class="info-title">⏱️ Rregullat e Check-In (2 Minuta)</h4>
-              <ul class="info-list">
-                <li><strong>Kodi i Seancës:</strong> Shfaqet në projektor nga profesori dhe ndryshon çdo orë mësimore.</li>
-                <li><strong>Koha e Kufizuar:</strong> Dritarja e pranimit mbyllet 2 minuta pas shfaqjes së kodit në ekran.</li>
-                <li><strong>E-maili Zyrtar:</strong> Duhet të jetë llogaria juaj <code>@universitetiaab.com</code>.</li>
-                <li><strong>Vetëm 1 regjistrim:</strong> Telefoni juaj lejon vetëm 1 dorëzim për secilën orë mësimore.</li>
-              </ul>
-
-              <div class="professor-toggle-box">
-                <button type="button" class="btn secondary btn-sm" onclick="toggleProfessorAdmin()" id="btn-toggle-admin">
-                  <span>🔒</span> Paneli i Profesorit & Raporti Excel
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- ============================================================
-               PANELI I PROFESORIT (ADMIN & SHKARKIMI EXCEL / CSV)
-               ============================================================ -->
-          <div id="professor-admin-section" class="professor-admin-panel" style="display: none;">
-            <div class="admin-header">
-              <div>
-                <h4 class="admin-title">🏛️ Paneli i Menaxhimit të Pranisë (Prof. Arben Lila)</h4>
-                <p class="admin-subtitle">Kontrolloni statusin e orës, ndryshoni PIN-in dhe eksportoni listën zyrtare për Kolegjit AAB.</p>
-              </div>
-              <button type="button" class="btn secondary btn-sm" onclick="toggleProfessorAdmin()">✕ Mbyll Panelin</button>
-            </div>
-
-            <!-- Admin Controls -->
-            <div class="admin-controls-grid">
-              <div class="admin-stat-card">
-                <div class="admin-stat-label">Të Regjistruar Sot</div>
-                <div class="admin-stat-val" id="admin-count-today">0</div>
-              </div>
-              <div class="admin-stat-card">
-                <div class="admin-stat-label">Statusi i Formës</div>
-                <button type="button" class="status-toggle-btn active" id="btn-toggle-status" onclick="toggleCheckinStatus()">
-                  🟢 HAPUR (Pranon)
-                </button>
-              </div>
-              <div class="admin-stat-card">
-                <div class="admin-stat-label">Kodi PIN Aktiv i Ditës</div>
-                <div class="pin-edit-row">
-                  <input type="text" id="admin-pin-input" value="8492" class="form-input" style="max-width:100px; text-align:center; font-weight:bold; font-size:18px;">
-                  <button type="button" class="btn secondary btn-sm" onclick="updateActivePin()">Ruaj</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Actions Row -->
-            <div class="admin-actions-bar">
-              <button type="button" class="btn primary" onclick="exportAttendanceToCSV()">
-                <span>📥</span> Shkarko Raportin Zyrtar në Excel (CSV)
-              </button>
-              <button type="button" class="btn secondary" onclick="clearAttendanceRecords()">
-                <span>🗑️</span> Pastro Regjistrimet Testuese
-              </button>
-              <div class="admin-filter-group">
-                <label for="admin-filter-week">Filtro Javën:</label>
-                <select id="admin-filter-week" class="form-input" onchange="renderAdminTable()" style="max-width:160px;">
-                  <option value="all">Të Gjitha Javët</option>
-                  <option value="Java 1" selected>Java 1</option>
-                  <option value="Java 2">Java 2</option>
-                  <option value="Java 3">Java 3</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Live Table -->
-            <div class="table-responsive" style="margin-top: 16px;">
-              <table class="rubric-table admin-table" id="attendance-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Data & Ora</th>
-                    <th>Java</th>
-                    <th>Seanca</th>
-                    <th>ID Studenti</th>
-                    <th>Emri dhe Mbiemri</th>
-                    <th>E-maili AAB</th>
-                  </tr>
-                </thead>
-                <tbody id="attendance-table-body">
-                  <tr>
-                    <td colspan="7" style="text-align:center; color:var(--text-dim); padding:20px;">Ende nuk ka regjistrime për këtë seancë.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <h3 id="checkin-title">Vijueshmëria: ligjërata dhe ushtrime</h3>
+          <p>Hyr me emailin e listës së kursit, skano QR aktual në projektor dhe prania regjistrohet automatikisht. Shiko historikun tënd për tërë semestrin.</p>
+          <a class="btn primary" href="attendance.html">Hap vijueshmërinë time →</a>
+          <p class="section-desc">Dritarja hapet nga pedagogu në mes të orës dhe zgjat 2 minuta. Nuk kërkohet konfirmim tjetër pas skanimit. Nëse nuk ke telefon, kërko regjistrim manual nga pedagogu.</p>
         </section>
 
         <section class="section-block" id="curriculum" aria-labelledby="curriculum-title">
@@ -603,7 +430,7 @@
             
             <!-- Week 1 -->
             <article class="week-card expanded" id="week-1">
-              <div class="week-header" onclick="toggleWeek('week-1')">
+              <div class="week-header" data-week="week-1">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w1.badge">Javë 1</span>
                   <div class="week-title-area">
@@ -626,21 +453,21 @@
                       <li>Prezantimi i syllabusit dhe filozofisë "The Founder's Expedition".</li>
                       <li>Krahasimi: Native (Kotlin/Swift) vs Cross-platform vs Mobile PWA.</li>
                       <li>Pse Next.js 15 (App Router) është ideal për aplikacione mobile me performancë të lartë.</li>
-                      <li>Struktura e orëve: 2h teori + 2h laborator praktik me llogaridhënie individuale.</li>
+                      <li>17 shtator: 2h ligjëratë. Nga 24 shtatori: çdo të enjte 2h ligjëratë + 2h ushtrime.</li>
                     </ul>
                     <div style="margin-top:14px;">
-                      <a class="btn primary" style="padding:7px 16px; font-size:12px; min-height:auto; display:inline-flex;" href="Jave1_Hyrje_Nextjs_PWA_Copilot_2026.pptx" download>
+                      <a class="btn primary" style="padding:7px 16px; font-size:12px; min-height:auto; display:inline-flex;" href="materials/lectures/ligjerata-01-aab-biznes-real-2026-v2.pptx" download>
                         <span>📥</span> <span>Shkarko Prezantimin (PowerPoint PPTX)</span>
                       </a>
                     </div>
                   </div>
                   <div class="week-col">
                     <div class="col-header">
-                      <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik (Praktika)</h5>
+                      <span>🧪</span> <h5>Përgatitje për ushtrimet e 24 shtatorit</h5>
                     </div>
                     <ul class="week-items-list">
                       <li><strong>Toolchain-i i Themeluesit:</strong> Instalimi i VS Code, Git dhe lidhja me GitHub me çelësa SSH.</li>
-                      <li><strong>Aktivizimi i AI Falas:</strong> Verifikimi i GitHub Student Developer Pack & GitHub Copilot Pro me emailin @universitetiaab.com.</li>
+                      <li><strong>Aktivizimi i AI Falas:</strong> Verifikimi i GitHub Student Developer Pack & GitHub Copilot Student me emailin @universitetiaab.com.</li>
                       <li><strong>Infrastruktura Cloud:</strong> Hapja e llogarive në Supabase Cloud (PostgreSQL) dhe Vercel (CI/CD me 1-klik).</li>
                       <li><strong>How to Start a Startup:</strong> Ekzekutimi i 'git push' të parë drejt cloud-it me kosto 0 EUR dhe testim në telefon!</li>
                     </ul>
@@ -648,7 +475,7 @@
                       <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
                       <div class="copilot-prompt-text">
                         <span>Explain the difference between a PWA and a responsive website, and generate a basic manifest.json for a restaurant ordering app.</span>
-                        <button class="copy-btn" onclick="copyCommand(this, 'Explain the difference between a PWA and a responsive website, and generate a basic manifest.json for a restaurant ordering app.')" data-i18n="setup.copyBtn">Kopjo</button>
+                        <button class="copy-btn" data-copy="Explain the difference between a PWA and a responsive website, and generate a basic manifest.json for a restaurant ordering app." data-i18n="setup.copyBtn">Kopjo</button>
                       </div>
                     </div>
                   </div>
@@ -658,7 +485,7 @@
 
             <!-- Week 2 -->
             <article class="week-card" id="week-2">
-              <div class="week-header" onclick="toggleWeek('week-2')">
+              <div class="week-header" data-week="week-2">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w2.badge">Javë 2</span>
                   <div class="week-title-area">
@@ -697,7 +524,7 @@
                       <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
                       <div class="copilot-prompt-text">
                         <span>Act as a senior software architect. Based on this carpooling idea for college students, generate a concise Product Requirements Document (PRD) with Must-Haves, Out-of-Scope boundaries, and the Supabase PostgreSQL database schema.</span>
-                        <button class="copy-btn" onclick="copyCommand(this, 'Act as a senior software architect. Based on this carpooling idea for college students, generate a concise Product Requirements Document (PRD) with Must-Haves, Out-of-Scope boundaries, and the Supabase PostgreSQL database schema.')" data-i18n="setup.copyBtn">Kopjo</button>
+                        <button class="copy-btn" data-copy="Act as a senior software architect. Based on this carpooling idea for college students, generate a concise Product Requirements Document (PRD) with Must-Haves, Out-of-Scope boundaries, and the Supabase PostgreSQL database schema." data-i18n="setup.copyBtn">Kopjo</button>
                       </div>
                     </div>
                   </div>
@@ -707,7 +534,7 @@
 
             <!-- Week 3 -->
             <article class="week-card" id="week-3">
-              <div class="week-header" onclick="toggleWeek('week-3')">
+              <div class="week-header" data-week="week-3">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w3.badge">Javë 3</span>
                   <div class="week-title-area">
@@ -744,7 +571,7 @@
                       <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
                       <div class="copilot-prompt-text">
                         <span>Write a Next.js 15 loading.tsx skeleton screen using Tailwind CSS pulse animation for a mobile product catalog list.</span>
-                        <button class="copy-btn" onclick="copyCommand(this, 'Write a Next.js 15 loading.tsx skeleton screen using Tailwind CSS pulse animation for a mobile product catalog list.')" data-i18n="setup.copyBtn">Kopjo</button>
+                        <button class="copy-btn" data-copy="Write a Next.js 15 loading.tsx skeleton screen using Tailwind CSS pulse animation for a mobile product catalog list." data-i18n="setup.copyBtn">Kopjo</button>
                       </div>
                     </div>
                   </div>
@@ -754,7 +581,7 @@
 
             <!-- Week 4 -->
             <article class="week-card" id="week-4">
-              <div class="week-header" onclick="toggleWeek('week-4')">
+              <div class="week-header" data-week="week-4">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w4.badge">Javë 4</span>
                   <div class="week-title-area">
@@ -791,7 +618,7 @@
                       <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
                       <div class="copilot-prompt-text">
                         <span>Write a PostgreSQL SQL migration for Supabase to create a products table with id, name, price, image_url, created_at, and enable RLS with public read policy.</span>
-                        <button class="copy-btn" onclick="copyCommand(this, 'Write a PostgreSQL SQL migration for Supabase to create a products table with id, name, price, image_url, created_at, and enable RLS with public read policy.')" data-i18n="setup.copyBtn">Kopjo</button>
+                        <button class="copy-btn" data-copy="Write a PostgreSQL SQL migration for Supabase to create a products table with id, name, price, image_url, created_at, and enable RLS with public read policy." data-i18n="setup.copyBtn">Kopjo</button>
                       </div>
                     </div>
                   </div>
@@ -801,7 +628,7 @@
 
             <!-- Week 5 -->
             <article class="week-card" id="week-5">
-              <div class="week-header" onclick="toggleWeek('week-5')">
+              <div class="week-header" data-week="week-5">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w5.badge">Javë 5</span>
                   <div class="week-title-area">
@@ -838,7 +665,7 @@
                       <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
                       <div class="copilot-prompt-text">
                         <span>Generate Next.js 15 middleware code using @supabase/ssr to check user session cookies and redirect unauthenticated users to /login.</span>
-                        <button class="copy-btn" onclick="copyCommand(this, 'Generate Next.js 15 middleware code using @supabase/ssr to check user session cookies and redirect unauthenticated users to /login.')" data-i18n="setup.copyBtn">Kopjo</button>
+                        <button class="copy-btn" data-copy="Generate Next.js 15 middleware code using @supabase/ssr to check user session cookies and redirect unauthenticated users to /login." data-i18n="setup.copyBtn">Kopjo</button>
                       </div>
                     </div>
                   </div>
@@ -857,7 +684,7 @@
             
             <!-- Week 6 -->
             <article class="week-card" id="week-6">
-              <div class="week-header" onclick="toggleWeek('week-6')">
+              <div class="week-header" data-week="week-6">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w6.badge">Javë 6</span>
                   <div class="week-title-area">
@@ -894,7 +721,7 @@
                       <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
                       <div class="copilot-prompt-text">
                         <span>Write a complete Web App Manifest JSON with standalone display mode, orientation portrait, and maskable icons configuration.</span>
-                        <button class="copy-btn" onclick="copyCommand(this, 'Write a complete Web App Manifest JSON with standalone display mode, orientation portrait, and maskable icons configuration.')" data-i18n="setup.copyBtn">Kopjo</button>
+                        <button class="copy-btn" data-copy="Write a complete Web App Manifest JSON with standalone display mode, orientation portrait, and maskable icons configuration." data-i18n="setup.copyBtn">Kopjo</button>
                       </div>
                     </div>
                   </div>
@@ -904,7 +731,7 @@
 
             <!-- Week 7 -->
             <article class="week-card" id="week-7">
-              <div class="week-header" onclick="toggleWeek('week-7')">
+              <div class="week-header" data-week="week-7">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w7.badge">Javë 7</span>
                   <div class="week-title-area">
@@ -944,7 +771,7 @@
 
             <!-- Week 8 -->
             <article class="week-card" id="week-8">
-              <div class="week-header" onclick="toggleWeek('week-8')">
+              <div class="week-header" data-week="week-8">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w8.badge">Javë 8</span>
                   <div class="week-title-area">
@@ -981,7 +808,7 @@
                       <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
                       <div class="copilot-prompt-text">
                         <span>Write a custom React hook useGeolocation that tracks GPS coordinates and handles permission denial on mobile browsers.</span>
-                        <button class="copy-btn" onclick="copyCommand(this, 'Write a custom React hook useGeolocation that tracks GPS coordinates and handles permission denial on mobile browsers.')" data-i18n="setup.copyBtn">Kopjo</button>
+                        <button class="copy-btn" data-copy="Write a custom React hook useGeolocation that tracks GPS coordinates and handles permission denial on mobile browsers." data-i18n="setup.copyBtn">Kopjo</button>
                       </div>
                     </div>
                   </div>
@@ -991,7 +818,7 @@
 
             <!-- Week 9 -->
             <article class="week-card" id="week-9">
-              <div class="week-header" onclick="toggleWeek('week-9')">
+              <div class="week-header" data-week="week-9">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w9.badge">Javë 9</span>
                   <div class="week-title-area">
@@ -1027,7 +854,7 @@
                       <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
                       <div class="copilot-prompt-text">
                         <span>Provide a React 19 example using useOptimistic and a Next.js server action to toggle a bookmark status without waiting for the network response.</span>
-                        <button class="copy-btn" onclick="copyCommand(this, 'Provide a React 19 example using useOptimistic and a Next.js server action to toggle a bookmark status without waiting for the network response.')" data-i18n="setup.copyBtn">Kopjo</button>
+                        <button class="copy-btn" data-copy="Provide a React 19 example using useOptimistic and a Next.js server action to toggle a bookmark status without waiting for the network response." data-i18n="setup.copyBtn">Kopjo</button>
                       </div>
                     </div>
                   </div>
@@ -1037,7 +864,7 @@
 
             <!-- Week 10 -->
             <article class="week-card" id="week-10">
-              <div class="week-header" onclick="toggleWeek('week-10')">
+              <div class="week-header" data-week="week-10">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w10.badge">Javë 10</span>
                   <div class="week-title-area">
@@ -1074,7 +901,7 @@
                       <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
                       <div class="copilot-prompt-text">
                         <span>Show how to subscribe to real-time postgres changes using Supabase JS client inside a useEffect hook in Next.js.</span>
-                        <button class="copy-btn" onclick="copyCommand(this, 'Show how to subscribe to real-time postgres changes using Supabase JS client inside a useEffect hook in Next.js.')" data-i18n="setup.copyBtn">Kopjo</button>
+                        <button class="copy-btn" data-copy="Show how to subscribe to real-time postgres changes using Supabase JS client inside a useEffect hook in Next.js." data-i18n="setup.copyBtn">Kopjo</button>
                       </div>
                     </div>
                   </div>
@@ -1093,7 +920,7 @@
             
             <!-- Week 11 -->
             <article class="week-card" id="week-11">
-              <div class="week-header" onclick="toggleWeek('week-11')">
+              <div class="week-header" data-week="week-11">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w11.badge">Javë 11</span>
                   <div class="week-title-area">
@@ -1133,7 +960,7 @@
 
             <!-- Week 12 -->
             <article class="week-card" id="week-12">
-              <div class="week-header" onclick="toggleWeek('week-12')">
+              <div class="week-header" data-week="week-12">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w12.badge">Javë 12</span>
                   <div class="week-title-area">
@@ -1173,7 +1000,7 @@
 
             <!-- Week 13 -->
             <article class="week-card" id="week-13">
-              <div class="week-header" onclick="toggleWeek('week-13')">
+              <div class="week-header" data-week="week-13">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w13.badge">Javë 13</span>
                   <div class="week-title-area">
@@ -1213,7 +1040,7 @@
 
             <!-- Week 14 -->
             <article class="week-card" id="week-14">
-              <div class="week-header" onclick="toggleWeek('week-14')">
+              <div class="week-header" data-week="week-14">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w14.badge">Javë 14</span>
                   <div class="week-title-area">
@@ -1253,7 +1080,7 @@
 
             <!-- Week 15 -->
             <article class="week-card" id="week-15">
-              <div class="week-header" onclick="toggleWeek('week-15')">
+              <div class="week-header" data-week="week-15">
                 <div class="week-header-left">
                   <span class="week-badge-num" data-i18n="w15.badge">Javë 15</span>
                   <div class="week-title-area">
@@ -1283,7 +1110,7 @@
                       <span>🏆</span> <h5 data-i18n="common.grading">Shpallja e Notave & Certifikimi</h5>
                     </div>
                     <ul class="week-items-list">
-                      <li>Llogaritja e notës përfundimtare sipas rubrikës transparente 40 / 40 / 20.</li>
+                      <li>Llogaritja e notës përfundimtare sipas rubrikës transparente 10 / 30 / 40 / 20.</li>
                       <li>Regjistrimi i notave në sistemin zyrtar të Kolegjit AAB.</li>
                       <li>Përzgjedhja e 3 projekteve më të mira për inkubator dhe promovim publik.</li>
                     </ul>
@@ -1317,7 +1144,7 @@
               <div class="rubric-card">
                 <div class="rubric-percent">30%</div>
                 <h5 data-i18n="rubric.r1Title">Ushtrimet & GitHub Autograding</h5>
-                <p data-i18n="rubric.r1Desc">10 detyra praktike javore të vlerësuara automatikisht me GitHub Classroom dhe GitHub Actions CI/CD në çdo git push pa ngarkesë manuale.</p>
+                <p data-i18n="rubric.r1Desc">10 detyra në aplikacionin tuaj, nga 3 pikë secila. Testet dhe publikimi javor i pikëve presin aktivizimin.</p>
               </div>
 
               <div class="rubric-card">
@@ -1336,10 +1163,7 @@
             <!-- Automated Grading Callout -->
             <div class="policy-card" style="margin-top: 14px; background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.28);">
               <h4><span>⚡</span> <span data-i18n="autograding.title">Automatizimi i Vlerësimit Javor (GitHub Classroom + Actions Autograding)</span></h4>
-              <p data-i18n="autograding.desc" style="font-size: 13px; line-height: 1.6;">
-                Për të eliminuar pritjet e gjata dhe ngarkesën e korrigjimit manual për qindra studentë, çdo detyrë javore vlerësohet automatikisht:
-                studenti punon në depon personale të GitHub Classroom, bën <code>git push origin main</code>, dhe GitHub Actions ekzekuton menjëherë testet e automatizuara (autograding) duke llogaritur pikët dhe sinkronizuar librin e notave (Gradebook CSV) për profesorin.
-              </p>
+              <p data-i18n="autograding.desc" style="font-size: 13px; line-height: 1.6;">Sistemi i notimit automatik është në përgatitje. Rubrika dhe testet e çdo detyre do të publikohen para afatit. Rezultatet javore dhe totali do të shfaqen në llogarinë personale të studentit.</p>
             </div>
 
             <div class="project-actions">
@@ -1380,9 +1204,7 @@
             <!-- Attendance & Late Submissions -->
             <div class="policy-card">
               <h4><span>⏱️</span> <span data-i18n="policies.attendTitle">Pjesëmarrja & Dorëzimet</span></h4>
-              <p data-i18n="policies.attendDesc">
-                Vijueshmëria (10%) regjistrohet përmes modulit QR Check-In në portal me prag minimal prej 70% (kriter eliminues për Demo Day). 10 ushtrimet praktike (30%) menaxhohen me GitHub Classroom dhe vlerësohen automatikisht në çdo git push me GitHub Actions CI/CD.
-              </p>
+              <p data-i18n="policies.attendDesc">Vijueshmëria ka 10% dhe 10 ushtrimet praktike kanë gjithsej 30%. Regjistrimi QR dhe publikimi automatik i pikëve kërkojnë aktivizimin e shërbimeve të lëndës.</p>
             </div>
           </div>
 
@@ -1422,7 +1244,7 @@
         
         <!-- Profile Hero -->
         <section class="profile-hero">
-          <img src="img/profile.jpg" alt="Prof. Asoc. Arben Lila" class="profile-avatar">
+          <img src="img/profile.jpg" alt="Prof. Asoc. Arben Lila" class="profile-avatar" width="1200" height="1200" loading="lazy" decoding="async">
           <div class="profile-bio-text">
             <h2>Prof. Asoc. PhD. C. Arben Lila</h2>
             <div class="profile-role" data-i18n="profile.subtitle">
@@ -1538,31 +1360,11 @@
   <!-- ========================================================================
        MOBILE STICKY BOTTOM BAR (NATIVE APP FEEL ON SMARTPHONES)
        ======================================================================== -->
-  <nav class="mobile-bottom-bar" aria-label="Mobile Navigation">
-    <button class="mobile-tab-btn active" onclick="mobileNavJump('student', '#course-overview')">
-      <span class="icon">🚀</span>
-      <span data-i18n="mobile.course">Kursi</span>
-    </button>
-    <button class="mobile-tab-btn" onclick="mobileNavJump('student', '#checkin')">
-      <span class="icon">📍</span>
-      <span data-i18n="mobile.checkin">Check-In</span>
-    </button>
-    <button class="mobile-tab-btn" onclick="mobileNavJump('student', '#setup')">
-      <span class="icon">🛠️</span>
-      <span data-i18n="mobile.setup">Setup</span>
-    </button>
-    <button class="mobile-tab-btn" onclick="mobileNavJump('student', '#curriculum')">
-      <span class="icon">📚</span>
-      <span data-i18n="mobile.weeks">Javët</span>
-    </button>
-    <button class="mobile-tab-btn" onclick="mobileNavJump('student', '#project')">
-      <span class="icon">📋</span>
-      <span data-i18n="mobile.project">Projekti</span>
-    </button>
-    <button class="mobile-tab-btn" onclick="mobileNavJump('student', '#policies')">
-      <span class="icon">⚖️</span>
-      <span data-i18n="mobile.policies">Rregullat</span>
-    </button>
+  <nav class="mobile-bottom-bar" aria-label="Navigimi në telefon">
+    <button class="mobile-tab-btn active" data-jump="#student-start"><span class="icon" aria-hidden="true">⌂</span><span data-i18n="mobile.course">Kursi</span></button>
+    <button class="mobile-tab-btn" data-jump="#curriculum"><span class="icon" aria-hidden="true">▤</span><span data-i18n="mobile.weeks">Javët</span></button>
+    <button class="mobile-tab-btn" data-jump="#templates-hub"><span class="icon" aria-hidden="true">↓</span><span data-i18n="mobile.tasks">Detyrat</span></button>
+    <a class="mobile-tab-btn attendance-tab" href="attendance.html"><span class="icon" aria-hidden="true">▦</span><span data-i18n="mobile.attendance">Prania</span></a>
   </nav>
 
   <!-- ========================================================================
@@ -1593,705 +1395,6 @@
   <!-- ========================================================================
        CLIENT INTERACTIVITY & 100% BILINGUAL TRANSLATIONS SCRIPT
        ======================================================================== -->
-  <script>
-    const translations = {
-      sq: {
-        'header.brandName': 'Prof. Arben Lila',
-        'header.brandRole': 'Kolegji AAB • Shkenca Kompjuterike',
-        'header.viewStudent': 'Zona e Studentëve',
-        'header.viewProfile': 'Profili & Lidershipi',
-        'header.mccArchive': 'Arkiva MCC',
-        'subnav.overview': 'Përmbledhja & Syllabusi',
-        'subnav.setup': 'Dev Starter Pack (Javë 1)',
-        'subnav.curriculum': '15 Javët (Ligjëratat + Ushtrimet)',
-        'subnav.project': 'Projekti i Biznesit & Notat',
-        'subnav.policies': 'Rregullat & Sistemi i Notimit',
-        'subnav.checkin': 'Check-In Pjesëmarrja',
-        'mobile.checkin': 'Check-In',
-        'checkin.title': '📍 Check-In i Pjesëmarrjes (Ligjërata & Ushtrime)',
-        'checkin.desc': 'Regjistroni praninë tuaj në orën e ligjëratës ose ushtrimeve brenda 2 minutave me të dhënat tuaja zyrtare studentore të Kolegjit AAB.',
-        'checkin.sessionLabel': 'Zgjidhni Seancën e Sotme:',
-        'checkin.lecture': 'Ora e Ligjëratës',
-        'checkin.lab': 'Ora e Ushtrimeve (Lab)',
-        'checkin.weekLabel': 'Java e Semestrit:',
-        'checkin.idLabel': 'ID / Nr. i Indeksit:',
-        'checkin.nameLabel': 'Emri dhe Mbiemri:',
-        'checkin.emailLabel': 'E-maili Zyrtar AAB:',
-        'checkin.pinLabel': 'Kodi PIN nga Projektori:',
-        'checkin.submitBtn': 'Regjistro Praninë Tani',
-
-        'hero.courseBadge': 'Programimi për Pajisje Mobile',
-        'hero.semesterBadge': 'Semestri V • Viti Akademik 2026/2027',
-        'hero.ectsBadge': '6 ECTS • 2L + 2U',
-        'hero.title': 'Programimi për Pajisje Mobile',
-        'hero.theme': "The Founder's Expedition: Ndërto një Mobile PWA Reale me AI & Next.js",
-        'hero.desc': 'Qendra e unifikuar mësimore për studentët e Inxhinierisë Softuerike në Kolegjin AAB. Çdo ligjëratë, ushtrim laboratorik hap-pas-hapi, konfigurim i GitHub Copilot dhe udhëzues i ndërtimit të aplikacionit tuaj me Next.js 15, Tailwind, Supabase dhe Vercel ndodhet këtu në një vend të vetëm.',
-        'hero.btnCurriculum': 'Eksploro 15 Javët e Kursit',
-        'hero.btnSetup': 'Hapat e Javës 1 (Setup)',
-        'hero.btnProject': 'Kriteret e Projektit të Biznesit',
-        'stats.hoursLabel': 'Fondi i Orëve',
-        'stats.hoursVal': '2h Ligjëratë + 2h Ushtrime',
-        'stats.formatLabel': 'Formati',
-        'stats.formatVal': 'Laboratorik me Kod Live',
-        'stats.stackLabel': 'Teknologjitë',
-        'stats.officeLabel': 'Konsultat Online',
-        'stats.officeVal': 'Mërkurë, 15:00 - 16:30',
-        'setup.eyebrow': 'Javë 1 • Fillimi nga Zero',
-        'setup.title': '🛠️ Dev Starter Pack: Konfigurimi i Mjedisit',
-        'setup.desc': 'Para se të shkruajmë rreshtin e parë të kodit, çdo student duhet të përfundojë këta 5 hapa themelorë brenda javës së parë:',
-        'setup.step1Title': 'GitHub Student Developer Pack',
-        'setup.step1Sub': 'Përfitoni GitHub Copilot Pro Falas',
-        'setup.step1Desc': 'Aplikoni me emailin tuaj të studentit (@universitetiaab.com) te GitHub Education për të aktivizuar aksesin e plotë në GitHub Copilot dhe mjetet zhvillimore.',
-        'setup.step1Btn': 'Aktivizo GitHub Pack →',
-        'setup.step2Title': 'VS Code & Ekstensionet AI',
-        'setup.step2Sub': 'Mjedisi ynë kryesor i kodimit',
-        'setup.step2Desc': 'Instaloni VS Code dhe ekstensionet zyrtare: GitHub Copilot, GitHub Copilot Chat, Tailwind CSS IntelliSense dhe ESLint.',
-        'setup.step3Title': 'Next.js 15 PWA Starter',
-        'setup.step3Sub': 'Inicializimi i projektit tuaj mobile',
-        'setup.step3Desc': 'Krijoni aplikacionin bazë me TypeScript, Tailwind CSS dhe App Router duke ekzekutuar komandën e mëposhtme në terminal:',
-        'setup.step4Title': 'Llogaria në Supabase Cloud',
-        'setup.step4Sub': 'PostgreSQL & Auth në pak sekonda',
-        'setup.step4Desc': 'Hapni një llogari falas në Supabase, krijoni projektin e ri dhe merrni çelësat NEXT_PUBLIC_SUPABASE_URL dhe NEXT_PUBLIC_SUPABASE_ANON_KEY.',
-        'setup.step4Btn': 'Hap Supabase →',
-        'setup.step5Title': 'Lidhja me Vercel',
-        'setup.step5Sub': 'Publikim automatik me çdo Git push',
-        'setup.step5Desc': 'Lidhni depon (repository) tuaj në GitHub me Vercel për të marrë një URL publike HTTPS live që mund ta hapni menjëherë në telefonin tuaj.',
-        'setup.step5Btn': 'Lidh me Vercel →',
-        'setup.copyBtn': 'Kopjo',
-        'curriculum.eyebrow': 'Programi Mësimor i Unifikuar',
-        'curriculum.title': '📚🧪 15 Javët: Ligjëratat dhe Ushtrimet Laboratorike',
-        'curriculum.desc': 'Çdo javë përmban konceptet teorike, ushtrimin praktik laboratorik me kod, dhe shembuj promptesh me GitHub Copilot:',
-        'mod.m1Title': 'Moduli 1: Themeli Mobile, UI Touch-First & Next.js 15 + Supabase',
-        'mod.m1Weeks': 'Javët 1 — 5',
-        'mod.m2Title': 'Moduli 2: PWA e Plotë, Offline Caching, Sensorët & Device APIs',
-        'mod.m2Weeks': 'Javët 6 — 10',
-        'mod.m3Title': 'Moduli 3: Njoftimet Push, Siguria, CI/CD & Showcase Finale',
-        'mod.m3Weeks': 'Javët 11 — 15',
-        'w1.badge': 'Javë 1',
-        'w1.title': 'Hyrje në Mobile PWA, Ekosistemi Next.js 15 & GitHub Copilot',
-        'w1.sub': 'Njoftimi me syllabusin, Native vs PWA, dhe fillimi me AI Pair Programming.',
-        'w2.badge': 'Javë 2',
-        'w2.title': 'Ideimi i Startup-it, Specifikat (PRD) & Arkitektura në Vija të Trasha',
-        'w2.sub': 'Zgjedhja e biznesit, specifikimi i kërkesave (Must-Have vs Out-of-Scope) dhe skicimi arkitekturor para kodit.',
-        'w3.badge': 'Javë 3',
-        'w3.title': 'Arkitektura e Komponentëve & App Router (Next.js 15)',
-        'w3.sub': 'Server vs Client Components, routing i lëndshëm, dhe Skeleton Loaders.',
-        'w4.badge': 'Javë 4',
-        'w4.title': 'Baza e të Dhënave me Supabase (PostgreSQL & RLS)',
-        'w4.sub': 'Modelimi relacional për biznesin, migrimet SQL dhe Row Level Security.',
-        'w5.badge': 'Javë 5',
-        'w5.title': 'Autentifikimi & Menaxhimi i Sesioneve në Mobile',
-        'w5.sub': 'Supabase Auth, Magic Link, OAuth (Google/GitHub) dhe Middleware.',
-        'w6.badge': 'Javë 6',
-        'w6.title': 'PWA: Manifest.json, Ikonat & Offline Caching',
-        'w6.sub': 'Shndërrimi i uebsajtit në aplikacion që instalohet në Homescreen pa App Store.',
-        'w7.badge': 'Javë 7',
-        'w7.title': 'Kollokviumi I / Vlerësimi i MVP-së Fillestare',
-        'w7.sub': 'Prezantimi i prototipit të parë funksional live në Vercel nga çdo student.',
-        'w8.badge': 'Javë 8',
-        'w8.title': 'Sensorët dhe API-të Vendase të Pajisjes (Device APIs)',
-        'w8.sub': 'Kamera, Gjeolokacioni GPS, Dridhja (Vibration) dhe Web Share API.',
-        'w9.badge': 'Javë 9',
-        'w9.title': 'Menaxhimi i Gjendjes (State) & Ndërfaqet Optimiste',
-        'w9.sub': 'React Server Actions, useOptimistic dhe shpejtësia e perceptuar në mobile.',
-        'w10.badge': 'Javë 10',
-        'w10.title': 'Sinkronizimi në Kohë Reale (Supabase Realtime)',
-        'w10.sub': 'WebSockets në pajisje mobile, dëgjuesit e tabelave dhe përditësimet pa rifreskim.',
-        'w11.badge': 'Javë 11',
-        'w11.title': 'Njoftimet Push & Angazhimi i Përdoruesit',
-        'w11.sub': 'Web Push API, çelësat VAPID dhe njoftimet e personalizuara në ekran të mbyllur.',
-        'w12.badge': 'Javë 12',
-        'w12.title': 'Siguria Mobile, Validimi me Zod & Mbrojtja e të Dhënave',
-        'w12.sub': 'OWASP Mobile Top 10, validimi i rreptë i të dhënave dhe auditimi i policave RLS.',
-        'w13.badge': 'Javë 13',
-        'w13.title': 'Optimizimi i Performancës & Lighthouse Audit (90+)',
-        'w13.sub': 'Core Web Vitals (LCP, INP, CLS), kompresimi i imazheve dhe shpejtësia ekstreme.',
-        'w14.badge': 'Javë 14',
-        'w14.title': 'CI/CD, Testimi në Pajisje Reale & Përgatitja Finale',
-        'w14.sub': 'GitHub Actions, Vercel Production Environment dhe përgatitja e demo-s.',
-        'w15.badge': 'Javë 15',
-        'w15.title': "Demo Day & Mbrojtja e Projekteve (The Founder's Showcase)",
-        'w15.sub': 'Prezantimi live i aplikacionit PWA në celular dhe vlerësimi përfundimtar.',
-        'common.lecture': 'Ligjërata (Teoria & Konceptet)',
-        'common.lab': 'Ushtrimi Laboratorik (Praktika)',
-        'common.showcase': 'Showcase & Prezantimi Live',
-        'common.grading': 'Shpallja e Notave & Certifikimi',
-        'project.eyebrow': "The Founder's Expedition",
-        'project.title': '📋 Projekti i Kursit & Kriteret e Vlerësimit',
-        'project.desc': 'Në vend të detyrave abstrakte, çdo student zhvillon individualisht një Mobile-First PWA plotësisht funksionale për një biznes real familjar, zejtar, kafene, apo sipërmarrje lokale në Kosovë.',
-        'rubric.r0Title': 'Vijueshmëria & Check-In me QR',
-        'rubric.r0Desc': 'Evidentim i menjëhershëm me QR kod në sallë. Pragu minimal 70% është kusht eliminues për të fituar të drejtën e mbrojtjes në Demo Day.',
-        'rubric.r1Title': 'Ushtrimet & GitHub Autograding',
-        'rubric.r1Desc': '10 detyra praktike javore të vlerësuara automatikisht me GitHub Classroom dhe GitHub Actions CI/CD në çdo git push pa ngarkesë manuale.',
-        'rubric.r2Title': 'Projekti Final PWA i Biznesit',
-        'rubric.r2Desc': 'Mobile PWA funksionale për biznes real familjar me Tailwind, Supabase DB & Auth, instalueshmëri offline dhe publikim në Vercel.',
-        'rubric.r3Title': 'Demo Day & Mbrojtja Individuale',
-        'rubric.r3Desc': 'Prezantimi live 5-minutësh nga celulari para auditorit, arsyetimi i vendimeve arkitekturore dhe pyetjet individuale teknike të kodit.',
-        'autograding.title': 'Automatizimi i Vlerësimit Javor (GitHub Classroom + Actions Autograding)',
-        'autograding.desc': 'Për të eliminuar pritjet e gjata dhe ngarkesën e korrigjimit manual për qindra studentë, çdo detyrë javore vlerësohet automatikisht me GitHub Actions në çdo push dhe sinkronizohet në Gradebook.',
-        'project.btnTopics': 'Eksploro Temat e Sugjeruara →',
-        'project.btnCatalog': 'Katalogu i Rezervimeve & Notat →',
-        'policies.eyebrow': 'Standardet Akademike të Kolegjit AAB',
-        'policies.title': '⚖️ Rregullat e Kursit, Integriteti & Sistemi i Notimit',
-        'policies.outcomesTitle': 'Rezultatet e të Nxënit (Learning Outcomes)',
-        'policies.outcomesDesc': 'Në përfundim të kursit, studenti zotëron: (1) Ndërtimin e aplikacioneve mobile me Next.js 15 PWA; (2) Modelimin e bazave relacionale në Supabase me RLS; (3) Përdorimin e API-ve të pajisjes (Kamera, Gjeolokacion, Push); dhe (4) Përdorimin profesional të AI Pair Programming me GitHub Copilot.',
-        'policies.aiTitle': 'Politika e Inteligjencës Artificiale (Copilot)',
-        'policies.aiDesc': 'Përdorimi i GitHub Copilot është i lejuar dhe i rekomanduar si asistent programues. Megjithatë, studenti mban përgjegjësi absolute për kodin: në Demo Day, paaftësia për të shpjeguar logjikën e kodit rezulton në zbritje pikësh ose moskalim.',
-        'policies.attendTitle': 'Pjesëmarrja & Dorëzimet',
-        'policies.attendDesc': 'Vijueshmëria (10%) regjistrohet përmes modulit QR Check-In në portal me prag minimal prej 70% (kriter eliminues për Demo Day). 10 ushtrimet praktike (30%) menaxhohen me GitHub Classroom dhe vlerësohen automatikisht në çdo git push me GitHub Actions CI/CD.',
-        'policies.gradeScaleTitle': 'Shkalla Zyrtare e Notimit (Kolegji AAB)',
-        'table.points': 'Pikët e Grumbulluara',
-        'table.grade': 'Nota Zyrtare',
-        'table.descr': 'Përshkrimi i Performancës',
-        'table.g10': 'Shkëlqyeshëm (Përsosmëri e lartë teknike dhe konceptuale)',
-        'table.g9': 'Shumë mirë (Mbi mesataren, me pak gabime minore)',
-        'table.g8': 'Mirë (Punë solide, zotërim i mirë i teknologjive)',
-        'table.g7': 'Kënaqshëm (Kodi funksionon me disa mangësi arkitekturore)',
-        'table.g6': 'Mjaftueshëm (Plotëson kriteret minimale të kalueshmërisë)',
-        'table.g5': 'Nuk kalon (Detyra të papërfunduara ose mungesë kuptimi)',
-        'profile.subtitle': 'Mësimdhënës në Kolegjin AAB • Drejtues Programi në KADC • Arkitekt Sistemesh',
-        'profile.bioText': 'Ekspert me mbi 25 vite përvojë në arkitekturën e sistemeve softuerike, rrjetat telekomunikuese me brez të gjerë, dhe qeverisjen e politikave publike. Mësimdhënës i përkushtuar në Kolegjin AAB me fokus në zhvillimin modern për pajisje mobile, arkitekturat cloud, dhe zbatimin e inteligjencës artificiale në zgjidhje praktike.',
-        'profile.btnContact': 'Kontakto në E-mail →',
-        'profile.academicTitle': 'Mësimdhënia & Përvoja Akademike',
-        'profile.aabTitle': 'Mësimdhënës — Kolegji AAB',
-        'profile.aabDesc': 'Programimi për Pajisje Mobile, Arkitektura e Sistemeve të Informacionit, Cloud Computing, dhe Siguria Kibernetike në Shëndetësi.',
-        'profile.ubtTitle': 'Ligjërues — UBT',
-        'profile.ubtDesc': 'Inxhinieri e Rrjetave dhe Komunikime Multimediale me theks në arkitekturën e shpërndarë.',
-        'profile.tuwienTitle': 'Asistent Mësimor — TU Wien (Vjenë)',
-        'profile.tuwienDesc': 'Instituti i Komunikimeve me Brez të Gjerë (Broadband Communications). Modelimi i performancës së rrjetave ATM dhe simulimet numerike.',
-        'profile.eduTitle': 'Edukimi dhe Kualifikimet',
-        'profile.cadcTitle': 'Shoqëria Civile & Zhvillimi i Qëndrueshëm',
-        'profile.sportsTitle': 'Qeverisja e Sportit & Alpinizmi',
-        'profile.pubsTitle': 'Publikimet dhe Raportet Strategjike',
-        'mobile.course': 'Kursi',
-        'mobile.setup': 'Setup',
-        'mobile.weeks': 'Javët',
-        'mobile.project': 'Projekti',
-        'mobile.policies': 'Rregullat',
-        'footer.mccNote': 'Lëndë të tjera & vitet e kaluara:',
-        'footer.mccLink': 'Arkiva e Temave të Cloud Computing (MCC 2026) →'
-      },
-      en: {
-        'header.brandName': 'Prof. Arben Lila',
-        'header.brandRole': 'AAB College • Computer Science',
-        'header.viewStudent': 'Student Portal',
-        'header.viewProfile': 'Profile & Leadership',
-        'header.mccArchive': 'MCC Archive',
-        'subnav.overview': 'Overview & Syllabus',
-        'subnav.setup': 'Dev Starter Pack (Week 1)',
-        'subnav.curriculum': '15 Weeks (Lectures + Labs)',
-        'subnav.project': 'Business Project & Grades',
-        'subnav.policies': 'Rules & Grading System',
-        'subnav.checkin': 'Live Check-In',
-        'mobile.checkin': 'Check-In',
-        'checkin.title': '📍 Live Attendance Check-In (Lecture & Lab)',
-        'checkin.desc': "Check in for today's lecture or lab within 2 minutes using your official AAB College student credentials.",
-        'checkin.sessionLabel': "Select Today's Session:",
-        'checkin.lecture': 'Lecture Session',
-        'checkin.lab': 'Lab Exercise Session',
-        'checkin.weekLabel': 'Semester Week:',
-        'checkin.idLabel': 'Student ID / Index No:',
-        'checkin.nameLabel': 'Full Name:',
-        'checkin.emailLabel': 'Official AAB Email:',
-        'checkin.pinLabel': 'Session PIN from Screen:',
-        'checkin.submitBtn': 'Submit Attendance Now',
-
-        'hero.courseBadge': 'Mobile Device Programming',
-        'hero.semesterBadge': 'Semester V • Academic Year 2026/2027',
-        'hero.ectsBadge': '6 ECTS • 2L + 2L',
-        'hero.title': 'Mobile Device Programming',
-        'hero.theme': "The Founder's Expedition: Build a Real Mobile PWA with AI & Next.js",
-        'hero.desc': 'The unified learning hub for Software Engineering students at AAB College. Every lecture, step-by-step lab exercise, GitHub Copilot guide, and instructions to build your mobile app with Next.js 15, Tailwind, Supabase, and Vercel in one single place.',
-        'hero.btnCurriculum': 'Explore 15-Week Curriculum',
-        'hero.btnSetup': 'Week 1 Setup Steps',
-        'hero.btnProject': 'Business Project Criteria',
-        'stats.hoursLabel': 'Credit Hours',
-        'stats.hoursVal': '2h Lecture + 2h Lab',
-        'stats.formatLabel': 'Format',
-        'stats.formatVal': 'Hands-on Live Coding Lab',
-        'stats.stackLabel': 'Technologies',
-        'stats.officeLabel': 'Online Office Hours',
-        'stats.officeVal': 'Wednesday, 15:00 - 16:30',
-        'setup.eyebrow': 'Week 1 • Ground Zero Setup',
-        'setup.title': '🛠️ Dev Starter Pack: Environment Setup',
-        'setup.desc': 'Before writing our first line of code, every student must complete these 5 foundational steps during Week 1:',
-        'setup.step1Title': 'GitHub Student Developer Pack',
-        'setup.step1Sub': 'Get GitHub Copilot Pro for Free',
-        'setup.step1Desc': 'Apply using your student email (@universitetiaab.com) on GitHub Education to unlock full access to GitHub Copilot and professional dev tools.',
-        'setup.step1Btn': 'Activate GitHub Pack →',
-        'setup.step2Title': 'VS Code & AI Extensions',
-        'setup.step2Sub': 'Our primary coding environment',
-        'setup.step2Desc': 'Install VS Code and official extensions: GitHub Copilot, GitHub Copilot Chat, Tailwind CSS IntelliSense, and ESLint.',
-        'setup.step3Title': 'Next.js 15 PWA Starter',
-        'setup.step3Sub': 'Initialize your mobile web app',
-        'setup.step3Desc': 'Scaffold the base project with TypeScript, Tailwind CSS, and the App Router by running this terminal command:',
-        'setup.step4Title': 'Supabase Cloud Account',
-        'setup.step4Sub': 'PostgreSQL & Auth in seconds',
-        'setup.step4Desc': 'Create a free Supabase account, create a new project, and retrieve your NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.',
-        'setup.step4Btn': 'Open Supabase →',
-        'setup.step5Title': 'Connect with Vercel',
-        'setup.step5Sub': 'Continuous deployment on every Git push',
-        'setup.step5Desc': 'Connect your GitHub repository to Vercel to generate a public live HTTPS URL you can immediately open on your mobile phone.',
-        'setup.step5Btn': 'Connect with Vercel →',
-        'setup.copyBtn': 'Copy',
-        'curriculum.eyebrow': 'Unified Curriculum',
-        'curriculum.title': '📚🧪 15 Weeks: Lectures & Hands-on Labs',
-        'curriculum.desc': 'Each week contains the theoretical concepts, practical hands-on lab code, and ready-to-use GitHub Copilot prompt templates:',
-        'mod.m1Title': 'Module 1: Mobile Foundations, Touch UI & Next.js 15 + Supabase',
-        'mod.m1Weeks': 'Weeks 1 — 5',
-        'mod.m2Title': 'Module 2: Complete PWA, Offline Caching, Sensors & Device APIs',
-        'mod.m2Weeks': 'Weeks 6 — 10',
-        'mod.m3Title': 'Module 3: Push Notifications, Security, CI/CD & Final Showcase',
-        'mod.m3Weeks': 'Weeks 11 — 15',
-        'w1.badge': 'Week 1',
-        'w1.title': 'Introduction to Mobile PWA, Next.js 15 Ecosystem & GitHub Copilot',
-        'w1.sub': 'Syllabus presentation, Native vs PWA, and getting started with AI Pair Programming.',
-        'w2.badge': 'Week 2',
-        'w2.title': 'Startup Ideation, Specifications (PRD) & High-Level Architecture',
-        'w2.sub': 'Business idea selection, scoping requirements (Must-Haves vs Out-of-Scope), and system architecture sketching before coding.',
-        'w3.badge': 'Week 3',
-        'w3.title': 'Component Architecture & App Router (Next.js 15)',
-        'w3.sub': 'Server vs Client Components, nested routing, and Skeleton Loaders.',
-        'w4.badge': 'Week 4',
-        'w4.title': 'Database with Supabase (PostgreSQL & RLS)',
-        'w4.sub': 'Relational modeling for business, SQL migrations, and Row Level Security.',
-        'w5.badge': 'Week 5',
-        'w5.title': 'Authentication & Session Management on Mobile',
-        'w5.sub': 'Supabase Auth, Magic Links, OAuth (Google/GitHub), and Next.js Middleware.',
-        'w6.badge': 'Week 6',
-        'w6.title': 'PWA: Manifest.json, Icons & Offline Caching',
-        'w6.sub': 'Transforming web apps into installable Homescreen apps without the App Store.',
-        'w7.badge': 'Week 7',
-        'w7.title': 'Midterm Exam I / Initial MVP Evaluation',
-        'w7.sub': 'Live demo of the functional MVP on Vercel by each student.',
-        'w8.badge': 'Week 8',
-        'w8.title': 'Sensors and Native Device APIs',
-        'w8.sub': 'Camera upload, GPS Geolocation, Vibration, and Web Share API.',
-        'w9.badge': 'Week 9',
-        'w9.title': 'State Management & Optimistic UI',
-        'w9.sub': 'React Server Actions, useOptimistic, and perceived speed on mobile networks.',
-        'w10.badge': 'Week 10',
-        'w10.title': 'Realtime Synchronization (Supabase Realtime)',
-        'w10.sub': 'WebSockets on mobile devices, table listeners, and live updates without reloads.',
-        'w11.badge': 'Week 11',
-        'w11.title': 'Push Notifications & User Engagement',
-        'w11.sub': 'Web Push API, VAPID keys, and custom lock-screen notifications.',
-        'w12.badge': 'Week 12',
-        'w12.title': 'Mobile Security, Zod Validation & Data Protection',
-        'w12.sub': 'OWASP Mobile Top 10, strict schema validation, and RLS policy audit.',
-        'w13.badge': 'Week 13',
-        'w13.title': 'Performance Optimization & Lighthouse Audit (90+)',
-        'w13.sub': 'Core Web Vitals (LCP, INP, CLS), image compression, and extreme speed.',
-        'w14.badge': 'Week 14',
-        'w14.title': 'CI/CD, Real Device Testing & Final Preparation',
-        'w14.sub': 'GitHub Actions, Vercel Production Environment, and demo preparation.',
-        'w15.badge': 'Week 15',
-        'w15.title': "Demo Day & Project Defense (The Founder's Showcase)",
-        'w15.sub': 'Live mobile phone presentation, individual defense, and final evaluation.',
-        'common.lecture': 'Lecture (Theory & Concepts)',
-        'common.lab': 'Hands-on Lab Exercise',
-        'common.showcase': 'Showcase & Live Presentation',
-        'common.grading': 'Final Grades & Certification',
-        'project.eyebrow': "The Founder's Expedition",
-        'project.title': '📋 Course Project & Evaluation Criteria',
-        'project.desc': 'Instead of abstract dummy exercises, each student develops a fully functional Mobile-First PWA for a real local business, family enterprise, coffee shop, or SME in Kosovo.',
-        'rubric.r0Title': 'Active Attendance & QR Check-In',
-        'rubric.r0Desc': 'Live dynamic QR check-in during lectures and labs. Minimum 70% attendance threshold is strictly required to qualify for Demo Day.',
-        'rubric.r1Title': 'Weekly Labs & GitHub Autograding',
-        'rubric.r1Desc': '10 practical assignments automatically graded via GitHub Classroom and Actions CI/CD on every git push without manual overhead.',
-        'rubric.r2Title': 'Final PWA Business Project',
-        'rubric.r2Desc': 'Production-ready mobile PWA for a real family/local business with Tailwind, Supabase DB & Auth, offline mode, and Vercel hosting.',
-        'rubric.r3Title': 'Demo Day & Individual Defense',
-        'rubric.r3Desc': '5-minute live smartphone showcase in the auditorium, architectural rationale defense, and individual code examination.',
-        'autograding.title': 'Automated Weekly Grading (GitHub Classroom + Actions Autograding)',
-        'autograding.desc': 'To eliminate manual grading delays for hundreds of students, assignments are automatically graded on every git push via GitHub Actions CI/CD, syncing instantly into the professor gradebook.',
-        'project.btnTopics': 'Explore Suggested Topics →',
-        'project.btnCatalog': 'Topic Reservations & Grades →',
-        'policies.eyebrow': 'AAB College Academic Standards',
-        'policies.title': '⚖️ Course Rules, Integrity & Grading System',
-        'policies.outcomesTitle': 'Learning Outcomes',
-        'policies.outcomesDesc': 'Upon successful completion, students master: (1) Building mobile-first PWAs with Next.js 15; (2) Relational data modeling in Supabase with RLS; (3) Utilizing hardware APIs (Camera, GPS, Push); and (4) Professional AI Pair Programming with GitHub Copilot.',
-        'policies.aiTitle': 'Artificial Intelligence Policy (Copilot)',
-        'policies.aiDesc': 'Using GitHub Copilot is permitted and encouraged as a pair programming assistant. However, students bear full accountability for their code: inability to explain code logic during Demo Day will result in point deductions or failure.',
-        'policies.attendTitle': 'Attendance & Submissions',
-        'policies.attendDesc': 'Attendance (10%) is tracked via the live QR Check-In module with a strict 70% minimum threshold to qualify for Demo Day. 10 practical labs (30%) are automated through GitHub Classroom and Actions CI/CD on every git push.',
-        'policies.gradeScaleTitle': 'Official Grading Scale (AAB College)',
-        'table.points': 'Points Earned',
-        'table.grade': 'Official Grade',
-        'table.descr': 'Performance Description',
-        'table.g10': 'Outstanding / Excellent (Flawless technical & conceptual mastery)',
-        'table.g9': 'Very Good (Above average, minor non-critical flaws)',
-        'table.g8': 'Good (Solid work, good command of core stack)',
-        'table.g7': 'Satisfactory (Code works with some architectural weaknesses)',
-        'table.g6': 'Sufficient (Meets minimum passing requirements)',
-        'table.g5': 'Fail (Incomplete assignments or lack of comprehension)',
-        'profile.subtitle': 'Lecturer at AAB College • Program Manager at KADC • Systems Architect',
-        'profile.bioText': 'Practitioner with over 25 years of experience across software systems architecture, broadband telecommunication networks, and public policy governance. Dedicated lecturer at AAB College focusing on mobile application development, cloud architectures, and practical applied AI.',
-        'profile.btnContact': 'Send an Email →',
-        'profile.academicTitle': 'Teaching & Academic Appointments',
-        'profile.aabTitle': 'Lecturer — AAB College',
-        'profile.aabDesc': 'Mobile Programming, Information Systems Architecture, Cloud Computing, and Cybersecurity in Healthcare.',
-        'profile.ubtTitle': 'Lecturer — UBT',
-        'profile.ubtDesc': 'Network Engineering and Multimedia Communications with emphasis on distributed architectures.',
-        'profile.tuwienTitle': 'Teaching Assistant — TU Wien (Vienna)',
-        'profile.tuwienDesc': 'Institute of Broadband Communications. ATM network performance modeling and numerical traffic simulations.',
-        'profile.eduTitle': 'Education & Qualifications',
-        'profile.cadcTitle': 'Civil Society & Sustainable Governance',
-        'profile.sportsTitle': 'Sports Governance & Mountaineering',
-        'profile.pubsTitle': 'Selected Publications & Policy Reports',
-        'mobile.course': 'Course',
-        'mobile.setup': 'Setup',
-        'mobile.weeks': 'Weeks',
-        'mobile.project': 'Project',
-        'mobile.policies': 'Rules',
-        'footer.mccNote': 'Past courses & other archives:',
-        'footer.mccLink': 'Cloud Computing (MCC 2026) Topics Archive →'
-      }
-    };
-
-    let currentLang = 'sq';
-
-    function setLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('arbenl_lang', lang);
-
-      document.getElementById('btn-lang-sq').classList.toggle('active', lang === 'sq');
-      document.getElementById('btn-lang-en').classList.toggle('active', lang === 'en');
-      document.documentElement.lang = lang;
-
-      const dict = translations[lang] || translations.sq;
-
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (dict[key]) {
-          el.textContent = dict[key];
-        }
-      });
-    }
-
-    function setView(viewName) {
-      const studentPanel = document.getElementById('view-student');
-      const profilePanel = document.getElementById('view-profile');
-      const studentSubnav = document.getElementById('student-subnav');
-      const btnStudent = document.getElementById('btn-view-student');
-      const btnProfile = document.getElementById('btn-view-profile');
-
-      if (viewName === 'profile') {
-        studentPanel.classList.remove('active');
-        profilePanel.classList.add('active');
-        studentSubnav.style.display = 'none';
-        btnStudent.classList.remove('active');
-        btnProfile.classList.add('active');
-        btnStudent.setAttribute('aria-selected', 'false');
-        btnProfile.setAttribute('aria-selected', 'true');
-        history.replaceState(null, null, '#profile');
-      } else {
-        profilePanel.classList.remove('active');
-        studentPanel.classList.add('active');
-        studentSubnav.style.display = 'block';
-        btnProfile.classList.remove('active');
-        btnStudent.classList.add('active');
-        btnProfile.setAttribute('aria-selected', 'false');
-        btnStudent.setAttribute('aria-selected', 'true');
-        history.replaceState(null, null, '#student');
-      }
-    }
-
-    function mobileNavJump(viewName, elementSelector) {
-      setView(viewName);
-      setTimeout(() => {
-        const target = document.querySelector(elementSelector);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 50);
-
-      document.querySelectorAll('.mobile-tab-btn').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = Array.from(document.querySelectorAll('.mobile-tab-btn')).find(b => b.getAttribute('onclick').includes(elementSelector));
-      if (activeBtn) activeBtn.classList.add('active');
-    }
-
-    function toggleWeek(cardId) {
-      const card = document.getElementById(cardId);
-      if (card) {
-        card.classList.toggle('expanded');
-      }
-    }
-
-    function copyCommand(btn, text) {
-      navigator.clipboard.writeText(text).then(() => {
-        const originalText = btn.textContent;
-        btn.textContent = '✓ ' + (currentLang === 'sq' ? 'Kopjuar!' : 'Copied!');
-        btn.classList.add('copied');
-        setTimeout(() => {
-          btn.textContent = originalText;
-          btn.classList.remove('copied');
-        }, 2000);
-      });
-    }
-
-    
-    // =========================================================================
-    // ATTENDANCE & LIVE CHECK-IN ENGINE (SUPABASE + LOCAL SYNC)
-    // =========================================================================
-    let currentSessionType = 'lecture';
-    let checkinOpen = true;
-    let activePin = localStorage.getItem('aab_active_pin') || '8492';
-
-    function selectSessionType(type) {
-      currentSessionType = type;
-      document.getElementById('checkin-session-type').value = type;
-      
-      const btnLecture = document.getElementById('btn-session-lecture');
-      const btnLab = document.getElementById('btn-session-lab');
-      
-      if (type === 'lecture') {
-        btnLecture.classList.add('active');
-        btnLab.classList.remove('active');
-      } else {
-        btnLab.classList.add('active');
-        btnLecture.classList.remove('active');
-      }
-    }
-
-    function getAttendanceRecords() {
-      try {
-        return JSON.parse(localStorage.getItem('aab_attendance_records') || '[]');
-      } catch (e) {
-        return [];
-      }
-    }
-
-    function saveAttendanceRecords(records) {
-      localStorage.setItem('aab_attendance_records', JSON.stringify(records));
-      renderAdminTable();
-    }
-
-    async function handleAttendanceSubmit(e) {
-      e.preventDefault();
-      const feedback = document.getElementById('checkin-feedback');
-      feedback.style.display = 'none';
-      feedback.className = 'checkin-feedback';
-
-      if (!checkinOpen) {
-        feedback.className = 'checkin-feedback error';
-        feedback.innerHTML = '⚠️ <strong>Regjistrimi është mbyllur!</strong> Dritarja 2-minutëshe e orës mësimore ka skaduar. Kontaktoni profesorin.';
-        feedback.style.display = 'block';
-        return;
-      }
-
-      const week = document.getElementById('checkin-week').value;
-      const sessionType = currentSessionType === 'lecture' ? 'Ligjëratë' : 'Ushtrime (Lab)';
-      const studentId = document.getElementById('checkin-id').value.trim();
-      const studentName = document.getElementById('checkin-name').value.trim();
-      let studentEmail = document.getElementById('checkin-email').value.trim().toLowerCase();
-      const enteredPin = document.getElementById('checkin-pin').value.trim();
-
-      // PIN Check
-      if (enteredPin !== activePin) {
-        feedback.className = 'checkin-feedback error';
-        feedback.innerHTML = '❌ <strong>Kodi PIN është i pasaktë!</strong> Shikoni kodin e shfaqur në projektorin e sallës.';
-        feedback.style.display = 'block';
-        return;
-      }
-
-      // Auto-append .com if student entered e.g. 'arben.lila@gmail'
-      if (studentEmail.endsWith('@gmail')) {
-        studentEmail += '.com';
-        document.getElementById('checkin-email').value = studentEmail;
-      }
-
-      // Email validation (accepts official AAB emails, gmail test accounts, and valid email formats)
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(studentEmail)) {
-        feedback.className = 'checkin-feedback error';
-        feedback.innerHTML = '⚠️ <strong>Format i pasaktë e-maili!</strong> Ju lutem jepni një adresë të vlefshme (p.sh. arben.lila@gmail.com ose emri.mbiemri@universitetiaab.com).';
-        feedback.style.display = 'block';
-        return;
-      }
-
-      const records = getAttendanceRecords();
-      
-      // Check duplicate
-      const duplicate = records.find(r => (r.studentId === studentId || r.studentEmail === studentEmail) && r.week === week && r.sessionType === sessionType);
-      if (duplicate) {
-        feedback.className = 'checkin-feedback warning';
-        feedback.innerHTML = `ℹ️ <strong>Tashmë jeni regjistruar!</strong> Prania juaj për ${week} (${sessionType}) është evidentuar më herët në orën ${duplicate.time}.`;
-        feedback.style.display = 'block';
-        return;
-      }
-
-      // Record entry
-      const now = new Date();
-      const dateStr = now.toLocaleDateString('sq-AL');
-      const timeStr = now.toLocaleTimeString('sq-AL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-      const newRecord = {
-        id: 'rec_' + Date.now(),
-        date: dateStr,
-        time: timeStr,
-        week: week,
-        sessionType: sessionType,
-        studentId: studentId,
-        studentName: studentName,
-        studentEmail: studentEmail,
-        timestamp: now.toISOString()
-      };
-
-      records.push(newRecord);
-      saveAttendanceRecords(records);
-
-      // Optional Supabase cloud push if configured
-      if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
-        try {
-          fetch(`${window.SUPABASE_URL}/rest/v1/attendance`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey': window.SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`
-            },
-            body: JSON.stringify({
-              student_id: studentId,
-              student_name: studentName,
-              student_email: studentEmail,
-              week: week,
-              session_type: sessionType,
-              created_at: now.toISOString()
-            })
-          }).catch(err => console.log('Supabase sync note:', err));
-        } catch (err) {
-          // graceful fallback
-        }
-      }
-
-      feedback.className = 'checkin-feedback success';
-      feedback.innerHTML = `🎉 <strong>Sukses, ${studentName}!</strong> Pjesëmarrja juaj u regjistrua me sukses për <strong>${week} (${sessionType})</strong>.<br><small style="color:#a7f3d0;">Koha zyrtare e regjistrimit: ${timeStr} • Kolegji AAB</small>`;
-      feedback.style.display = 'block';
-
-      document.getElementById('checkin-pin').value = '';
-    }
-
-    function toggleProfessorAdmin() {
-      const panel = document.getElementById('professor-admin-section');
-      if (panel.style.display === 'none') {
-        const pass = prompt('Vendosni fjalëkalimin e profesorit për të hapur panelin:', '');
-        if (pass === 'prof2026' || pass === 'arbenlila' || pass === activePin) {
-          panel.style.display = 'block';
-          renderAdminTable();
-          panel.scrollIntoView({ behavior: 'smooth' });
-        } else if (pass !== null) {
-          alert('Fjalëkalim i pasaktë!');
-        }
-      } else {
-        panel.style.display = 'none';
-      }
-    }
-
-    function toggleCheckinStatus() {
-      checkinOpen = !checkinOpen;
-      const btn = document.getElementById('btn-toggle-status');
-      const ind = document.getElementById('checkin-live-indicator');
-      
-      if (checkinOpen) {
-        btn.className = 'status-toggle-btn active';
-        btn.innerHTML = '🟢 HAPUR (Pranon)';
-        ind.className = 'badge emerald';
-        ind.innerHTML = '<span class="pulse-dot"></span> REGJISTRIMI: HAPUR';
-      } else {
-        btn.className = 'status-toggle-btn closed';
-        btn.innerHTML = '🔴 MBYLLUR';
-        ind.className = 'badge red';
-        ind.innerHTML = 'REGJISTRIMI: MBYLLUR';
-      }
-    }
-
-    function updateActivePin() {
-      const val = document.getElementById('admin-pin-input').value.trim();
-      if (val.length >= 4) {
-        activePin = val;
-        localStorage.setItem('aab_active_pin', activePin);
-        alert(`Kodi PIN i seancës u përditësua në: ${activePin}`);
-      } else {
-        alert('Kodi PIN duhet të ketë të paktën 4 shifra!');
-      }
-    }
-
-    function renderAdminTable() {
-      const records = getAttendanceRecords();
-      const tbody = document.getElementById('attendance-table-body');
-      const countEl = document.getElementById('admin-count-today');
-      const filterWeek = document.getElementById('admin-filter-week').value;
-
-      const filtered = filterWeek === 'all' ? records : records.filter(r => r.week === filterWeek);
-      countEl.textContent = filtered.length;
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-dim); padding:20px;">Nuk ka regjistrime për këtë përzgjedhje.</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = filtered.map((r, i) => `
-        <tr>
-          <td><strong>${i + 1}</strong></td>
-          <td>${r.date} <small style="color:var(--text-dim);">${r.time}</small></td>
-          <td><span class="badge primary" style="font-size:11px;">${r.week}</span></td>
-          <td><span class="badge ${r.sessionType.includes('Ligjëratë') ? 'blue' : 'emerald'}" style="font-size:11px;">${r.sessionType}</span></td>
-          <td><code>${r.studentId}</code></td>
-          <td><strong>${r.studentName}</strong></td>
-          <td><a href="mailto:${r.studentEmail}" style="color:var(--text-muted);">${r.studentEmail}</a></td>
-        </tr>
-      `).join('');
-    }
-
-    function exportAttendanceToCSV() {
-      const records = getAttendanceRecords();
-      if (records.length === 0) {
-        alert('Nuk ka të dhëna për të eksportuar!');
-        return;
-      }
-
-      const headers = ['Nr', 'Data', 'Ora', 'Java', 'Seanca', 'ID Studenti', 'Emri dhe Mbiemri', 'E-maili Zyrtar AAB'];
-      const rows = records.map((r, i) => [
-        i + 1,
-        `"${r.date}"`,
-        `"${r.time}"`,
-        `"${r.week}"`,
-        `"${r.sessionType}"`,
-        `"${r.studentId}"`,
-        `"${r.studentName}"`,
-        `"${r.studentEmail}"`
-      ]);
-
-      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', `AAB_Pjesemarrja_Mobile_Programming_2026_${new Date().toISOString().slice(0,10)}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    function clearAttendanceRecords() {
-      if (confirm('A jeni të sigurtë që dëshironi të fshini regjistrimet ekzistuese?')) {
-        localStorage.removeItem('aab_attendance_records');
-        renderAdminTable();
-        alert('Regjistrimet u pastruan.');
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedLang = localStorage.getItem('arbenl_lang') || 'sq';
-      setLanguage(savedLang);
-
-      if (window.location.hash === '#profile') {
-        setView('profile');
-      } else {
-        setView('student');
-      }
-    });
-  </script>
+  <script src="assets/portal.js?v=dcf890f54875" defer></script>
 </body>
 </html>

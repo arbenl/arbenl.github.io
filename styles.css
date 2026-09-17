@@ -1,7 +1,7 @@
 /* ==========================================================================
    PORTALI AKADEMIK & STUDENTOR - PROF. ASOC. ARBEN LILA
    Kolegji AAB • 2026/2027 • Programimi për Pajisje Mobile (6 ECTS)
-   Standardet: Zero Overflow Mobile, AAB Official Logo, Touch-First UI, WCAG AAA
+   Mobile portal: responsive layout, visible keyboard focus and touch controls
    ========================================================================== */
 
 :root {
@@ -15,7 +15,7 @@
   --border-subtle: #1a2336;
   --border-focus: #6366f1;
   
-  /* WCAG AAA High-Contrast Text */
+  /* Text contrast palette */
   --text-main: #ffffff;
   --text-muted: #cbd5e1;
   --text-dim: #94a3b8;
@@ -43,7 +43,7 @@
   --radius-lg: 20px;
   --radius-full: 9999px;
   
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 * {
@@ -1702,3 +1702,29 @@ a {
   text-align: center;
   justify-content: center;
 }
+
+/* Student task entry: direct, responsive access above the course overview. */
+.portal-skip{position:absolute;top:-100px;left:16px;z-index:1000;background:#fff;color:#111;padding:12px}.portal-skip:focus{top:10px}.student-start{padding:36px 0 28px;scroll-margin-top:160px}.student-start h2{font-size:clamp(28px,4vw,42px);letter-spacing:-1px;margin:10px 0}.student-start p{color:var(--text-muted);margin:0 0 24px}.student-shortcuts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.student-shortcuts a{border:1px solid #39435f;border-radius:14px;padding:22px;background:#111827;display:flex;flex-direction:column;gap:12px;color:#f8fafc;text-decoration:none}.student-shortcuts a:first-child{background:#302a70;border-color:#818cf8}.student-shortcuts a:hover{border-color:#a5b4fc;transform:translateY(-2px)}.student-shortcuts span{font-size:11px;letter-spacing:1.5px;color:#c7d2fe}.student-shortcuts strong{font-size:19px}.student-shortcuts small{color:#cbd5e1}.week-jump{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:22px}.week-jump select{font:inherit;background:#111827;color:#f8fafc;border:1px solid #526078;padding:10px 16px;border-radius:8px}.week-jump button{cursor:pointer}.week-header:focus-visible,a:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid #fbbf24;outline-offset:4px}.week-card{scroll-margin-top:180px}#checkin p{margin:16px 0;line-height:1.7}.subnav-link{white-space:nowrap}@media(max-width:680px){.student-shortcuts{grid-template-columns:1fr}.student-shortcuts a{padding:16px;gap:7px}.student-start{padding-top:22px}.week-jump{gap:10px}.week-jump .btn{padding:10px;font-size:13px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation:none!important;transition:none!important}}
+.mobile-tab-btn{text-decoration:none}
+
+/* Native-size touch targets; compact header without clipped mobile tabs. */
+.view-panel{animation:none}.aab-brand-badge,.lang-btn,.view-btn{min-height:44px}.lang-btn{min-width:44px}.mobile-tab-btn{min-height:52px;flex:1;min-width:0;justify-content:center;touch-action:manipulation}.attendance-tab{color:#c7d2fe}.student-shortcuts a{touch-action:manipulation}.week-jump select{min-height:44px;font-size:16px}.week-card,.student-start{scroll-margin-top:150px}
+@media(max-width:767px){
+ .header-inner{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:8px 0}
+ .brand-area{max-width:none;gap:8px}.brand-divider{display:none}.brand-text p{display:none}.brand-text h1{font-size:12px}
+ .aab-brand-badge{padding:3px 6px}.aab-logo-img{height:20px}.header-actions{grid-column:2;grid-row:1}
+ .view-switcher{grid-column:1/-1;grid-row:2;min-width:0;margin:0;padding:3px}
+ .view-btn{min-width:0;white-space:normal;line-height:1.2;font-size:12px;gap:4px;padding:6px}.view-btn .badge-pill{display:none}
+ .view-switcher .view-btn:first-child{flex:1.15}.lang-switch{padding:0}
+ .student-start{padding-top:8px}.student-start h2{font-size:29px}.student-start p{margin-bottom:16px}
+ .student-shortcuts a{padding:14px 16px;gap:4px}.student-shortcuts{gap:10px}
+ .student-shortcuts span{font-size:10px}.student-shortcuts strong{font-size:17px}
+ .student-start .eyebrow{font-size:10px;letter-spacing:1px}.week-jump{margin-top:14px}
+ .week-header{padding:16px 12px;min-height:64px}.week-header-left{min-width:0}.week-title-area{min-width:0}.week-title-area h4{overflow-wrap:anywhere}
+ .mobile-bottom-bar{padding-top:4px;background:#090d16;backdrop-filter:none;-webkit-backdrop-filter:none}
+ .site-footer{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+ .section-block{scroll-margin-top:140px}.week-columns>*{min-width:0}pre,code{overflow-wrap:anywhere}
+}
+.week-jump select{appearance:none;-webkit-appearance:none;height:44px;padding:10px 16px;line-height:22px}
+.subnav-link,.archive-btn{min-height:44px}
