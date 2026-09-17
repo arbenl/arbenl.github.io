@@ -12,6 +12,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
 </head>
 <body>
+  <a class="portal-skip" href="#student-start">Kalo te veprimet e studentit</a>
 
   <!-- ========================================================================
        TOP HEADER ME DUAL-MODE SEGMENTED CONTROLLER & LANGUAGE SWITCHER
@@ -61,19 +62,19 @@
        ======================================================================== -->
   <nav class="student-subnav" id="student-subnav" aria-label="Navigimi i brendshëm i kursit">
     <div class="student-subnav-inner">
-      <a class="subnav-link active" href="#mission-control">
+      <a class="subnav-link active" href="#student-start">
         <span>⚡</span> <span>Veprimi i Radhës</span>
       </a>
       <a class="subnav-link" href="#templates-hub">
         <span>📥</span> <span>Shabllonet & PRD</span>
       </a>
-      <a class="subnav-link active" href="#course-overview">
+      <a class="subnav-link" href="#course-overview">
         <span>🚀</span> <span data-i18n="subnav.overview">Përmbledhja & Syllabusi</span>
       </a>
       <a class="subnav-link" href="#setup">
         <span>🛠️</span> <span data-i18n="subnav.setup">Dev Starter Pack (Javë 1)</span>
       </a>
-      <a class="subnav-link" href="#checkin">
+      <a class="subnav-link" href="attendance.html">
         <span>📍</span> <span data-i18n="subnav.checkin">Check-In Pjesëmarrja</span>
       </a>
       <a class="subnav-link" href="#curriculum">
@@ -95,6 +96,17 @@
     <div id="view-student" class="view-panel active">
       <div class="container">
         
+        <section id="student-start" class="student-start" aria-labelledby="student-start-title" tabindex="-1">
+          <div><span class="eyebrow">PORTALI I STUDENTIT · 2026/2027</span>
+          <h2 id="student-start-title">Gati për orën e sotme?</h2>
+          <p>Materialet, detyrat dhe vijueshmëria në një vend.</p></div>
+          <div class="student-shortcuts">
+            <a href="attendance.html"><span>01 · VIJUESHMËRIA</span><strong>Regjistrohu në orë ↗</strong><small>Hyr para skanimit të QR-së</small></a>
+            <a href="#curriculum"><span>02 · MATERIALET</span><strong>Ligjërata dhe ushtrime ↓</strong><small>Zgjidh javën e kursit</small></a>
+            <a href="#templates-hub"><span>03 · DORËZIMET</span><strong>Detyrat dhe shabllonet ↓</strong><small>PRD, Exit Ticket dhe laboratori</small></a>
+          </div>
+          <div class="week-jump"><label for="week-jump">Hap javën</label><select id="week-jump"><option value="week-1">Java 01</option><option value="week-2">Java 02</option><option value="week-3">Java 03</option><option value="week-4">Java 04</option><option value="week-5">Java 05</option><option value="week-6">Java 06</option><option value="week-7">Java 07</option><option value="week-8">Java 08</option><option value="week-9">Java 09</option><option value="week-10">Java 10</option><option value="week-11">Java 11</option><option value="week-12">Java 12</option><option value="week-13">Java 13</option><option value="week-14">Java 14</option><option value="week-15">Java 15</option></select><button class="btn secondary" id="open-week">Hap materialet →</button></div>
+        </section>
         <!-- Course Hero Section -->
         <section class="course-hero" id="course-overview" aria-labelledby="course-hero-title">
           <div class="hero-tag-row">
@@ -147,7 +159,7 @@
              ================================================================== -->
         <section class="section-block mission-control-block" id="mission-control" aria-labelledby="mission-control-title">
           <div class="mission-header">
-            <div class="mission-badge">JAVA AKTUALE: JAVË 01 & JAVË 02</div>
+            <div class="mission-badge">FILLIMI I KURSIT · JAVËT 01 & 02</div>
             <h3 id="mission-control-title">⚡ Mission Control: Udhëzuesi i Veprimit të Radhës</h3>
             <p class="mission-subtitle">Përgjigjet e menjëhershme për studentin: ku jemi, çfarë dorëzohet dhe si ecet përpara.</p>
           </div>
@@ -160,7 +172,7 @@
               <ul class="mission-checklist">
                 <li><strong>Në Ushtrime:</strong> Cikli 45-minutësh "First Win" (Repo ➔ Commit ➔ Vercel Deploy ➔ Celular).</li>
                 <li><strong>Pas Ligjëratës:</strong> Zhvilloni 3 biseda të shkurtra me kolegë rreth një problemi real udhëtimi/shpenzimi.</li>
-                <li><strong>Aplikoni:</strong> GitHub Student Pack për Copilot Pro falas.</li>
+                <li><strong>Aplikoni:</strong> GitHub Student Pack për Copilot Student pas verifikimit nga GitHub Education.</li>
               </ul>
               <a class="btn primary btn-sm" href="#setup">Hap Hapat e Setup-it ➔</a>
             </div>
@@ -168,8 +180,8 @@
             <!-- Box 2: Çfarë dorëzoj deri të premten -->
             <div class="mission-card deadline-card">
               <div class="card-icon">📅</div>
-              <h4>2. Çfarë dorëzoj deri të premten?</h4>
-              <div class="deadline-badge">AFATI: E Premte, ora 23:59</div>
+              <h4>2. Çfarë duhet të dorëzoj?</h4>
+              <div class="deadline-badge">AFATI: Sipas njoftimit të pedagogut</div>
               <ul class="mission-checklist">
                 <li><strong>Faqen e Parë Live:</strong> Linkun tuaj <code>*.vercel.app</code> nga ushtrimet e para.</li>
                 <li><strong>Exit Ticket:</strong> Formulari me 3 pyetjet e shpejta të orës së parë.</li>
@@ -194,12 +206,11 @@
             <div class="mission-card checkin-card">
               <div class="card-icon">📍</div>
               <h4>4. Pjesëmarrja ime (Check-in)</h4>
-              <p class="checkin-note">Regjistrimi i pranisë bëhet me QR Code në fillim të çdo ligjërate në sistemin Supabase.</p>
+              <p class="checkin-note">Skanoni QR në projektor gjatë ligjëratës ose ushtrimeve. Pedagogu konfirmon praninë në sallë.</p>
               <div class="checkin-status-box">
-                <span class="status-indicator live"></span>
-                <span>Sesioni 01: <strong>I HAPUR PËR CHECK-IN</strong></span>
+                <span>Gjendjen e sesionit e kontrolloni në panelin e vijueshmërisë.</span>
               </div>
-              <a class="btn emerald btn-sm" href="#checkin">Shëno Praninë me QR ➔</a>
+              <a class="btn emerald btn-sm" href="attendance.html">Hap Vijueshmërinë ➔</a>
             </div>
           </div>
         </section>
@@ -310,7 +321,7 @@
                 <span class="step-num">1</span>
                 <div class="step-title">
                   <h4 data-i18n="setup.step1Title">GitHub Student Developer Pack</h4>
-                  <span data-i18n="setup.step1Sub">Përfitoni GitHub Copilot Pro Falas</span>
+                  <span data-i18n="setup.step1Sub">Përfitoni GitHub Copilot Student Falas</span>
                 </div>
               </div>
               <p class="step-desc" data-i18n="setup.step1Desc">
@@ -398,193 +409,10 @@
              EVIDENCA E PJESËMARRJES: CHECK-IN LIVE PËR LIGJËRATË & USHTRIME
              ============================================================== -->
         <section class="section-block checkin-section" id="checkin" aria-labelledby="checkin-title">
-          <div class="section-header-row">
-            <div>
-              <div class="section-tag-row">
-                <span class="badge primary">EVIDENCA ZYRTARE</span>
-                <span class="badge emerald" id="checkin-live-indicator"><span class="pulse-dot"></span> REGJISTRIMI: HAPUR</span>
-              </div>
-              <h3 id="checkin-title" data-i18n="checkin.title">📍 Check-In i Pjesëmarrjes (Ligjërata & Ushtrime)</h3>
-              <p class="section-desc" data-i18n="checkin.desc">
-                Regjistroni praninë tuaj në orën e ligjëratës ose ushtrimeve brenda 2 minutave me të dhënat tuaja zyrtare studentore të Kolegjit AAB.
-              </p>
-            </div>
-          </div>
-
-          <div class="checkin-card-container">
-            <!-- Student Form -->
-            <div class="checkin-card">
-              <form id="attendance-form" onsubmit="handleAttendanceSubmit(event)">
-                
-                <!-- Session Selector -->
-                <div class="form-group">
-                  <label class="form-label" data-i18n="checkin.sessionLabel">Zgjidhni Seancën e Sotme:</label>
-                  <div class="session-type-toggle">
-                    <button type="button" class="type-btn active" id="btn-session-lecture" onclick="selectSessionType('lecture')">
-                      <span class="type-icon">📚</span>
-                      <span class="type-title" data-i18n="checkin.lecture">Ora e Ligjëratës</span>
-                    </button>
-                    <button type="button" class="type-btn" id="btn-session-lab" onclick="selectSessionType('lab')">
-                      <span class="type-icon">🧪</span>
-                      <span class="type-title" data-i18n="checkin.lab">Ora e Ushtrimeve (Lab)</span>
-                    </button>
-                  </div>
-                  <input type="hidden" id="checkin-session-type" value="lecture">
-                </div>
-
-                <!-- Week Selector -->
-                <div class="form-group">
-                  <label class="form-label" for="checkin-week" data-i18n="checkin.weekLabel">Java e Semestrit:</label>
-                  <select id="checkin-week" class="form-input">
-                    <option value="Java 1">Java 1: Hyrje, Next.js PWA & Setup i AI</option>
-                    <option value="Java 2">Java 2: Arkitektura & App Router</option>
-                    <option value="Java 3">Java 3: Layouts & Touch-First UI</option>
-                    <option value="Java 4">Java 4: React 19 Client/Server Components</option>
-                    <option value="Java 5">Java 5: Service Workers & Offline PWA</option>
-                    <option value="Java 6">Java 6: Web App Manifest & Instalimi</option>
-                    <option value="Java 7">Java 7: Next.js Server Actions</option>
-                    <option value="Java 8">Java 8: Supabase PostgreSQL & Auth</option>
-                    <option value="Java 9">Java 9: Row-Level Security (RLS)</option>
-                    <option value="Java 10">Java 10: Integrimi i Kamerës & Sensorëve</option>
-                    <option value="Java 11">Java 11: Njoftimet Push & Background Sync</option>
-                    <option value="Java 12">Java 12: Testimi E2E me Playwright</option>
-                    <option value="Java 13">Java 13: Vercel Production & Lighthouse</option>
-                    <option value="Java 14">Java 14: Siguria & Auditimi i Aplikacionit</option>
-                    <option value="Java 15">Java 15: Demo Day & Mbrojtja Finale</option>
-                  </select>
-                </div>
-
-                <!-- 2-Col inputs for Student ID and Name -->
-                <div class="form-grid-2">
-                  <div class="form-group">
-                    <label class="form-label" for="checkin-id" data-i18n="checkin.idLabel">ID / Nr. i Indeksit:</label>
-                    <input type="text" id="checkin-id" class="form-input" placeholder="p.sh. 22010045" required>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="checkin-name" data-i18n="checkin.nameLabel">Emri dhe Mbiemri:</label>
-                    <input type="text" id="checkin-name" class="form-input" placeholder="p.sh. Agon Krasniqi" required>
-                  </div>
-                </div>
-
-                <!-- Email and PIN -->
-                <div class="form-grid-2">
-                  <div class="form-group">
-                    <label class="form-label" for="checkin-email" data-i18n="checkin.emailLabel">E-maili (Zyrtar AAB ose Sekondar):</label>
-                    <input type="email" id="checkin-email" class="form-input" placeholder="p.sh. arben.lila@gmail.com ose studenti@universitetiaab.com" required>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="checkin-pin">
-                      <span data-i18n="checkin.pinLabel">Kodi PIN nga Projektori:</span>
-                      <span class="label-hint">(4 shifra)</span>
-                    </label>
-                    <input type="text" id="checkin-pin" class="form-input pin-input" placeholder="Shënoni kodin..." maxlength="6" required autocomplete="off">
-                  </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div style="margin-top: 18px;">
-                  <button type="submit" id="btn-submit-checkin" class="btn primary btn-full">
-                    <span>✅</span> <span data-i18n="checkin.submitBtn">Regjistro Praninë Tani</span>
-                  </button>
-                </div>
-
-                <!-- Status Feedback -->
-                <div id="checkin-feedback" class="checkin-feedback" style="display:none;" role="alert"></div>
-              </form>
-            </div>
-
-            <!-- Side Card: Fast Instructions & Security -->
-            <div class="checkin-info-card">
-              <h4 class="info-title">⏱️ Rregullat e Check-In (2 Minuta)</h4>
-              <ul class="info-list">
-                <li><strong>Kodi i Seancës:</strong> Shfaqet në projektor nga profesori dhe ndryshon çdo orë mësimore.</li>
-                <li><strong>Koha e Kufizuar:</strong> Dritarja e pranimit mbyllet 2 minuta pas shfaqjes së kodit në ekran.</li>
-                <li><strong>E-maili Zyrtar:</strong> Duhet të jetë llogaria juaj <code>@universitetiaab.com</code>.</li>
-                <li><strong>Vetëm 1 regjistrim:</strong> Telefoni juaj lejon vetëm 1 dorëzim për secilën orë mësimore.</li>
-              </ul>
-
-              <div class="professor-toggle-box">
-                <button type="button" class="btn secondary btn-sm" onclick="toggleProfessorAdmin()" id="btn-toggle-admin">
-                  <span>🔒</span> Paneli i Profesorit & Raporti Excel
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- ============================================================
-               PANELI I PROFESORIT (ADMIN & SHKARKIMI EXCEL / CSV)
-               ============================================================ -->
-          <div id="professor-admin-section" class="professor-admin-panel" style="display: none;">
-            <div class="admin-header">
-              <div>
-                <h4 class="admin-title">🏛️ Paneli i Menaxhimit të Pranisë (Prof. Arben Lila)</h4>
-                <p class="admin-subtitle">Kontrolloni statusin e orës, ndryshoni PIN-in dhe eksportoni listën zyrtare për Kolegjit AAB.</p>
-              </div>
-              <button type="button" class="btn secondary btn-sm" onclick="toggleProfessorAdmin()">✕ Mbyll Panelin</button>
-            </div>
-
-            <!-- Admin Controls -->
-            <div class="admin-controls-grid">
-              <div class="admin-stat-card">
-                <div class="admin-stat-label">Të Regjistruar Sot</div>
-                <div class="admin-stat-val" id="admin-count-today">0</div>
-              </div>
-              <div class="admin-stat-card">
-                <div class="admin-stat-label">Statusi i Formës</div>
-                <button type="button" class="status-toggle-btn active" id="btn-toggle-status" onclick="toggleCheckinStatus()">
-                  🟢 HAPUR (Pranon)
-                </button>
-              </div>
-              <div class="admin-stat-card">
-                <div class="admin-stat-label">Kodi PIN Aktiv i Ditës</div>
-                <div class="pin-edit-row">
-                  <input type="text" id="admin-pin-input" value="8492" class="form-input" style="max-width:100px; text-align:center; font-weight:bold; font-size:18px;">
-                  <button type="button" class="btn secondary btn-sm" onclick="updateActivePin()">Ruaj</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Actions Row -->
-            <div class="admin-actions-bar">
-              <button type="button" class="btn primary" onclick="exportAttendanceToCSV()">
-                <span>📥</span> Shkarko Raportin Zyrtar në Excel (CSV)
-              </button>
-              <button type="button" class="btn secondary" onclick="clearAttendanceRecords()">
-                <span>🗑️</span> Pastro Regjistrimet Testuese
-              </button>
-              <div class="admin-filter-group">
-                <label for="admin-filter-week">Filtro Javën:</label>
-                <select id="admin-filter-week" class="form-input" onchange="renderAdminTable()" style="max-width:160px;">
-                  <option value="all">Të Gjitha Javët</option>
-                  <option value="Java 1" selected>Java 1</option>
-                  <option value="Java 2">Java 2</option>
-                  <option value="Java 3">Java 3</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Live Table -->
-            <div class="table-responsive" style="margin-top: 16px;">
-              <table class="rubric-table admin-table" id="attendance-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Data & Ora</th>
-                    <th>Java</th>
-                    <th>Seanca</th>
-                    <th>ID Studenti</th>
-                    <th>Emri dhe Mbiemri</th>
-                    <th>E-maili AAB</th>
-                  </tr>
-                </thead>
-                <tbody id="attendance-table-body">
-                  <tr>
-                    <td colspan="7" style="text-align:center; color:var(--text-dim); padding:20px;">Ende nuk ka regjistrime për këtë seancë.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <h3 id="checkin-title">Vijueshmëria: ligjërata dhe ushtrime</h3>
+          <p>Hyr me emailin e listës së kursit, skano QR aktual në projektor dhe prit konfirmimin e pedagogut në sallë. Shiko historikun tënd për tërë semestrin.</p>
+          <a class="btn primary" href="attendance.html">Hap vijueshmërinë time →</a>
+          <p class="section-desc">Skanimi i QR-së është kërkesë për regjistrim; prania numërohet pas verifikimit. Nëse nuk ke telefon, kërko regjistrim manual nga pedagogu.</p>
         </section>
 
         <section class="section-block" id="curriculum" aria-labelledby="curriculum-title">
@@ -640,7 +468,7 @@
                     </div>
                     <ul class="week-items-list">
                       <li><strong>Toolchain-i i Themeluesit:</strong> Instalimi i VS Code, Git dhe lidhja me GitHub me çelësa SSH.</li>
-                      <li><strong>Aktivizimi i AI Falas:</strong> Verifikimi i GitHub Student Developer Pack & GitHub Copilot Pro me emailin @universitetiaab.com.</li>
+                      <li><strong>Aktivizimi i AI Falas:</strong> Verifikimi i GitHub Student Developer Pack & GitHub Copilot Student me emailin @universitetiaab.com.</li>
                       <li><strong>Infrastruktura Cloud:</strong> Hapja e llogarive në Supabase Cloud (PostgreSQL) dhe Vercel (CI/CD me 1-klik).</li>
                       <li><strong>How to Start a Startup:</strong> Ekzekutimi i 'git push' të parë drejt cloud-it me kosto 0 EUR dhe testim në telefon!</li>
                     </ul>
@@ -1539,14 +1367,14 @@
        MOBILE STICKY BOTTOM BAR (NATIVE APP FEEL ON SMARTPHONES)
        ======================================================================== -->
   <nav class="mobile-bottom-bar" aria-label="Mobile Navigation">
-    <button class="mobile-tab-btn active" onclick="mobileNavJump('student', '#course-overview')">
+    <button class="mobile-tab-btn active" onclick="mobileNavJump('student', '#student-start')">
       <span class="icon">🚀</span>
       <span data-i18n="mobile.course">Kursi</span>
     </button>
-    <button class="mobile-tab-btn" onclick="mobileNavJump('student', '#checkin')">
+    <a class="mobile-tab-btn" href="attendance.html">
       <span class="icon">📍</span>
       <span data-i18n="mobile.checkin">Check-In</span>
-    </button>
+    </a>
     <button class="mobile-tab-btn" onclick="mobileNavJump('student', '#setup')">
       <span class="icon">🛠️</span>
       <span data-i18n="mobile.setup">Setup</span>
@@ -1608,17 +1436,6 @@
         'subnav.policies': 'Rregullat & Sistemi i Notimit',
         'subnav.checkin': 'Check-In Pjesëmarrja',
         'mobile.checkin': 'Check-In',
-        'checkin.title': '📍 Check-In i Pjesëmarrjes (Ligjërata & Ushtrime)',
-        'checkin.desc': 'Regjistroni praninë tuaj në orën e ligjëratës ose ushtrimeve brenda 2 minutave me të dhënat tuaja zyrtare studentore të Kolegjit AAB.',
-        'checkin.sessionLabel': 'Zgjidhni Seancën e Sotme:',
-        'checkin.lecture': 'Ora e Ligjëratës',
-        'checkin.lab': 'Ora e Ushtrimeve (Lab)',
-        'checkin.weekLabel': 'Java e Semestrit:',
-        'checkin.idLabel': 'ID / Nr. i Indeksit:',
-        'checkin.nameLabel': 'Emri dhe Mbiemri:',
-        'checkin.emailLabel': 'E-maili Zyrtar AAB:',
-        'checkin.pinLabel': 'Kodi PIN nga Projektori:',
-        'checkin.submitBtn': 'Regjistro Praninë Tani',
 
         'hero.courseBadge': 'Programimi për Pajisje Mobile',
         'hero.semesterBadge': 'Semestri V • Viti Akademik 2026/2027',
@@ -1640,7 +1457,7 @@
         'setup.title': '🛠️ Dev Starter Pack: Konfigurimi i Mjedisit',
         'setup.desc': 'Para se të shkruajmë rreshtin e parë të kodit, çdo student duhet të përfundojë këta 5 hapa themelorë brenda javës së parë:',
         'setup.step1Title': 'GitHub Student Developer Pack',
-        'setup.step1Sub': 'Përfitoni GitHub Copilot Pro Falas',
+        'setup.step1Sub': 'Përfitoni GitHub Copilot Student Falas',
         'setup.step1Desc': 'Aplikoni me emailin tuaj të studentit (@universitetiaab.com) te GitHub Education për të aktivizuar aksesin e plotë në GitHub Copilot dhe mjetet zhvillimore.',
         'setup.step1Btn': 'Aktivizo GitHub Pack →',
         'setup.step2Title': 'VS Code & Ekstensionet AI',
@@ -1784,17 +1601,6 @@
         'subnav.policies': 'Rules & Grading System',
         'subnav.checkin': 'Live Check-In',
         'mobile.checkin': 'Check-In',
-        'checkin.title': '📍 Live Attendance Check-In (Lecture & Lab)',
-        'checkin.desc': "Check in for today's lecture or lab within 2 minutes using your official AAB College student credentials.",
-        'checkin.sessionLabel': "Select Today's Session:",
-        'checkin.lecture': 'Lecture Session',
-        'checkin.lab': 'Lab Exercise Session',
-        'checkin.weekLabel': 'Semester Week:',
-        'checkin.idLabel': 'Student ID / Index No:',
-        'checkin.nameLabel': 'Full Name:',
-        'checkin.emailLabel': 'Official AAB Email:',
-        'checkin.pinLabel': 'Session PIN from Screen:',
-        'checkin.submitBtn': 'Submit Attendance Now',
 
         'hero.courseBadge': 'Mobile Device Programming',
         'hero.semesterBadge': 'Semester V • Academic Year 2026/2027',
@@ -1816,7 +1622,7 @@
         'setup.title': '🛠️ Dev Starter Pack: Environment Setup',
         'setup.desc': 'Before writing our first line of code, every student must complete these 5 foundational steps during Week 1:',
         'setup.step1Title': 'GitHub Student Developer Pack',
-        'setup.step1Sub': 'Get GitHub Copilot Pro for Free',
+        'setup.step1Sub': 'Get GitHub Copilot Student for Free',
         'setup.step1Desc': 'Apply using your student email (@universitetiaab.com) on GitHub Education to unlock full access to GitHub Copilot and professional dev tools.',
         'setup.step1Btn': 'Activate GitHub Pack →',
         'setup.step2Title': 'VS Code & AI Extensions',
@@ -1969,7 +1775,7 @@
       });
     }
 
-    function setView(viewName) {
+    function setView(viewName, updateHash = true) {
       const studentPanel = document.getElementById('view-student');
       const profilePanel = document.getElementById('view-profile');
       const studentSubnav = document.getElementById('student-subnav');
@@ -1984,7 +1790,7 @@
         btnProfile.classList.add('active');
         btnStudent.setAttribute('aria-selected', 'false');
         btnProfile.setAttribute('aria-selected', 'true');
-        history.replaceState(null, null, '#profile');
+        if (updateHash) history.replaceState(null, null, '#profile');
       } else {
         profilePanel.classList.remove('active');
         studentPanel.classList.add('active');
@@ -1993,7 +1799,7 @@
         btnStudent.classList.add('active');
         btnProfile.setAttribute('aria-selected', 'false');
         btnStudent.setAttribute('aria-selected', 'true');
-        history.replaceState(null, null, '#student');
+        if (updateHash) history.replaceState(null, null, '#student');
       }
     }
 
@@ -2007,7 +1813,7 @@
       }, 50);
 
       document.querySelectorAll('.mobile-tab-btn').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = Array.from(document.querySelectorAll('.mobile-tab-btn')).find(b => b.getAttribute('onclick').includes(elementSelector));
+      const activeBtn = Array.from(document.querySelectorAll('.mobile-tab-btn')).find(b => (b.getAttribute('onclick') || '').includes(elementSelector));
       if (activeBtn) activeBtn.classList.add('active');
     }
 
@@ -2015,6 +1821,7 @@
       const card = document.getElementById(cardId);
       if (card) {
         card.classList.toggle('expanded');
+        card.querySelector('.week-header').setAttribute('aria-expanded', String(card.classList.contains('expanded')));
       }
     }
 
@@ -2031,265 +1838,31 @@
     }
 
     
-    // =========================================================================
-    // ATTENDANCE & LIVE CHECK-IN ENGINE (SUPABASE + LOCAL SYNC)
-    // =========================================================================
-    let currentSessionType = 'lecture';
-    let checkinOpen = true;
-    let activePin = localStorage.getItem('aab_active_pin') || '8492';
-
-    function selectSessionType(type) {
-      currentSessionType = type;
-      document.getElementById('checkin-session-type').value = type;
-      
-      const btnLecture = document.getElementById('btn-session-lecture');
-      const btnLab = document.getElementById('btn-session-lab');
-      
-      if (type === 'lecture') {
-        btnLecture.classList.add('active');
-        btnLab.classList.remove('active');
-      } else {
-        btnLab.classList.add('active');
-        btnLecture.classList.remove('active');
-      }
-    }
-
-    function getAttendanceRecords() {
-      try {
-        return JSON.parse(localStorage.getItem('aab_attendance_records') || '[]');
-      } catch (e) {
-        return [];
-      }
-    }
-
-    function saveAttendanceRecords(records) {
-      localStorage.setItem('aab_attendance_records', JSON.stringify(records));
-      renderAdminTable();
-    }
-
-    async function handleAttendanceSubmit(e) {
-      e.preventDefault();
-      const feedback = document.getElementById('checkin-feedback');
-      feedback.style.display = 'none';
-      feedback.className = 'checkin-feedback';
-
-      if (!checkinOpen) {
-        feedback.className = 'checkin-feedback error';
-        feedback.innerHTML = '⚠️ <strong>Regjistrimi është mbyllur!</strong> Dritarja 2-minutëshe e orës mësimore ka skaduar. Kontaktoni profesorin.';
-        feedback.style.display = 'block';
-        return;
-      }
-
-      const week = document.getElementById('checkin-week').value;
-      const sessionType = currentSessionType === 'lecture' ? 'Ligjëratë' : 'Ushtrime (Lab)';
-      const studentId = document.getElementById('checkin-id').value.trim();
-      const studentName = document.getElementById('checkin-name').value.trim();
-      let studentEmail = document.getElementById('checkin-email').value.trim().toLowerCase();
-      const enteredPin = document.getElementById('checkin-pin').value.trim();
-
-      // PIN Check
-      if (enteredPin !== activePin) {
-        feedback.className = 'checkin-feedback error';
-        feedback.innerHTML = '❌ <strong>Kodi PIN është i pasaktë!</strong> Shikoni kodin e shfaqur në projektorin e sallës.';
-        feedback.style.display = 'block';
-        return;
-      }
-
-      // Auto-append .com if student entered e.g. 'arben.lila@gmail'
-      if (studentEmail.endsWith('@gmail')) {
-        studentEmail += '.com';
-        document.getElementById('checkin-email').value = studentEmail;
-      }
-
-      // Email validation (accepts official AAB emails, gmail test accounts, and valid email formats)
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(studentEmail)) {
-        feedback.className = 'checkin-feedback error';
-        feedback.innerHTML = '⚠️ <strong>Format i pasaktë e-maili!</strong> Ju lutem jepni një adresë të vlefshme (p.sh. arben.lila@gmail.com ose emri.mbiemri@universitetiaab.com).';
-        feedback.style.display = 'block';
-        return;
-      }
-
-      const records = getAttendanceRecords();
-      
-      // Check duplicate
-      const duplicate = records.find(r => (r.studentId === studentId || r.studentEmail === studentEmail) && r.week === week && r.sessionType === sessionType);
-      if (duplicate) {
-        feedback.className = 'checkin-feedback warning';
-        feedback.innerHTML = `ℹ️ <strong>Tashmë jeni regjistruar!</strong> Prania juaj për ${week} (${sessionType}) është evidentuar më herët në orën ${duplicate.time}.`;
-        feedback.style.display = 'block';
-        return;
-      }
-
-      // Record entry
-      const now = new Date();
-      const dateStr = now.toLocaleDateString('sq-AL');
-      const timeStr = now.toLocaleTimeString('sq-AL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-      const newRecord = {
-        id: 'rec_' + Date.now(),
-        date: dateStr,
-        time: timeStr,
-        week: week,
-        sessionType: sessionType,
-        studentId: studentId,
-        studentName: studentName,
-        studentEmail: studentEmail,
-        timestamp: now.toISOString()
-      };
-
-      records.push(newRecord);
-      saveAttendanceRecords(records);
-
-      // Optional Supabase cloud push if configured
-      if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
-        try {
-          fetch(`${window.SUPABASE_URL}/rest/v1/attendance`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey': window.SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`
-            },
-            body: JSON.stringify({
-              student_id: studentId,
-              student_name: studentName,
-              student_email: studentEmail,
-              week: week,
-              session_type: sessionType,
-              created_at: now.toISOString()
-            })
-          }).catch(err => console.log('Supabase sync note:', err));
-        } catch (err) {
-          // graceful fallback
-        }
-      }
-
-      feedback.className = 'checkin-feedback success';
-      feedback.innerHTML = `🎉 <strong>Sukses, ${studentName}!</strong> Pjesëmarrja juaj u regjistrua me sukses për <strong>${week} (${sessionType})</strong>.<br><small style="color:#a7f3d0;">Koha zyrtare e regjistrimit: ${timeStr} • Kolegji AAB</small>`;
-      feedback.style.display = 'block';
-
-      document.getElementById('checkin-pin').value = '';
-    }
-
-    function toggleProfessorAdmin() {
-      const panel = document.getElementById('professor-admin-section');
-      if (panel.style.display === 'none') {
-        const pass = prompt('Vendosni fjalëkalimin e profesorit për të hapur panelin:', '');
-        if (pass === 'prof2026' || pass === 'arbenlila' || pass === activePin) {
-          panel.style.display = 'block';
-          renderAdminTable();
-          panel.scrollIntoView({ behavior: 'smooth' });
-        } else if (pass !== null) {
-          alert('Fjalëkalim i pasaktë!');
-        }
-      } else {
-        panel.style.display = 'none';
-      }
-    }
-
-    function toggleCheckinStatus() {
-      checkinOpen = !checkinOpen;
-      const btn = document.getElementById('btn-toggle-status');
-      const ind = document.getElementById('checkin-live-indicator');
-      
-      if (checkinOpen) {
-        btn.className = 'status-toggle-btn active';
-        btn.innerHTML = '🟢 HAPUR (Pranon)';
-        ind.className = 'badge emerald';
-        ind.innerHTML = '<span class="pulse-dot"></span> REGJISTRIMI: HAPUR';
-      } else {
-        btn.className = 'status-toggle-btn closed';
-        btn.innerHTML = '🔴 MBYLLUR';
-        ind.className = 'badge red';
-        ind.innerHTML = 'REGJISTRIMI: MBYLLUR';
-      }
-    }
-
-    function updateActivePin() {
-      const val = document.getElementById('admin-pin-input').value.trim();
-      if (val.length >= 4) {
-        activePin = val;
-        localStorage.setItem('aab_active_pin', activePin);
-        alert(`Kodi PIN i seancës u përditësua në: ${activePin}`);
-      } else {
-        alert('Kodi PIN duhet të ketë të paktën 4 shifra!');
-      }
-    }
-
-    function renderAdminTable() {
-      const records = getAttendanceRecords();
-      const tbody = document.getElementById('attendance-table-body');
-      const countEl = document.getElementById('admin-count-today');
-      const filterWeek = document.getElementById('admin-filter-week').value;
-
-      const filtered = filterWeek === 'all' ? records : records.filter(r => r.week === filterWeek);
-      countEl.textContent = filtered.length;
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-dim); padding:20px;">Nuk ka regjistrime për këtë përzgjedhje.</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = filtered.map((r, i) => `
-        <tr>
-          <td><strong>${i + 1}</strong></td>
-          <td>${r.date} <small style="color:var(--text-dim);">${r.time}</small></td>
-          <td><span class="badge primary" style="font-size:11px;">${r.week}</span></td>
-          <td><span class="badge ${r.sessionType.includes('Ligjëratë') ? 'blue' : 'emerald'}" style="font-size:11px;">${r.sessionType}</span></td>
-          <td><code>${r.studentId}</code></td>
-          <td><strong>${r.studentName}</strong></td>
-          <td><a href="mailto:${r.studentEmail}" style="color:var(--text-muted);">${r.studentEmail}</a></td>
-        </tr>
-      `).join('');
-    }
-
-    function exportAttendanceToCSV() {
-      const records = getAttendanceRecords();
-      if (records.length === 0) {
-        alert('Nuk ka të dhëna për të eksportuar!');
-        return;
-      }
-
-      const headers = ['Nr', 'Data', 'Ora', 'Java', 'Seanca', 'ID Studenti', 'Emri dhe Mbiemri', 'E-maili Zyrtar AAB'];
-      const rows = records.map((r, i) => [
-        i + 1,
-        `"${r.date}"`,
-        `"${r.time}"`,
-        `"${r.week}"`,
-        `"${r.sessionType}"`,
-        `"${r.studentId}"`,
-        `"${r.studentName}"`,
-        `"${r.studentEmail}"`
-      ]);
-
-      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', `AAB_Pjesemarrja_Mobile_Programming_2026_${new Date().toISOString().slice(0,10)}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    function clearAttendanceRecords() {
-      if (confirm('A jeni të sigurtë që dëshironi të fshini regjistrimet ekzistuese?')) {
-        localStorage.removeItem('aab_attendance_records');
-        renderAdminTable();
-        alert('Regjistrimet u pastruan.');
-      }
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.week-header').forEach(header => {
+        header.setAttribute('role', 'button'); header.tabIndex = 0;
+        header.setAttribute('aria-expanded', String(header.closest('.week-card').classList.contains('expanded')));
+        header.addEventListener('keydown', e => {if(e.key === 'Enter' || e.key === ' ') {e.preventDefault(); header.click();}});
+      });
+      document.getElementById('open-week').addEventListener('click', () => {
+        const card = document.getElementById(document.getElementById('week-jump').value);
+        card.classList.add('expanded'); card.querySelector('.week-header').setAttribute('aria-expanded','true');
+        history.replaceState(null, '', '#' + card.id); card.scrollIntoView({behavior:'smooth'});card.querySelector('.week-header').focus({preventScroll:true});
+      });
       const savedLang = localStorage.getItem('arbenl_lang') || 'sq';
       setLanguage(savedLang);
+      if (/^#week-\d+$/.test(window.location.hash)) {
+        const linkedWeek = document.getElementById(window.location.hash.slice(1));
+        if (linkedWeek) {
+          linkedWeek.classList.add('expanded');
+          linkedWeek.querySelector('.week-header').setAttribute('aria-expanded', 'true');
+        }
+      }
 
       if (window.location.hash === '#profile') {
-        setView('profile');
+        setView('profile', false);
       } else {
-        setView('student');
+        setView('student', false);
       }
     });
   </script>
