@@ -25,6 +25,7 @@ docker run \
 for attempt in {1..30}; do
   if docker exec "$container_name" pg_isready \
     --dbname attendance_test \
+    --host 127.0.0.1 \
     --username attendance_test >/dev/null 2>&1; then
     break
   fi
