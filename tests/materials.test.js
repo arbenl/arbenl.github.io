@@ -2,15 +2,33 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
+
+const execFileAsync=promisify(execFile);
+const legacyLectureFile='Jave1_Hyrje_Nextjs_PWA_Copilot_2026.pptx';
+const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
+
 test('every lecture download points to the validated current presentation',async()=>{
  const html=await readFile('index.html','utf8');
  const {lecture1}=JSON.parse(await readFile('materials/manifest.json','utf8'));
  const links=[...html.matchAll(/href="([^"]+\.pptx)"/g)].map(m=>m[1]);
+ const canonicalBytes=await readFile(lecture1.file);
+ const legacyBytes=await readFile(legacyLectureFile);
  assert.equal(links.length,2);
  assert.ok(links.every(p=>p===lecture1.file));
- assert.equal(createHash('sha256').update(await readFile(lecture1.file)).digest('hex'),lecture1.sha256);
+ assert.equal(sha256(canonicalBytes),lecture1.sha256);
+ assert.equal(sha256(legacyBytes),lecture1.sha256);
  assert.equal(lecture1.slides,29);
+ assert.equal(lecture1.audience,'student');
+ assert.equal(lecture1.speakerNotes,false);
  assert.ok(!html.includes('21 Slajde'));
+});
+test('the canonical student lecture package contains no speaker-note parts',async()=>{
+ const {lecture1}=JSON.parse(await readFile('materials/manifest.json','utf8'));
+ const {stdout}=await execFileAsync('unzip',['-Z1',lecture1.file]);
+ const packagePaths=stdout.split('\n').filter(Boolean);
+ assert.ok(!packagePaths.some(path=>/^ppt\/notes(?:Slides|Masters)\//.test(path)));
 });
 test('the semester has fifteen Thursdays and ten graded labs after the first week',async()=>{
  const plan=JSON.parse(await readFile('grading/course-plan.json','utf8'));
