@@ -976,6 +976,104 @@ describe("PostgreSQL rate limiting", () => {
 });
 
 describe("challenge acceptance and live attendance", () => {
+  it("finalizes an expired session once across concurrent server reads and rejects every late action", async () => {
+    const semester = await createActiveSemester();
+    await importAndActivate(semester.id, studentA, "A-1", "Arta Kola", "G1");
+    const classSession = await createOpenSession(semester.id);
+    const challenge = await attendanceService.createChallenge(
+      professor,
+      classSession.id,
+      "192.0.2.90",
+    );
+    await sql`
+      update class_sessions
+      set checkin_ends_at = statement_timestamp() - interval '1 second'
+      where id = ${classSession.id}
+    `;
+
+    const [live, records, sessions, lateChallenge, lateScan] =
+      await Promise.all([
+        attendanceService.getLiveSession(
+          professor,
+          classSession.id,
+          "192.0.2.91",
+        ),
+        attendanceService.getSessionRecords(professor, classSession.id),
+        attendanceService.listClassSessions(professor, semester.id),
+        attendanceService
+          .createChallenge(professor, classSession.id, "192.0.2.92")
+          .then(
+            () => ({ status: "fulfilled" as const }),
+            (reason: unknown) => ({ status: "rejected" as const, reason }),
+          ),
+        attendanceService
+          .checkIn(studentA, { token: challenge.token }, "192.0.2.93")
+          .then(
+            () => ({ status: "fulfilled" as const }),
+            (reason: unknown) => ({ status: "rejected" as const, reason }),
+          ),
+      ]);
+
+    expect(live.state).toBe("closed");
+    expect(records.session.state).toBe("closed");
+    expect(sessions).toEqual([
+      expect.objectContaining({ id: classSession.id, state: "closed" }),
+    ]);
+    expect(lateChallenge).toMatchObject({
+      status: "rejected",
+      reason: { code: "checkin_closed" },
+    });
+    expect(lateScan).toMatchObject({
+      status: "rejected",
+      reason: { code: "checkin_closed" },
+    });
+
+    const [persisted] = await sql`
+      select state, created_by as "createdBy"
+      from class_sessions
+      where id = ${classSession.id}
+    `;
+    expect(persisted.state).toBe("closed");
+
+    const automaticAudits = await sql`
+      select
+        actor_user_id as "actorUserId",
+        action,
+        reason,
+        metadata
+      from audit_log
+      where subject_id = ${classSession.id}
+        and metadata ->> 'actorKind' = 'system'
+    `;
+    expect(automaticAudits).toEqual([
+      expect.objectContaining({
+        actorUserId: persisted.createdBy,
+        action: "class_session.state",
+        reason: "Automatic closure at the server check-in deadline",
+        metadata: expect.objectContaining({
+          actorKind: "system",
+          actorAttribution: "session_creator",
+          policy: "checkin_deadline",
+          from: "open",
+          to: "closed",
+        }),
+      }),
+    ]);
+
+    const repeated = await attendanceService.getLiveSession(
+      professor,
+      classSession.id,
+      "192.0.2.94",
+    );
+    expect(repeated.state).toBe("closed");
+    expect(await sql`
+      select 1
+      from audit_log
+      where subject_id = ${classSession.id}
+        and metadata ->> 'actorKind' = 'system'
+    `).toHaveLength(1);
+  });
+
   it("rotates 40-second challenges, rejects expiry, cross-group use and the database-clock two-minute cutoff", async () => {
     const semester = await createActiveSemester();
     await importAndActivate(semester.id, studentA, "A-1", "Arta Kola", "G1");
@@ -1419,6 +1517,10 @@ describe("manual records and CSV evidence", () => {
       status: "excused",
       reason: "Approved absence",
     });
+    await attendanceService.transitionClassSession(professor, classSession.id, {
+      state: "closed",
+      reason: "Class completed",
+    });
 
     const exported = await attendanceService.exportSemester(
       professor,
@@ -1440,6 +1542,133 @@ describe("manual records and CSV evidence", () => {
       { action: "attendance.correct", reason: "Approved absence" },
       { action: "semester.export", reason: "CSV export" },
     ]);
+  });
+
+  it("exports every student in each closed session group, including absences, and omits unfinished or cancelled sessions", async () => {
+    const semester = await createActiveSemester();
+    const rosterEntries = await attendanceService.importRoster(professor, {
+      semesterId: semester.id,
+      rows: [
+        { studentId: "A-1", fullName: "Arta Kola", groupName: "G1" },
+        { studentId: "B-1", fullName: "Besa Dema", groupName: "G1" },
+        { studentId: "C-1", fullName: "Dren Gashi", groupName: "G1" },
+        { studentId: "D-1", fullName: "Elira Hoxha", groupName: "G1" },
+        { studentId: "E-1", fullName: "Flaka Berisha", groupName: "G2" },
+      ],
+    });
+    const byStudentId = new Map(
+      rosterEntries.map((entry) => [entry.studentId, entry]),
+    );
+
+    const closedG1 = await createOpenSession(semester.id, "G1");
+    await attendanceService.createManualRecord(professor, closedG1.id, {
+      rosterId: byStudentId.get("A-1")!.id,
+      status: "present",
+      reason: "Verified in class",
+    });
+    await attendanceService.createManualRecord(professor, closedG1.id, {
+      rosterId: byStudentId.get("B-1")!.id,
+      status: "excused",
+      reason: "Approved absence",
+    });
+    await attendanceService.createManualRecord(professor, closedG1.id, {
+      rosterId: byStudentId.get("C-1")!.id,
+      status: "rejected",
+      reason: "Invalid check-in",
+    });
+    await attendanceService.transitionClassSession(professor, closedG1.id, {
+      state: "closed",
+      reason: "Lecture completed",
+    });
+
+    const closedG2 = await createOpenSession(semester.id, "G2");
+    await attendanceService.transitionClassSession(professor, closedG2.id, {
+      state: "closed",
+      reason: "Lecture completed",
+    });
+
+    const stillOpen = await createOpenSession(semester.id, "G1");
+    await attendanceService.createManualRecord(professor, stillOpen.id, {
+      rosterId: byStudentId.get("A-1")!.id,
+      status: "present",
+      reason: "Open session record",
+    });
+
+    const cancelled = await createOpenSession(semester.id, "G1");
+    await attendanceService.createManualRecord(professor, cancelled.id, {
+      rosterId: byStudentId.get("A-1")!.id,
+      status: "present",
+      reason: "Cancelled session record",
+    });
+    await attendanceService.transitionClassSession(professor, cancelled.id, {
+      state: "cancelled",
+      reason: "Class cancelled",
+    });
+
+    await attendanceService.createClassSession(professor, {
+      semesterId: semester.id,
+      weekNumber: 2,
+      kind: "lab",
+      groupName: "G1",
+      title: "Draft lab",
+    });
+
+    const exported = await attendanceService.exportSemester(
+      professor,
+      semester.id,
+    );
+    const dataRows = exported.csv.trimEnd().split("\r\n").slice(1);
+    const selectedColumns = dataRows.map((line) => {
+      const columns = line.split(",");
+      return {
+        studentId: columns[0],
+        group: columns[2],
+        status: columns[6],
+        recordedAt: columns[7],
+        reason: columns[8],
+      };
+    });
+
+    expect(selectedColumns).toEqual([
+      {
+        studentId: "A-1",
+        group: "G1",
+        status: "present",
+        recordedAt: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/u),
+        reason: "Verified in class",
+      },
+      {
+        studentId: "B-1",
+        group: "G1",
+        status: "excused",
+        recordedAt: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/u),
+        reason: "Approved absence",
+      },
+      {
+        studentId: "C-1",
+        group: "G1",
+        status: "rejected",
+        recordedAt: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/u),
+        reason: "Invalid check-in",
+      },
+      {
+        studentId: "D-1",
+        group: "G1",
+        status: "absent",
+        recordedAt: "",
+        reason: "",
+      },
+      {
+        studentId: "E-1",
+        group: "G2",
+        status: "absent",
+        recordedAt: "",
+        reason: "",
+      },
+    ]);
+    expect(exported.csv).not.toContain("Open session record");
+    expect(exported.csv).not.toContain("Cancelled session record");
+    expect(exported.csv).not.toContain("Draft lab");
   });
 });
 

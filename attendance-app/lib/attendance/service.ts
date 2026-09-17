@@ -170,6 +170,55 @@ async function audit(
   });
 }
 
+async function finalizeExpiredClassSessions(
+  executor: Executor,
+  sessionId?: string,
+): Promise<void> {
+  const sessionFilter = sessionId
+    ? sql`and cs.id = ${sessionId}`
+    : sql``;
+
+  await executor.execute(sql`
+    with expired as (
+      update class_sessions as cs
+      set
+        state = 'closed',
+        updated_at = statement_timestamp()
+      where cs.state = 'open'
+        and cs.checkin_ends_at is not null
+        and cs.checkin_ends_at <= statement_timestamp()
+        ${sessionFilter}
+      returning
+        cs.id,
+        cs.created_by,
+        cs.checkin_ends_at
+    )
+    insert into audit_log (
+      actor_user_id,
+      action,
+      subject_type,
+      subject_id,
+      reason,
+      metadata
+    )
+    select
+      expired.created_by,
+      'class_session.state',
+      'class_session',
+      expired.id,
+      'Automatic closure at the server check-in deadline',
+      jsonb_build_object(
+        'actorKind', 'system',
+        'actorAttribution', 'session_creator',
+        'policy', 'checkin_deadline',
+        'from', 'open',
+        'to', 'closed',
+        'checkinEndsAt', expired.checkin_ends_at
+      )
+    from expired
+  `);
+}
+
 function rateLimitKey(secret: string, value: string): Buffer {
   return createHmac("sha256", secret).update(value).digest();
 }
@@ -333,6 +382,7 @@ async function listSemesters(session: Session | null) {
 async function getStudentHistory(session: Session | null) {
   const db = await database();
   const actor = await requireActor(db, session);
+  await finalizeExpiredClassSessions(db);
   const rows = await db
     .select({
       id: classSessions.id,
@@ -627,6 +677,7 @@ async function listClassSessions(
 ) {
   const db = await database();
   await requireStaffActor(db, session);
+  await finalizeExpiredClassSessions(db);
   const query = db
     .select({
       id: classSessions.id,
@@ -669,6 +720,7 @@ async function transitionClassSession(
     await transaction.execute(
       sql`select pg_advisory_xact_lock(hashtextextended(${sessionId}, 0))`,
     );
+    await finalizeExpiredClassSessions(transaction, sessionId);
     const [current] = await transaction
       .select()
       .from(classSessions)
@@ -677,6 +729,9 @@ async function transitionClassSession(
       .for("update");
     if (!current) {
       throw new AttendanceServiceError(404, "session_not_found", "Class session not found");
+    }
+    if (current.state === "closed" && input.state === "closed") {
+      return current;
     }
     const allowed =
       (current.state === "draft" && input.state === "open") ||
@@ -732,6 +787,7 @@ async function createChallenge(
     await transaction.execute(
       sql`select pg_advisory_xact_lock(hashtextextended(${sessionId}, 0))`,
     );
+    await finalizeExpiredClassSessions(transaction, sessionId);
     const result = await transaction.execute(sql`
       select
         state,
@@ -789,223 +845,236 @@ async function checkIn(
   await consumeRateLimit("scan", identity.githubId, ipAddress);
   const db = await database();
 
-  return db.transaction(async (transaction) => {
-    const actor = await requireActor(transaction, session);
-    const initial = await transaction.execute(sql`
-      select session_id as "sessionId"
-      from qr_challenges
-      where token_hash = ${tokenHash}
-    `);
-    const initialChallenge = initial[0] as unknown as {
-      sessionId: string;
-    } | undefined;
-    if (!initialChallenge) {
-      throw new AttendanceServiceError(
-        409,
-        "invalid_challenge",
-        "This QR code is no longer valid",
-      );
-    }
-
-    await transaction.execute(
-      sql`select pg_advisory_xact_lock_shared(hashtextextended(${initialChallenge.sessionId}, 0))`,
+  await requireActor(db, session);
+  const initial = await db.execute(sql`
+    select session_id as "sessionId"
+    from qr_challenges
+    where token_hash = ${tokenHash}
+  `);
+  const initialChallenge = initial[0] as unknown as {
+    sessionId: string;
+  } | undefined;
+  if (!initialChallenge) {
+    throw new AttendanceServiceError(
+      409,
+      "invalid_challenge",
+      "This QR code is no longer valid",
     );
-    const result = await transaction.execute(sql`
-      select
-        q.session_id as "sessionId",
-        q.expires_at as "expiresAt",
-        cs.semester_id as "semesterId",
-        cs.group_name as "groupName",
-        cs.title,
-        cs.state,
-        cs.checkin_ends_at as "checkinEndsAt",
-        statement_timestamp() as "serverTime"
-      from qr_challenges q
-      inner join class_sessions cs on cs.id = q.session_id
-      where q.token_hash = ${tokenHash}
-        and q.session_id = ${initialChallenge.sessionId}
-    `);
-    const challenge = result[0] as unknown as {
-      sessionId: string;
-      expiresAt: Date;
-      semesterId: string;
-      groupName: string;
-      title: string;
-      state: string;
-      checkinEndsAt: Date | null;
-      serverTime: Date;
-    } | undefined;
-    if (!challenge) {
-      throw new AttendanceServiceError(
-        409,
-        "invalid_challenge",
-        "This QR code is no longer valid",
-      );
-    }
-    if (
-      challenge.state !== "open" ||
-      !challenge.checkinEndsAt ||
-      dateMilliseconds(challenge.checkinEndsAt) <=
-        dateMilliseconds(challenge.serverTime)
-    ) {
-      throw new AttendanceServiceError(409, "checkin_closed", "Check-in is closed");
-    }
-    if (
-      dateMilliseconds(challenge.expiresAt) <=
-      dateMilliseconds(challenge.serverTime)
-    ) {
-      throw new AttendanceServiceError(
-        409,
-        "invalid_challenge",
-        "This QR code is no longer valid",
-      );
-    }
+  }
 
-    const [entry] = await transaction
-      .select()
-      .from(roster)
-      .where(
-        and(
-          eq(roster.semesterId, challenge.semesterId),
-          eq(roster.userId, actor.userId),
-        ),
-      )
-      .limit(1);
-    if (!entry) {
-      throw new AttendanceServiceError(
-        409,
-        "roster_not_activated",
-        "Activate your roster profile before checking in",
-      );
-    }
-    if (entry.groupName !== challenge.groupName) {
-      throw new AttendanceServiceError(
-        403,
-        "wrong_group",
-        "This session is for another group",
-      );
-    }
+  await finalizeExpiredClassSessions(db, initialChallenge.sessionId);
 
-    const accepted = await transaction.execute(sql`
-      with accepted as (
-        select q.session_id, statement_timestamp() as scanned_at
-        from qr_challenges q
-        inner join class_sessions cs on cs.id = q.session_id
-        where q.token_hash = ${tokenHash}
-          and q.session_id = ${challenge.sessionId}
-          and q.expires_at > statement_timestamp()
-          and cs.state = 'open'
-          and cs.checkin_ends_at > statement_timestamp()
-      ), inserted as (
-        insert into attendance_records (
-          session_id,
-          roster_id,
-          status,
-          scanned_at
-        )
-        select session_id, ${entry.id}, 'present', scanned_at
-        from accepted
-        on conflict (session_id, roster_id) do nothing
-        returning
-          id,
-          status,
-          scanned_at as "scannedAt",
-          verified_at as "verifiedAt",
-          created_at as "createdAt"
-      )
-      select
-        id,
-        status,
-        "scannedAt",
-        "verifiedAt",
-        "createdAt",
-        false as duplicate
-      from inserted
-      union all
-      select
-        null::uuid as id,
-        null::text as status,
-        null::timestamp with time zone as "scannedAt",
-        null::timestamp with time zone as "verifiedAt",
-        null::timestamp with time zone as "createdAt",
-        true as duplicate
-      from accepted
-      where not exists (select 1 from inserted)
-      limit 1
-    `);
-    let record = accepted[0] as unknown as {
-      id: string | null;
-      status: string | null;
-      scannedAt: Date | string | null;
-      verifiedAt: Date | string | null;
-      createdAt: Date | string | null;
-      duplicate: boolean;
-    } | undefined;
-    if (record?.duplicate && !record.id) {
-      const [existing] = await transaction
-        .select()
-        .from(attendanceRecords)
-        .where(
-          and(
-            eq(attendanceRecords.sessionId, challenge.sessionId),
-            eq(attendanceRecords.rosterId, entry.id),
-          ),
-        )
-        .limit(1);
-      record = existing ? { ...existing, duplicate: true } : undefined;
-    }
-    if (!record) {
-      const latest = await transaction.execute(sql`
+  try {
+    return await db.transaction(async (transaction) => {
+      const actor = await requireActor(transaction, session);
+      await transaction.execute(
+        sql`select pg_advisory_xact_lock_shared(hashtextextended(${initialChallenge.sessionId}, 0))`,
+      );
+      const result = await transaction.execute(sql`
         select
+          q.session_id as "sessionId",
           q.expires_at as "expiresAt",
+          cs.semester_id as "semesterId",
+          cs.group_name as "groupName",
+          cs.title,
           cs.state,
           cs.checkin_ends_at as "checkinEndsAt",
           statement_timestamp() as "serverTime"
         from qr_challenges q
         inner join class_sessions cs on cs.id = q.session_id
         where q.token_hash = ${tokenHash}
-          and q.session_id = ${challenge.sessionId}
+          and q.session_id = ${initialChallenge.sessionId}
       `);
-      const current = latest[0] as unknown as {
-        expiresAt: Date | string;
+      const challenge = result[0] as unknown as {
+        sessionId: string;
+        expiresAt: Date;
+        semesterId: string;
+        groupName: string;
+        title: string;
         state: string;
-        checkinEndsAt: Date | string | null;
-        serverTime: Date | string;
+        checkinEndsAt: Date | null;
+        serverTime: Date;
       } | undefined;
+      if (!challenge) {
+        throw new AttendanceServiceError(
+          409,
+          "invalid_challenge",
+          "This QR code is no longer valid",
+        );
+      }
       if (
-        current &&
-        (current.state !== "open" ||
-          !current.checkinEndsAt ||
-          dateMilliseconds(current.checkinEndsAt) <=
-            dateMilliseconds(current.serverTime))
+        challenge.state !== "open" ||
+        !challenge.checkinEndsAt ||
+        dateMilliseconds(challenge.checkinEndsAt) <=
+          dateMilliseconds(challenge.serverTime)
+      ) {
+        throw new AttendanceServiceError(409, "checkin_closed", "Check-in is closed");
+      }
+      if (
+        dateMilliseconds(challenge.expiresAt) <=
+        dateMilliseconds(challenge.serverTime)
       ) {
         throw new AttendanceServiceError(
           409,
-          "checkin_closed",
-          "Check-in is closed",
+          "invalid_challenge",
+          "This QR code is no longer valid",
         );
       }
-      throw new AttendanceServiceError(
-        409,
-        "invalid_challenge",
-        "This QR code is no longer valid",
-      );
-    }
-    if (!record.id || !record.status) {
-      throw new Error("Attendance insert returned an incomplete record");
-    }
 
-    return {
-      recordId: record.id,
-      sessionId: challenge.sessionId,
-      sessionTitle: challenge.title,
-      status: record.status,
-      recordedAt: toIso(
-        record.scannedAt ?? record.verifiedAt ?? record.createdAt ?? challenge.serverTime,
-      ),
-      duplicate: record.duplicate,
-    };
-  });
+      const [entry] = await transaction
+        .select()
+        .from(roster)
+        .where(
+          and(
+            eq(roster.semesterId, challenge.semesterId),
+            eq(roster.userId, actor.userId),
+          ),
+        )
+        .limit(1);
+      if (!entry) {
+        throw new AttendanceServiceError(
+          409,
+          "roster_not_activated",
+          "Activate your roster profile before checking in",
+        );
+      }
+      if (entry.groupName !== challenge.groupName) {
+        throw new AttendanceServiceError(
+          403,
+          "wrong_group",
+          "This session is for another group",
+        );
+      }
+
+      const accepted = await transaction.execute(sql`
+        with accepted as (
+          select q.session_id, statement_timestamp() as scanned_at
+          from qr_challenges q
+          inner join class_sessions cs on cs.id = q.session_id
+          where q.token_hash = ${tokenHash}
+            and q.session_id = ${challenge.sessionId}
+            and q.expires_at > statement_timestamp()
+            and cs.state = 'open'
+            and cs.checkin_ends_at > statement_timestamp()
+        ), inserted as (
+          insert into attendance_records (
+            session_id,
+            roster_id,
+            status,
+            scanned_at
+          )
+          select session_id, ${entry.id}, 'present', scanned_at
+          from accepted
+          on conflict (session_id, roster_id) do nothing
+          returning
+            id,
+            status,
+            scanned_at as "scannedAt",
+            verified_at as "verifiedAt",
+            created_at as "createdAt"
+        )
+        select
+          id,
+          status,
+          "scannedAt",
+          "verifiedAt",
+          "createdAt",
+          false as duplicate
+        from inserted
+        union all
+        select
+          null::uuid as id,
+          null::text as status,
+          null::timestamp with time zone as "scannedAt",
+          null::timestamp with time zone as "verifiedAt",
+          null::timestamp with time zone as "createdAt",
+          true as duplicate
+        from accepted
+        where not exists (select 1 from inserted)
+        limit 1
+      `);
+      let record = accepted[0] as unknown as {
+        id: string | null;
+        status: string | null;
+        scannedAt: Date | string | null;
+        verifiedAt: Date | string | null;
+        createdAt: Date | string | null;
+        duplicate: boolean;
+      } | undefined;
+      if (record?.duplicate && !record.id) {
+        const [existing] = await transaction
+          .select()
+          .from(attendanceRecords)
+          .where(
+            and(
+              eq(attendanceRecords.sessionId, challenge.sessionId),
+              eq(attendanceRecords.rosterId, entry.id),
+            ),
+          )
+          .limit(1);
+        record = existing ? { ...existing, duplicate: true } : undefined;
+      }
+      if (!record) {
+        const latest = await transaction.execute(sql`
+          select
+            q.expires_at as "expiresAt",
+            cs.state,
+            cs.checkin_ends_at as "checkinEndsAt",
+            statement_timestamp() as "serverTime"
+          from qr_challenges q
+          inner join class_sessions cs on cs.id = q.session_id
+          where q.token_hash = ${tokenHash}
+            and q.session_id = ${challenge.sessionId}
+        `);
+        const current = latest[0] as unknown as {
+          expiresAt: Date | string;
+          state: string;
+          checkinEndsAt: Date | string | null;
+          serverTime: Date | string;
+        } | undefined;
+        if (
+          current &&
+          (current.state !== "open" ||
+            !current.checkinEndsAt ||
+            dateMilliseconds(current.checkinEndsAt) <=
+              dateMilliseconds(current.serverTime))
+        ) {
+          throw new AttendanceServiceError(
+            409,
+            "checkin_closed",
+            "Check-in is closed",
+          );
+        }
+        throw new AttendanceServiceError(
+          409,
+          "invalid_challenge",
+          "This QR code is no longer valid",
+        );
+      }
+      if (!record.id || !record.status) {
+        throw new Error("Attendance insert returned an incomplete record");
+      }
+
+      return {
+        recordId: record.id,
+        sessionId: challenge.sessionId,
+        sessionTitle: challenge.title,
+        status: record.status,
+        recordedAt: toIso(
+          record.scannedAt ?? record.verifiedAt ?? record.createdAt ?? challenge.serverTime,
+        ),
+        duplicate: record.duplicate,
+      };
+    });
+  } catch (error) {
+    if (
+      error instanceof AttendanceServiceError &&
+      error.code === "checkin_closed"
+    ) {
+      await finalizeExpiredClassSessions(db, initialChallenge.sessionId);
+    }
+    throw error;
+  }
 }
 
 async function getLiveSession(
@@ -1016,6 +1085,7 @@ async function getLiveSession(
   const db = await database();
   const actor = await requireStaffActor(db, session);
   await consumeRateLimit("live", actor.githubId, ipAddress, sessionId);
+  await finalizeExpiredClassSessions(db, sessionId);
   const clock = await db.execute(sql`
     select
       id,
@@ -1076,6 +1146,7 @@ async function getSessionRecords(
 ) {
   const db = await database();
   await requireStaffActor(db, session);
+  await finalizeExpiredClassSessions(db, sessionId);
   const [classSession] = await db
     .select({
       id: classSessions.id,
@@ -1270,15 +1341,33 @@ async function exportSemester(session: Session | null, semesterId: string) {
         verifiedAt: attendanceRecords.verifiedAt,
         reason: attendanceRecords.correctionReason,
       })
-      .from(attendanceRecords)
-      .innerJoin(roster, eq(roster.id, attendanceRecords.rosterId))
-      .innerJoin(classSessions, eq(classSessions.id, attendanceRecords.sessionId))
-      .where(eq(classSessions.semesterId, semesterId))
+      .from(classSessions)
+      .innerJoin(
+        roster,
+        and(
+          eq(roster.semesterId, classSessions.semesterId),
+          eq(roster.groupName, classSessions.groupName),
+        ),
+      )
+      .leftJoin(
+        attendanceRecords,
+        and(
+          eq(attendanceRecords.sessionId, classSessions.id),
+          eq(attendanceRecords.rosterId, roster.id),
+        ),
+      )
+      .where(
+        and(
+          eq(classSessions.semesterId, semesterId),
+          eq(classSessions.state, "closed"),
+        ),
+      )
       .orderBy(
         asc(roster.groupName),
         asc(roster.studentId),
         asc(classSessions.weekNumber),
         asc(classSessions.kind),
+        asc(classSessions.id),
       );
     const lines = [
       csvRow([
@@ -1300,8 +1389,10 @@ async function exportSemester(session: Session | null, semesterId: string) {
           row.sessionTitle,
           row.weekNumber,
           row.kind,
-          row.status,
-          toIso(row.scannedAt ?? row.verifiedAt ?? ""),
+          row.status ?? "absent",
+          row.scannedAt || row.verifiedAt
+            ? toIso(row.scannedAt ?? row.verifiedAt ?? "")
+            : "",
           row.reason,
         ]),
       ),

@@ -1,76 +1,169 @@
-# Aktivizimi dhe përdorimi i vijueshmërisë
+# Vijueshmëria: udhëzuesi i publikimit dhe përdorimit
 
-## Gjendja e dorëzimit
+## Sistemi aktiv
 
-Portali dhe moduli janë implementuar lokalisht në degën `codex/student-portal-attendance`.
-Konfigurimi publik është bosh me qëllim: pa serverin e aktivizuar faqja shfaq qartë se nuk pranon regjistrime. Nuk ka regjistrim zyrtar në localStorage, fjalëkalim pedagogu në JavaScript ose sukses të simuluar.
+Vijueshmëria është një aplikacion Next.js i publikuar në Vercel:
 
-## Aktivizimi (një herë)
+- aplikacioni: [https://aab-mobile-attendance.vercel.app](https://aab-mobile-attendance.vercel.app);
+- hyrja nga Student Zone: [https://arbenl.github.io/attendance.html](https://arbenl.github.io/attendance.html);
+- databaza: PostgreSQL i dedikuar në Neon;
+- identifikimi: GitHub OAuth për profesorin dhe studentët;
+- kodi: `attendance-app/` në këtë repository.
 
-1. Zgjidh projektin Supabase të kursit. Mos përdor projekte të tjera pa konfirmuar pronësinë dhe qëllimin. `ai-mobile-lila` u gjet joaktiv gjatë auditimit; nuk u ndryshua.
-2. Apliko të dy migrimet në `supabase/migrations/`, sipas rendit të emrit në projektin e zgjedhur. Migrimi krijon vetëm skemën e re `attendance_private` dhe funksionin `public.attendance_api`; nuk prek tabelat ekzistuese të aplikacioneve të tjera. Kontrollo paraprakisht mungesën e emrave konfliktues. Konfigurimi lokal `supabase/config.toml` nuk duhet shtyrë verbërisht te një projekt ekzistues.
-3. Në Auth, aktivizo konfirmimin e emailit. Konfiguro SMTP për dërgim real; shërbimi i parazgjedhur nuk është zgjidhje për një klasë të tërë. Vendos kufij dërgimi të përshtatshëm për numrin e studentëve. Për shabllonet **Magic Link** dhe **Confirm signup**, përdor `supabase/templates/otp.html` me `{{ .Token }}`. Faqja pret kodin, jo klikim në magic link. Site URL: `https://arbenl.github.io`; OTP rekomandohet 10 minuta, me kufizim të ridërgimit. Provo dërgimin dhe verifikimin në një adresë studentore para përdorimit në klasë.
-4. Në `attendance-config.js`, vendos vetëm URL-në e projektit dhe çelësin **publishable** ose **anon**. Këto janë publike. Kurrë `service_role`, `sb_secret_...`, SMTP password ose database password.
-5. Pedagogu hyn një herë me email të verifikuar. Nga SQL Editor i autorizuar cakto rolin me adresën e saktë:
+GitHub Pages shërben vetëm si hyrje nga Student Zone. Formularët, autorizimi, QR-ja dhe evidenca ekzekutohen në Vercel dhe ruhen në Neon. Migrimet historike në `supabase/` nuk përdoren nga sistemi aktiv. Nuk ka OTP me email, SMTP, konfigurim `attendance-config.js` ose ruajtje zyrtare në browser.
 
-   ```sql
-   insert into attendance_private.staff(user_id)
-   select id from auth.users
-   where lower(email) = lower('EMAILI-I-PEDAGOGUT')
-     and email_confirmed_at is not null
-   on conflict do nothing;
-   ```
+## Konfigurimi i prodhimit
 
-   Verifiko që u shtua rreshti i duhur. Rihap faqen. Roli nuk merret nga fusha të modifikueshme të profilit. Stafi i autorizuar menaxhon të gjithë semestrat në këtë instalim; mos shto studentë si staf.
-6. Publiko skedarët e gjeneruar, `attendance.html`, `attendance-config.js`, `assets/`, `index.html` dhe `styles.css` në GitHub Pages. Repo përdor `main` dhe rrënjën e projektit për publikim; ndryshimet në degë nuk dalin automatikisht online.
-7. Testo një sesion pilot me dy llogari të kontrolluara: hyrje me email, skanim automatik, skadim të dritares, raport dhe eksport. Kontrollo QR në projektorin real nga rreshti i fundit. Përcakto me institucionin periudhën e ruajtjes, qasjen e stafit dhe procedurën e korrigjimit.
+Projekti Vercel është `aab-mobile-attendance`. Integrimi Neon duhet të jetë i lidhur vetëm me këtë projekt dhe `DATABASE_URL` duhet të jetë aktiv për Production; Preview përdoret vetëm kur është konfiguruar dhe testuar veçmas. Skema krijohet duke aplikuar një herë, pa ndryshime, migrimin [`attendance-app/drizzle/0000_live_attendance.sql`](../attendance-app/drizzle/0000_live_attendance.sql) në databazën e dedikuar.
 
-## Përpara semestrit
-
-Krijo semestrin / kursin, zakonisht 15 javë. Shto regjistrin zyrtar në panelin privat:
+GitHub OAuth App përdor:
 
 ```text
-numri-i-studentit; Emri Mbiemri; emaili-i-verifikuar; G1
+Homepage URL: https://aab-mobile-attendance.vercel.app
+Authorization callback URL: https://aab-mobile-attendance.vercel.app/api/auth/callback/github
 ```
 
-Një rresht për student, pa header. Pranohen 1–500 rreshta për import. Importi është atomik: një gabim/duplikat e anulon të gjithë importin; korrigjo rreshtat dhe provo përsëri. Numri dhe emaili janë unikë brenda semestrit. Emaili i listës, jo zgjedhja arbitrare e domenit nga studenti, përcakton qasjen. Mos vendos lista reale në GitHub, dokumentacion ose skedarë testimi.
+Këto emra duhet të ekzistojnë si Vercel Production environment variables:
 
-Shto listën **përpara** hapjes së orës. Studentët e shtuar më vonë nuk penalizohen për sesionet e mëparshme. Ndryshimi i emailit, grupit ose datës së regjistrimit historik kërkon ndërhyrje të kontrolluar administrative në databazë; nuk ofrohet redaktim arbitrar nga studenti.
+```text
+DATABASE_URL
+NEXTAUTH_URL
+NEXTAUTH_SECRET
+GITHUB_ID
+GITHUB_SECRET
+PROFESSOR_GITHUB_ID
+RATE_LIMIT_SECRET
+```
 
-## Në çdo ligjëratë ose ushtrim
+`NEXTAUTH_URL` duhet të jetë URL-ja stabile e prodhimit. `PROFESSOR_GITHUB_ID` është GitHub user ID numerik i profesorit, jo username-i ose emaili. `GITHUB_ID` është Client ID i OAuth App; `GITHUB_SECRET` është Client secret tjetër. `NEXTAUTH_SECRET`, `GITHUB_SECRET`, `RATE_LIMIT_SECRET` dhe kredencialet e databazës trajtohen si sekrete. Asnjë vlerë reale nuk vendoset në Git, `.env.example`, dokumentacion, screenshot ose chat. Asnjë sekret nuk duhet të ketë prefiksin `NEXT_PUBLIC_`.
 
-1. Zgjidh semestrin, javën, llojin dhe grupin (`*` për të gjithë; `G1` vetëm atë grup). Vendos titullin dhe krijo sesionin. Krijimi i sesionit nuk nis ende afatin e skanimit.
-2. Në mes të orës, shfaq QR në projektor. Shfaqja e parë hap një dritare **2-minutëshe** sipas orës së serverit. Rihapja/rifreskimi i projektorit nuk e zgjat afatin.
-3. Studenti i identifikuar skanon me kamerën e telefonit dhe hap lidhjen. Faqja e regjistron menjëherë si `present`, pa buton konfirmimi dhe pa miratim nga pedagogu. Nëse nuk ka hyrë ende, fillimisht verifikon emailin; nëse QR skadon ndërkohë, duhet të skanojë QR aktual përsëri.
-4. QR ndryshon çdo 25 sekonda dhe vlen deri në 40 sekonda, gjithmonë brenda dritares së përgjithshme. Pas 2 minutash serveri refuzon çdo skanim, edhe nëse pedagogu e ka mbyllur shfletuesin ose pajisja humbet internetin. Raporti e përfundon automatikisht sesionin kur lexohet pas afatit. Nuk kërkohet kontroll manual i listës.
-5. Mund ta mbyllësh edhe më herët me **Mbyll regjistrimin tani** në pamjen e projektorit ose **Mbyll dhe përfundo** në panel. Projektori mbetet në pamjen publike; nuk shfaq emrat e studentëve.
-6. Regjistrimi manual / arsyetimi përdoret vetëm për përjashtime dhe korrigjime (p.sh. student pa telefon), me arsye dhe gjurmë auditimi. Ora që nuk u mbajt mund të anulohet përpara përfundimit. Përpara kthimit në regjistrin privat, ndalo ndarjen e ekranit.
+Në një instalim të ri, profesori hyn fillimisht me llogarinë GitHub që përputhet me `PROFESSOR_GITHUB_ID`, pastaj thërret një herë `POST /api/admin/bootstrap` nga sesioni i autentikuar. Ky veprim krijon anëtarësinë e parë të stafit dhe një shenjë të përhershme se bootstrap-i është kryer. Përsëritja nuk krijon staf të ri. Pas bootstrap-it, autorizimi lexohet nga tabela `staff`; ndryshimi i username-it ose i një fushe në browser nuk jep rol stafi.
 
-## Kufiri i provës së pranisë
+## Përgatitja e semestrit
 
-Ky version zbaton kërkesën e pedagogut: **skano dhe përfundo**. QR i shkurtër dhe emaili i verifikuar zvogëlojnë abuzimin, por një student mund ta përcjellë lidhjen brenda afatit. Nuk pretendohet provë absolute e pranisë fizike dhe nuk ka konfirmim manual të detyrueshëm. Wi-Fi institucional / GPS nuk janë implementuar. Regjistrimi lidhet me identitetin e listës së kursit, sesionin e hapur dhe kohën e serverit.
+1. Hyr në `/staff` me llogarinë GitHub të autorizuar.
+2. Krijo semestrin me titull të qartë dhe numrin e javëve. Semestri fillon si `draft`.
+3. Importo listën zyrtare para aktivizimit dhe para orës së parë.
+4. Kontrollo listën dhe aktivizo semestrin duke shkruar një arsye auditi.
+5. Krijo sesione vetëm brenda semestrit aktiv. Në fund të semestrit, eksporto evidencën dhe arkivoje me arsye.
 
-## Raporti dhe korrigjimet
+Lista pranon 1–2,000 rreshta për kërkesë. Formati aktual është me presje ose tab, me një student në secilin rresht:
 
-Për çdo student shfaqen orët e ligjëratave dhe ushtrimeve veçmas, me status për secilin sesion. Prania e regjistruar / orët e përfunduara të grupit pas hyrjes në listë jep përqindjen. Orët e arsyetuara, të anuluara dhe ende në proces nuk futen në emërues. `0/0` shfaqet si `—`, jo 0%. Refuzimi i skanimit në një orë të përfunduar llogaritet si mosprani. Ky është rregulli i implementuar; konfirmoje kundrejt rregullores së kursit para përdorimit zyrtar. Nuk vendos automatikisht notë ose të drejtë provimi.
+```text
+Student ID, Full Name, Group
+22010045, Agon Krasniqi, G1
+22010046, Arta Kola, G1
+22010071, Besa Dema, G2
+```
 
-CSV përfshin matricën e sesioneve dhe dy përmbledhjet; fushat që mund të interpretohen si formula neutralizohen. Ruaje eksportin në hapësirë institucionale me qasje të kufizuar. `attendance_private.audit` ruan aktorin, veprimin, arsyen dhe kohën e ndryshimeve administrative. Nuk ka komandë publike për fshirjen e evidencës. Për backup dhe rikthim përdor procedurën e projektit Supabase, jo browser localStorage.
+Header-i `Student ID, Full Name, Group` është opsional. Mos përdor pikëpresje. Fushat janë Student ID, emri i plotë dhe grupi; emaili nuk importohet. Importi është shtues dhe atomik: nëse një rresht është i pavlefshëm ose Student ID përsëritet brenda të njëjtit semestër, asnjë rresht i asaj kërkese nuk ruhet. Korrigjo burimin dhe importo përsëri vetëm rreshtat që mungojnë. Mos vendos lista reale në repository ose në skedarë testimi.
 
-## Zhvillimi dhe testet
+Emri i grupit përputhet **saktësisht** pas heqjes së hapësirave në fillim dhe fund. `G1`, `g1` dhe `Grupi 1` janë grupe të ndryshme. Kur krijon sesionin, kopjo të njëjtën vlerë që përdoret në listë. Nuk ka grup special `*`; për disa grupe krijo sesionin përkatës për secilin grup.
+
+Semestri kalon vetëm `draft → active → archived`. Një semestër i arkivuar nuk riaktivizohet nga paneli. Sesioni kalon vetëm `draft → open → closed`, ose në `cancelled` nga `draft`/`open`. Një sesion i mbyllur ose anuluar nuk rihapet; në rast gabimi krijo një sesion zëvendësues me titull dhe arsye të qartë.
+
+## Përvoja e studentit
+
+Studenti ka nevojë për llogari GitHub. Herën e parë:
+
+1. hap Student Zone ose skanon QR-në;
+2. hyn me GitHub;
+3. zgjedh semestrin aktiv;
+4. shkruan emrin, mbiemrin dhe Student ID saktësisht si në listën zyrtare;
+5. aktivizon profilin.
+
+Emri krahasohet pa dalluar shkronjat e mëdha/vogla dhe duke normalizuar hapësirat; Student ID duhet të përputhet saktësisht. Një llogari GitHub lidhet me vetëm një rresht të listës në atë semestër. Në orët pasuese studenti vetëm skanon QR-në. Nëse sesioni GitHub ka skaduar, hyn sërish, por nuk riaktivizon profilin.
+
+Faqja `/student` i tregon studentit vetëm historikun e vet. Aplikacioni ruan GitHub user ID, username-in dhe lidhjen me rreshtin zyrtar; nuk ruan OAuth access token. Evidenca ruhet në Neon, jo në `localStorage`.
+
+## Rrjedha në çdo ligjëratë ose ushtrim
+
+1. Në `/staff`, krijo sesionin me semestrin, titullin, javën, llojin (`lecture` ose `lab`) dhe grupin e saktë.
+2. Hape pamjen **Hap projektorin** ndërsa sesioni është ende `draft`. Vetëm stafi i autentikuar mund ta hapë QR-në dhe listën live.
+3. Në momentin e zgjedhur gjatë orës, shkruaj arsyen dhe hape sesionin nga paneli privat. **Aty nis afati dyminutësh sipas orës së serverit.** Mos e hap sesionin para se projektori dhe studentët të jenë gati.
+4. Projektori krijon QR të ri çdo 25 sekonda. Secili QR vlen deri në 40 sekonda dhe asnjëherë pas fundit të afatit dyminutësh.
+5. Studenti skanon dhe check-in përfundon menjëherë. Përsëritja e të njëjtit check-in kthen rezultatin ekzistues dhe nuk shton rresht të dytë.
+6. Projektori paraqet studentët sipas radhës së regjistrimit, me emër të maskuar, kohën dhe totalin live. Paneli privat mban emrin e plotë, Student ID, GitHub username dhe statusin.
+7. Afati refuzohet nga serveri edhe kur projektori mbyllet ose ora e telefonit është e gabuar. Mbylle sesionin nga paneli pas kontrollit; mund ta mbyllësh edhe para përfundimit të dy minutave.
+
+QR-ja vendos tokenin e përkohshëm në fragmentin `#token=...`. Faqja e heq menjëherë nga shiriti i adresës dhe e mban përkohësisht vetëm në `sessionStorage` të atij tab-i kur kërkohet hyrje me GitHub. Serveri ruan vetëm hash-in e tokenit.
+
+Lista live dhe totali e bëjnë të dukshme një hyrje të dyshimtë, por QR-ja nuk është provë absolute e vendndodhjes: një student mund ta fotografojë dhe ta përcjellë gjatë afatit të shkurtër. Nëse totali ose emrat nuk përputhen me klasën, mbylle menjëherë sesionin, kontrollo evidencën private dhe shëno korrigjimet me arsye. Mos publiko screenshot të listës.
+
+## Korrigjimet dhe eksporti
+
+Nga paneli privat, stafi mund të krijojë një evidencë manuale për një student ose të ndryshojë një evidencë ekzistuese në:
+
+- `present` — i pranishëm;
+- `excused` — i arsyetuar;
+- `rejected` — regjistrim i refuzuar.
+
+Çdo shtim ose korrigjim manual kërkon arsye. Sistemi ruan aktorin, kohën, veprimin dhe arsyen në `audit_log`. Mos korrigjo direkt tabelat e databazës gjatë përdorimit normal. Për student pa telefon ose për një problem teknik, verifiko identitetin dhe praninë para se të bësh shtimin manual.
+
+**Eksporto CSV** është funksion vetëm për staf dhe regjistron veprimin në audit. Eksporti përmban nga një rresht për çdo student të grupit në çdo sesion të mbyllur të semestrit, përfshirë `absent` kur nuk ka evidencë. Sesionet `draft`, `open` dhe `cancelled` nuk përfshihen. Kolonat janë:
+
+```text
+Student ID, Full Name, Group, Session, Week, Kind, Status, Recorded At, Reason
+```
+
+Fushat që mund të interpretohen si formula nga spreadsheet-et neutralizohen. CSV-ja përmban të dhëna personale: ruaje në hapësirë institucionale me qasje të kufizuar dhe mos e publiko në GitHub. CSV-ja është raport operacional, jo backup i plotë i databazës ose i auditit.
+
+## Kontrollet e sigurisë
+
+- Paneli, projektori, importi, sesionet, korrigjimet dhe eksporti kërkojnë rol në tabelën `staff`.
+- Studenti lexon vetëm historikun e lidhur me GitHub user ID-në e vet.
+- Cookie e prodhimit është `HttpOnly`, `Secure` dhe `SameSite=Lax`.
+- Tokeni QR nuk vendoset në query string dhe tokeni i papërpunuar nuk ruhet në databazë.
+- Rate limiting në Neon lejon fillimisht: 5 tentativa aktivizimi në 10 minuta, 10 check-in në minutë, 10 krijime QR në minutë dhe 90 lexime live në minutë për identitet/sesion. IP-ja e papërpunuar nuk ruhet në tabelën e kufizimeve.
+- Mos shto rrugë testimi, identitete sintetike ose sekrete në prodhim. `/api/test/session` duhet të kthejë `404` në Vercel.
+- Ndalo ndarjen e ekranit para se të kalosh nga projektori te paneli privat.
+
+## Publikimi dhe verifikimi
+
+Komandat Vercel ekzekutohen nga `attendance-app/`. `.vercel/`, `.env*` reale, `.next/`, raportet Playwright dhe cache-t nuk commit-ohen ose ngarkohen si burim publik.
 
 ```sh
+cd attendance-app
 npm ci
-npm run build
+npm run lint
 npm test
-npm run test:db  # Docker; PostgreSQL i izoluar, fshihet pas testit
-supabase start -x studio,realtime,storage-api,imgproxy,edge-runtime,logflare,vector,supavisor
-python3 -m http.server 8765 --bind 127.0.0.1
+npm run test:integration
+npm run test:db
+npm run build
+npm run test:e2e
+
+vercel whoami
+vercel env ls production
+vercel --prod
 ```
 
-Konfigurimi lokal përdor portet 56431–56434 për të mos prekur projektet e tjera. Mailpit lokal merr vetëm email provë. Vendos përkohësisht URL-në/çelësin publik lokal në konfigurim dhe rikthe konfigurimin para publikimit. `supabase stop` ndal vetëm këtë projekt lokal. Mos përdor të dhëna reale në test.
+`vercel env ls production` përdoret vetëm për të verifikuar emrat dhe target-et; mos printo ose tërhiq vlerat në një skedar të gjurmuar. Pas publikimit:
 
-Testet SQL përdorin një fixture minimal të `auth.users` në PostgreSQL për kontrollin e lejeve dhe logjikës; testet manuale në Supabase lokal mbulojnë edhe hyrjen reale OTP. Shfletuesi ruan sesionin e autentikimit për hyrje të vazhduar; evidenca e pjesëmarrjes ruhet vetëm në databazë.
+1. kontrollo që deployment-i është `READY` dhe domain-i stabil hapet;
+2. kontrollo hyrjen GitHub, `/student`, `/staff` dhe kthimin nga OAuth callback;
+3. verifiko që një kërkesë `POST` te `/api/test/session` kthen `404`;
+4. bëj pilot me 2–5 identitete sintetike: aktivizim, QR, check-in, duplikat, emër të maskuar, total live, skadim dhe mbyllje;
+5. arkivo semestrin sintetik dhe konfirmo që nuk shfaqet te zgjedhjet aktive;
+6. verifiko pamjen mobile në 320×700, 375×812 dhe 430×932 pa scroll horizontal;
+7. vetëm pas pilotit ngarko listën reale dhe përditëso lidhjen e Student Zone.
 
-Burime teknike: [Supabase OTP](https://supabase.com/docs/reference/javascript/auth-signinwithotp), [verifikimi OTP](https://supabase.com/docs/reference/javascript/auth-verifyotp), [funksionet dhe privilegjet](https://supabase.com/docs/guides/database/functions), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security). Kontrolluar më 17 shtator 2026.
+Migrimi i prodhimit nuk duhet të ekzekutohet automatikisht në çdo build. Ndryshimet e ardhshme të skemës kërkojnë migrim të ri të rishikuar, backup dhe provë rikthimi para aplikimit.
 
-CSP: faqja e vijueshmërisë lejon lidhje me domenet standarde `*.supabase.co` dhe portin lokal të testit. Nëse përdor domen personal Supabase, shtoje shprehimisht te `connect-src` në `attendance.html`. Mos shto `unsafe-inline` ose `unsafe-eval` për JavaScript.
+## Backup dhe incidente
+
+Pas çdo jave dhe në fund të semestrit, eksporto CSV-në dhe ruaje në dosjen institucionale të kursit me qasje të kufizuar. Për backup të plotë përdor mjetet e Neon ose `pg_dump` me një lidhje të përkohshme që nuk ruhet në shell history, repository ose logje. Disponueshmëria dhe periudha e rikthimit varen nga plani aktual i Neon; verifikoji në panel para semestrit. Provo rikthimin në një branch ose databazë të veçantë, kurrë drejtpërdrejt mbi prodhim.
+
+Në incident:
+
+1. mbyll sesionin e hapur; nëse shërbimi nuk përgjigjet, mos premto evidencë dhe përsërit check-in me sesion të ri pasi të rikthehet;
+2. shëno URL-në e deployment-it, session ID-në, orën dhe simptomën pa kopjuar token QR ose të dhëna të panevojshme studentësh;
+3. eksporto evidencën e paprekur dhe ruaj logjet për hetim;
+4. përdor korrigjime me arsye, jo fshirje direkte, që auditimi të mbetet i plotë;
+5. në rrjedhje kredencialesh, rrotullo sekretin përkatës në ofrues dhe Vercel, pastaj redeploy. Rrotullimi i `NEXTAUTH_SECRET` çaktivizon sesionet ekzistuese; rrotullimi i GitHub secret kërkon përditësimin e `GITHUB_SECRET`; kredencialet e databazës rrotullohen në Neon dhe rilidhen në Vercel;
+6. pas rikthimit, provo hyrjen, autorizimin e stafit, një check-in sintetik dhe eksportin para se të vazhdosh me studentët.
+
+Mos fshi të vetmin rresht të stafit: bootstrap-i fillestar është njëherësh dhe nuk e rikrijon automatikisht. Ndryshimi i stafit duhet të bëhet si operacion i kontrolluar në databazë, me backup dhe gjurmë të dokumentuar.
+
+## Kufijtë e sistemit
+
+Sistemi siguron identitet GitHub, përputhje me listën, grup të saktë, afat të serverit, një evidencë për student/sesion dhe audit për ndryshimet administrative. Nuk përdor GPS, Wi-Fi të kampusit ose verifikim biometrik. Ai nuk vendos automatikisht notë ose të drejtë provimi; rregullat akademike zbatohen mbi eksportin e verifikuar sipas politikës së institucionit.
