@@ -22,6 +22,7 @@ import {
   databaseBootstrapRepository,
 } from "../../app/api/admin/bootstrap/route";
 import { POST as checkInRoute } from "../../app/api/check-in/route";
+import { POST as classSessionCreateRoute } from "../../app/api/class-sessions/route";
 import { POST as challengeRoute } from "../../app/api/class-sessions/[id]/challenge/route";
 import { GET as liveRoute } from "../../app/api/class-sessions/[id]/live/route";
 import { POST as manualRecordRoute } from "../../app/api/class-sessions/[id]/records/route";
@@ -31,6 +32,7 @@ import { POST as activateRoute } from "../../app/api/roster/activate/route";
 import { POST as rosterImportRoute } from "../../app/api/roster/import/route";
 import { GET as semesterExportRoute } from "../../app/api/semesters/[id]/export/route";
 import { PATCH as semesterStateRoute } from "../../app/api/semesters/[id]/state/route";
+import { POST as semesterCreateRoute } from "../../app/api/semesters/route";
 import {
   AttendanceServiceError,
   attendanceService,
@@ -628,6 +630,34 @@ describe("protected semester and roster management", () => {
 
     const operations: Array<[string, () => Promise<Response>]> = [
       [
+        "semester creation",
+        () =>
+          semesterCreateRoute(
+            jsonRequest(
+              "http://attendance.test/api/semesters",
+              { title: "Denied semester", weekCount: 15 },
+              "198.51.100.80",
+            ),
+          ),
+      ],
+      [
+        "class session creation",
+        () =>
+          classSessionCreateRoute(
+            jsonRequest(
+              "http://attendance.test/api/class-sessions",
+              {
+                semesterId: semester.id,
+                weekNumber: 2,
+                kind: "lecture",
+                groupName: "G1",
+                title: "Denied class session",
+              },
+              "198.51.100.80",
+            ),
+          ),
+      ],
+      [
         "roster import",
         () =>
           rosterImportRoute(
@@ -655,6 +685,17 @@ describe("protected semester and roster management", () => {
               `http://attendance.test/api/class-sessions/${classSession.id}/challenge`,
               {},
               "198.51.100.80",
+            ),
+            { params: Promise.resolve({ id: classSession.id }) },
+          ),
+      ],
+      [
+        "live attendance",
+        () =>
+          liveRoute(
+            new Request(
+              `http://attendance.test/api/class-sessions/${classSession.id}/live`,
+              { headers: { "x-forwarded-for": "198.51.100.80" } },
             ),
             { params: Promise.resolve({ id: classSession.id }) },
           ),
