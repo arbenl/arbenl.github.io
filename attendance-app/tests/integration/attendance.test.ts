@@ -976,6 +976,104 @@ describe("PostgreSQL rate limiting", () => {
 });
 
 describe("challenge acceptance and live attendance", () => {
+  it("finalizes an expired session once across concurrent server reads and rejects every late action", async () => {
+    const semester = await createActiveSemester();
+    await importAndActivate(semester.id, studentA, "A-1", "Arta Kola", "G1");
+    const classSession = await createOpenSession(semester.id);
+    const challenge = await attendanceService.createChallenge(
+      professor,
+      classSession.id,
+      "192.0.2.90",
+    );
+    await sql`
+      update class_sessions
+      set checkin_ends_at = statement_timestamp() - interval '1 second'
+      where id = ${classSession.id}
+    `;
+
+    const [live, records, sessions, lateChallenge, lateScan] =
+      await Promise.all([
+        attendanceService.getLiveSession(
+          professor,
+          classSession.id,
+          "192.0.2.91",
+        ),
+        attendanceService.getSessionRecords(professor, classSession.id),
+        attendanceService.listClassSessions(professor, semester.id),
+        attendanceService
+          .createChallenge(professor, classSession.id, "192.0.2.92")
+          .then(
+            () => ({ status: "fulfilled" as const }),
+            (reason: unknown) => ({ status: "rejected" as const, reason }),
+          ),
+        attendanceService
+          .checkIn(studentA, { token: challenge.token }, "192.0.2.93")
+          .then(
+            () => ({ status: "fulfilled" as const }),
+            (reason: unknown) => ({ status: "rejected" as const, reason }),
+          ),
+      ]);
+
+    expect(live.state).toBe("closed");
+    expect(records.session.state).toBe("closed");
+    expect(sessions).toEqual([
+      expect.objectContaining({ id: classSession.id, state: "closed" }),
+    ]);
+    expect(lateChallenge).toMatchObject({
+      status: "rejected",
+      reason: { code: "checkin_closed" },
+    });
+    expect(lateScan).toMatchObject({
+      status: "rejected",
+      reason: { code: "checkin_closed" },
+    });
+
+    const [persisted] = await sql`
+      select state, created_by as "createdBy"
+      from class_sessions
+      where id = ${classSession.id}
+    `;
+    expect(persisted.state).toBe("closed");
+
+    const automaticAudits = await sql`
+      select
+        actor_user_id as "actorUserId",
+        action,
+        reason,
+        metadata
+      from audit_log
+      where subject_id = ${classSession.id}
+        and metadata ->> 'actorKind' = 'system'
+    `;
+    expect(automaticAudits).toEqual([
+      expect.objectContaining({
+        actorUserId: persisted.createdBy,
+        action: "class_session.state",
+        reason: "Automatic closure at the server check-in deadline",
+        metadata: expect.objectContaining({
+          actorKind: "system",
+          actorAttribution: "session_creator",
+          policy: "checkin_deadline",
+          from: "open",
+          to: "closed",
+        }),
+      }),
+    ]);
+
+    const repeated = await attendanceService.getLiveSession(
+      professor,
+      classSession.id,
+      "192.0.2.94",
+    );
+    expect(repeated.state).toBe("closed");
+    expect(await sql`
+      select 1
+      from audit_log
+      where subject_id = ${classSession.id}
+        and metadata ->> 'actorKind' = 'system'
+    `).toHaveLength(1);
+  });
+
   it("rotates 40-second challenges, rejects expiry, cross-group use and the database-clock two-minute cutoff", async () => {
     const semester = await createActiveSemester();
     await importAndActivate(semester.id, studentA, "A-1", "Arta Kola", "G1");
