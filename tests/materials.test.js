@@ -20,3 +20,10 @@ test('the semester has fifteen Thursdays and ten graded labs after the first wee
  assert.equal(plan.weeks[0].graded,false);
  for(const w of plan.weeks)assert.equal(new Date(w.date+'T12:00:00Z').getUTCDay(),4);
 });
+test('the restaurant demo discloses its purpose and exposes the complete order flow',async()=>{
+ const html=await readFile('demo/restaurant/index.html','utf8');
+ assert.ok(html.includes('Demo — nuk regjistron pjesëmarrjen'));
+ for(const state of ['menu','cart','order','ready']){
+  assert.ok(html.includes(`data-flow-state="${state}"`),`missing ${state} flow state`);
+ }
+});
