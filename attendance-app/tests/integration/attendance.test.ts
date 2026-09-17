@@ -1419,6 +1419,10 @@ describe("manual records and CSV evidence", () => {
       status: "excused",
       reason: "Approved absence",
     });
+    await attendanceService.transitionClassSession(professor, classSession.id, {
+      state: "closed",
+      reason: "Class completed",
+    });
 
     const exported = await attendanceService.exportSemester(
       professor,
@@ -1440,6 +1444,133 @@ describe("manual records and CSV evidence", () => {
       { action: "attendance.correct", reason: "Approved absence" },
       { action: "semester.export", reason: "CSV export" },
     ]);
+  });
+
+  it("exports every student in each closed session group, including absences, and omits unfinished or cancelled sessions", async () => {
+    const semester = await createActiveSemester();
+    const rosterEntries = await attendanceService.importRoster(professor, {
+      semesterId: semester.id,
+      rows: [
+        { studentId: "A-1", fullName: "Arta Kola", groupName: "G1" },
+        { studentId: "B-1", fullName: "Besa Dema", groupName: "G1" },
+        { studentId: "C-1", fullName: "Dren Gashi", groupName: "G1" },
+        { studentId: "D-1", fullName: "Elira Hoxha", groupName: "G1" },
+        { studentId: "E-1", fullName: "Flaka Berisha", groupName: "G2" },
+      ],
+    });
+    const byStudentId = new Map(
+      rosterEntries.map((entry) => [entry.studentId, entry]),
+    );
+
+    const closedG1 = await createOpenSession(semester.id, "G1");
+    await attendanceService.createManualRecord(professor, closedG1.id, {
+      rosterId: byStudentId.get("A-1")!.id,
+      status: "present",
+      reason: "Verified in class",
+    });
+    await attendanceService.createManualRecord(professor, closedG1.id, {
+      rosterId: byStudentId.get("B-1")!.id,
+      status: "excused",
+      reason: "Approved absence",
+    });
+    await attendanceService.createManualRecord(professor, closedG1.id, {
+      rosterId: byStudentId.get("C-1")!.id,
+      status: "rejected",
+      reason: "Invalid check-in",
+    });
+    await attendanceService.transitionClassSession(professor, closedG1.id, {
+      state: "closed",
+      reason: "Lecture completed",
+    });
+
+    const closedG2 = await createOpenSession(semester.id, "G2");
+    await attendanceService.transitionClassSession(professor, closedG2.id, {
+      state: "closed",
+      reason: "Lecture completed",
+    });
+
+    const stillOpen = await createOpenSession(semester.id, "G1");
+    await attendanceService.createManualRecord(professor, stillOpen.id, {
+      rosterId: byStudentId.get("A-1")!.id,
+      status: "present",
+      reason: "Open session record",
+    });
+
+    const cancelled = await createOpenSession(semester.id, "G1");
+    await attendanceService.createManualRecord(professor, cancelled.id, {
+      rosterId: byStudentId.get("A-1")!.id,
+      status: "present",
+      reason: "Cancelled session record",
+    });
+    await attendanceService.transitionClassSession(professor, cancelled.id, {
+      state: "cancelled",
+      reason: "Class cancelled",
+    });
+
+    await attendanceService.createClassSession(professor, {
+      semesterId: semester.id,
+      weekNumber: 2,
+      kind: "lab",
+      groupName: "G1",
+      title: "Draft lab",
+    });
+
+    const exported = await attendanceService.exportSemester(
+      professor,
+      semester.id,
+    );
+    const dataRows = exported.csv.trimEnd().split("\r\n").slice(1);
+    const selectedColumns = dataRows.map((line) => {
+      const columns = line.split(",");
+      return {
+        studentId: columns[0],
+        group: columns[2],
+        status: columns[6],
+        recordedAt: columns[7],
+        reason: columns[8],
+      };
+    });
+
+    expect(selectedColumns).toEqual([
+      {
+        studentId: "A-1",
+        group: "G1",
+        status: "present",
+        recordedAt: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/u),
+        reason: "Verified in class",
+      },
+      {
+        studentId: "B-1",
+        group: "G1",
+        status: "excused",
+        recordedAt: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/u),
+        reason: "Approved absence",
+      },
+      {
+        studentId: "C-1",
+        group: "G1",
+        status: "rejected",
+        recordedAt: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/u),
+        reason: "Invalid check-in",
+      },
+      {
+        studentId: "D-1",
+        group: "G1",
+        status: "absent",
+        recordedAt: "",
+        reason: "",
+      },
+      {
+        studentId: "E-1",
+        group: "G2",
+        status: "absent",
+        recordedAt: "",
+        reason: "",
+      },
+    ]);
+    expect(exported.csv).not.toContain("Open session record");
+    expect(exported.csv).not.toContain("Cancelled session record");
+    expect(exported.csv).not.toContain("Draft lab");
   });
 });
 

@@ -1270,15 +1270,33 @@ async function exportSemester(session: Session | null, semesterId: string) {
         verifiedAt: attendanceRecords.verifiedAt,
         reason: attendanceRecords.correctionReason,
       })
-      .from(attendanceRecords)
-      .innerJoin(roster, eq(roster.id, attendanceRecords.rosterId))
-      .innerJoin(classSessions, eq(classSessions.id, attendanceRecords.sessionId))
-      .where(eq(classSessions.semesterId, semesterId))
+      .from(classSessions)
+      .innerJoin(
+        roster,
+        and(
+          eq(roster.semesterId, classSessions.semesterId),
+          eq(roster.groupName, classSessions.groupName),
+        ),
+      )
+      .leftJoin(
+        attendanceRecords,
+        and(
+          eq(attendanceRecords.sessionId, classSessions.id),
+          eq(attendanceRecords.rosterId, roster.id),
+        ),
+      )
+      .where(
+        and(
+          eq(classSessions.semesterId, semesterId),
+          eq(classSessions.state, "closed"),
+        ),
+      )
       .orderBy(
         asc(roster.groupName),
         asc(roster.studentId),
         asc(classSessions.weekNumber),
         asc(classSessions.kind),
+        asc(classSessions.id),
       );
     const lines = [
       csvRow([
@@ -1300,8 +1318,10 @@ async function exportSemester(session: Session | null, semesterId: string) {
           row.sessionTitle,
           row.weekNumber,
           row.kind,
-          row.status,
-          toIso(row.scannedAt ?? row.verifiedAt ?? ""),
+          row.status ?? "absent",
+          row.scannedAt || row.verifiedAt
+            ? toIso(row.scannedAt ?? row.verifiedAt ?? "")
+            : "",
           row.reason,
         ]),
       ),
