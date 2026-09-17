@@ -86,6 +86,7 @@ for (const viewport of [
       await test.step("staff creates semester, imports roster, activates semester and opens session", async () => {
         await professor.goto("/staff");
         await expect(professor.getByRole("heading", { name: "Paneli i vijueshmërisë" })).toBeVisible();
+        await professor.getByText("Orë zëvendësuese ose semestër tjetër", { exact: true }).click();
         await professor.locator("#semester-title").fill(semesterTitle);
         const created = professor.waitForResponse((r) => r.url().endsWith("/api/semesters") && r.request().method() === "POST");
         await professor.getByRole("button", { name: "Krijo semestrin", exact: true }).click();
@@ -94,7 +95,10 @@ for (const viewport of [
         semesterId = (await response.json()).id;
         await professor.getByLabel(`Arsyeja për ${semesterTitle}`, { exact: true }).fill("Start E2E semester");
         await professor.getByRole("button", { name: "Aktivizo", exact: true }).click();
-        await expect(professor.getByText("15 javë · active", { exact: true })).toBeVisible();
+        await expect(
+          professor.locator(".semester-row").filter({ hasText: semesterTitle })
+            .getByText("15 javë · active", { exact: true }),
+        ).toBeVisible();
         await professor.locator("#roster-semester").selectOption(semesterId);
         await professor.getByLabel("Student ID, Emri i plotë, Grupi", { exact: true }).fill("E2E-001, Arta Kola, G1\nE2E-002, Besa Duka, G1");
         await professor.getByRole("button", { name: "Importo të gjithë rreshtat" }).click();

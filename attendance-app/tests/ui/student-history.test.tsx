@@ -43,6 +43,8 @@ describe("student semester history", () => {
       cache: "no-store",
     }));
     expect(view.container.textContent).toContain("Vjeshtë 2026");
+    expect(view.container.textContent).toContain("QR-ja shfaqet nga profesori në projektor");
+    expect(view.container.textContent).toContain("kamerën e telefonit");
     expect(view.container.textContent).toContain("1 e pranishme");
     expect(view.container.textContent).toContain("1 e arsyetuar");
     expect(view.container.textContent).toContain("1 e refuzuar");

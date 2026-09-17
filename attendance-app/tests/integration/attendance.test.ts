@@ -278,6 +278,68 @@ beforeEach(async () => {
   await seedUsers();
 });
 
+describe("automatic current-course setup", () => {
+  it("removes archived pilots and idempotently creates the 15-week Thursday schedule", async () => {
+    const pilot = await createActiveSemester("[PILOT SYNTHETIC] Programimi Mobile 2026");
+    await attendanceService.importRoster(professor, {
+      semesterId: pilot.id,
+      rows: [{ studentId: "P-1", fullName: "Pilot Student", groupName: "G1" }],
+    });
+    await attendanceService.transitionSemester(professor, pilot.id, {
+      state: "archived",
+      reason: "Pilot completed",
+    });
+
+    const first = await attendanceService.ensureCurrentCourseSetup(professor);
+    expect(first).toMatchObject({ createdSessions: 29, removedPilotSemesters: 1 });
+
+    const [semester] = await sql`
+      select id, title, week_count, status
+      from semesters
+      where title = 'Programimi për Pajisje Mobile · Semestri Dimëror 2026/27'
+    `;
+    expect(semester).toMatchObject({ week_count: 15, status: "active" });
+
+    const sessions = await sql`
+      select week_number, kind, group_name, title
+      from class_sessions
+      where semester_id = ${semester.id}
+      order by week_number, case when kind = 'lecture' then 0 else 1 end
+    `;
+    expect(sessions).toHaveLength(29);
+    expect(sessions[0]).toMatchObject({
+      week_number: 1,
+      kind: "lecture",
+      group_name: "G1",
+    });
+    expect(sessions[0].title).toContain("17.09.2026 · 16:30");
+    expect(sessions[1]).toMatchObject({ week_number: 2, kind: "lecture" });
+    expect(sessions[2]).toMatchObject({ week_number: 2, kind: "lab" });
+    expect(sessions.at(-1)?.title).toContain("24.12.2026 · 18:30");
+
+    const second = await attendanceService.ensureCurrentCourseSetup(professor);
+    expect(second).toMatchObject({ createdSessions: 0, removedPilotSemesters: 0 });
+    expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(29);
+    expect(await sql`select id from semesters where title like '[PILOT SYNTHETIC]%'`).toHaveLength(0);
+  });
+
+  it("does not reactivate or repopulate the course after the professor archives it", async () => {
+    const semester = await createActiveSemester(
+      "Programimi për Pajisje Mobile · Semestri Dimëror 2026/27",
+    );
+    await attendanceService.transitionSemester(professor, semester.id, {
+      state: "archived",
+      reason: "Semester completed",
+    });
+
+    const result = await attendanceService.ensureCurrentCourseSetup(professor);
+    expect(result.createdSessions).toBe(0);
+    expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(0);
+    const [saved] = await sql`select status from semesters where id = ${semester.id}`;
+    expect(saved.status).toBe("archived");
+  });
+});
+
 describe("HTTP route contracts", () => {
   it("returns a generic 400 response for malformed JSON before authentication", async () => {
     const response = await activateRoute(

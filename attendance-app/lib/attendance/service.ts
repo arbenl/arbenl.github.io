@@ -24,6 +24,7 @@ import {
 } from "../db/schema";
 import { getEnv } from "../env";
 import { createChallengeToken, hashChallengeToken } from "./challenge";
+import { CURRENT_COURSE, CURRENT_COURSE_SESSIONS } from "./current-course";
 import {
   maskDisplayName,
   normalizeAlbanianName,
@@ -379,6 +380,148 @@ async function listSemesters(session: Session | null) {
   return membership ? query : query.where(eq(semesters.status, "active"));
 }
 
+async function ensureCurrentCourseSetup(session: Session | null) {
+  const db = await database();
+  return db.transaction(async (transaction) => {
+    const actor = await requireStaffActor(transaction, session);
+    await transaction.execute(
+      sql`select pg_advisory_xact_lock(hashtextextended('aab-current-course-setup', 0))`,
+    );
+
+    const pilotSemesters = await transaction
+      .select({ id: semesters.id })
+      .from(semesters)
+      .where(
+        and(
+          eq(semesters.status, "archived"),
+          sql`${semesters.title} like '[PILOT SYNTHETIC]%'`,
+        ),
+      );
+    const pilotSemesterIds = pilotSemesters.map(({ id }) => id);
+
+    if (pilotSemesterIds.length) {
+      const pilotSessions = await transaction
+        .select({ id: classSessions.id })
+        .from(classSessions)
+        .where(inArray(classSessions.semesterId, pilotSemesterIds));
+      const pilotRoster = await transaction
+        .select({ id: roster.id })
+        .from(roster)
+        .where(inArray(roster.semesterId, pilotSemesterIds));
+      const pilotSessionIds = pilotSessions.map(({ id }) => id);
+      const pilotRosterIds = pilotRoster.map(({ id }) => id);
+      const pilotRecords = pilotSessionIds.length
+        ? await transaction
+            .select({ id: attendanceRecords.id })
+            .from(attendanceRecords)
+            .where(inArray(attendanceRecords.sessionId, pilotSessionIds))
+        : [];
+      const pilotRecordIds = pilotRecords.map(({ id }) => id);
+      const subjectIds = [
+        ...pilotSemesterIds,
+        ...pilotSessionIds,
+        ...pilotRosterIds,
+        ...pilotRecordIds,
+      ];
+
+      if (subjectIds.length) {
+        await transaction.delete(auditLog).where(inArray(auditLog.subjectId, subjectIds));
+      }
+      if (pilotSessionIds.length) {
+        await transaction
+          .delete(attendanceRecords)
+          .where(inArray(attendanceRecords.sessionId, pilotSessionIds));
+        await transaction
+          .delete(qrChallenges)
+          .where(inArray(qrChallenges.sessionId, pilotSessionIds));
+        await transaction
+          .delete(classSessions)
+          .where(inArray(classSessions.id, pilotSessionIds));
+      }
+      if (pilotRosterIds.length) {
+        await transaction.delete(roster).where(inArray(roster.id, pilotRosterIds));
+      }
+      await transaction.delete(semesters).where(inArray(semesters.id, pilotSemesterIds));
+    }
+
+    let [semester] = await transaction
+      .select()
+      .from(semesters)
+      .where(eq(semesters.title, CURRENT_COURSE.title))
+      .limit(1);
+
+    if (!semester) {
+      [semester] = await transaction
+        .insert(semesters)
+        .values({
+          title: CURRENT_COURSE.title,
+          weekCount: CURRENT_COURSE.weekCount,
+          status: "active",
+        })
+        .returning();
+    } else if (semester.status === "draft") {
+      [semester] = await transaction
+        .update(semesters)
+        .set({ status: "active", updatedAt: sql`statement_timestamp()` })
+        .where(eq(semesters.id, semester.id))
+        .returning();
+    }
+
+    const existing = await transaction
+      .select({
+        weekNumber: classSessions.weekNumber,
+        kind: classSessions.kind,
+        groupName: classSessions.groupName,
+      })
+      .from(classSessions)
+      .where(eq(classSessions.semesterId, semester.id));
+    const existingKeys = new Set(
+      existing.map(({ weekNumber, kind, groupName }) => `${weekNumber}:${kind}:${groupName}`),
+    );
+    const missing = semester.status === "archived"
+      ? []
+      : CURRENT_COURSE_SESSIONS.filter(
+          ({ weekNumber, kind, groupName }) =>
+            !existingKeys.has(`${weekNumber}:${kind}:${groupName}`),
+        );
+
+    if (missing.length) {
+      await transaction.insert(classSessions).values(
+        missing.map((item) => ({
+          semesterId: semester.id,
+          weekNumber: item.weekNumber,
+          kind: item.kind,
+          groupName: item.groupName,
+          title: item.title,
+          createdBy: actor.userId,
+        })),
+      );
+    }
+
+    if (missing.length || pilotSemesterIds.length) {
+      await audit(
+        transaction,
+        actor.userId,
+        "course.schedule.reconcile",
+        "semester",
+        semester.id,
+        "Automatic setup of the current teaching schedule",
+        {
+          createdSessions: missing.length,
+          removedPilotSemesters: pilotSemesterIds.length,
+          groupName: CURRENT_COURSE.groupName,
+        },
+      );
+    }
+
+    return {
+      semesterId: semester.id,
+      createdSessions: missing.length,
+      removedPilotSemesters: pilotSemesterIds.length,
+    };
+  });
+}
+
 async function getStudentHistory(session: Session | null) {
   const db = await database();
   const actor = await requireActor(db, session);
@@ -419,6 +562,7 @@ async function getStudentHistory(session: Session | null) {
     .orderBy(
       asc(semesters.createdAt),
       asc(classSessions.weekNumber),
+      asc(sql`case when ${classSessions.kind} = 'lecture' then 0 else 1 end`),
       asc(classSessions.createdAt),
       asc(classSessions.id),
     );
@@ -1451,6 +1595,7 @@ export const attendanceService = {
   createManualRecord,
   createSemester,
   exportSemester,
+  ensureCurrentCourseSetup,
   getSessionRecords,
   getStudentHistory,
   getLiveSession,

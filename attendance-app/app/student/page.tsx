@@ -64,6 +64,13 @@ export default function StudentPage() {
       <section className="status-card student-card" aria-labelledby="history-title">
         <p className="eyebrow">Profili i studentit</p>
         <h1 id="history-title">Historia e vijueshmërisë</h1>
+        <aside className="student-checkin-guide" aria-label="Si bëhet check-in">
+          <strong>Si bëhet check-in?</strong>
+          <p>
+            QR-ja shfaqet nga profesori në projektor gjatë orës. Hape kamerën e telefonit,
+            skanoje QR-në dhe ndiq lidhjen; regjistrimi përfundon në atë faqe.
+          </p>
+        </aside>
         {state === "loading" ? <p role="status">Duke ngarkuar…</p> : null}
         {state === "auth" ? (
           <div className="student-stack">
