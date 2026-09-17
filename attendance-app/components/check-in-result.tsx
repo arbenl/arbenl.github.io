@@ -63,18 +63,25 @@ function readStoredToken(now: number): HeldToken | null {
 
 export function CheckInResult() {
   const heldToken = useRef<HeldToken | null>(null);
+  const initialized = useRef(false);
+  const submittedAttempt = useRef(0);
   const [attempt, setAttempt] = useState(0);
   const [view, setView] = useState<ViewState>({ phase: "capturing" });
 
   useLayoutEffect(() => {
+    if (initialized.current) {
+      return;
+    }
+    initialized.current = true;
     const now = Date.now();
     const fragment = new URLSearchParams(window.location.hash.slice(1));
     const fragmentToken = fragment.get("token");
+    const storedToken = readStoredToken(now);
 
     window.history.replaceState(null, "", window.location.pathname);
     heldToken.current = validToken(fragmentToken)
       ? { token: fragmentToken, capturedAt: now }
-      : readStoredToken(now);
+      : storedToken;
 
     if (!heldToken.current) {
       setView({ phase: "missing" });
@@ -84,10 +91,14 @@ export function CheckInResult() {
   }, []);
 
   useEffect(() => {
-    if (attempt === 0 || !heldToken.current) {
+    if (
+      attempt === 0 ||
+      !heldToken.current ||
+      submittedAttempt.current === attempt
+    ) {
       return;
     }
-    const controller = new AbortController();
+    submittedAttempt.current = attempt;
     const currentToken = heldToken.current.token;
     setView({ phase: "pending" });
 
@@ -95,7 +106,6 @@ export function CheckInResult() {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ token: currentToken }),
-      signal: controller.signal,
     })
       .then(async (response) => {
         const body = (await response.json()) as ApiError | CheckInSuccess;
@@ -121,16 +131,11 @@ export function CheckInResult() {
           message: error.error?.message ?? "Check-in-i dështoi.",
         });
       })
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError") {
-          return;
-        }
+      .catch(() => {
         heldToken.current = null;
         window.sessionStorage.removeItem(STORAGE_KEY);
         setView({ phase: "error", message: "Lidhja dështoi. Skano QR-në përsëri." });
       });
-
-    return () => controller.abort();
   }, [attempt]);
 
   function beginLogin() {
@@ -177,7 +182,11 @@ export function CheckInResult() {
     return (
       <div className="student-stack">
         <h2>Aktivizo profilin</h2>
-        <ProfileForm callbackUrl="/check-in" onActivated={resumeAfterActivation} />
+        <ProfileForm
+          callbackUrl="/check-in"
+          onActivated={resumeAfterActivation}
+          onAuthenticationRequired={beginLogin}
+        />
       </div>
     );
   }

@@ -15,11 +15,13 @@ interface ErrorBody {
 
 interface ProfileFormProps {
   onActivated?: () => void;
+  onAuthenticationRequired?: () => void;
   callbackUrl?: string;
 }
 
 export function ProfileForm({
   onActivated,
+  onAuthenticationRequired,
   callbackUrl = "/student/activate",
 }: ProfileFormProps) {
   const [semesters, setSemesters] = useState<SemesterOption[]>([]);
@@ -97,7 +99,17 @@ export function ProfileForm({
     return (
       <div className="student-stack">
         <p>Hyr me GitHub për ta lidhur profilin me regjistrin.</p>
-        <SignIn callbackUrl={callbackUrl} />
+        {onAuthenticationRequired ? (
+          <button
+            className="student-control primary-action"
+            onClick={onAuthenticationRequired}
+            type="button"
+          >
+            Hyr me GitHub
+          </button>
+        ) : (
+          <SignIn callbackUrl={callbackUrl} />
+        )}
       </div>
     );
   }
