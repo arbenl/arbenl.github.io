@@ -641,6 +641,7 @@ body {
 
 .app-brand {
   min-width: 0;
+  min-height: 44px;
   color: var(--portal-text);
   text-decoration: none;
 }
