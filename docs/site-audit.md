@@ -19,16 +19,15 @@ Përmbajtja e 15 javëve, shabllonet dhe profili u ruajtën. Ndryshimet e hyrjes
 
 ## Zgjidhja për praninë në sallë
 
-GitHub Pages shërben vetëm ndërfaqen statike. Supabase ruan regjistrin privat, sesionet, sfidat QR dhe historikun e verifikimeve. QR rrotullohet çdo 25 sekonda dhe skadon pas 40 sekondash në server. Përcjellja e një fotografie brenda afatit mbetet e mundshme; prandaj skanimi është vetëm kërkesë `pending`. Vetëm kontrolli fizik i identitetit nga pedagogu e bën `present`. Nuk pretendohet se GPS, QR ose Wi-Fi të vetëm provojnë praninë.
-
+GitHub Pages shërben ndërfaqen statike. Supabase ruan regjistrin privat, sesionet, sfidat QR dhe historikun e korrigjimeve. Sipas kërkesës së pedagogut, skanimi nga një student i identifikuar krijon menjëherë `present`, pa konfirmim tjetër. Dritarja dyminutëshe nis me QR-në e parë; QR rrotullohet çdo 25 sekonda dhe skadon brenda 40 sekondash ose në fund të dritares. Serveri ndalon skanimet pas afatit edhe pa shfletuesin e pedagogut. Përcjellja e QR brenda afatit mbetet e mundshme; nuk pretendohet provë absolute e pranisë fizike.
 Raporti ndan ligjëratat/ushtrimet, përjashton sesionet e anuluara dhe para regjistrimit të studentit, dhe lejon eksport CSV. Studenti sheh vetëm historikun e vet; pedagogu të gjithë semestrin. Paneli i projektorit nuk shfaq regjistrin me emra. Para kthimit në regjistër, pedagogu duhet të ndalë ndarjen e ekranit.
 
 ## Verifikimi
 
 - Build i paketës browser me varësi të fiksuara; auditimi npm pa cenueshmëri të raportuara në instalim.
 - Teste JavaScript: denominatorë, grupe, përjashtime, formula/thonjëza në CSV dhe importi i regjistrit.
-- PostgreSQL i izoluar: skanimi krijon pending, duplikimi është idempotent, studenti sheh vetëm veten, nuk ka administrim nga studenti ose qasje direkte në tabela, QR i gabuar/i skaduar/i mbyllur refuzohet, grupi i gabuar refuzohet, emaili i paverifikuar dhe anonimi refuzohen, stafi verifikon me audit dhe pending bllokon përfundimin.
-- Supabase lokal + shfletues: hyrje OTP e pedagogut dhe studentit përmes Mailpit lokal, krijim semestri, import i dy identiteteve sintetike, hapje sesioni, QR projektori, skanim si student dhe konfirmim nga pedagogu.
+- PostgreSQL i izoluar: skanimi krijon menjëherë present, duplikimi është idempotent, studenti sheh vetëm veten, nuk ka administrim nga studenti ose qasje direkte në tabela, QR i gabuar/i skaduar/i mbyllur refuzohet, grupi i gabuar refuzohet, emaili i paverifikuar dhe anonimi refuzohen, korrigjimet auditohen; dritarja nuk zgjatet nga rifreskimi dhe skadimi përfundon sesionin automatikisht.
+- Supabase lokal + shfletues: hyrje OTP e pedagogut dhe studentit përmes Mailpit lokal, krijim semestri, import i dy identiteteve sintetike, hapje sesioni, QR projektori, skanim automatik si student.
 - Pamje në 390 px dhe 1280 px; navigim i javës dhe gjendje pa konfigurim. Nuk është kryer audit i plotë WCAG ose test fizik në projektorin e sallës.
 
 ## Çfarë mbetet për aktivizim
@@ -38,3 +37,5 @@ Zgjedhja/aktivizimi i projektit Supabase, SMTP institucional ose dërguesi i aut
 Shih [udhëzimin e aktivizimit](attendance-deployment.md).
 
 Burim i përmbajtjes së përditësuar: [GitHub: Copilot për studentë të verifikuar](https://docs.github.com/en/copilot/how-tos/copilot-on-github/set-up-copilot/enable-copilot/set-up-for-students).
+
+Për auditin e ri me Swift/WebKit, matjet dhe kufijtë e testimit, shih [raportin mobile](mobile-audit.md).

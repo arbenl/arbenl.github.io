@@ -300,3 +300,44 @@ body.projecting #main > :not(#projector) {
 .table-wrap:focus-visible {
   outline: 3px solid #fbbf24;
 }
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 48px;
+}
+button,
+summary {
+  min-height: 44px;
+}
+header a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+main {
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+}
+#scan-result:not(:empty) {
+  padding: 16px;
+  border: 1px solid #818cf8;
+  border-radius: 10px;
+  background: #222445;
+  font-weight: 600;
+}
+#projector .projector-top {
+  gap: 12px;
+}
+#end-projector {
+  font-size: 14px;
+  padding: 8px 14px;
+}
+.panel > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}

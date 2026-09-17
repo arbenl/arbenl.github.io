@@ -2,11 +2,15 @@
 <html lang="sq">
   <head>
     <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co http://127.0.0.1:56431 http://localhost:56431; object-src 'none'; base-uri 'self'; form-action 'self'"
+    />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="referrer" content="no-referrer" />
     <meta name="robots" content="noindex" />
     <title>Vijueshmëria · AAB</title>
-    <link rel="stylesheet" href="assets/attendance.css" />
+    <link rel="stylesheet" href="assets/attendance.css?v=7ff766bef000" />
   </head>
   <body>
     <a class="skip" href="#main">Kalo te përmbajtja</a>
@@ -70,27 +74,27 @@
           ><button id="refresh" class="secondary">Rifresko evidencën</button>
         </div>
         <section id="scan-panel" class="panel" hidden>
-          <h2>Konfirmo skanimin në sallë</h2>
+          <h2>Regjistrimi i pjesëmarrjes</h2>
           <p>
-            QR i përket sesionit të hapur nga pedagogu. Skanimi mbetet në pritje
-            derisa pedagogu të verifikojë praninë tënde.
+            QR i përket orës së hapur nga pedagogu. Regjistrimi bëhet
+            automatikisht sapo të jesh i identifikuar.
           </p>
-          <button id="scan">Regjistro skanimin</button>
+          <button id="scan" hidden>Provo përsëri</button>
           <p id="scan-result" role="status"></p>
         </section>
         <section id="student-help" class="panel">
           <h2>Si regjistrohet prania?</h2>
           <ol>
             <li>Hyr në llogari para fillimit të orës.</li>
-            <li>Skano QR aktual nga projektori dhe regjistro skanimin.</li>
+            <li>Skano QR aktual nga projektori në mes të orës.</li>
             <li>
-              Pedagogu verifikon identitetin në sallë. Pastaj kontrollo statusin
-              këtu.
+              Shfaqet “I pranishëm”. Për këtë ligjëratë ose ushtrim përfundove.
             </li>
           </ol>
           <p class="muted">
-            QR ndryshon çdo 25 sekonda dhe skadon pas 40 sekondash. Vetëm “I
-            pranishëm” i konfirmuar hyn në përqindjen e vijueshmërisë.
+            Regjistrimi është i hapur për 2 minuta. QR ndryshon çdo 25 sekonda
+            dhe skadon pas 40 sekondash. Nuk nevojitet konfirmim shtesë nga
+            pedagogu.
           </p>
         </section>
         <div id="staff" hidden>
@@ -179,19 +183,18 @@
             <label>Sesioni<select id="session"></select></label>
             <div class="actions">
               <button id="project">Shfaq QR në projektor</button
-              ><button id="close" class="secondary">Mbyll skanimet</button
-              ><button id="finalize" class="secondary">
-                Përfundo evidencën</button
+              ><button id="close" class="secondary">Mbyll dhe përfundo</button
               ><button id="cancel" class="danger">Anulo orën</button>
             </div>
             <p class="muted">
-              Mbyllja ndalon skanimet. Përfundimi e përfshin orën në raport. Ora
-              e anuluar nuk llogaritet.
+              Shfaq QR në mes të orës: hapet një dritare 2-minutëshe. Pas afatit
+              regjistrimi mbyllet automatikisht dhe ora hyn në raport. Ora e
+              anuluar nuk llogaritet.
             </p>
             <label
-              >Arsye / verifikim në sallë<input
+              >Arsye për korrigjim manual<input
                 id="reason"
-                placeholder="Identiteti u kontrollua në sallë"
+                placeholder="P.sh. studenti ishte i pranishëm, por nuk kishte telefon"
                 minlength="3"
             /></label>
             <div id="verification" class="table-wrap"></div>
@@ -203,7 +206,7 @@
             <button id="export" class="secondary">Shkarko CSV</button>
           </div>
           <p class="muted">
-            Përqindja = prani të konfirmuara / orë të përfunduara të grupit që
+            Përqindja = prani të regjistruara / orë të përfunduara të grupit që
             nga regjistrimi në listë. Orët e arsyetuara përjashtohen nga
             emëruesi. Orët në proces dhe të anuluara nuk llogariten. Ky raport
             nuk merr vendime automatike për vlerësimin.
@@ -220,19 +223,22 @@
           </button>
         </div>
         <h1 id="projector-title"></h1>
-        <p>Hyr në llogari · Skano QR · Konfirmo skanimin</p>
+        <p>Skano QR · Prania regjistrohet automatikisht</p>
         <canvas
           id="qr"
           aria-label="Kodi QR për skanimin e pjesëmarrjes"
           role="img"
         ></canvas>
         <p id="countdown" aria-live="off"></p>
+        <button id="end-projector" class="secondary">
+          Mbyll regjistrimin tani
+        </button>
         <p>
           <a id="scan-link" href="#" target="_blank" rel="noopener noreferrer"
             >Hap lidhjen e skanimit ↗</a
           >
         </p>
-        <p>Skanimi verifikohet nga pedagogu në sallë.</p>
+        <p>Skanimi i suksesshëm përfundon regjistrimin për këtë orë.</p>
         <p class="muted">
           Pa telefon? Kërko regjistrim manual me kontroll identiteti.
         </p>
@@ -242,7 +248,7 @@
       AAB · Të dhënat e studentëve janë të dukshme vetëm për vetë studentin dhe
       stafin e autorizuar.
     </footer>
-    <script src="attendance-config.js"></script>
-    <script type="module" src="assets/attendance.js"></script>
+    <script src="attendance-config.js?v=9ced9cd1c685"></script>
+    <script type="module" src="assets/attendance.js?v=6370cec27089"></script>
   </body>
 </html>

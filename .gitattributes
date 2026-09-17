@@ -1,3 +1,6 @@
 # Review editable source in src/; this bundle includes third-party template strings.
 assets/attendance.js linguist-generated=true -diff
 package-lock.json linguist-generated=true
+
+assets/portal.js linguist-generated=true
+assets/portal.css linguist-generated=true

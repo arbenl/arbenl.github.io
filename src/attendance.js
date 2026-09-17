@@ -15,6 +15,7 @@ window.addEventListener("hashchange", () => {
     history.replaceState(null, "", location.pathname + location.search);
     $("scan-result").textContent = "";
     show("scan-panel", !staff);
+    if (!$("app").hidden && !staff) scanAttendance();
   }
 });
 let client,
@@ -26,7 +27,9 @@ let client,
   projecting = false,
   projectSession = "",
   reportRows = [],
-  reportRequest = 0;
+  reportRequest = 0,
+  scanning = false,
+  completedToken = "";
 function notice(message, error = false) {
   $("notice").textContent = message;
   $("notice").classList.toggle("error", error);
@@ -120,6 +123,45 @@ async function boot() {
         : "Emaili juaj nuk është ende në listën e kursit. Kontaktoni pedagogun.",
     );
   await refresh();
+  if (incoming && !staff) await scanAttendance();
+}
+async function scanAttendance() {
+  if (scanning || !incoming || incoming === completedToken || staff) return;
+  const token = incoming;
+  scanning = true;
+  $("scan").disabled = true;
+  $("scan").hidden = true;
+  $("scan-result").textContent = "Duke regjistruar praninë…";
+  try {
+    const result = await api("scan", { token });
+    completedToken = token;
+    $("scan-result").textContent =
+      result.status === "present"
+        ? `✓ U regjistruat si i pranishëm: ${result.title}. Për këtë orë përfunduat.`
+        : `${result.title}: ${labels[result.status]}. Kontaktoni pedagogun për korrigjim.`;
+    if (result.semester_id) $("semester").value = result.semester_id;
+    notice(
+      result.status === "present"
+        ? "Pjesëmarrja u ruajt në server."
+        : labels[result.status],
+    );
+    await refresh().catch(() =>
+      notice(
+        "Prania u ruajt. Historiku nuk u rifreskua; provo rifreskimin përsëri.",
+      ),
+    );
+  } catch (error) {
+    $("scan-result").textContent = error.message;
+    $("scan").hidden = false;
+    notice(
+      "Regjistrimi nuk u konfirmua. Kontrolloni historikun ose skanoni QR aktual.",
+      true,
+    );
+  } finally {
+    scanning = false;
+    $("scan").disabled = false;
+    if (incoming !== token) scanAttendance();
+  }
 }
 async function refresh() {
   const request = ++reportRequest;
@@ -230,7 +272,7 @@ function render() {
       );
       const actions = document.createElement("div");
       for (const [status, label] of [
-        ["present", "Konfirmo në sallë"],
+        ["present", "Shëno i pranishëm"],
         ["rejected", "Refuzo"],
         ["excused", "Arsyeto"],
       ]) {
@@ -264,10 +306,7 @@ function render() {
       ];
     });
   $("verification").append(
-    table(
-      ["Nr. studenti", "Studenti", "Statusi", "Verifikimi i pedagogut"],
-      rows,
-    ),
+    table(["Nr. studenti", "Studenti", "Statusi", "Korrigjim manual"], rows),
   );
 }
 function stopProjector() {
@@ -288,6 +327,7 @@ async function rotate() {
     const url = new URL("attendance.html", location.href);
     url.hash = new URLSearchParams({ token: challenge.token }).toString();
     $("scan-link").href = url.href;
+    $("qr").hidden = false;
     await QRCode.toCanvas($("qr"), url.href, {
       width: 520,
       margin: 2,
@@ -304,22 +344,40 @@ async function rotate() {
           (performance.now() - started) -
           500,
       );
+    const sessionUntil =
+      started +
+      Date.parse(challenge.checkin_ends_at) -
+      Date.parse(challenge.server_time);
     clearInterval(ticker);
     const tick = () => {
+      const remaining = Math.max(
+        0,
+        Math.ceil((sessionUntil - performance.now()) / 1000),
+      );
       const seconds = Math.max(
         0,
         Math.ceil((until - performance.now()) / 1000),
       );
       $("scan-link").hidden = !seconds;
-      $("countdown").textContent = seconds
-        ? `QR i vlefshëm edhe ${seconds} sekonda`
-        : "QR ka skaduar";
+      $("countdown").textContent = remaining
+        ? `Regjistrimi mbyllet për ${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, "0")} · QR: ${seconds}s`
+        : "Regjistrimi përfundoi. Faleminderit!";
+      if (!remaining) {
+        $("qr").hidden = true;
+        $("end-projector").hidden = true;
+        projecting = false;
+        clearTimeout(rotator);
+        clearInterval(ticker);
+        // The server enforces the deadline independently; refresh reconciles the report.
+        refresh().catch(() => {});
+      }
       if (!seconds)
         $("qr").getContext("2d").clearRect(0, 0, $("qr").width, $("qr").height);
     };
     tick();
-    ticker = setInterval(tick, 1000);
-    rotator = setTimeout(rotate, 25000);
+    if (projecting) ticker = setInterval(tick, 1000);
+    if (sessionUntil - performance.now() > 25000)
+      rotator = setTimeout(rotate, 25000);
   } catch (e) {
     // A network error must never expose the private register on the projector.
     clearInterval(ticker);
@@ -366,6 +424,11 @@ if (!config.supabaseUrl || !config.publishableKey) {
     stopProjector();
     const { error } = await client.auth.signOut();
     if (error) throw error;
+    incoming = null;
+    completedToken = "";
+    reportRows = [];
+    staff = false;
+    $("otp").value = "";
     data = { sessions: [], roster: [], records: [] };
     $("report").replaceChildren();
     $("verification").replaceChildren();
@@ -407,27 +470,20 @@ if (!config.supabaseUrl || !config.publishableKey) {
     "session-form",
     async (e) => {
       const p = Object.fromEntries(new FormData(e.target));
-      await api("session", { ...p, semester_id: requireSemester() });
+      const created = await api("session", {
+        ...p,
+        semester_id: requireSemester(),
+      });
       await refresh();
+      $("session").value = created.id;
+      render();
       notice("Sesioni u hap. Shfaqni QR në projektor.");
     },
     "submit",
   );
-  bind("scan", async () => {
-    const result = await api("scan", { token: incoming });
-    $("scan-result").textContent =
-      `${result.title}: skanimi u ruajt. Statusin aktual e gjeni në historikun poshtë.`;
-    if (result.semester_id) $("semester").value = result.semester_id;
-    notice(
-      result.status === "pending"
-        ? "Skanimi është në pritje të verifikimit në sallë."
-        : labels[result.status],
-    );
-    await refresh();
-  });
+  bind("scan", scanAttendance);
   for (const [id, state] of [
-    ["close", "closed"],
-    ["finalize", "finalized"],
+    ["close", "finalized"],
     ["cancel", "cancelled"],
   ])
     bind(id, async () => {
@@ -447,6 +503,7 @@ if (!config.supabaseUrl || !config.publishableKey) {
     });
   bind("project", async () => {
     if (!sid()) throw new Error("Zgjidhni një sesion të hapur.");
+    $("end-projector").hidden = false;
     projectSession = sid();
     projecting = true;
     document.body.classList.add("projecting");
@@ -455,8 +512,20 @@ if (!config.supabaseUrl || !config.publishableKey) {
     await rotate();
   });
   bind("exit-projector", stopProjector);
+  bind("end-projector", async () => {
+    await api("state", { session_id: projectSession, state: "finalized" });
+    projecting = false;
+    $("qr").hidden = true;
+    $("end-projector").hidden = true;
+    clearTimeout(rotator);
+    clearInterval(ticker);
+    $("qr").getContext("2d").clearRect(0, 0, $("qr").width, $("qr").height);
+    $("scan-link").hidden = true;
+    $("countdown").textContent = "Regjistrimi përfundoi. Faleminderit!";
+    await refresh();
+  });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && projecting) stopProjector();
+    if (e.key === "Escape" && !$("projector").hidden) stopProjector();
   });
   bind("export", () => {
     if (!reportRows.length)
