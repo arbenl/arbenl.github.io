@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#8f2d1f">
+  <title>Sofra — demo e porosisë</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #251912;
+      --muted: #75645b;
+      --paper: #fffaf1;
+      --cream: #f7ead2;
+      --tomato: #8f2d1f;
+      --tomato-dark: #6f2017;
+      --herb: #315b42;
+      --line: #dfd0bc;
+      --shadow: 0 18px 45px rgb(68 39 20 / 14%);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgb(209 154 92 / 20%), transparent 32rem),
+        var(--cream);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button { font: inherit; }
+
+    .shell {
+      width: min(100%, 520px);
+      min-height: 100vh;
+      margin: 0 auto;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    header {
+      padding: 28px 22px 18px;
+      color: white;
+      background: linear-gradient(135deg, var(--tomato-dark), var(--tomato));
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      opacity: 0.78;
+    }
+
+    h1, h2, p { margin-top: 0; }
+    h1 { margin-bottom: 6px; font-family: Georgia, serif; font-size: 2rem; }
+    header p { margin-bottom: 0; opacity: 0.82; }
+
+    .disclosure {
+      margin: 16px;
+      padding: 11px 14px;
+      border: 1px solid #edc777;
+      border-radius: 12px;
+      background: #fff3cb;
+      color: #624617;
+      font-size: 0.88rem;
+      font-weight: 750;
+      text-align: center;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding: 4px 16px 18px;
+      list-style: none;
+    }
+
+    .steps li {
+      padding: 8px 3px;
+      border-bottom: 3px solid var(--line);
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .steps li.active { border-color: var(--tomato); color: var(--tomato); }
+
+    main { padding: 0 16px 28px; }
+    [data-flow-state][hidden] { display: none; }
+
+    .view { animation: enter 180ms ease-out; }
+    @keyframes enter { from { opacity: 0; transform: translateY(6px); } }
+
+    .intro { color: var(--muted); line-height: 1.55; }
+
+    .meal-card, .summary-card, .status-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 8px 24px rgb(68 39 20 / 8%);
+    }
+
+    .meal-art {
+      display: grid;
+      place-items: center;
+      min-height: 155px;
+      margin: -8px -8px 18px;
+      border-radius: 15px;
+      background: linear-gradient(145deg, #f3c67e, #e88d57);
+      font-size: 4.8rem;
+    }
+
+    .meal-title, .row, .total, .actions, .quantity {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .meal-title h2 { margin-bottom: 4px; font-family: Georgia, serif; }
+    .price { color: var(--tomato); font-weight: 850; white-space: nowrap; }
+
+    .tags { display: flex; gap: 7px; margin: 14px 0 18px; }
+    .tag { padding: 5px 9px; border-radius: 999px; background: #edf4ee; color: var(--herb); font-size: 0.74rem; font-weight: 750; }
+
+    .quantity { justify-content: flex-start; margin-bottom: 18px; }
+    .quantity button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      color: var(--ink);
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+    #quantity { min-width: 28px; font-weight: 850; text-align: center; }
+
+    .primary, .secondary {
+      width: 100%;
+      min-height: 50px;
+      padding: 13px 16px;
+      border-radius: 14px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .primary { border: 0; background: var(--tomato); color: white; }
+    .primary:hover { background: var(--tomato-dark); }
+    .secondary { border: 1px solid var(--line); background: transparent; color: var(--ink); }
+    .actions { margin-top: 18px; }
+    .actions > * { flex: 1; }
+
+    .row { padding: 10px 0; border-bottom: 1px dashed var(--line); }
+    .row:last-of-type { border-bottom: 0; }
+    .row small { display: block; margin-top: 3px; color: var(--muted); }
+    .total { margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--ink); font-size: 1.08rem; font-weight: 900; }
+
+    .order-number {
+      display: inline-grid;
+      place-items: center;
+      min-width: 72px;
+      min-height: 72px;
+      margin-bottom: 18px;
+      border-radius: 50%;
+      background: var(--cream);
+      color: var(--tomato);
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+
+    .status-list { padding: 0; list-style: none; }
+    .status-list li { position: relative; margin-left: 12px; padding: 5px 0 22px 27px; border-left: 2px solid var(--line); color: var(--muted); }
+    .status-list li::before { content: ""; position: absolute; left: -7px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--line); }
+    .status-list li.done { border-color: var(--herb); color: var(--ink); font-weight: 750; }
+    .status-list li.done::before { background: var(--herb); }
+    .status-list li:last-child { padding-bottom: 4px; border-color: transparent; }
+
+    .ready-mark { margin: 8px 0 14px; font-size: 4.5rem; text-align: center; }
+    .ready-copy { text-align: center; }
+    .ready-copy h2 { color: var(--herb); font-family: Georgia, serif; font-size: 2rem; }
+    .fine-print { margin: 20px 4px 0; color: var(--muted); font-size: 0.78rem; line-height: 1.5; text-align: center; }
+
+    @media (min-width: 560px) {
+      body { padding: 30px 0; }
+      .shell { min-height: calc(100vh - 60px); border-radius: 28px; overflow: hidden; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .view { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <p class="eyebrow">Restorant familjar · Prishtinë</p>
+      <h1>Sofra</h1>
+      <p>Një porosi e thjeshtë, prej menusë deri te “Gati”.</p>
+    </header>
+
+    <p class="disclosure" role="note">Demo — nuk regjistron pjesëmarrjen</p>
+
+    <ol class="steps" aria-label="Hapat e porosisë">
+      <li class="active" data-step="menu">Menu</li>
+      <li data-step="cart">Shporta</li>
+      <li data-step="order">Porosia</li>
+      <li data-step="ready">Gati</li>
+    </ol>
+
+    <main>
+      <section class="view" data-flow-state="menu">
+        <p class="eyebrow" style="color:var(--tomato)">Menuja e sotme</p>
+        <p class="intro">Zgjidh sasinë dhe shtoje specialitetin e shtëpisë në shportë.</p>
+        <article class="meal-card">
+          <div class="meal-art" aria-hidden="true">🍲</div>
+          <div class="meal-title">
+            <div>
+              <h2>Tavë shtëpie</h2>
+              <small>Mish viçi, perime dhe bukë</small>
+            </div>
+            <span class="price">6,50 €</span>
+          </div>
+          <div class="tags"><span class="tag">Në dispozicion</span><span class="tag">20 min</span></div>
+          <div class="quantity" aria-label="Sasia">
+            <button type="button" id="decrease" aria-label="Zvogëlo sasinë">−</button>
+            <span id="quantity" aria-live="polite">1</span>
+            <button type="button" id="increase" aria-label="Rrit sasinë">+</button>
+          </div>
+          <button class="primary" type="button" data-action="cart">Shto në shportë</button>
+        </article>
+      </section>
+
+      <section class="view" data-flow-state="cart" hidden>
+        <p class="eyebrow" style="color:var(--tomato)">Shporta</p>
+        <h2>Kontrolloje porosinë</h2>
+        <div class="summary-card">
+          <div class="row">
+            <div><strong>Tavë shtëpie</strong><small>Sasia: <span data-quantity>1</span></small></div>
+            <span class="price" data-subtotal>6,50 €</span>
+          </div>
+          <div class="row"><span>Marrja</span><strong>Në restorant</strong></div>
+          <div class="total"><span>Gjithsej</span><span data-subtotal>6,50 €</span></div>
+        </div>
+        <div class="actions">
+          <button class="secondary" type="button" data-action="menu">Ndrysho</button>
+          <button class="primary" type="button" data-action="order">Porosit</button>
+        </div>
+      </section>
+
+      <section class="view" data-flow-state="order" hidden>
+        <p class="eyebrow" style="color:var(--tomato)">Porosia u pranua</p>
+        <div class="status-card">
+          <span class="order-number">#24</span>
+          <h2>Po e përgatisim</h2>
+          <p class="intro">Porosia është konfirmuar lokalisht për këtë demonstrim.</p>
+          <ol class="status-list">
+            <li class="done">Dërguar</li>
+            <li class="done">Pranuar nga restoranti</li>
+            <li class="done">Në përgatitje</li>
+            <li>Gati për marrje</li>
+          </ol>
+          <button class="primary" type="button" data-action="ready">Simulo “Gati”</button>
+        </div>
+      </section>
+
+      <section class="view" data-flow-state="ready" hidden>
+        <p class="eyebrow" style="color:var(--tomato)">Statusi i porosisë</p>
+        <div class="status-card ready-copy">
+          <div class="ready-mark" aria-hidden="true">✅</div>
+          <h2>Porosia është gati</h2>
+          <p>Numri <strong>#24</strong> mund të merret te banaku.</p>
+          <button class="secondary" type="button" data-action="menu">Fillo përsëri</button>
+        </div>
+      </section>
+
+      <p class="fine-print">Të gjitha të dhënat janë sintetike dhe mbahen vetëm në këtë faqe. Nuk kërkohet hyrje dhe nuk dërgohet asgjë në server.</p>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const unitPrice = 6.5;
+      let quantity = 1;
+      const views = [...document.querySelectorAll('[data-flow-state]')];
+      const steps = [...document.querySelectorAll('[data-step]')];
+      const quantityOutput = document.querySelector('#quantity');
+
+      function formatPrice(value) {
+        return new Intl.NumberFormat('sq-XK', { style: 'currency', currency: 'EUR' }).format(value);
+      }
+
+      function renderOrder() {
+        quantityOutput.textContent = quantity;
+        document.querySelectorAll('[data-quantity]').forEach((node) => { node.textContent = quantity; });
+        document.querySelectorAll('[data-subtotal]').forEach((node) => { node.textContent = formatPrice(quantity * unitPrice); });
+      }
+
+      function show(state) {
+        views.forEach((view) => { view.hidden = view.dataset.flowState !== state; });
+        steps.forEach((step) => { step.classList.toggle('active', step.dataset.step === state); });
+        document.querySelector(`[data-flow-state="${state}"]`).focus({ preventScroll: true });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      document.querySelector('#decrease').addEventListener('click', () => {
+        quantity = Math.max(1, quantity - 1);
+        renderOrder();
+      });
+      document.querySelector('#increase').addEventListener('click', () => {
+        quantity = Math.min(9, quantity + 1);
+        renderOrder();
+      });
+      document.querySelectorAll('[data-action]').forEach((button) => {
+        button.addEventListener('click', () => show(button.dataset.action));
+      });
+      renderOrder();
+    })();
+  </script>
+</body>
+</html>
