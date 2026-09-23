@@ -10,9 +10,9 @@ const legacyLectureFile='Jave1_Hyrje_Nextjs_PWA_Copilot_2026.pptx';
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 
 test('every lecture download points to the validated current presentation',async()=>{
- const html=await readFile('index.html','utf8');
+ const html=await readFile('lendet/2026-2027/mobile/syllabus.html','utf8');
  const {lecture1}=JSON.parse(await readFile('materials/manifest.json','utf8'));
- const links=[...html.matchAll(/href="([^"]+\.pptx)"/g)].map(m=>m[1]);
+ const links=[...html.matchAll(/href="([^"]+\.pptx)"/g)].map(m=>m[1].replace(/^\//,''));
  const canonicalBytes=await readFile(lecture1.file);
  const legacyBytes=await readFile(legacyLectureFile);
  assert.equal(links.filter(p=>p===lecture1.file).length,2);
@@ -41,7 +41,7 @@ test('the semester has fifteen Thursdays and ten graded labs after the first wee
  for(const w of plan.weeks)assert.equal(new Date(w.date+'T12:00:00Z').getUTCDay(),4);
 });
 test('the restaurant demo discloses its purpose and exposes the complete order flow',async()=>{
- const html=await readFile('demo/restaurant/index.html','utf8');
+ const html=await readFile('lendet/2026-2027/mobile/demo/restaurant/index.html','utf8');
  assert.ok(html.includes('Demo — nuk regjistron pjesëmarrjen'));
  for(const state of ['menu','cart','order','ready']){
   assert.ok(html.includes(`data-flow-state="${state}"`),`missing ${state} flow state`);

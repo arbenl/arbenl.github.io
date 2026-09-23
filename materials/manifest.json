@@ -1,6 +1,6 @@
 {
   "lecture1": {
-    "file": "materials/lectures/ligjerata-01-aab-biznes-real-2026-v2.pptx",
+    "file": "lendet/2026-2027/mobile/lectures/ligjerata-01-aab-biznes-real-2026-v2.pptx",
     "slides": 29,
     "updated": "2026-09-17",
     "sha256": "4f858d4a861e0383667250486599d05f3952d117ee5bef0ace1e76dfb9f41542",
@@ -8,7 +8,7 @@
     "speakerNotes": false
   },
   "lecture2": {
-    "file": "materials/lectures/ligjerata-02-rideshare-ideja-mvp-2026.pptx",
+    "file": "lendet/2026-2027/mobile/lectures/ligjerata-02-rideshare-ideja-mvp-2026.pptx",
     "slides": 26,
     "updated": "2026-09-23",
     "sha256": "592995feb34ae10be37ff37c01dce6aeeb5a397942d86ae98c7cf563e18eb02e",

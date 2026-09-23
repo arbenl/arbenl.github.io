@@ -22,7 +22,7 @@ await Promise.all([
 ]);
 // Content versions prevent cached scripts/styles/config from disagreeing with the HTML.
 for (const [html, assets] of [
-  ["index.html", ["assets/portal.js", "assets/portal.css"]],
+  ["lendet/2026-2027/mobile/syllabus.html", ["assets/portal.js", "assets/portal.css"]],
   [
     "attendance.html",
     ["assets/attendance.js", "assets/attendance.css", "attendance-config.js"],
@@ -36,10 +36,12 @@ for (const [html, assets] of [
       .slice(0, 12);
     const escaped = asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     text = text.replace(
-      new RegExp(`((?:src|href)="${escaped})(?:\\?v=[^"\\s]+)?"`, "g"),
+      new RegExp(`((?:src|href)="/?${escaped})(?:\\?v=[^"\\s]+)?"`, "g"),
       `$1?v=${version}"`,
     );
   }
   await writeFile(html, text);
 }
 console.log("Built browser assets with content versions.");
+
+await import("./build-catalog.mjs");
