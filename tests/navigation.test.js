@@ -19,7 +19,7 @@ test('every new page has valid local links, assets and fragment targets',async()
 test('week 2 old links redirect to Mobile and current materials stay out of MCC',async()=>{
  const old=await read('materials/java-02/prezantimi-ushtrimeve.html');
  assert.ok(old.includes('/lendet/2026-2027/mobile/java-02/prezantimi-ushtrimeve.html'));
- assert.ok((await read('lendet/2026-2027/mobile/java-02/prezantimi-ushtrimeve.html')).includes('Ushtrimet 2: puna në klasë'));
+ assert.ok((await read('lendet/2026-2027/mobile/java-02/prezantimi-ushtrimeve.html')).includes('Ushtrimet 2: RideShare në praktikë'));
  const mcc=await read('lendet/2026-2027/mccc/index.html');assert.ok(mcc.includes('ende nuk janë publikuar'));assert.ok(!mcc.includes('.pptx'));
 });
 test('professor navigation exposes exactly 15 shared lectures and 14 labs per group',async()=>{

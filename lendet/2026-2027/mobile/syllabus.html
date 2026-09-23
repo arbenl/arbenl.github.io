@@ -500,9 +500,9 @@
               </div>
               <div class="week-body">
                 
-                <p>Së pari verifikojmë Git, GitHub, Node.js, npm, VS Code dhe Vercel. Pastaj e ndjekim shembullin RideShare dhe e zbatojmë te ideja e biznesit tonë.</p>
+                <p>Së pari verifikojmë Git, GitHub, Node.js, npm, VS Code dhe Vercel. Pastaj planifikojmë RideShare, projektin që zhvillojmë në ushtrime gjatë gjithë semestrit, secili në repository-n e vet.</p>
                 <p><a class="btn primary" href="/lendet/2026-2027/mobile/java-02/kontrolli-mjeteve.html">1. Kontrolli i mjeteve</a> <a class="btn secondary" href="/lendet/2026-2027/mobile/java-02/">2. Materialet dhe ushtrimet</a></p>
-                <p><a href="/lendet/2026-2027/mobile/lectures/ligjerata-02-rideshare-ideja-mvp-2026.pptx" download>Ligjërata 2 · PPTX pa notes · 26 slajde</a> · <a href="/lendet/2026-2027/mobile/java-02/prezantimi-ushtrimeve.html">Ushtrimet 2 · Udhëzimi në projektor</a> · <a href="/lendet/2026-2027/mobile/java-02/java-02-model.md" download="java-02.md">Modeli për plotësim</a> · <a href="https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-java-02.yml">Dorëzo linkun</a></p>
+                <p><a href="/lendet/2026-2027/mobile/lectures/ligjerata-02-rideshare-ideja-mvp-2026.pptx" download>Ligjërata 2 · PPTX pa notes · 26 slajde</a> · <a href="/lendet/2026-2027/mobile/java-02/prezantimi-ushtrimeve.html">Ushtrimet 2 · Udhëzimi në projektor</a> · <a href="/lendet/2026-2027/mobile/java-02/java-02-model.md" download="java-02.md">Modeli për plotësim</a> · <a href="https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-submission.yml">Dorëzo linkun</a></p>
               </div>
             </article>
 
@@ -538,7 +538,7 @@
                       <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
                     </div>
                     <ul class="week-items-list">
-                      <li>Strukturimi i rrugëtimeve kryesore të aplikacionit të biznesit: /products/[id].</li>
+                      <li>Strukturimi i rrugëve të RideShare: lista /rides dhe detajet /rides/[id].</li>
                       <li>Krijimi i gjendjeve të ngarkimit (Skeleton Loaders) që imitojnë aplikacionet native.</li>
                       <li>Ndarja e komponentëve interaktivë nga ata të pastër të renderimit të serverit.</li>
                     </ul>
@@ -636,7 +636,7 @@
                     <ul class="week-items-list">
                       <li>Instalimi i paketës @supabase/ssr për menaxhim të sesionit në server dhe klient.</li>
                       <li>Krijimi i faqeve /login dhe /auth/callback.</li>
-                      <li>Mbrojtja e rrugëtimeve private (paneli i pronarit të biznesit).</li>
+                      <li>Mbrojtja e rrugëve private të RideShare: paneli i shoferit dhe kërkesat e udhëtarit.</li>
                     </ul>
                     <div class="copilot-prompt-box">
                       <div class="copilot-label">🤖 GitHub Copilot Prompt</div>
@@ -828,7 +828,7 @@
                       <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
                     </div>
                     <ul class="week-items-list">
-                      <li>Implementimi i shportës së blerjes ku sasitë rriten menjëherë me animacion të qetë.</li>
+                      <li>Shtimi i një udhëtimi RideShare te të preferuarat me reagim të menjëhershëm dhe rikthim nëse ruajtja dështon.</li>
                       <li>Implementimi i butonit 'Ruaj në të preferuarat' me feedback të menjëhershëm haptik.</li>
                     </ul>
                     <div class="copilot-prompt-box">
@@ -867,7 +867,7 @@
                     <ul class="week-items-list">
                       <li>WebSockets vs Polling në celular: Konsumi i baterisë dhe i të dhënave të internetit.</li>
                       <li>Arkitektura e Supabase Realtime mbi kanale PostgreSQL.</li>
-                      <li>Rastet e përdorimit: Statusi i porosisë në kohë reale, njoftimet e rezervimit të ri.</li>
+                      <li>RideShare: statusi i kërkesës dhe vendet e lira përditësohen në kohë reale.</li>
                     </ul>
                   </div>
                   <div class="week-col">
@@ -933,7 +933,7 @@
                     </div>
                     <ul class="week-items-list">
                       <li>Gjenerimi i çelësave VAPID dhe ruajtja e subscription objektit në Supabase.</li>
-                      <li>Dërgimi i njoftimit provë kur bëhet një porosi e re.</li>
+                      <li>RideShare: dërgimi i njoftimit provë kur shoferi konfirmon kërkesën për vend.</li>
                       <li>Testimi i marrjes së njoftimit në celular kur aplikacioni është i mbyllur.</li>
                     </ul>
                   </div>
@@ -973,7 +973,7 @@
                       <span>🧪</span> <h5 data-i18n="common.lab">Ushtrimi Laboratorik</h5>
                     </div>
                     <ul class="week-items-list">
-                      <li>Krijimi i skemave Zod për të gjitha format: regjistrimi, porosia, profili.</li>
+                      <li>Krijimi i skemave Zod për format e RideShare: udhëtimi, kërkesa për vend dhe profili.</li>
                       <li>Auditimi i plotë i tabelave në Supabase për të garantuar RLS të pathyeshëm.</li>
                       <li>Pastrimi i çelësave sekretë nga kodi i klientit.</li>
                     </ul>
@@ -1088,7 +1088,7 @@
                     </div>
                     <ul class="week-items-list">
                       <li>Secili student demonstron aplikacionin e instaluar në pajisjen e vet mobile.</li>
-                      <li>Simulimi i një porosie apo shërbimi real për biznesin e zgjedhur.</li>
+                      <li>Demonstrimi i RideShare: publiko udhëtimin, kërko vend dhe konfirmo si shofer.</li>
                       <li>Përgjigje në pyetjet teknike mbi kodin, Supabase RLS dhe zgjidhjet arkitekturore.</li>
                     </ul>
                   </div>
