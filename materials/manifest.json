@@ -6,5 +6,13 @@
     "sha256": "4f858d4a861e0383667250486599d05f3952d117ee5bef0ace1e76dfb9f41542",
     "audience": "student",
     "speakerNotes": false
+  },
+  "lecture2": {
+    "file": "materials/lectures/ligjerata-02-rideshare-ideja-mvp-2026.pptx",
+    "slides": 26,
+    "updated": "2026-09-23",
+    "sha256": "592995feb34ae10be37ff37c01dce6aeeb5a397942d86ae98c7cf563e18eb02e",
+    "audience": "student",
+    "speakerNotes": false
   }
 }

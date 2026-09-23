@@ -1,0 +1,35 @@
+<!doctype html><html lang="sq"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Shembulli RideShare · Mobile AAB</title><link rel="stylesheet" href="week.css"></head><body><main><nav><a href="index.html">Java 2</a><a href="kontrolli-mjeteve.html">Kontrolli i mjeteve</a></nav><h1>Shembull i plotësuar: RideShare</h1>
+<p>Ky është shembull mësimor. Studentët e zbatojnë modelin te biznesi ose shërbimi i tyre.</p>
+<h2>Problemi</h2>
+<p>Studenti ka nevojë të gjejë një udhëtim për AAB, sepse informacioni sot shpërndahet në shumë biseda. Arta dhe Dreni janë personazhe të sajuara të shembullit.</p>
+<h2>Përdoruesit dhe qëllimi</h2>
+<p>Arta kërkon një vend. Dreni publikon udhëtimin dhe i përgjigjet kërkesës. Rrjedha përfundon kur Arta sheh nëse shoferi e ka pranuar.</p>
+<h2>Skica e rrjedhës së udhëtares</h2>
+<ol>
+<li><strong>Udhëtimet:</strong> sheh nisjen, destinacionin, orën dhe vendet e lira. Shtyp “Shiko”.</li>
+<li><strong>Detajet:</strong> sheh edhe vendin e takimit. Shtyp “Kërko një vend”.</li>
+<li><strong>Statusi:</strong> sheh “Në pritje të shoferit”. Më vonë statusi bëhet “Pranuar” ose “Refuzuar”.</li>
+</ol>
+<p><img src="skica-rideshare.png" alt="Skica e RideShare"></p>
+<h2>Veçoritë e MVP-së</h2>
+<ul>
+<li>Shoferi publikon udhëtimin me vendet e lira.</li>
+<li>Udhëtari sheh listën dhe detajet dhe dërgon kërkesën.</li>
+<li>Shoferi përgjigjet; udhëtari sheh statusin.</li>
+</ul>
+<h2>Për më vonë</h2>
+<p>Harta live, pagesa në aplikacion, chat, vlerësime dhe kupona.</p>
+<h2>Rregullat dhe kriteret e pranimit</h2>
+<ul>
+<li>Me një udhëtim të publikuar, lista shfaq nisjen, destinacionin, orën dhe vendet.</li>
+<li>Pas kërkesës, udhëtari sheh “Në pritje”. Një klikim i dytë nuk krijon kërkesë të dytë.</li>
+<li>Pas pranimit, numri i vendeve ulet me një dhe statusi ndryshon për të dy përdoruesit.</li>
+<li>Kur nuk ka vende, sistemi refuzon kërkesën dhe tregon arsyen.</li>
+<li>Nëse shoferi refuzon, vendet nuk ndryshojnë dhe udhëtari mund të zgjedhë udhëtim tjetër.</li>
+<li>Në MVP-në funksionale, të dhënat ruhen dhe mbeten pas rifreskimit. Dy persona duhet ta kryejnë rrjedhën nga pajisje të ndryshme. Serveri mbron vendin e fundit nga dy pranime njëkohësisht.</li>
+</ul>
+<h2>Shembull i feedback-ut (ilustrues)</h2>
+<p>Një koleg mund ta lexojë “Rezervo” si konfirmim të menjëhershëm. E ndryshojmë në “Kërko një vend” dhe shtojmë “Në pritje të shoferit”. Ky është shembull i mundshëm i feedback-ut, jo provë reale e kryer.</p>
+<h2>Prototipi në ligjëratë</h2>
+<p><a href="../../demo/rideshare/">Hap demonstrimin</a>. Ai simulon veprimet vetëm në shfletues dhe nuk dërgon kërkesa te shoferë realë. Pamja me klikime ndihmon ta provojmë idenë; ruajtjen e përbashkët dhe identitetin i ndërtojmë me Next.js në javët pasuese.</p>
+<p><a href="shembull-rideshare.md" download>Shkarko tekstin</a></p></main></body></html>

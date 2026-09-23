@@ -15,8 +15,10 @@ test('every lecture download points to the validated current presentation',async
  const links=[...html.matchAll(/href="([^"]+\.pptx)"/g)].map(m=>m[1]);
  const canonicalBytes=await readFile(lecture1.file);
  const legacyBytes=await readFile(legacyLectureFile);
- assert.equal(links.length,2);
- assert.ok(links.every(p=>p===lecture1.file));
+ assert.equal(links.filter(p=>p===lecture1.file).length,2);
+ const {lecture2}=JSON.parse(await readFile('materials/manifest.json','utf8'));
+ assert.ok(links.every(p=>p===lecture1.file||p===lecture2.file));
+ assert.equal(sha256(await readFile(lecture2.file)),lecture2.sha256);
  assert.equal(sha256(canonicalBytes),lecture1.sha256);
  assert.equal(sha256(legacyBytes),lecture1.sha256);
  assert.equal(lecture1.slides,29);
