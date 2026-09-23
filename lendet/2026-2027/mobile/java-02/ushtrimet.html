@@ -1,44 +1,21 @@
-<!doctype html><html lang="sq"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ushtrimet 2 · Mobile AAB</title><link rel="stylesheet" href="/lendet/2026-2027/mobile/java-02/week.css"></head><body><nav aria-label="Vendndodhja" style="padding:16px;display:flex;gap:16px;flex-wrap:wrap;background:#111b2d;color:#fff"><a style="color:#89ddff" href="/">Të gjitha lëndët</a><a style="color:#89ddff" href="/vitet/2026-2027/">2026/2027</a><a style="color:#89ddff" href="/lendet/2026-2027/mobile/">Mobile</a><a style="color:#89ddff" href="/lendet/2026-2027/mobile/java-02/">Java 2</a></nav><main><nav><a href="/lendet/2026-2027/mobile/java-02/index.html">Java 2</a><a href="/lendet/2026-2027/mobile/java-02/kontrolli-mjeteve.html">Kontrolli i mjeteve</a></nav><h1>Ushtrimet 2: kontrolli i mjeteve dhe skicimi i idesë</h1>
-<p>24 shtator 2026. Qëllimi: të verifikosh ambientin e punës dhe të përgatitësh një plan të vogël për aplikacionin tënd.</p>
-<h2>0. Kontrolli praktik i mjeteve — 20 minuta</h2>
-<p>Hap <a href="/lendet/2026-2027/mobile/java-02/kontrolli-mjeteve.html">fletën e kontrollit</a>. Kryej çdo provë para se ta shënosh “Punon”:</p>
-<ul>
-<li>Hape VS Code, krijo një skedar dhe ruaje.</li>
-<li>Në terminal provo <code>git --version</code>, <code>node --version</code>, <code>npm --version</code>. Shëno versionet. Përdor Node.js 24 LTS për kursin.</li>
-<li>Hyr në GitHub, krijo repository ose përdor atë që ke, dhe ruaj një ndryshim në README.</li>
-<li>Hyr në Vercel. Kontrollo nëse e sheh repository-n tënd për import.</li>
-<li>Hape një faqe tënden të publikuar nga Vercel. Nëse nuk e ke, ndiq provën e vogël te fleta e kontrollit.</li>
-<li>Hape faqen nga telefoni.</li>
-</ul>
-<p>Statuset janë <strong>Punon / Ka problem / Mungon / Ende pa provuar</strong>. Raporti është vetëdeklarim pas provës; profesori e verifikon në ekran. Copilot është opsional. Databazën do ta konfigurojmë kur ta përdorim në ushtrime.</p>
-<p>Nëse të mungon një mjet, shëno gabimin pa fjalëkalime dhe kërko ndihmë. Mund ta vazhdosh skicimin në letër. Nëse instalimi ose publikimi merr më gjatë, përdor 30 minutat shtesë të një blloku 120-minutësh ose mbështetjen pas ushtrimit. Mos shëno “Punon” pa provë.</p>
-<h2>1. Problemi — 10 minuta</h2>
-<p>Plotëso: “[Përdoruesi] ka nevojë të [veprimi], sepse sot [pengesa].”</p>
-<p>Së bashku bëjmë shembullin RideShare. Pastaj ti zgjedh një nevojë të vogël të biznesit tënd, p.sh. kërkesë termini te berberi ose porosi në një lokal.</p>
-<h2>2. Skica — 15 minuta</h2>
-<p>Në një fletë vizato tri ekrane telefoni: lista e shërbimeve, detajet dhe rezultati i veprimit. Emërto ekranet dhe butonat. Lidhi me shigjeta. Shëno edhe çfarë ndodh nëse veprimi nuk lejohet. Fotografoje si <code>skica.jpg</code> ose <code>skica.png</code>.</p>
-<h2>3. PRD-ja — 15 minuta</h2>
-<p>Shkarko <a href="/lendet/2026-2027/mobile/java-02/java-02-model.md">modelin e gatshëm</a>, riemërtoje <code>java-02.md</code> dhe plotësoje. Mjafton afërsisht një faqe: problemi, përdoruesi, rrjedha, deri në tri veçori, çfarë shtyn për më vonë dhe si do ta provosh suksesin. <a href="/lendet/2026-2027/mobile/java-02/shembull-rideshare.md">Shembulli RideShare</a> të tregon nivelin e hollësisë.</p>
-<h2>4. Prova në çift — 10 minuta</h2>
-<p>Jepi kolegut një detyrë, p.sh. “Gjej një termin dhe kërko rezervim”. Lëre ta ndjekë skicën pa i treguar ku të shtypë. Shëno ku u ndal dhe përmirëso një gjë. Ndërroni rolet.</p>
-<h2>5. GitHub nga shfletuesi — 15 minuta</h2>
-<ol>
-<li>Hyr në GitHub. Nëse ke repository për projektin, hape atë. Përndryshe hap <a href="https://github.com/new?name=mobile-biznesi-im&visibility=public">New repository</a>, vendos emrin e projektit dhe krijoje me README.</li>
-<li>Në repository zgjidh <strong>Add file → Upload files</strong>.</li>
-<li>Ngarko <code>java-02.md</code> dhe <code>skica.jpg</code>/<code>skica.png</code>. Nëse e ke shkarkuar modelin si ZIP, hape fillimisht dhe ngarko skedarët brenda, jo ZIP-in.</li>
-<li>Shkruaj mesazhin “Shto ushtrimet e javës 2” dhe ruaji në <code>main</code> të repository-t tënd personal. Për këtë ushtrim nuk kërkohet degë ose Pull Request.</li>
-<li>Kontrollo që të dy skedarët hapen. Mund ta korrigjosh tekstin me ikonën e lapsit dhe ta ruash përsëri.</li>
-</ol>
-<p>Nëse repository është privat, jepi qasje profesorit <code>arbenl</code> nga Settings → Collaborators. Në skedarë publikë përdor vetëm informacionin e projektit, pa Student ID, fjalëkalime ose të dhëna klientësh.</p>
-<h2>6. Dorëzimi — 5 minuta</h2>
-<p>Hap <a href="https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-java-02.yml">formularin e dorëzimit</a>, vendos linkun e repository-t dhe përfundo formularin. Kjo krijon një issue me numër, që shërben si evidencë e dorëzimit. Llogaria jote GitHub identifikon dorëzimin. Nëse ke dorëzuar më parë, përditëso të njëjtin issue.</p>
-<p>Kontrolli i mjeteve ka <a href="https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-tools.yml">formular të veçantë</a>. Nëse nuk arrin të hysh në GitHub, tregoji profesorit raportin në ekran ose kopjen e shkarkuar.</p>
-<h2>Kontrolli i punës — maksimumi 3 pikë</h2>
-<ul>
-<li><strong>1 pikë:</strong> problemi dhe përdoruesi janë të qartë dhe lidhen me një nevojë konkrete.</li>
-<li><strong>1 pikë:</strong> tri ekranet tregojnë rrjedhën dhe rezultatin e veprimit.</li>
-<li><strong>1 pikë:</strong> PRD-ja ka kufijtë, kriteret e pranimit dhe një përmirësim nga prova me kolegun.</li>
-</ul>
-<p>Këto kritere i kontrollon profesori. Notimi automatik i skicës dhe i idesë nuk është aktiv. Instalimi i mjeteve është kontroll gatishmërie, jo test me pikë. Afatin përfundimtar e njofton profesori.</p>
-<p>Burime për hapat GitHub: <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository">krijimi i repository-t</a>, <a href="https://docs.github.com/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository">ngarkimi i skedarëve</a>.</p>
-<p><a href="/lendet/2026-2027/mobile/java-02/ushtrimet.md" download>Shkarko tekstin</a></p></main></body></html>
+<!doctype html><html lang="sq"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ushtrimet 2 — RideShare · Mobile 2026/2027</title><link rel="stylesheet" href="/lendet/2026-2027/mobile/java-02/week.css"></head><body><main><nav><a href="/lendet/2026-2027/mobile/">Mobile 2026/2027</a><a href="/lendet/2026-2027/mobile/java-02/">Java 2</a><a href="/lendet/2026-2027/mobile/dorezimet.html">Si dorëzoj?</a></nav><h1>Ushtrimet 2 — RideShare, hap pas hapi</h1>
+<p>Në ushtrime ndërtojmë RideShare gjatë gjithë semestrit. Secili student ka kopjen e vet të projektit. Sot planifikojmë udhëtimin e përbashkët të studentëve.</p>
+<h2>1. Kontrollo mjetet — 20 minuta</h2>
+<p>Hap <a href="kontrolli-mjeteve.html">kontrollin e mjeteve</a>. Provo Git, Node.js, npm, VS Code, GitHub dhe Vercel. Nëse një instalim nuk punon, raportoje dhe vazhdo detyrën në letër. Për ngarkimin e dokumenteve sot mjaftojnë GitHub dhe shfletuesi.</p>
+<h2>2. Shpjego problemin — 10 minuta</h2>
+<p>Arta ka nevojë të shkojë në AAB. Dreni ka dy vende të lira në makinë. Shkruaj me fjalët e tua: si i ndihmon RideShare të gjejnë njëri-tjetrin? Dallo kërkesën për vend nga konfirmimi i shoferit.</p>
+<h2>3. Vizato tri ekrane — 15 minuta</h2>
+<p>Në një fletë vizato: (1) lista e udhëtimeve, (2) detajet e udhëtimit, (3) kërkesa në pritje. Lidhi me shigjeta. Trego butonin që shtyp udhëtari dhe çfarë ndodh kur s&#x27;ka vende. Bëj një foto të lexueshme dhe ruaje si skica.jpg ose skica.png.</p>
+<h2>4. Plotëso planin — 15 minuta</h2>
+<p>Shkarko <a href="java-02-model.md">modelin</a>, ruaje si java-02.md dhe zëvendëso shenjat e plotësimit me përgjigjet e tua. Shkruaj shkurt; nuk kërkohet ese. <a href="shembull-rideshare.html">Shembulli RideShare</a> të ndihmon të kuptosh, jo të kopjosh pa menduar.</p>
+<h2>5. Provoje me kolegun — 10 minuta</h2>
+<p>Jepi skicën dhe kërkoji: “Gjej një udhëtim për në AAB dhe kërko një vend”. Mos i trego ku duhet të shtypë. Ndërroni rolet, pastaj shëno një përmirësim në java-02.md.</p>
+<h2>6. Ngarko dokumentet — 15 minuta</h2>
+<p>Ndiq <a href="../dorezimet.html">udhëzimin me vetëm 3 hapa</a>. Përdor repository-n personal rideshare-mobile, ose atë personal që ke krijuar më parë. Ngarko java-02.md dhe skica.jpg/png në faqen kryesore me Add file → Upload files → Commit changes. Nuk kërkohet terminal, push ose Pull Request.</p>
+<h2>7. Dorëzo linkun — 5 minuta</h2>
+<p>Hap <a href="https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-submission.yml">formularin</a>, zgjidh Java 2 dhe vendos linkun kryesor të repository-t. Kliko Create / Submit new issue. Ruaje faqen dhe lexo raportin automatik. Nëse diçka mungon, korrigjo skedarët dhe komento rikontrollo te i njëjti dorëzim.</p>
+<h2>Kur e kam përfunduar?</h2>
+<p>- Kam java-02.md të plotësuar dhe skicën e lexueshme në GitHub.</p>
+<p>- Kam numrin e dorëzimit dhe raportin e kontrollit.</p>
+<p>- Mund t&#x27;ia shpjegoj kolegut rrjedhën e RideShare.</p>
+<p>Kontrolli automatik verifikon skedarët, jo cilësinë e projektit dhe jo pikët. Rubrika mbetet: 1 pikë për problemin/përdoruesit, 1 për rrjedhën në tri ekrane, 1 për PRD-në me kufijtë dhe provën. Profesori vlerëson cilësinë. Afatin e njofton profesori.</p></main></body></html>

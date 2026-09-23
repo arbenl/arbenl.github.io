@@ -1,6 +1,6 @@
 # Shembull i plotësuar: RideShare
 
-Ky është shembull mësimor. Studentët e zbatojnë modelin te biznesi ose shërbimi i tyre.
+RideShare është projekti i ushtrimeve gjatë semestrit. Ky shembull të ndihmon të përgatitësh skicën dhe specifikimin me fjalët e tua.
 
 ## Problemi
 Studenti ka nevojë të gjejë një udhëtim për AAB, sepse informacioni sot shpërndahet në shumë biseda. Arta dhe Dreni janë personazhe të sajuara të shembullit.

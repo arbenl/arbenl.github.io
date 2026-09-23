@@ -1,43 +1,30 @@
-# Java 02: ideja ime
-
-Emri i aplikacionit:
-Biznesi ose shërbimi:
-GitHub username:
+# RideShare — Java 2
 
 ## 1. Problemi
-[Përdoruesi] ka nevojë të [veprimi], sepse sot [pengesa].
+[PLOTËSO] Çfarë vështirësie kanë studentët që udhëtojnë për në AAB?
 
-## 2. Përdoruesi dhe qëllimi
-Kush e përdor?
-Çfarë dëshiron të përfundojë?
+## 2. Përdoruesit
+[PLOTËSO] Çfarë dëshiron shoferi? Çfarë dëshiron udhëtari?
 
-## 3. Rrjedha me tri ekrane
-1. Ekrani i parë: çfarë sheh dhe çfarë shtyp?
-2. Ekrani i dytë: çfarë sheh dhe çfarë shtyp?
-3. Ekrani i tretë: si e kupton rezultatin?
+## 3. Tri ekranet
+1. Lista e udhëtimeve: [PLOTËSO]
+2. Detajet e udhëtimit: [PLOTËSO]
+3. Kërkesa në pritje: [PLOTËSO]
 
-Fotografia e skicës: skica.jpg (ose skica.png)
+## 4. MVP — vetëm tri veçori
+[PLOTËSO] Cilat tri veprime duhet të funksionojnë në versionin e parë?
 
-## 4. Versioni i parë
-- Veçoria 1:
-- Veçoria 2:
-- Veçoria 3:
+## 5. Çfarë e lëmë për më vonë?
+[PLOTËSO] Shëno dy gjëra që nuk na duhen ende.
 
-## 5. Për më vonë
-- Një funksion që nuk është i domosdoshëm tani:
-- Një funksion tjetër që mund të presë:
-
-## 6. Si do ta provoj?
-- Nëse përdoruesi bën ..., aplikacioni duhet të ...
-- Nëse mungon ose është gabim ..., aplikacioni duhet të ...
-- Suksesi i rrjedhës së plotë duket kështu: ...
+## 6. Si e provoj?
+[PLOTËSO] Çfarë duhet të ndodhë kur kërkoj një vend?
+[PLOTËSO] Çfarë ndodh nëse nuk ka vende të lira?
 
 ## 7. Prova me kolegun
-Detyra që i dhashë:
-Ku u ndal ose u hutua?
-Çfarë ndryshova pas provës?
+[PLOTËSO] Ku u hutua kolegu dhe çfarë ndryshova në skicë?
 
-## 8. Ndihma nga AI (nëse e përdora)
-Çfarë pyeta?
-Çfarë ndryshova ose verifikova vetë?
-Nëse nuk përdora AI, shkruaj: Nuk përdora AI.
+## 8. Ndihma nga AI
+[PLOTËSO] Shëno çfarë ndihme more dhe çfarë kontrollove vetë, ose shkruaj: Nuk përdora AI.
+
+Hiqi shenjat e plotësimit pasi t'i zëvendësosh me përgjigjet e tua.
