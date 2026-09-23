@@ -8,10 +8,10 @@
     "speakerNotes": false
   },
   "lecture2": {
-    "file": "lendet/2026-2027/mobile/lectures/ligjerata-02-rideshare-ideja-mvp-2026.pptx",
-    "slides": 26,
+    "file": "lendet/2026-2027/mobile/lectures/ligjerata-02-rideshare-vendimet-mvp-2026-v2.pptx",
+    "slides": 22,
     "updated": "2026-09-23",
-    "sha256": "592995feb34ae10be37ff37c01dce6aeeb5a397942d86ae98c7cf563e18eb02e",
+    "sha256": "4ef5a3a9ce63e5dc509118facdaf89eb5ae650077f543451079fad3e58cfdc14",
     "audience": "student",
     "speakerNotes": false
   }
