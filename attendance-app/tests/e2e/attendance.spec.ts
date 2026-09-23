@@ -4,8 +4,7 @@ import postgres from "postgres";
 import QRCode from "qrcode";
 
 const sql = postgres(process.env.DATABASE_URL!, { max: 1, onnotice: () => {} });
-const semesterTitle = "Semestri E2E 2026";
-const sessionTitle = "Ligjërata E2E";
+const semesterTitle = "Programimi për Pajisje Mobile · Semestri Dimëror 2026/27";
 
 async function api(page: Page, path: string, method = "GET", data?: unknown) {
   return page.evaluate(async ({ path, method, data }) => {
@@ -83,52 +82,33 @@ for (const viewport of [
       });
       let semesterId = "";
       let sessionId = "";
-      await test.step("staff creates semester, imports roster, activates semester and opens session", async () => {
+      await test.step("automatic calendar and one-time roster import", async () => {
+        await professor.setViewportSize(viewport);
         await professor.goto("/staff");
-        await expect(professor.getByRole("heading", { name: "Paneli i vijueshmërisë" })).toBeVisible();
-        await professor.getByText("Orë zëvendësuese ose semestër tjetër", { exact: true }).click();
-        await professor.locator("#semester-title").fill(semesterTitle);
-        const created = professor.waitForResponse((r) => r.url().endsWith("/api/semesters") && r.request().method() === "POST");
-        await professor.getByRole("button", { name: "Krijo semestrin", exact: true }).click();
-        const response = await created;
-        expect(response.status()).toBe(201);
-        semesterId = (await response.json()).id;
-        await professor.getByLabel(`Arsyeja për ${semesterTitle}`, { exact: true }).fill("Start E2E semester");
-        await professor.getByRole("button", { name: "Aktivizo", exact: true }).click();
-        await expect(
-          professor.locator(".semester-row").filter({ hasText: semesterTitle })
-            .getByText("15 javë · active", { exact: true }),
-        ).toBeVisible();
-        await professor.locator("#roster-semester").selectOption(semesterId);
+        await expect(professor.getByRole("heading", { name: "Hap QR-në e orës" })).toBeVisible();
+        await expect(professor.getByText("Duke ngarkuar panelin…")).toHaveCount(0);
+        semesterId = (await api(professor, "/api/semesters")).body.find((s: { title: string }) => s.title === semesterTitle).id;
+        sessionId = (await api(professor, "/api/class-sessions")).body.find((s: { semesterId: string; weekNumber: number; kind: string }) => s.semesterId === semesterId && s.weekNumber === 2 && s.kind === "lecture").id;
+        await professor.getByText("Regjistri i studentëve, eksportet dhe administrimi", { exact: true }).click();
         await professor.getByLabel("Student ID, Emri i plotë, Grupi", { exact: true }).fill("E2E-001, Arta Kola, G1\nE2E-002, Besa Duka, G1");
         await professor.getByRole("button", { name: "Importo të gjithë rreshtat" }).click();
         await expect(professor.getByRole("status")).toHaveText("2 studentë u importuan në një transaksion.");
-        await professor.getByLabel("Semestri aktiv", { exact: true }).selectOption(semesterId);
-        await professor.locator("#session-title").fill(sessionTitle);
-        await professor.getByLabel("Java", { exact: true }).fill("1");
-        await professor.getByLabel("Grupi", { exact: true }).fill("G1");
-        const createdSession = professor.waitForResponse((r) => r.url().endsWith("/api/class-sessions") && r.request().method() === "POST");
-        await professor.getByRole("button", { name: "Krijo sesionin", exact: true }).click();
-        const sessionResponse = await createdSession;
-        expect(sessionResponse.status()).toBe(201);
-        sessionId = (await sessionResponse.json()).id;
-        await professor.getByLabel("Arsyeja e ndryshimit", { exact: true }).fill("Begin E2E check-in");
-        await professor.getByRole("button", { name: "Hap check-in", exact: true }).click();
-        await expect(professor.getByRole("button", { name: "Mbyll check-in", exact: true })).toBeVisible();
       });
       let token = "";
       await test.step("authentic projected QR, activation during scan, rank 1 and total 1", async () => {
         const challenge = professor.context().waitForEvent("response", (r) =>
           r.url().endsWith(`/api/class-sessions/${sessionId}/challenge`));
-        const popup = professor.waitForEvent("popup");
-        await professor.getByRole("link", { name: "Hap projektorin", exact: true }).click();
-        projector = await popup;
+        projector = await professor.context().newPage();
+        await projector.setViewportSize(viewport);
+        await projector.goto("/staff");
+        await projector.locator('a[href="/staff/qr?week=2&kind=lecture"]').click();
         const response = await challenge;
         expect(response.status()).toBe(201);
         token = (await response.json()).token;
         const scanURL = `${process.env.E2E_BASE_URL}/check-in#token=${token}`;
         const qrImage = projector.getByRole("img", { name: "QR për check-in" });
         await expect(qrImage).toBeVisible();
+        await noOverflow(projector);
         // Node and browser PNG encoders differ: compare actual QR module pixels.
         const expected = QRCode.create(scanURL, { errorCorrectionLevel: "M" }).modules;
         const actual = await qrImage.evaluate(async (element, size) => {
@@ -201,6 +181,7 @@ for (const viewport of [
           `/api/class-sessions/${sessionId}/live`, `/api/semesters/${semesterId}/export`]) {
           expect((await api(second, path)).status, path).toBe(403);
         }
+        expect((await api(second, "/api/course/launch", "POST", { week: 2, kind: "lecture" })).status).toBe(403);
         expect((await api(second, `/api/class-sessions/${sessionId}/challenge`, "POST")).status).toBe(403);
         expect((await api(second, `/api/class-sessions/${sessionId}/state`, "PATCH", {
           state: "closed", reason: "Unauthorized E2E request",
@@ -223,6 +204,7 @@ for (const viewport of [
         expect((await api(second, `/api/records/${record.id}`, "PATCH", {
           status: "rejected", reason: "Unauthorized correction",
         })).status).toBe(403);
+        await professor.goto(`/staff?sessionId=${sessionId}`);
         await professor.getByLabel("Statusi për Arta Kola", { exact: true }).selectOption("excused");
         await professor.getByLabel("Arsyeja për Arta Kola", { exact: true }).fill("Verified E2E correction");
         const corrected = professor.waitForResponse((r) => r.url().endsWith(`/api/records/${record.id}`) && r.request().method() === "PATCH");
