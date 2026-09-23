@@ -6,7 +6,7 @@ import zipfile
 
 base = Path('lendet/2026-2027/mobile')
 files = [p for p in (base / 'java-02').rglob('*') if p.is_file() and p.suffix != '.zip']
-files += [base / 'lectures/ligjerata-02-rideshare-ideja-mvp-2026.pptx', base / 'dorezimet.html']
+files += [base / 'lectures/ligjerata-02-rideshare-vendimet-mvp-2026-v2.pptx', base / 'dorezimet.html']
 files += [p for p in (base / 'demo/rideshare').rglob('*') if p.is_file()]
 paths = {str(p) for p in files}
 archive = base / 'java-02/java-02-paketa-studentit.zip'
