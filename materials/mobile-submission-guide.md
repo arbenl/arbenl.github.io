@@ -6,6 +6,10 @@
 
 Materialet dhe vijueshmëria janë të publikuara. Notimi automatik i 10 detyrave Mobile dhe totali personal **nuk janë ende të aktivizuar**. Mos përdorni `SUBMISSIONS_2026.md` ose rezultatet MCC për këtë lëndë: ato i përkasin Cloud/MCC. Para çdo detyre do të publikohet lidhja e dorëzimit, afati, rubrika me 3 pikë dhe testet përkatëse. Një kontroll i gjelbër i build-it nuk është vetvetiu nota e detyrës.
 
+## Java 2 — rruga e thjeshtuar
+
+Filloni me [kontrollin e mjeteve](java-02/kontrolli-mjeteve.html). Për skicën dhe PRD-në ndiqni [ushtrimet e javës 2](java-02/ushtrimet.html): ngarkim nga shfletuesi dhe dorëzim i linkut në formularin GitHub, pa Pull Request. Udhëzimet më poshtë janë për detyrat e aplikacionit.
+
 ## Si ta përgatitni dorëzimin
 
 1. Mbajeni aplikacionin në një repository GitHub gjatë gjithë semestrit. README-ja përmban biznesin, problemin që zgjidhni, udhëzimet e instalimit dhe lidhjen e demonstrimit.
