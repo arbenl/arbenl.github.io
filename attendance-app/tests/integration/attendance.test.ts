@@ -296,7 +296,7 @@ describe("automatic current-course setup", () => {
     });
 
     const first = await attendanceService.ensureCurrentCourseSetup(professor);
-    expect(first).toMatchObject({ createdSessions: 29, removedPilotSemesters: 0 });
+    expect(first).toMatchObject({ createdSessions: 43, removedPilotSemesters: 0 });
 
     const [semester] = await sql`
       select id, title, week_count, status
@@ -309,22 +309,22 @@ describe("automatic current-course setup", () => {
       select week_number, kind, group_name, title
       from class_sessions
       where semester_id = ${semester.id}
-      order by week_number, case when kind = 'lecture' then 0 else 1 end
+      order by week_number, case when kind = 'lecture' then 0 else 1 end, group_name
     `;
-    expect(sessions).toHaveLength(29);
+    expect(sessions).toHaveLength(43);
     expect(sessions[0]).toMatchObject({
       week_number: 1,
       kind: "lecture",
-      group_name: "G1",
+      group_name: "G1+G2",
     });
     expect(sessions[0].title).toContain("17.09.2026 · 16:30");
     expect(sessions[1]).toMatchObject({ week_number: 2, kind: "lecture" });
     expect(sessions[2]).toMatchObject({ week_number: 2, kind: "lab" });
-    expect(sessions.at(-1)?.title).toContain("24.12.2026 · 18:30");
+    expect(sessions.at(-1)?.title).toContain("24.12.2026 · 18:00");
 
     const second = await attendanceService.ensureCurrentCourseSetup(professor);
     expect(second).toMatchObject({ createdSessions: 0, removedPilotSemesters: 0 });
-    expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(29);
+    expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(43);
     expect(await sql`select id from semesters where title like '[PILOT SYNTHETIC%'`).toHaveLength(2);
   });
 
@@ -1805,7 +1805,7 @@ describe("direct course QR launch", () => {
     expect(a.checkinEndsAt).toEqual(b.checkinEndsAt);
     expect(a.state).toBe("open");
     expect(await sql`select id from class_sessions where state = 'open'`).toHaveLength(1);
-    const lab = await attendanceService.launchCourseSession(professor, 2, "lab");
+    const lab = await attendanceService.launchCourseSession(professor, 2, "lab", "G1");
     expect(lab.id).not.toBe(a.id);
     expect(lab.kind).toBe("lab");
     expect(await sql`select id from audit_log where subject_id = ${a.id} and action = 'class_session.state'`).toHaveLength(1);
@@ -1824,5 +1824,51 @@ describe("direct course QR launch", () => {
     const opened = await attendanceService.launchCourseSession(professor, 2, "lecture");
     await sql`update class_sessions set checkin_ends_at = now() - interval '1 second' where id = ${opened.id}`;
     await expect(attendanceService.launchCourseSession(professor, 2, "lecture")).rejects.toMatchObject({ status: 409 });
+  });
+});
+
+
+describe("shared lecture and separate lab groups", () => {
+  it("accepts both groups in one lecture and keeps lab check-ins, history and exports separate", async () => {
+    const { semesterId } = await attendanceService.ensureCurrentCourseSetup(professor);
+    await importAndActivate(semesterId, studentA, "A-1", "Arta Kola", "G1");
+    await importAndActivate(semesterId, studentB, "B-1", "Besa Duka", "G2");
+    const lecture = await attendanceService.launchCourseSession(professor, 2, "lecture");
+    const qr = await attendanceService.createChallenge(professor, lecture.id, "192.0.2.1");
+    await attendanceService.checkIn(studentA, {token: qr.token}, "192.0.2.2");
+    await attendanceService.checkIn(studentB, {token: qr.token}, "192.0.2.3");
+    const records = await attendanceService.getSessionRecords(professor, lecture.id);
+    expect(records.records).toHaveLength(2);
+    expect(records.records.every((row) => row.status === "present")).toBe(true);
+    await attendanceService.transitionClassSession(professor, lecture.id, { state: "closed", reason: "Lecture completed" });
+    const lab1 = await attendanceService.launchCourseSession(professor, 2, "lab", "G1");
+    const lab2 = await attendanceService.launchCourseSession(professor, 2, "lab", "G2");
+    expect(lab1.id).not.toBe(lab2.id);
+    const labQr = await attendanceService.createChallenge(professor, lab1.id, "192.0.2.1");
+    await expect(attendanceService.checkIn(studentB, {token: labQr.token}, "192.0.2.3")).rejects.toMatchObject({code:"wrong_group"});
+    await attendanceService.checkIn(studentA, {token: labQr.token}, "192.0.2.2");
+    const history = await attendanceService.getStudentHistory(studentB);
+    expect(history.sessions.map((row) => row.id)).toContain(lecture.id);
+    expect(history.sessions.map((row) => row.id)).not.toContain(lab1.id);
+    expect(history.sessions.map((row) => row.id)).toContain(lab2.id);
+    const exported = await attendanceService.exportSemester(professor, semesterId);
+    expect(exported.csv).toContain("Arta Kola,G1,");
+    expect(exported.csv).toContain("Besa Duka,G2,");
+    await expect(attendanceService.launchCourseSession(professor, 3, "lab")).rejects.toMatchObject({status:400});
+  });
+
+  it("updates draft schedule in place without changing completed records or duplicating the first lecture", async () => {
+    const semester = await createActiveSemester("Programimi për Pajisje Mobile · Semestri Dimëror 2026/27");
+    const old = await createOpenSession(semester.id, "G1");
+    await attendanceService.transitionClassSession(professor, old.id, {state:"closed",reason:"Historical lecture"});
+    const draft = await attendanceService.createClassSession(professor,{semesterId:semester.id,weekNumber:2,kind:"lab",groupName:"G1",title:"24.09.2026 · 18:30 · Ushtrime 2"});
+    await attendanceService.ensureCurrentCourseSetup(professor);
+    await attendanceService.ensureCurrentCourseSetup(professor);
+    const [saved] = await sql`select title, group_name, state from class_sessions where id = ${old.id}`;
+    expect(saved).toMatchObject({title:old.title,group_name:"G1",state:"closed"});
+    const [changed] = await sql`select title from class_sessions where id = ${draft.id}`;
+    expect(changed.title).toContain("14:45");
+    expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(43);
+    expect(await sql`select id from class_sessions where semester_id = ${semester.id} and week_number=1`).toHaveLength(1);
   });
 });

@@ -6,6 +6,7 @@ import {
   eq,
   inArray,
   isNull,
+  or,
   sql,
 } from "drizzle-orm";
 import type { Session } from "next-auth";
@@ -24,7 +25,7 @@ import {
 } from "../db/schema";
 import { getEnv } from "../env";
 import { createChallengeToken, hashChallengeToken } from "./challenge";
-import { CURRENT_COURSE, CURRENT_COURSE_SESSIONS } from "./current-course";
+import { CURRENT_COURSE, CURRENT_COURSE_SESSIONS, sessionIncludesGroup } from "./current-course";
 import {
   maskDisplayName,
   normalizeAlbanianName,
@@ -415,14 +416,34 @@ async function ensureCurrentCourseSetup(session: Session | null) {
 
     const existing = await transaction
       .select({
+        id: classSessions.id,
+        state: classSessions.state,
+        title: classSessions.title,
         weekNumber: classSessions.weekNumber,
         kind: classSessions.kind,
         groupName: classSessions.groupName,
       })
       .from(classSessions)
       .where(eq(classSessions.semesterId, semester.id));
+    let updatedSessions = 0;
+    if (semester.status === "active") {
+      for (const item of existing) {
+        const target = CURRENT_COURSE_SESSIONS.find((planned) =>
+          planned.weekNumber === item.weekNumber && planned.kind === item.kind &&
+          (planned.groupName === item.groupName || (item.kind === "lecture" && item.groupName === "G1")));
+        if (!target || item.state !== "draft" ||
+            (item.title === target.title && item.groupName === target.groupName)) continue;
+        const updated = await transaction.update(classSessions)
+          .set({ title: target.title, groupName: target.groupName, updatedAt: sql`statement_timestamp()` })
+          .where(and(eq(classSessions.id, item.id), eq(classSessions.state, "draft")))
+          .returning({ id: classSessions.id });
+        updatedSessions += updated.length;
+      }
+    }
+    // Old completed G1 lectures are historical records, not missing shared lectures.
     const existingKeys = new Set(
-      existing.map(({ weekNumber, kind, groupName }) => `${weekNumber}:${kind}:${groupName}`),
+      existing.map(({ weekNumber, kind, groupName }) =>
+        `${weekNumber}:${kind}:${kind === "lecture" && groupName === "G1" ? CURRENT_COURSE.groupName : groupName}`),
     );
     const missing = semester.status === "archived"
       ? []
@@ -444,7 +465,7 @@ async function ensureCurrentCourseSetup(session: Session | null) {
       );
     }
 
-    if (missing.length || pilotSemesterIds.length) {
+    if (missing.length || updatedSessions || pilotSemesterIds.length) {
       await audit(
         transaction,
         actor.userId,
@@ -454,6 +475,7 @@ async function ensureCurrentCourseSetup(session: Session | null) {
         "Automatic setup of the current teaching schedule",
         {
           createdSessions: missing.length,
+          updatedSessions,
           removedPilotSemesters: pilotSemesterIds.length,
           groupName: CURRENT_COURSE.groupName,
         },
@@ -489,7 +511,9 @@ async function getStudentHistory(session: Session | null) {
       classSessions,
       and(
         eq(classSessions.semesterId, roster.semesterId),
-        eq(classSessions.groupName, roster.groupName),
+        or(eq(classSessions.groupName, roster.groupName), and(
+          eq(classSessions.kind, "lecture"), eq(classSessions.groupName, CURRENT_COURSE.groupName),
+          inArray(roster.groupName, ["G1", "G2"]))),
       ),
     )
     .leftJoin(
@@ -866,15 +890,16 @@ async function transitionClassSession(
   });
 }
 
-async function launchCourseSession(session: Session | null, weekNumber: number, kind: "lecture" | "lab") {
+async function launchCourseSession(session: Session | null, weekNumber: number, kind: "lecture" | "lab", group?: "G1" | "G2") {
   const db = await database();
   await requireStaffActor(db, session);
-  if (!CURRENT_COURSE_SESSIONS.some((item) => item.weekNumber === weekNumber && item.kind === kind)) {
+  const groupName = kind === "lecture" ? CURRENT_COURSE.groupName : group;
+  if (!CURRENT_COURSE_SESSIONS.some((item) => item.weekNumber === weekNumber && item.kind === kind && item.groupName === groupName)) {
     throw new AttendanceServiceError(400, "invalid_course_session", "Kjo orë nuk është në kalendar.");
   }
   const { semesterId } = await ensureCurrentCourseSetup(session);
   const matches = (await listClassSessions(session, semesterId)).filter((item) =>
-    item.weekNumber === weekNumber && item.kind === kind && item.groupName === CURRENT_COURSE.groupName);
+    item.weekNumber === weekNumber && item.kind === kind && (item.groupName === groupName || (kind === "lecture" && item.groupName === "G1")));
   if (matches.length !== 1) {
     throw new AttendanceServiceError(409, "ambiguous_session", "Kalendari kërkon kontroll nga stafi.");
   }
@@ -993,6 +1018,7 @@ async function checkIn(
           q.expires_at as "expiresAt",
           cs.semester_id as "semesterId",
           cs.group_name as "groupName",
+          cs.kind,
           cs.title,
           cs.state,
           cs.checkin_ends_at as "checkinEndsAt",
@@ -1007,6 +1033,7 @@ async function checkIn(
         expiresAt: Date;
         semesterId: string;
         groupName: string;
+        kind: string;
         title: string;
         state: string;
         checkinEndsAt: Date | null;
@@ -1055,7 +1082,7 @@ async function checkIn(
           "Activate your roster profile before checking in",
         );
       }
-      if (entry.groupName !== challenge.groupName) {
+      if (!sessionIncludesGroup(challenge.kind, challenge.groupName, entry.groupName)) {
         throw new AttendanceServiceError(
           403,
           "wrong_group",
@@ -1304,7 +1331,9 @@ async function getSessionRecords(
     .where(
       and(
         eq(roster.semesterId, sql`(select semester_id from class_sessions where id = ${sessionId})`),
-        eq(roster.groupName, classSession.groupName),
+        classSession.kind === "lecture" && classSession.groupName === CURRENT_COURSE.groupName
+          ? inArray(roster.groupName, ["G1", "G2"])
+          : eq(roster.groupName, classSession.groupName),
       ),
     )
     .orderBy(asc(roster.studentId), asc(roster.id));
@@ -1344,6 +1373,7 @@ async function createManualRecord(
       .select({
         semesterId: classSessions.semesterId,
         sessionGroup: classSessions.groupName,
+        sessionKind: classSessions.kind,
         rosterSemesterId: roster.semesterId,
         rosterGroup: roster.groupName,
       })
@@ -1356,7 +1386,7 @@ async function createManualRecord(
     }
     if (
       target.semesterId !== target.rosterSemesterId ||
-      target.sessionGroup !== target.rosterGroup
+      !sessionIncludesGroup(target.sessionKind, target.sessionGroup, target.rosterGroup)
     ) {
       throw new AttendanceServiceError(409, "wrong_group", "Roster entry is not in this session");
     }
@@ -1463,7 +1493,9 @@ async function exportSemester(session: Session | null, semesterId: string) {
         roster,
         and(
           eq(roster.semesterId, classSessions.semesterId),
-          eq(roster.groupName, classSessions.groupName),
+          or(eq(classSessions.groupName, roster.groupName), and(
+          eq(classSessions.kind, "lecture"), eq(classSessions.groupName, CURRENT_COURSE.groupName),
+          inArray(roster.groupName, ["G1", "G2"]))),
         ),
       )
       .leftJoin(
