@@ -1,7 +1,7 @@
 export const CURRENT_COURSE = {
   title: "Programimi për Pajisje Mobile · Semestri Dimëror 2026/27",
   weekCount: 15,
-  groupName: "G1",
+  groupName: "G1+G2",
 } as const;
 
 const THURSDAYS = [
@@ -61,6 +61,7 @@ export interface CurrentCourseSession {
   weekNumber: number;
   kind: "lecture" | "lab";
   groupName: string;
+  startTime: string;
   title: string;
 }
 
@@ -71,6 +72,7 @@ export const CURRENT_COURSE_SESSIONS: CurrentCourseSession[] = THURSDAYS.flatMap
       weekNumber,
       kind: "lecture",
       groupName: CURRENT_COURSE.groupName,
+      startTime: "16:30",
       title: `${date} · 16:30 · Ligjërata ${weekNumber} — ${LECTURES[index]}`,
     };
     if (weekNumber === 1) {
@@ -78,12 +80,18 @@ export const CURRENT_COURSE_SESSIONS: CurrentCourseSession[] = THURSDAYS.flatMap
     }
     return [
       lecture,
-      {
+      ...([{ groupName: "G1", startTime: "14:45" }, { groupName: "G2", startTime: "18:00" }]).map(({ groupName, startTime }) => ({
         weekNumber,
         kind: "lab" as const,
-        groupName: CURRENT_COURSE.groupName,
-        title: `${date} · 18:30 · Ushtrime ${weekNumber} — ${LABS[index - 1]}`,
-      },
+        groupName,
+        startTime,
+        title: `${date} · ${startTime} · Ushtrime ${weekNumber} · ${groupName} — ${LABS[index - 1]}`,
+      })),
     ];
   },
 );
+
+export function sessionIncludesGroup(kind: string, sessionGroup: string, studentGroup: string) {
+  return sessionGroup === studentGroup ||
+    (kind === "lecture" && sessionGroup === CURRENT_COURSE.groupName && ["G1", "G2"].includes(studentGroup));
+}
