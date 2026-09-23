@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 
+import { CURRENT_COURSE, CURRENT_COURSE_SESSIONS } from "../lib/attendance/current-course";
 import { SessionAdmin } from "./session-admin";
 
 interface Semester {
@@ -18,6 +19,7 @@ interface CreatedSession {
 
 interface ExistingSession extends CreatedSession {
   semesterTitle: string;
+  kind: "lecture" | "lab";
   weekNumber: number;
   groupName: string;
   state: "draft" | "open" | "closed" | "cancelled";
@@ -174,6 +176,29 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
       {loading ? <p role="status">Duke ngarkuar panelin…</p> : null}
       {message ? <p className="admin-message" role="status">{message}</p> : null}
 
+      <section className="admin-section" aria-labelledby="course-qr-title">
+        <h2 id="course-qr-title">Hap QR-në e orës</h2>
+        <p>Programimi për Pajisje Mobile · 2026/27. Kliko në mes të orës: regjistrimi qëndron hapur 2 minuta. Studentët skanojnë QR-në nga projektori.</p>
+        <div className="semester-list">
+          {CURRENT_COURSE_SESSIONS.filter((item) => item.kind === "lecture").map((lecture) => (
+            <article className="semester-row" key={lecture.weekNumber}>
+              <div><strong>Java {lecture.weekNumber} · {lecture.title.split(" · ")[0]}</strong></div>
+              {(["lecture", "lab"] as const).filter((kind) => lecture.weekNumber !== 1 || kind === "lecture").map((kind) => {
+                const existing = sessions.find((item) => item.semesterTitle === CURRENT_COURSE.title && item.weekNumber === lecture.weekNumber && item.kind === kind && item.groupName === CURRENT_COURSE.groupName);
+                const finished = existing?.state === "closed" || existing?.state === "cancelled";
+                return <a className="admin-link" key={kind} href={finished
+                  ? `/staff?sessionId=${existing.id}#session-admin-title`
+                  : `/staff/qr?week=${lecture.weekNumber}&kind=${kind}`}>
+                  {finished ? "Regjistri" : "QR"} {kind === "lecture" ? "Ligjëratë · 16:30" : "Ushtrime · 18:30"}
+                </a>;
+              })}
+            </article>
+          ))}
+        </div>
+      </section>
+      {selectedSessionId ? <SessionAdmin key={selectedSessionId} sessionId={selectedSessionId} /> : null}
+      <details className="admin-manual-tools">
+        <summary>Regjistri i studentëve, eksportet dhe administrimi</summary>
       <section className="admin-section" aria-labelledby="semesters-title">
         <h2 id="semesters-title">Semestrat</h2>
         <p>Semestri aktual dhe kalendari 15-javor sinkronizohen automatikisht.</p>
@@ -190,7 +215,6 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
           <form className="admin-form" onSubmit={importRoster}>
             <label htmlFor="roster-semester">Semestri</label>
             <select id="roster-semester" name="semesterId" required>
-              <option value="">Zgjidh</option>
               {semesters.filter(({ status }) => status !== "archived").map((semester) => (
                 <option key={semester.id} value={semester.id}>{semester.title}</option>
               ))}
@@ -250,7 +274,7 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
         </div>
       </section>
 
-      {selectedSessionId ? <SessionAdmin key={selectedSessionId} sessionId={selectedSessionId} /> : null}
+      </details>
     </div>
   );
 }

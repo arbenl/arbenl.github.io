@@ -31,7 +31,7 @@ export default async function StaffPage({ searchParams }: {
       <header className="admin-page-header">
         <p className="eyebrow">Vetëm për staf</p>
         <h1>Paneli i vijueshmërisë</h1>
-        <p>Semestri dhe 29 seancat e së enjtes janë përgatitur automatikisht. Zgjidh orën e sotme, hape dhe shfaq QR-në në projektor.</p>
+        <p>Hap lidhjen e ligjëratës ose të ushtrimeve: QR-ja shfaqet automatikisht, pa zgjedhur semestër ose program.</p>
       </header>
       <SemesterAdmin key={sessionId} initialSessionId={sessionId} />
     </main>

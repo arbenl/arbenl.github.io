@@ -279,7 +279,7 @@ beforeEach(async () => {
 });
 
 describe("automatic current-course setup", () => {
-  it("removes archived pilots and idempotently creates the 15-week Thursday schedule", async () => {
+  it("preserves archived records and idempotently creates the 15-week Thursday schedule", async () => {
     const pilot = await createActiveSemester("[PILOT SYNTHETIC] Programimi Mobile 2026");
     await attendanceService.importRoster(professor, {
       semesterId: pilot.id,
@@ -296,7 +296,7 @@ describe("automatic current-course setup", () => {
     });
 
     const first = await attendanceService.ensureCurrentCourseSetup(professor);
-    expect(first).toMatchObject({ createdSessions: 29, removedPilotSemesters: 2 });
+    expect(first).toMatchObject({ createdSessions: 29, removedPilotSemesters: 0 });
 
     const [semester] = await sql`
       select id, title, week_count, status
@@ -325,7 +325,7 @@ describe("automatic current-course setup", () => {
     const second = await attendanceService.ensureCurrentCourseSetup(professor);
     expect(second).toMatchObject({ createdSessions: 0, removedPilotSemesters: 0 });
     expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(29);
-    expect(await sql`select id from semesters where title like '[PILOT SYNTHETIC%'`).toHaveLength(0);
+    expect(await sql`select id from semesters where title like '[PILOT SYNTHETIC%'`).toHaveLength(2);
   });
 
   it("does not reactivate or repopulate the course after the professor archives it", async () => {
@@ -1791,5 +1791,38 @@ describe("database-backed professor bootstrap", () => {
     expect(await sql`select 1 from bootstrap_state`).toHaveLength(1);
     expect(await sql`select 1 from staff`).toHaveLength(1);
     expect(await sql`select 1 from audit_log where action = 'staff.bootstrap'`).toHaveLength(1);
+  });
+});
+
+
+describe("direct course QR launch", () => {
+  it("opens exactly the requested lecture and repeated concurrent launches keep the deadline", async () => {
+    const [a, b] = await Promise.all([
+      attendanceService.launchCourseSession(professor, 2, "lecture"),
+      attendanceService.launchCourseSession(professor, 2, "lecture"),
+    ]);
+    expect(a.id).toBe(b.id);
+    expect(a.checkinEndsAt).toEqual(b.checkinEndsAt);
+    expect(a.state).toBe("open");
+    expect(await sql`select id from class_sessions where state = 'open'`).toHaveLength(1);
+    const lab = await attendanceService.launchCourseSession(professor, 2, "lab");
+    expect(lab.id).not.toBe(a.id);
+    expect(lab.kind).toBe("lab");
+    expect(await sql`select id from audit_log where subject_id = ${a.id} and action = 'class_session.state'`).toHaveLength(1);
+  });
+  it("rejects students, invalid weeks, finished and archived sessions", async () => {
+    await expect(attendanceService.launchCourseSession(studentA, 2, "lecture")).rejects.toMatchObject({ status: 403 });
+    await expect(attendanceService.launchCourseSession(null, 2, "lecture")).rejects.toMatchObject({ status: 401 });
+    await expect(attendanceService.launchCourseSession(professor, 1, "lab")).rejects.toMatchObject({ status: 400 });
+    const opened = await attendanceService.launchCourseSession(professor, 2, "lecture");
+    await attendanceService.transitionClassSession(professor, opened.id, { state: "closed", reason: "Test completed" });
+    await expect(attendanceService.launchCourseSession(professor, 2, "lecture")).rejects.toMatchObject({ status: 409 });
+    await attendanceService.transitionSemester(professor, opened.semesterId, { state: "archived", reason: "Archived" });
+    await expect(attendanceService.launchCourseSession(professor, 3, "lecture")).rejects.toMatchObject({ status: 409 });
+  });
+  it("does not extend an expired window when reopening the same link", async () => {
+    const opened = await attendanceService.launchCourseSession(professor, 2, "lecture");
+    await sql`update class_sessions set checkin_ends_at = now() - interval '1 second' where id = ${opened.id}`;
+    await expect(attendanceService.launchCourseSession(professor, 2, "lecture")).rejects.toMatchObject({ status: 409 });
   });
 });

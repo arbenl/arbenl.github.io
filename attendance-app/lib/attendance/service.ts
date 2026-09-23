@@ -388,61 +388,7 @@ async function ensureCurrentCourseSetup(session: Session | null) {
       sql`select pg_advisory_xact_lock(hashtextextended('aab-current-course-setup', 0))`,
     );
 
-    const pilotSemesters = await transaction
-      .select({ id: semesters.id })
-      .from(semesters)
-      .where(
-        and(
-          eq(semesters.status, "archived"),
-          sql`${semesters.title} like '[PILOT SYNTHETIC%'`,
-        ),
-      );
-    const pilotSemesterIds = pilotSemesters.map(({ id }) => id);
-
-    if (pilotSemesterIds.length) {
-      const pilotSessions = await transaction
-        .select({ id: classSessions.id })
-        .from(classSessions)
-        .where(inArray(classSessions.semesterId, pilotSemesterIds));
-      const pilotRoster = await transaction
-        .select({ id: roster.id })
-        .from(roster)
-        .where(inArray(roster.semesterId, pilotSemesterIds));
-      const pilotSessionIds = pilotSessions.map(({ id }) => id);
-      const pilotRosterIds = pilotRoster.map(({ id }) => id);
-      const pilotRecords = pilotSessionIds.length
-        ? await transaction
-            .select({ id: attendanceRecords.id })
-            .from(attendanceRecords)
-            .where(inArray(attendanceRecords.sessionId, pilotSessionIds))
-        : [];
-      const pilotRecordIds = pilotRecords.map(({ id }) => id);
-      const subjectIds = [
-        ...pilotSemesterIds,
-        ...pilotSessionIds,
-        ...pilotRosterIds,
-        ...pilotRecordIds,
-      ];
-
-      if (subjectIds.length) {
-        await transaction.delete(auditLog).where(inArray(auditLog.subjectId, subjectIds));
-      }
-      if (pilotSessionIds.length) {
-        await transaction
-          .delete(attendanceRecords)
-          .where(inArray(attendanceRecords.sessionId, pilotSessionIds));
-        await transaction
-          .delete(qrChallenges)
-          .where(inArray(qrChallenges.sessionId, pilotSessionIds));
-        await transaction
-          .delete(classSessions)
-          .where(inArray(classSessions.id, pilotSessionIds));
-      }
-      if (pilotRosterIds.length) {
-        await transaction.delete(roster).where(inArray(roster.id, pilotRosterIds));
-      }
-      await transaction.delete(semesters).where(inArray(semesters.id, pilotSemesterIds));
-    }
+    const pilotSemesterIds: string[] = []; // Cleanup is not part of routine setup.
 
     let [semester] = await transaction
       .select()
@@ -874,7 +820,13 @@ async function transitionClassSession(
     if (!current) {
       throw new AttendanceServiceError(404, "session_not_found", "Class session not found");
     }
-    if (current.state === "closed" && input.state === "closed") {
+    const [semester] = await transaction.select().from(semesters)
+      .where(eq(semesters.id, current.semesterId)).limit(1).for("share");
+    if (input.state === "open" && semester?.status !== "active") {
+      throw new AttendanceServiceError(409, "semester_inactive", "Semestri nuk është aktiv.");
+    }
+    if ((current.state === "closed" && input.state === "closed") ||
+        (current.state === "open" && input.state === "open")) {
       return current;
     }
     const allowed =
@@ -911,6 +863,27 @@ async function transitionClassSession(
       { from: current.state, to: input.state },
     );
     return updated;
+  });
+}
+
+async function launchCourseSession(session: Session | null, weekNumber: number, kind: "lecture" | "lab") {
+  const db = await database();
+  await requireStaffActor(db, session);
+  if (!CURRENT_COURSE_SESSIONS.some((item) => item.weekNumber === weekNumber && item.kind === kind)) {
+    throw new AttendanceServiceError(400, "invalid_course_session", "Kjo orë nuk është në kalendar.");
+  }
+  const { semesterId } = await ensureCurrentCourseSetup(session);
+  const matches = (await listClassSessions(session, semesterId)).filter((item) =>
+    item.weekNumber === weekNumber && item.kind === kind && item.groupName === CURRENT_COURSE.groupName);
+  if (matches.length !== 1) {
+    throw new AttendanceServiceError(409, "ambiguous_session", "Kalendari kërkon kontroll nga stafi.");
+  }
+  const selected = matches[0];
+  if (selected.state === "closed" || selected.state === "cancelled") {
+    throw new AttendanceServiceError(409, "session_finished", "Kjo orë ka përfunduar. Regjistri ruhet në panel; QR-ja nuk rihapet.");
+  }
+  return transitionClassSession(session, selected.id, {
+    state: "open", reason: "Profesori hapi QR-në nga lidhja e orës së planifikuar.",
   });
 }
 
@@ -1596,6 +1569,7 @@ export const attendanceService = {
   createSemester,
   exportSemester,
   ensureCurrentCourseSetup,
+  launchCourseSession,
   getSessionRecords,
   getStudentHistory,
   getLiveSession,
