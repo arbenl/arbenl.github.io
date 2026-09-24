@@ -7,7 +7,7 @@ import {
 import { getCurrentSession } from "@/lib/auth/session";
 
 const stateSchema = z.object({
-  state: z.enum(["open", "closed", "cancelled"]),
+  state: z.enum(["draft", "open", "closed", "cancelled"]),
   reason: z.string().trim().min(1).max(500),
 });
 

@@ -867,7 +867,7 @@ async function listClassSessions(
 async function transitionClassSession(
   session: Session | null,
   sessionId: string,
-  input: { state: Exclude<SessionState, "draft">; reason: string },
+  input: { state: SessionState; reason: string },
 ) {
   const db = await database();
   return db.transaction(async (transaction) => {
@@ -888,7 +888,7 @@ async function transitionClassSession(
     }
     const [semester] = await transaction.select().from(semesters)
       .where(eq(semesters.id, current.semesterId)).limit(1).for("share");
-    if (input.state === "open" && semester?.status !== "active") {
+    if ((input.state === "open" || input.state === "draft") && semester?.status !== "active") {
       throw new AttendanceServiceError(409, "semester_inactive", "Semestri nuk është aktiv.");
     }
     if ((current.state === "closed" && input.state === "closed") ||
@@ -896,6 +896,7 @@ async function transitionClassSession(
       return current;
     }
     const allowed =
+      (current.state === "closed" && input.state === "draft") ||
       (current.state === "draft" && input.state === "open") ||
       (current.state === "open" && input.state === "closed") ||
       ((current.state === "draft" || current.state === "open") &&
@@ -907,6 +908,14 @@ async function transitionClassSession(
         "Invalid class session state transition",
       );
     }
+    if (input.state === "draft") {
+      const [record] = await transaction.select({ id: attendanceRecords.id })
+        .from(attendanceRecords).where(eq(attendanceRecords.sessionId, sessionId)).limit(1);
+      if (record) {
+        throw new AttendanceServiceError(409, "session_has_records", "Ora ka regjistrime pjesëmarrjeje dhe nuk mund të rivendoset si test.");
+      }
+      await transaction.delete(qrChallenges).where(eq(qrChallenges.sessionId, sessionId));
+    }
     const [updated] = await transaction
       .update(classSessions)
       .set({
@@ -914,7 +923,7 @@ async function transitionClassSession(
         checkinEndsAt:
           input.state === "open"
             ? sql`statement_timestamp() + interval '2 minutes'`
-            : current.checkinEndsAt,
+            : input.state === "draft" ? null : current.checkinEndsAt,
         updatedAt: sql`statement_timestamp()`,
       })
       .where(eq(classSessions.id, sessionId))

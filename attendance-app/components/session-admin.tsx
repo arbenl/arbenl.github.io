@@ -99,7 +99,7 @@ export function SessionAdmin({ sessionId }: SessionAdminProps) {
     };
   }, [busy, load, sessionState]);
 
-  async function transition(state: Exclude<SessionState, "draft">) {
+  async function transition(state: SessionState) {
     if (!stateReason.trim()) {
       setError("Shkruaj arsyen e ndryshimit të sesionit.");
       return;
@@ -200,7 +200,7 @@ export function SessionAdmin({ sessionId }: SessionAdminProps) {
         </a>
       </div>
 
-      {data && (data.session.state === "draft" || data.session.state === "open") ? (
+      {data && (data.session.state === "draft" || data.session.state === "open" || data.session.state === "closed") ? (
         <div className="session-actions">
           <label htmlFor={`session-reason-${sessionId}`}>Arsyeja e ndryshimit</label>
           <input
@@ -209,12 +209,14 @@ export function SessionAdmin({ sessionId }: SessionAdminProps) {
             onChange={(event) => setStateReason(event.target.value)}
             maxLength={500}
           />
-          {data.session.state === "draft" ? (
+          {data.session.state === "closed" ? (
+            <button disabled={busy} type="button" onClick={() => void transition("draft")}>Përgatit sërish pas testit</button>
+          ) : data.session.state === "draft" ? (
             <button disabled={busy} type="button" onClick={() => void transition("open")}>Hap check-in</button>
           ) : (
             <button disabled={busy} type="button" onClick={() => void transition("closed")}>Mbyll check-in</button>
           )}
-          <button className="secondary-action" disabled={busy} type="button" onClick={() => void transition("cancelled")}>Anulo sesionin</button>
+          {data.session.state !== "closed" ? <button className="secondary-action" disabled={busy} type="button" onClick={() => void transition("cancelled")}>Anulo sesionin</button> : <p>Vetëm për orë testimi pa regjistrime. QR-ja e re hapet nga lidhja e orës kur të fillojë regjistrimi.</p>}
         </div>
       ) : null}
 

@@ -1922,3 +1922,31 @@ it("rejects new registration without QR or for another lab group", async () => {
   await expect(attendanceService.activateRoster(studentA, { ...input, token: challenge.token }, "192.0.2.222")).rejects.toMatchObject({ code: "registration_qr_expired" });
   expect(await sql`select id from roster`).toHaveLength(0);
 });
+
+
+describe("reset empty test session", () => {
+  it("requires staff, invalidates old QR and waits for a deliberate launch", async () => {
+    const opened = await attendanceService.launchCourseSession(professor, 2, "lab", "G1");
+    await attendanceService.createChallenge(professor, opened.id, "198.51.100.90");
+    await attendanceService.transitionClassSession(professor, opened.id, {state:"closed", reason:"Test"});
+    await expect(attendanceService.transitionClassSession(studentA, opened.id, {state:"draft", reason:"Test"})).rejects.toMatchObject({status:403});
+    const reset = await attendanceService.transitionClassSession(professor, opened.id, {state:"draft", reason:"Professor test reset"});
+    expect(reset.state).toBe("draft");
+    expect(reset.checkinEndsAt).toBeNull();
+    expect(await sql`select id from qr_challenges where session_id = ${opened.id}`).toHaveLength(0);
+    expect(await sql`select id from audit_log where subject_id = ${opened.id} and reason = 'Professor test reset'`).toHaveLength(1);
+    const relaunched = await attendanceService.launchCourseSession(professor, 2, "lab", "G1");
+    expect(relaunched.id).toBe(opened.id);
+    expect(relaunched.state).toBe("open");
+  });
+});
+
+it("does not reset a class with recorded attendance", async () => {
+  const opened = await attendanceService.launchCourseSession(professor, 2, "lab", "G1");
+  await importAndActivate(opened.semesterId, studentA, "RESET-01", "Arta Kola", "G1");
+  const challenge = await attendanceService.createChallenge(professor, opened.id, "198.51.100.91");
+  await attendanceService.checkIn(studentA, {token:challenge.token}, "198.51.100.92");
+  await attendanceService.transitionClassSession(professor, opened.id, {state:"closed", reason:"Complete"});
+  await expect(attendanceService.transitionClassSession(professor, opened.id, {state:"draft", reason:"Reset"})).rejects.toMatchObject({code:"session_has_records"});
+  expect(await sql`select id from attendance_records where session_id = ${opened.id}`).toHaveLength(1);
+});
