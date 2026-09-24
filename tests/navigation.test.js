@@ -39,9 +39,12 @@ test('each of fifteen weeks has a home and a consistent submission path',async()
   const page=await read(`lendet/2026-2027/mobile/java-${n}/index.html`);
   assert.ok(page.includes('dorezimet.html'));
   if(week>=3){
-   assert.ok(page.includes('prezantimi')||page.includes('Prezantimi'));
+   for(const heading of ['1. Ligjërata','2. Ushtrimet','3. Dorëzimi'])assert.ok(page.includes(heading),`week ${week}: missing ${heading}`);
+   assert.ok(page.includes('href="ushtrimet.html"'));
    assert.ok(page.includes(`java-${n}.md`));
    assert.ok((await read(`lendet/2026-2027/mobile/java-${n}/java-${n}-model.md`)).includes('Provat që bëra'));
+   const exercises=await read(`lendet/2026-2027/mobile/java-${n}/ushtrimet.html`);
+   for(const heading of ['1. Përgatitu','2. Ndërto','3. Provoje me një koleg','4. Dorëzo para se të largohesh'])assert.ok(exercises.includes(heading),`week ${week}: missing ${heading}`);
   }
  }
 });
