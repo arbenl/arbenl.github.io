@@ -1009,15 +1009,10 @@ describe("PostgreSQL rate limiting", () => {
       select encode(token_hash, 'hex') as token_hash from qr_challenges
       where session_id = ${classSession.id}
     `;
-    expect(activeChallenges).toHaveLength(1);
-    const token = challengeResults.find(
-      ({ token: candidate }) =>
-        createHash("sha256").update(candidate).digest("hex") ===
-        activeChallenges[0].token_hash,
-    )?.token;
-    expect(token).toBeTruthy();
-    expect(activeChallenges[0].token_hash).toBe(
-      createHash("sha256").update(token ?? "").digest("hex"),
+    expect(activeChallenges).toHaveLength(10);
+    const token = challengeResults[0].token;
+    expect(activeChallenges.map(({ token_hash }) => token_hash)).toContain(
+      createHash("sha256").update(token).digest("hex"),
     );
 
     const scanIp = "198.51.100.41";
@@ -1143,7 +1138,7 @@ describe("challenge acceptance and live attendance", () => {
     `).toHaveLength(1);
   });
 
-  it("rotates 40-second challenges, rejects expiry, cross-group use and the database-clock two-minute cutoff", async () => {
+  it("keeps QR tokens valid during the session, rejects expiry and cross-group use at the database deadline", async () => {
     const semester = await createActiveSemester();
     await importAndActivate(semester.id, studentA, "A-1", "Arta Kola", "G1");
     await importAndActivate(semester.id, studentB, "B-1", "Besa Dema", "G2");
@@ -1159,12 +1154,10 @@ describe("challenge acceptance and live attendance", () => {
       "192.0.2.1",
     );
     expect(second.token).not.toBe(first.token);
-    expect(new Date(second.expiresAt).getTime() - new Date(second.serverTime).getTime()).toBe(
-      40_000,
-    );
+    expect(new Date(second.expiresAt).getTime() - new Date(second.serverTime).getTime()).toBeGreaterThan(0);
     await expect(
       attendanceService.checkIn(studentA, { token: first.token }, "192.0.2.2"),
-    ).rejects.toMatchObject({ code: "invalid_challenge" });
+    ).resolves.toMatchObject({ status: "present" });
     await expect(
       attendanceService.checkIn(studentB, { token: second.token }, "192.0.2.3"),
     ).rejects.toMatchObject({ code: "wrong_group" });
@@ -1191,7 +1184,7 @@ describe("challenge acceptance and live attendance", () => {
     ).rejects.toMatchObject({ code: "checkin_closed" });
   });
 
-  it("queues a scan behind challenge rotation and rejects the token removed by the winning rotation", async () => {
+  it("queues a scan behind a second QR issue and still accepts the first valid token", async () => {
     const semester = await createActiveSemester();
     await importAndActivate(semester.id, studentA, "A-1", "Arta Kola", "G1");
     const classSession = await createOpenSession(semester.id);
@@ -1243,10 +1236,10 @@ describe("challenge acceptance and live attendance", () => {
     expect(observedWhileLocked).toBe("blocked");
     expect(rotated.token).not.toBe(original.token);
     expect(scanOutcome).toMatchObject({
-      status: "rejected",
-      reason: { code: "invalid_challenge" },
+      status: "fulfilled",
+      value: { status: "present" },
     });
-    expect(await sql`select 1 from attendance_records`).toHaveLength(0);
+    expect(await sql`select 1 from attendance_records`).toHaveLength(1);
   });
 
   it.each([
@@ -1329,7 +1322,7 @@ describe("challenge acceptance and live attendance", () => {
     },
   );
 
-  it("returns a masked, stable live order while keeping students isolated", async () => {
+  it("returns full names in stable live order while keeping students isolated", async () => {
     const semester = await createActiveSemester();
     const firstRoster = await importAndActivate(
       semester.id,
@@ -1375,10 +1368,9 @@ describe("challenge acceptance and live attendance", () => {
       firstRoster.id,
     ]);
     expect(snapshot.entries.map(({ displayName }) => displayName)).toEqual([
-      "Besa D.",
-      "Arta K.",
+      "Besa Dema",
+      "Arta Kola",
     ]);
-    expect(JSON.stringify(snapshot)).not.toContain("Besa Dema");
     expect(JSON.stringify(snapshot)).not.toContain("B-1");
     expect(JSON.stringify(snapshot)).not.toContain("student-b");
     await expect(

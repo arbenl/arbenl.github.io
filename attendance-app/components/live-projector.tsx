@@ -17,7 +17,7 @@ interface LiveProjectorProps {
 }
 
 const POLL_MILLISECONDS = 1_000;
-const CHALLENGE_REFRESH_MILLISECONDS = 25_000;
+const CHALLENGE_RETRY_MILLISECONDS = 3_000;
 
 export function LiveProjector({ sessionId }: LiveProjectorProps) {
   const [snapshot, setSnapshot] = useState<LiveSnapshot | null>(null);
@@ -81,16 +81,9 @@ export function LiveProjector({ sessionId }: LiveProjectorProps) {
           setQrImage(image);
         }
       } catch {
-        if (active) {
-          setChallenge(null);
-          setQrImage(null);
+        if (active && isOpen(snapshotRef.current)) {
+          challengeTimer = window.setTimeout(rotateChallenge, CHALLENGE_RETRY_MILLISECONDS);
         }
-      }
-      if (active && isOpen(snapshotRef.current)) {
-        challengeTimer = window.setTimeout(
-          rotateChallenge,
-          CHALLENGE_REFRESH_MILLISECONDS,
-        );
       }
     }
 

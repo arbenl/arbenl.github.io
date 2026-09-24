@@ -28,7 +28,6 @@ import { createChallengeToken, hashChallengeToken } from "./challenge";
 import { issueRegistrationPermit, readRegistrationPermit } from "./registration";
 import { CURRENT_COURSE, CURRENT_COURSE_SESSIONS, sessionIncludesGroup } from "./current-course";
 import {
-  maskDisplayName,
   normalizeAlbanianName,
   normalizeStudentId,
 } from "./normalize";
@@ -932,7 +931,7 @@ async function transitionClassSession(
         state: input.state,
         checkinEndsAt:
           input.state === "open"
-            ? sql`statement_timestamp() + interval '2 minutes'`
+            ? sql`statement_timestamp() + interval '5 minutes'`
             : input.state === "draft" ? null : current.checkinEndsAt,
         updatedAt: sql`statement_timestamp()`,
       })
@@ -1016,13 +1015,16 @@ async function createChallenge(
       throw new AttendanceServiceError(409, "checkin_closed", "Check-in is closed");
     }
 
-    await transaction.delete(qrChallenges).where(eq(qrChallenges.sessionId, sessionId));
+    await transaction.delete(qrChallenges).where(and(
+      eq(qrChallenges.sessionId, sessionId),
+      sql`${qrChallenges.expiresAt} <= statement_timestamp()`,
+    ));
     const inserted = await transaction.execute(sql`
       insert into qr_challenges (session_id, token_hash, expires_at)
       values (
         ${sessionId},
         ${tokenHash},
-        least(statement_timestamp() + interval '40 seconds', ${row.checkinEndsAt})
+        ${row.checkinEndsAt}
       )
       returning expires_at as "expiresAt", statement_timestamp() as "serverTime"
     `);
@@ -1332,7 +1334,7 @@ async function getLiveSession(
     );
   const entries = rows.map((row) => ({
     rosterId: row.rosterId,
-    displayName: maskDisplayName(row.fullName),
+    displayName: row.fullName,
     recordedAt: toIso(row.scannedAt ?? row.verifiedAt ?? classSession.serverTime),
   }));
   return {

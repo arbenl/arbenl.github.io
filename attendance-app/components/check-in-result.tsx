@@ -32,7 +32,7 @@ type ViewState =
   | { phase: "auth" }
   | { phase: "activation"; token: string; registrationPermit?: string }
   | { phase: "success"; result: CheckInSuccess }
-  | { phase: "error"; message: string };
+  | { phase: "error"; message: string; retryable?: boolean };
 
 function validToken(value: unknown): value is string {
   return typeof value === "string" && TOKEN_PATTERN.test(value);
@@ -124,17 +124,19 @@ export function CheckInResult() {
           setView({ phase: "activation", token: currentToken, registrationPermit: error.error.registrationPermit });
           return;
         }
-        heldToken.current = null;
-        window.sessionStorage.removeItem(STORAGE_KEY);
+        const retryable = response.status === 429 || response.status >= 500;
+        if (!retryable) {
+          heldToken.current = null;
+          window.sessionStorage.removeItem(STORAGE_KEY);
+        }
         setView({
           phase: "error",
-          message: error.error?.message ?? "Check-in-i dështoi.",
+          message: retryable ? "Shërbimi është i ngarkuar. Prit pak dhe provo sërish me të njëjtin kod." : error.error?.message ?? "Check-in-i dështoi.",
+          retryable,
         });
       })
       .catch(() => {
-        heldToken.current = null;
-        window.sessionStorage.removeItem(STORAGE_KEY);
-        setView({ phase: "error", message: "Lidhja dështoi. Skano QR-në përsëri." });
+        setView({ phase: "error", message: "Lidhja dështoi. Provo sërish me të njëjtin kod.", retryable: true });
       });
   }, [attempt]);
 
@@ -193,7 +195,9 @@ export function CheckInResult() {
     );
   }
   if (view.phase === "error") {
-    return <p role="alert">{view.message}</p>;
+    return <div className="student-stack"><p role="alert">{view.message}</p>{view.retryable ? (
+      <button className="student-control primary-action" onClick={() => setAttempt((current) => current + 1)} type="button">Provo sërish</button>
+    ) : null}</div>;
   }
 
   return (

@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 
-const CHALLENGE_LIFETIME_MILLISECONDS = 40_000;
+const CHALLENGE_LIFETIME_MILLISECONDS = 5 * 60_000;
 
 export function createChallengeToken(): string {
   return randomBytes(32).toString("hex");
