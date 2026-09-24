@@ -40,6 +40,17 @@ test('the semester has fifteen Thursdays and ten graded labs after the first wee
  assert.equal(plan.weeks[0].graded,false);
  for(const w of plan.weeks)assert.equal(new Date(w.date+'T12:00:00Z').getUTCDay(),4);
 });
+test('submission guide distinguishes all weekly uploads from graded labs',async()=>{
+ const plan=JSON.parse(await readFile('grading/course-plan.json','utf8'));
+ const html=await readFile('lendet/2026-2027/mobile/dorezimet.html','utf8');
+ const graded=plan.weeks.filter(w=>w.graded).map(w=>w.week);
+ const formative=plan.weeks.filter(w=>!w.graded).map(w=>w.week);
+ assert.ok(html.includes('15 javë pune · 15 dorëzime · 10 me pikë'));
+ assert.deepEqual(graded,[2,3,4,5,6,8,9,10,12,14]);
+ assert.deepEqual(formative,[1,7,11,13,15]);
+ assert.ok(html.includes('2–6, 8–10, 12 dhe 14'));
+ assert.ok(html.includes('1, 7, 11, 13 dhe 15'));
+});
 test('the restaurant demo discloses its purpose and exposes the complete order flow',async()=>{
  const html=await readFile('lendet/2026-2027/mobile/demo/restaurant/index.html','utf8');
  assert.ok(html.includes('Demo — nuk regjistron pjesëmarrjen'));
