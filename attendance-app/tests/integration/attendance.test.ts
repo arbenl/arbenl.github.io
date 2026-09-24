@@ -252,7 +252,7 @@ async function expectHttpRateLimit(
   expect(response.status).toBe(429);
   expect(response.headers.get("Retry-After")).toBe(String(retryAfter));
   expect(await response.json()).toEqual({
-    error: { code: "rate_limited", message: "Too many requests" },
+    error: { code: "rate_limited", message: "Ke provuar disa herë radhazi. Prit pak dhe provo përsëri." },
   });
 }
 
@@ -907,7 +907,7 @@ describe("protected semester and roster management", () => {
       expect(await response.json()).toEqual({
         error: {
           code: "staff_required",
-          message: "Staff access required",
+          message: "Kjo hapësirë është vetëm për profesorin.",
         },
       });
     }
@@ -924,7 +924,7 @@ describe("protected semester and roster management", () => {
       expect(await response.json()).toEqual({
         error: {
           code: "staff_required",
-          message: "Staff access required",
+          message: "Kjo hapësirë është vetëm për profesorin.",
         },
       });
     }
@@ -1448,15 +1448,17 @@ describe("student history", () => {
         expect.objectContaining({
           id: lab.id,
           kind: "lab",
-          status: "absent",
+          status: "pending",
         }),
       ]),
+      profile: null,
       totals: {
-        sessions: 2,
+        sessions: 1,
         present: 1,
         excused: 0,
         rejected: 0,
-        absent: 1,
+        absent: 0,
+        pending: 1,
       },
     };
     const body = await ordinary.json();
@@ -1949,4 +1951,33 @@ it("does not reset a class with recorded attendance", async () => {
   await attendanceService.transitionClassSession(professor, opened.id, {state:"closed", reason:"Complete"});
   await expect(attendanceService.transitionClassSession(professor, opened.id, {state:"draft", reason:"Reset"})).rejects.toMatchObject({code:"session_has_records"});
   expect(await sql`select id from attendance_records where session_id = ${opened.id}`).toHaveLength(1);
+});
+
+
+describe("student preparation before class", () => {
+  it("saves a current-course profile without recording attendance", async () => {
+    const {semesterId}=await attendanceService.ensureCurrentCourseSetup(professor);
+    const input={semesterId,studentId:"READY-01",firstName:"Arta",lastName:"Kola",email:"ready@example.com",groupName:"G1" as const,beforeClass:true};
+    await attendanceService.activateRoster(studentA,input,"198.51.100.95");
+    expect(await sql`select id from attendance_records`).toHaveLength(0);
+    const history=await attendanceService.getStudentHistory(studentA);
+    expect(history.profile?.fullName).toBe("Arta Kola");
+    const opened=await attendanceService.launchCourseSession(professor,2,"lab","G1");
+    const waiting=await attendanceService.getStudentHistory(studentA);
+    expect(waiting.sessions.find(s=>s.id===opened.id)?.status).toBe("pending");
+    expect(waiting.totals.absent).toBe(0);
+    const qr=await attendanceService.createChallenge(professor,opened.id,"198.51.100.96");
+    await attendanceService.checkIn(studentA,{token:qr.token},"198.51.100.97");
+    expect((await attendanceService.getStudentHistory(studentA)).totals.present).toBe(1);
+  });
+});
+
+it("pre-class registration cannot enrol into another or archived semester", async () => {
+  const other = await createActiveSemester();
+  const input={semesterId:other.id,studentId:"BEFORE-OTHER",firstName:"Arta",lastName:"Kola",email:"before@example.com",groupName:"G1" as const,beforeClass:true};
+  await expect(attendanceService.activateRoster(studentA,input,"198.51.100.98")).rejects.toMatchObject({status:409});
+  const {semesterId}=await attendanceService.ensureCurrentCourseSetup(professor);
+  await attendanceService.transitionSemester(professor,semesterId,{state:"archived",reason:"Test archive"});
+  await expect(attendanceService.activateRoster(studentA,{...input,semesterId},"198.51.100.99")).rejects.toMatchObject({status:409});
+  expect(await sql`select id from attendance_records`).toHaveLength(0);
 });

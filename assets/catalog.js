@@ -20,5 +20,9 @@ const legacyHashes = new Set(['student-start','templates-hub','course-overview',
 if (location.pathname === '/' || location.pathname === '/index.html') {
   const hash = location.hash.slice(1);
   if (hash === 'profile') location.replace('/profili.html');
-  else if (legacyHashes.has(hash) || /^week-(?:[1-9]|1[0-5])$/.test(hash)) location.replace('/lendet/2026-2027/mobile/syllabus.html' + location.search + location.hash);
+  else if (/^week-(?:[1-9]|1[0-5])$/.test(hash)) location.replace('/lendet/2026-2027/mobile/java-' + hash.slice(5).padStart(2,'0') + '/');
+  else if (hash === 'templates-hub') location.replace('/lendet/2026-2027/mobile/dorezimet.html');
+  else if (hash === 'checkin') location.replace('https://aab-mobile-attendance.vercel.app/student');
+  else if (hash === 'curriculum' || hash === 'student-start') location.replace('/lendet/2026-2027/mobile/#javet');
+  else if (legacyHashes.has(hash)) location.replace('/lendet/2026-2027/mobile/syllabus.html' + location.search + location.hash);
 }

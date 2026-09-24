@@ -1,6 +1,6 @@
 # Regjistrimi një herë · Mobile 2026/2027
 
-Studenti hyn me të njëjtën llogari GitHub dhe skanon QR-në e profesorit në ligjëratën ose ushtrimet e para. Nëse profili nuk ekziston, plotëson emrin, mbiemrin, indeksin, grupin dhe emailin për materialet. Semestri i vetëm aktiv zgjidhet automatikisht. Nuk nevojitet import paraprak nga profesori.
+Studenti mund ta përgatitë profilin para orës te `/student/activate`, ose të skanojë QR-në e profesorit në orën e parë. Hyrja bëhet me të njëjtën llogari GitHub. Regjistrimi paraprak lejohet vetëm për lëndën aktuale aktive dhe nuk krijon asnjë evidencë pjesëmarrjeje. Nëse profili nuk ekziston, plotëson emrin, mbiemrin, indeksin, grupin dhe emailin për materialet. Semestri i vetëm aktiv zgjidhet automatikisht. Nuk nevojitet import paraprak nga profesori.
 
 Një QR i vlefshëm jep deri në 10 minuta për plotësimin e profilit, vetëm për llogarinë që e skanoi dhe grupin/semestrin përkatës. Kjo leje nuk regjistron vijueshmëri dhe nuk zgjat vlefshmërinë e QR-së. Nëse QR-ja skadon gjatë plotësimit, profili ruhet dhe studenti skanon sërish kodin e ri. Në orët e tjera nuk plotësohet formulari.
 

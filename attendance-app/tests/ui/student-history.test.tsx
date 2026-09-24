@@ -52,3 +52,22 @@ describe("student semester history", () => {
     expect(JSON.stringify(fetchMock.mock.calls)).not.toContain("student-b");
   });
 });
+
+it("shows the saved profile and keeps an open class pending instead of absent", async () => {
+  vi.spyOn(globalThis,"fetch").mockResolvedValue(jsonResponse({
+    profile:{fullName:"Arta Kola",studentId:"001",email:"arta@example.com",groupName:"G1"},
+    sessions:[{id:"open",semesterTitle:"Mobile 2026/27",title:"Ushtrimet 2",weekNumber:2,kind:"lab",status:"pending",recordedAt:null}],
+    totals:{sessions:0,present:0,excused:0,rejected:0,absent:0,pending:1},
+  }));
+  const view=render(<StudentPage />);
+  await waitFor(()=>expect(view.getByText("Regjistrimi është i hapur")).toBeTruthy());
+  expect(view.getByText("Arta Kola · G1")).toBeTruthy();
+  expect(view.queryByText("Mungesë",{exact:true})).toBeNull();
+  expect(view.queryByText("Regjistrohu një herë →")).toBeNull();
+});
+it("provides a clear recovery action when history cannot load",async()=>{
+  vi.spyOn(globalThis,"fetch").mockRejectedValue(new Error("offline"));
+  const view=render(<StudentPage />);
+  await waitFor(()=>expect(view.getByRole("alert")).toBeTruthy());
+  expect(view.getByRole("button",{name:"Provo përsëri"})).toBeTruthy();
+});

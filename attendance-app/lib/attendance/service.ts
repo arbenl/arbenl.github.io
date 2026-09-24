@@ -512,6 +512,7 @@ async function getStudentHistory(session: Session | null) {
       title: classSessions.title,
       weekNumber: classSessions.weekNumber,
       kind: classSessions.kind,
+      state: classSessions.state,
       status: attendanceRecords.status,
       scannedAt: attendanceRecords.scannedAt,
       verifiedAt: attendanceRecords.verifiedAt,
@@ -554,14 +555,15 @@ async function getStudentHistory(session: Session | null) {
     title: row.title,
     weekNumber: row.weekNumber,
     kind: row.kind as "lecture" | "lab",
-    status: (row.status ?? "absent") as AttendanceStatus | "absent",
+    status: (row.status ?? (row.state === "open" ? "pending" : "absent")) as AttendanceStatus | "absent" | "pending",
     recordedAt:
       row.scannedAt || row.verifiedAt
         ? toIso(row.scannedAt ?? row.verifiedAt ?? "")
         : null,
   }));
   const totals = {
-    sessions: sessions.length,
+    sessions: sessions.filter(item => item.status !== "pending").length,
+    pending: 0,
     present: 0,
     excused: 0,
     rejected: 0,
@@ -571,7 +573,10 @@ async function getStudentHistory(session: Session | null) {
     totals[item.status] += 1;
   }
 
-  return { sessions, totals };
+  const [profile] = await db.select({ fullName: roster.fullName, studentId: roster.studentId, email: roster.email, groupName: roster.groupName })
+    .from(roster).innerJoin(semesters, eq(semesters.id, roster.semesterId))
+    .where(and(eq(roster.userId, actor.userId), eq(semesters.title, CURRENT_COURSE.title), eq(semesters.status, "active"))).limit(1);
+  return { sessions, totals, profile: profile ?? null };
 }
 
 async function transitionSemester(
@@ -680,6 +685,7 @@ async function activateRoster(
     groupName?: "G1" | "G2";
     token?: string;
     registrationPermit?: string;
+    beforeClass?: boolean;
     firstName: string;
     lastName: string;
   },
@@ -705,7 +711,7 @@ async function activateRoster(
         throw genericRosterMismatch();
       }
 
-      // Profile identity is persistent; QR is required only for a new enrolment.
+      // Preparing a profile is separate from attendance; attendance always requires a live QR.
       const email = input.email?.trim().toLowerCase();
       if (email && (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email))) {
         throw new AttendanceServiceError(400, "invalid_email", "Shkruaj një email të vlefshëm.");
@@ -724,7 +730,8 @@ async function activateRoster(
       if (!entry) {
         if (!email || !input.groupName) throw genericRosterMismatch();
         const permit = input.registrationPermit ? readRegistrationPermit(input.registrationPermit, getEnv().NEXTAUTH_SECRET) : null;
-        const allowed = permit && permit.githubId === actor.githubId && permit.semesterId === input.semesterId && sessionIncludesGroup(permit.kind, permit.groupName, input.groupName);
+        const beforeClass = input.beforeClass === true && (await transaction.select({id:semesters.id}).from(semesters).where(and(eq(semesters.id,input.semesterId),eq(semesters.title,CURRENT_COURSE.title),eq(semesters.status,"active"))).limit(1)).length === 1;
+        const allowed = beforeClass || permit && permit.githubId === actor.githubId && permit.semesterId === input.semesterId && sessionIncludesGroup(permit.kind, permit.groupName, input.groupName);
         if (!allowed && !input.token) throw genericRosterMismatch();
         const tokenHash = hashChallengeToken(input.token ?? "");
         const valid = await transaction.execute(sql`
@@ -745,7 +752,7 @@ async function activateRoster(
           activatedAt: sql`statement_timestamp()`,
         }).returning();
         await audit(transaction, actor.userId, "roster.self_register", "roster", created.id,
-          "Student supplied profile during active QR session", { semesterId: input.semesterId });
+          input.beforeClass ? "Student prepared profile before class; no attendance granted" : "Student supplied profile during active QR session", { semesterId: input.semesterId });
         return created;
       }
       if (
@@ -1632,6 +1639,16 @@ export function firstForwardedIp(request: Request): string {
 }
 
 export function attendanceServiceErrorResponse(error: unknown): Response {
+  if (error instanceof AttendanceServiceError) {
+    const messages: Record<string,string> = {
+      invalid_challenge: "QR-ja ka skaduar. Skano kodin e ri në projektor; nëse ora është mbyllur, njofto profesorin.",
+      checkin_closed: "Regjistrimi për këtë orë është mbyllur. Nëse ishe i pranishëm, njofto profesorin.",
+      wrong_group: "Ky QR është për grupin tjetër. Skano kodin e grupit tënd.",
+      staff_required: "Kjo hapësirë është vetëm për profesorin.",
+      rate_limited: "Ke provuar disa herë radhazi. Prit pak dhe provo përsëri.",
+    };
+    if (messages[error.code]) error.message = messages[error.code];
+  }
   if (error instanceof SyntaxError) {
     return Response.json(
       { error: { code: "invalid_request", message: "Invalid request" } },

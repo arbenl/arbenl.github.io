@@ -11,6 +11,7 @@ const activationSchema = z.object({
   semesterId: z.string().uuid(),
   email: z.string().trim().email().max(254).transform((value) => value.toLowerCase()),
   groupName: z.enum(["G1", "G2"]).optional(),
+  beforeClass: z.boolean().optional(),
   registrationPermit: z.string().max(1500).optional(),
   token: z.string().regex(/^[0-9a-f]{64}$/u).optional(),
   studentId: z.string().trim().min(1).max(100),

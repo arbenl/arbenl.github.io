@@ -10,11 +10,12 @@ interface HistorySession {
   title: string;
   weekNumber: number;
   kind: "lecture" | "lab";
-  status: "present" | "excused" | "rejected" | "absent";
+  status: "present" | "excused" | "rejected" | "absent" | "pending";
   recordedAt: string | null;
 }
 
 interface StudentHistory {
+  profile?: { fullName: string; studentId: string; groupName: string; email: string | null } | null;
   sessions: HistorySession[];
   totals: {
     sessions: number;
@@ -30,6 +31,7 @@ const statusLabels: Record<HistorySession["status"], string> = {
   excused: "E arsyetuar",
   rejected: "E refuzuar",
   absent: "Mungesë",
+  pending: "Regjistrimi është i hapur",
 };
 
 export default function StudentPage() {
@@ -71,16 +73,20 @@ export default function StudentPage() {
             skanoje QR-në dhe ndiq lidhjen; regjistrimi përfundon në atë faqe.
           </p>
         </aside>
+        <p><a href="https://arbenl.github.io/lendet/2026-2027/mobile/dorezimet.html">Detyrat dhe dorëzimet →</a></p>
         {state === "loading" ? <p role="status">Duke ngarkuar…</p> : null}
         {state === "auth" ? (
           <div className="student-stack">
-            <p>Hyr për ta parë historinë tënde.</p>
+            <p>Hyr me GitHub. Përdor të njëjtën llogari gjatë gjithë semestrit.</p>
+            <a className="admin-link" href="/student/activate">Regjistrohu për herë të parë</a>
             <SignIn callbackUrl="/student" />
           </div>
         ) : null}
-        {state === "error" ? <p role="alert">Historia nuk mund të ngarkohet.</p> : null}
+        {state === "error" ? <div><p role="alert">Historia nuk mund të ngarkohet. Kontrollo lidhjen dhe provo përsëri.</p><button className="student-control" onClick={() => window.location.reload()}>Provo përsëri</button></div> : null}
         {state === "ready" && history ? (
           <>
+            {history.profile ? <p className="student-checkin-guide"><strong>{history.profile.fullName} · {history.profile.groupName}</strong><br />Profili yt është ruajtur. Në orën tjetër vetëm skano QR-në.</p>
+              : <p className="student-checkin-guide">Bëje gati profilin para orës. <a href="/student/activate">Regjistrohu një herë →</a></p>}
             <dl className="history-totals">
               <div><dt>Gjithsej</dt><dd>{history.totals.sessions}</dd></div>
               <div><dt>Vijueshmëria</dt><dd>{history.totals.present} e pranishme</dd></div>
@@ -100,6 +106,7 @@ export default function StudentPage() {
                       <span>
                         Java {session.weekNumber} · {session.kind === "lecture" ? "Ligjëratë" : "Ushtrime"}
                       </span>
+                      {session.recordedAt ? <time dateTime={session.recordedAt}>Regjistruar: {new Intl.DateTimeFormat("sq-AL", {timeZone:"Europe/Belgrade",dateStyle:"short",timeStyle:"short"}).format(new Date(session.recordedAt))}</time> : null}
                     </div>
                     <span className={`attendance-status status-${session.status}`}>
                       {statusLabels[session.status]}
