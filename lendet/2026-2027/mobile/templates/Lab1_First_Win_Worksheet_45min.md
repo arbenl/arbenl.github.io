@@ -1,4 +1,6 @@
 # FLETA E PUNËS: USHTRIMET 1 — "FIRST WIN NË 45 MINUTA"
+
+**Shkurtesat:** PWA (Progressive Web App – aplikacion web progresiv); QR (Quick Response – përgjigje e shpejtë).
 **Kursi:** Programimi për Pajisje Mobile (2026/2027) • **Kolegji AAB**  
 **Objektivi Kryesor:** Nga zeroja te një Mobile PWA e publikuar LIVE në internet dhe e verifikuar në telefon brenda 45 minutave të para të orës së ushtrimeve.
 

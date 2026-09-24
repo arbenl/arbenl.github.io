@@ -53,3 +53,17 @@ test('each of fifteen weeks has a home and a consistent submission path',async()
   }
  }
 });
+
+test('course abbreviations are explained in student pages and projector slides',async()=>{
+ const checks={
+  'java-01/index.html':['PWA (Progressive Web App','PRD-në (Product Requirements Document','MVP-së (Minimum Viable Product'],
+  'java-02/prezantimi-ligjerates.html':['MVP-së (Minimum Viable Product','PRD (Product Requirements Document'],
+  'java-02/prezantimi-ushtrimeve.html':['QR (Quick Response','AI (Artificial Intelligence'],
+  'java-04/index.html':['RLS (Row Level Security'],
+  'java-14/index.html':['CI/CD (Continuous Integration / Continuous Delivery']
+ };
+ for(const [file,terms] of Object.entries(checks)){
+  const html=await read(`lendet/2026-2027/mobile/${file}`);
+  for(const term of terms)assert.ok(html.includes(term),`${file}: missing ${term}`);
+ }
+});
