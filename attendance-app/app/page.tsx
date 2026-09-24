@@ -10,7 +10,7 @@ export default function Home() {
         </p>
         <div className="home-actions">
           <a className="primary-action" href="/student">Vijueshmëria ime</a>
-          <a className="secondary-link" href="https://arbenl.github.io/">Kthehu te Student Zone</a>
+          <a className="secondary-link" href="https://arbenl.github.io/lendet/2026-2027/mobile/">Kthehu te lënda</a>
         </div>
       </section>
     </main>
