@@ -9,6 +9,10 @@ import { getCurrentSession } from "@/lib/auth/session";
 
 const activationSchema = z.object({
   semesterId: z.string().uuid(),
+  email: z.string().trim().email().max(254).transform((value) => value.toLowerCase()),
+  groupName: z.enum(["G1", "G2"]).optional(),
+  registrationPermit: z.string().max(1500).optional(),
+  token: z.string().regex(/^[0-9a-f]{64}$/u).optional(),
   studentId: z.string().trim().min(1).max(100),
   firstName: z.string().trim().min(1).max(100),
   lastName: z.string().trim().min(1).max(100),

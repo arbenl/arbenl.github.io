@@ -314,6 +314,7 @@ function SemesterRow({
     <article className="semester-row">
       <div><strong>{semester.title}</strong><span>{semester.weekCount} javë · {semester.status}</span></div>
       <a href={`/api/semesters/${semester.id}/export`} download>Eksporto CSV</a>
+      <a href={`/api/semesters/${semester.id}/roster`} download>Regjistri me email · privat</a>
       {semester.status !== "archived" ? (
         <>
           <label className="sr-only" htmlFor={`semester-reason-${semester.id}`}>Arsyeja për {semester.title}</label>

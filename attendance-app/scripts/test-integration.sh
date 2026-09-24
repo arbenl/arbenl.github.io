@@ -53,6 +53,11 @@ docker exec --interactive "$container_name" psql \
   --set ON_ERROR_STOP=1 \
   --username attendance_test < "$migration_file" >/dev/null
 
+for migration in "$app_dir"/drizzle/000[1-9]*.sql; do
+  [[ -f "$migration" ]] || continue
+  docker exec --interactive "$container_name" psql --dbname attendance_test --set ON_ERROR_STOP=1 --username attendance_test < "$migration" >/dev/null
+done
+
 export DATABASE_URL="postgresql://attendance_test:attendance_test@127.0.0.1:${host_port}/attendance_test"
 export NEXTAUTH_URL="http://127.0.0.1:3000"
 export NEXTAUTH_SECRET="integration-nextauth-secret"

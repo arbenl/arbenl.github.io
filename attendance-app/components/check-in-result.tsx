@@ -15,7 +15,7 @@ interface HeldToken {
 }
 
 interface ApiError {
-  error?: { code?: string; message?: string };
+  error?: { code?: string; message?: string; registrationPermit?: string };
 }
 
 interface CheckInSuccess {
@@ -30,7 +30,7 @@ type ViewState =
   | { phase: "pending" }
   | { phase: "missing" }
   | { phase: "auth" }
-  | { phase: "activation" }
+  | { phase: "activation"; token: string; registrationPermit?: string }
   | { phase: "success"; result: CheckInSuccess }
   | { phase: "error"; message: string };
 
@@ -121,7 +121,7 @@ export function CheckInResult() {
           return;
         }
         if (error.error?.code === "roster_not_activated") {
-          setView({ phase: "activation" });
+          setView({ phase: "activation", token: currentToken, registrationPermit: error.error.registrationPermit });
           return;
         }
         heldToken.current = null;
@@ -156,7 +156,7 @@ export function CheckInResult() {
     ) {
       heldToken.current = null;
       window.sessionStorage.removeItem(STORAGE_KEY);
-      setView({ phase: "error", message: "Tokeni ka skaduar. Skano përsëri QR-në e re." });
+      setView({ phase: "error", message: "Profili u ruajt. Për vijueshmërinë skano përsëri QR-në e re." });
       return;
     }
     setAttempt((current) => current + 1);
@@ -183,6 +183,8 @@ export function CheckInResult() {
       <div className="student-stack">
         <h2>Aktivizo profilin</h2>
         <ProfileForm
+          registrationPermit={view.registrationPermit}
+          token={view.token}
           callbackUrl="/check-in"
           onActivated={resumeAfterActivation}
           onAuthenticationRequired={beginLogin}
