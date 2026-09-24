@@ -38,7 +38,11 @@ async function noOverflow(page: Page) {
 }
 
 async function activate(page: Page, firstName: string, lastName: string, studentId: string) {
-  await page.getByLabel("Semestri", { exact: true }).selectOption({ label: semesterTitle });
+  await page.getByRole("button", { name: "Aktivizo profilin", exact: true }).waitFor();
+  await expect(page.locator('input[name="semesterId"]')).toHaveValue(/.+/);
+  await page.getByLabel("Grupi i ushtrimeve", { exact: true }).selectOption("G1");
+  await page.getByLabel("Emaili që përdor për Google Drive", { exact: true }).fill(`${studentId.toLowerCase()}@example.com`);
+  await page.getByLabel("Shkruaje emailin përsëri", { exact: true }).fill(`${studentId.toLowerCase()}@example.com`);
   await page.getByLabel("Emri", { exact: true }).fill(firstName);
   await page.getByLabel("Mbiemri", { exact: true }).fill(lastName);
   await page.getByLabel("Student ID", { exact: true }).fill(studentId);
