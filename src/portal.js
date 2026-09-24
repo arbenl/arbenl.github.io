@@ -140,22 +140,22 @@ const translations = {
     "project.title": "📋 Projekti i Kursit & Kriteret e Vlerësimit",
     "project.desc":
       "Në vend të detyrave abstrakte, çdo student zhvillon individualisht një Mobile-First PWA plotësisht funksionale për një biznes real familjar, zejtar, kafene, apo sipërmarrje lokale në Kosovë.",
-    "rubric.r0Title": "Vijueshmëria & Check-In me QR",
+    "rubric.r0Title": "Vijueshmëria dhe angazhimi në orë",
     "rubric.r0Desc":
-      "Evidentim i menjëhershëm me QR kod në sallë. Pragu minimal 70% është kusht eliminues për të fituar të drejtën e mbrojtjes në Demo Day.",
-    "rubric.r1Title": "Ushtrimet & GitHub Autograding",
+      "QR-ja evidencon praninë; puna në orë, exit ticket dhe zgjidhja e shpjeguar evidencojnë angazhimin. Skanimi i QR-së nuk provon kryerjen e detyrës.",
+    "rubric.r1Title": "Ushtrimet RideShare dhe kontrolli i dorëzimit",
     "rubric.r1Desc":
-      "10 detyra në aplikacionin tuaj, nga 3 pikë secila. Testet dhe publikimi javor i pikëve presin aktivizimin.",
+      "10 ushtrime RideShare deri në 3 pikë secili. Kontrolli teknik i skedarëve nuk jep notë automatike; pikët e cilësisë vlerësohen sipas rubrikës së publikuar.",
     "rubric.r2Title": "Projekti Final PWA i Biznesit",
     "rubric.r2Desc":
-      "Mobile PWA funksionale për biznes real familjar me Tailwind, Supabase DB & Auth, instalueshmëri offline dhe publikim në Vercel.",
+      "Aplikacion Next.js/PWA për një biznes real shërbimesh, i përdorshëm në telefon, i testuar dhe i publikuar.",
     "rubric.r3Title": "Demo Day & Mbrojtja Individuale",
     "rubric.r3Desc":
       "Prezantimi live 5-minutësh nga celulari para auditorit, arsyetimi i vendimeve arkitekturore dhe pyetjet individuale teknike të kodit.",
     "autograding.title":
-      "Automatizimi i Vlerësimit Javor (GitHub Classroom + Actions Autograding)",
+      "Kontrolli teknik i dorëzimeve javore",
     "autograding.desc":
-      "Sistemi i notimit automatik është në përgatitje. Rubrika dhe testet e çdo detyre do të publikohen para afatit. Rezultatet javore dhe totali do të shfaqen në llogarinë personale të studentit.",
+      "Kontrolli i skedarëve është aktiv. Rubrika dhe testet e vlerësimit të cilësisë publikohen para se të përdoren për pikët e javës.",
     "project.btnTopics": "Eksploro Temat e Sugjeruara →",
     "project.btnCatalog": "Katalogu i Rezervimeve & Notat →",
     "policies.eyebrow": "Standardet Akademike të Kolegjit AAB",
@@ -168,7 +168,7 @@ const translations = {
       "Përdorimi i GitHub Copilot është i lejuar dhe i rekomanduar si asistent programues. Megjithatë, studenti mban përgjegjësi absolute për kodin: në Demo Day, paaftësia për të shpjeguar logjikën e kodit rezulton në zbritje pikësh ose moskalim.",
     "policies.attendTitle": "Pjesëmarrja & Dorëzimet",
     "policies.attendDesc":
-      "Vijueshmëria ka 10% dhe 10 ushtrimet praktike kanë gjithsej 30%. Regjistrimi QR dhe publikimi automatik i pikëve kërkojnë aktivizimin e shërbimeve të lëndës.",
+      "Vijueshmëria bashkë me angazhimin në orë kanë 10%; 10 ushtrimet RideShare kanë 30%. QR-ja regjistron praninë, kurse puna në orë tregon angazhimin.",
     "policies.gradeScaleTitle": "Shkalla Zyrtare e Notimit (Kolegji AAB)",
     "table.points": "Pikët e Grumbulluara",
     "table.grade": "Nota Zyrtare",
@@ -349,22 +349,22 @@ const translations = {
     "project.title": "📋 Course Project & Evaluation Criteria",
     "project.desc":
       "Instead of abstract dummy exercises, each student develops a fully functional Mobile-First PWA for a real local business, family enterprise, coffee shop, or SME in Kosovo.",
-    "rubric.r0Title": "Active Attendance & QR Check-In",
+    "rubric.r0Title": "Attendance and in-class engagement",
     "rubric.r0Desc":
-      "Live dynamic QR check-in during lectures and labs. Minimum 70% attendance threshold is strictly required to qualify for Demo Day.",
-    "rubric.r1Title": "Weekly Labs & GitHub Autograding",
+      "The QR records attendance; classwork, exit tickets and explained solutions show engagement. Scanning alone does not prove an assignment was completed.",
+    "rubric.r1Title": "RideShare labs and submission checks",
     "rubric.r1Desc":
-      "10 assignments in your own application, worth 3 points each. Automated tests and weekly score publication await activation.",
+      "Ten RideShare labs worth up to 3 points each. File checks are technical; quality points follow the published rubric.",
     "rubric.r2Title": "Final PWA Business Project",
     "rubric.r2Desc":
-      "Production-ready mobile PWA for a real family/local business with Tailwind, Supabase DB & Auth, offline mode, and Vercel hosting.",
+      "A tested, published Next.js/PWA application for a real service business, usable on a phone.",
     "rubric.r3Title": "Demo Day & Individual Defense",
     "rubric.r3Desc":
       "5-minute live smartphone showcase in the auditorium, architectural rationale defense, and individual code examination.",
     "autograding.title":
-      "Automated Weekly Grading (GitHub Classroom + Actions Autograding)",
+      "Technical checks for weekly submissions",
     "autograding.desc":
-      "Automatic grading is being prepared. Each assignment rubric and tests will be available before its deadline. Weekly results and cumulative points will appear in the student’s personal account.",
+      "File checks are active. Quality rubrics and tests will be published before they are used for weekly points.",
     "project.btnTopics": "Explore Suggested Topics →",
     "project.btnCatalog": "Topic Reservations & Grades →",
     "policies.eyebrow": "AAB College Academic Standards",
@@ -377,7 +377,7 @@ const translations = {
       "Using GitHub Copilot is permitted and encouraged as a pair programming assistant. However, students bear full accountability for their code: inability to explain code logic during Demo Day will result in point deductions or failure.",
     "policies.attendTitle": "Attendance & Submissions",
     "policies.attendDesc":
-      "Attendance contributes 10% and ten practical assignments contribute 30%. QR registration and automatic score publication require activation of the course services.",
+      "Attendance together with in-class engagement counts for 10%; ten RideShare labs count for 30%. The QR records presence; classwork shows engagement.",
     "policies.gradeScaleTitle": "Official Grading Scale (AAB College)",
     "table.points": "Points Earned",
     "table.grade": "Official Grade",
