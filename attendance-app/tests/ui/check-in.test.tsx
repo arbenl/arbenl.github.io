@@ -76,6 +76,26 @@ describe("student check-in", () => {
     expect(window.location.href).not.toContain(TOKEN);
   });
 
+  it("lets a student retry a transient busy response with the same scanned code", async () => {
+    window.history.replaceState({}, "", `/check-in#token=${TOKEN}`);
+    const fetchMock = vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(checkInError("server_busy", "Service unavailable", 503))
+      .mockResolvedValueOnce(jsonResponse({
+        sessionTitle: "Ushtrimet 2 · G2",
+        status: "present",
+        recordedAt: "2026-09-24T16:45:00.000Z",
+        duplicate: false,
+      }));
+    const view = render(<CheckInResult />);
+    const retry = await view.findByRole("button", { name: "Provo sërish" });
+    fireEvent.click(retry);
+    await waitFor(() => expect(view.getByRole("heading", { name: "Vijueshmëria u konfirmua" })).toBeTruthy());
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    for (const [, request] of fetchMock.mock.calls) {
+      expect(request).toMatchObject({ body: JSON.stringify({ token: TOKEN }) });
+    }
+  });
+
   it("captures and submits exactly once under React Strict Mode", async () => {
     window.history.replaceState({}, "", `/check-in#token=${TOKEN}`);
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
@@ -100,7 +120,7 @@ describe("student check-in", () => {
     expect(window.location.hash).toBe("");
   });
 
-  it("keeps a login token in same-tab storage for at most two minutes and deletes it before callback POST", async () => {
+  it("keeps a login token in same-tab storage for at most five minutes and deletes it before callback POST", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-09-17T10:00:00.000Z"));
     window.history.replaceState({}, "", `/check-in#token=${TOKEN}`);
@@ -143,7 +163,7 @@ describe("student check-in", () => {
     );
   });
 
-  it("deletes an OAuth handoff older than two minutes without sending another POST", async () => {
+  it("deletes an OAuth handoff older than five minutes without sending another POST", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-09-17T10:00:00.000Z"));
     window.history.replaceState({}, "", `/check-in#token=${TOKEN}`);
@@ -158,7 +178,7 @@ describe("student check-in", () => {
     expect(window.sessionStorage.getItem("attendance-check-in")).not.toBeNull();
     first.unmount();
 
-    vi.setSystemTime(new Date("2026-09-17T10:02:00.001Z"));
+    vi.setSystemTime(new Date("2026-09-17T10:05:00.001Z"));
     window.history.replaceState({}, "", "/check-in");
     const callback = render(<CheckInResult />);
     await act(async () => Promise.resolve());
@@ -328,7 +348,7 @@ describe("student check-in", () => {
     const view = render(<CheckInResult />);
     await act(async () => Promise.resolve());
     await act(async () => Promise.resolve());
-    vi.setSystemTime(new Date("2026-09-17T10:02:00.001Z"));
+    vi.setSystemTime(new Date("2026-09-17T10:05:00.001Z"));
     expect(view.queryByLabelText(/semestri/i)).toBeNull();
     fireEvent.change(view.getByLabelText(/emaili që/i), { target: { value: "arta@example.com" } });
     fireEvent.change(view.getByLabelText(/emailin përsëri/i), { target: { value: "arta@example.com" } });

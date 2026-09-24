@@ -7,7 +7,7 @@ import { ProfileForm } from "./profile-form";
 
 const TOKEN_PATTERN = /^[0-9a-f]{64}$/u;
 const STORAGE_KEY = "attendance-check-in";
-const TOKEN_LIFETIME_MS = 120_000;
+const TOKEN_LIFETIME_MS = 5 * 60_000;
 
 interface HeldToken {
   token: string;
