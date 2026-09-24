@@ -898,3 +898,5 @@ body:has(.projector-shell) .app-header {
     width: 100%;
   }
 }
+
+.session-link-status { margin-left: .5rem; padding: .15rem .4rem; border-radius: .4rem; background: rgba(0,0,0,.22); font-size: .75rem; white-space: nowrap; }

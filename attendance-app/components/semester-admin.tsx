@@ -187,10 +187,11 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
                 .sort((left, right) => left.startTime.localeCompare(right.startTime)).map((planned) => {
                 const existing = sessions.find((item) => item.semesterTitle === CURRENT_COURSE.title && item.weekNumber === planned.weekNumber && item.kind === planned.kind && (item.groupName === planned.groupName || (planned.kind === "lecture" && item.groupName === "G1")));
                 const finished = existing?.state === "closed" || existing?.state === "cancelled";
-                return <a className="admin-link" key={`${planned.kind}-${planned.groupName}`} href={finished
+                return <a title={finished ? "Ora ka përfunduar. Hap regjistrin e kësaj ore." : "Hap QR-në për regjistrimin e pjesëmarrjes."} className="admin-link" key={`${planned.kind}-${planned.groupName}`} href={finished
                   ? `/staff?sessionId=${existing.id}#session-admin-title`
                   : `/staff/qr?week=${planned.weekNumber}&kind=${planned.kind}${planned.kind === "lab" ? `&group=${planned.groupName}` : ""}`}>
-                  {finished ? "Regjistri" : "QR"} {planned.kind === "lecture" ? "Ligjëratë · G1 + G2" : `Ushtrime · ${planned.groupName}`} · {planned.startTime}
+                  QR {planned.kind === "lecture" ? "Ligjëratë · G1 + G2" : `Ushtrime · ${planned.groupName}`} · {planned.startTime}
+                  {finished ? <span className="session-link-status">{existing.state === "cancelled" ? "E anuluar" : "E mbyllur"}</span> : null}
                 </a>;
               })}
             </article>
