@@ -97,12 +97,12 @@
         
         <section id="student-start" class="student-start" aria-labelledby="student-start-title" tabindex="-1">
           <div><span class="eyebrow">PORTALI I STUDENTIT · 2026/2027</span>
-          <h2 id="student-start-title">Gati për orën e sotme?</h2>
-          <p>Materialet, detyrat dhe vijueshmëria në një vend.</p></div>
+          <h2 id="student-start-title">Syllabusi · Mobile 2026/2027</h2>
+          <p>Plani i detajuar i lëndës. Për punën e çdo jave përdor <a href="/lendet/2026-2027/mobile/">faqen kryesore të lëndës</a>.</p></div>
           <div class="student-shortcuts">
-            <a href="/attendance.html"><span>01 · VIJUESHMËRIA</span><strong>Regjistrohu në orë ↗</strong><small>Herën e parë lidhe profilin me Student ID</small></a>
-            <a href="#curriculum"><span>02 · MATERIALET</span><strong>Ligjërata dhe ushtrime ↓</strong><small>Zgjidh javën e kursit</small></a>
-            <a href="#templates-hub"><span>03 · DORËZIMET</span><strong>Detyrat dhe shabllonet ↓</strong><small>PRD, Exit Ticket dhe laboratori</small></a>
+            <a href="https://aab-mobile-attendance.vercel.app/student"><span>01 · VIJUESHMËRIA</span><strong>Profili dhe historia ime ↗</strong><small>Prania konfirmohet me QR në klasë</small></a>
+            <a href="/lendet/2026-2027/mobile/#javet"><span>02 · MATERIALET</span><strong>Ligjërata dhe ushtrime →</strong><small>Zgjidh javën e kursit</small></a>
+            <a href="/lendet/2026-2027/mobile/dorezimet.html"><span>03 · DORËZIMET</span><strong>Dorëzimi në 3 hapa →</strong><small>Repository yt → skedarët → linku i javës</small></a>
           </div>
           <div class="week-jump"><label for="week-jump">Hap javën</label><select id="week-jump"><option value="week-1">Java 01</option><option value="week-2">Java 02</option><option value="week-3">Java 03</option><option value="week-4">Java 04</option><option value="week-5">Java 05</option><option value="week-6">Java 06</option><option value="week-7">Java 07</option><option value="week-8">Java 08</option><option value="week-9">Java 09</option><option value="week-10">Java 10</option><option value="week-11">Java 11</option><option value="week-12">Java 12</option><option value="week-13">Java 13</option><option value="week-14">Java 14</option><option value="week-15">Java 15</option></select><button class="btn secondary" id="open-week">Hap materialet →</button></div>
         </section>
@@ -230,8 +230,8 @@
               <div class="template-icon">📄</div>
               <div class="template-info">
                 <h4>PRD 1-Faqësh (Product Requirements Document)</h4>
-                <p>Përcakton problemin real, 3 bisedat e vëzhgimit, hipotezën e vlerës dhe kriteret e pranimit. Përfshin shembullin e plotësuar AAB RideShare.</p>
-                <div class="template-meta">Format: Markdown (.md) • Përdoret në Javën 2</div>
+                <p>Model shtesë për projektin individual. Për ushtrimet e javës 2 përdor modelin e thjeshtë java-02.md nga faqja e javës.</p>
+                <div class="template-meta">Format: Markdown (.md) • Model shtesë për projektin</div>
               </div>
               <div class="template-action">
                 <a class="btn primary btn-sm" href="/lendet/2026-2027/mobile/templates/PRD_Template_AAB_Mobile_2026.md" download>Shkarko PRD Template</a>
@@ -244,7 +244,7 @@
               <div class="template-info">
                 <h4>Kontrata e Fushëveprimit (Scope Contract)</h4>
                 <p>Kufizon MVP-në në maksimumi 3 aftësi kyçe dhe deklaron shprehimisht veçoritë e përjashtuara (pa pagesa, pa harta GPS) për të garantuar suksesin.</p>
-                <div class="template-meta">Format: Markdown (.md) • Dorëzohet në Javën 3</div>
+                <div class="template-meta">Format: Markdown (.md) • Ndihmë opsionale për kufijtë e MVP-së</div>
               </div>
               <div class="template-action">
                 <a class="btn secondary btn-sm" href="/lendet/2026-2027/mobile/templates/Scope_Contract_Template.md" download>Shkarko Scope Contract</a>
@@ -256,8 +256,8 @@
               <div class="template-icon">🤖</div>
               <div class="template-info">
                 <h4>Shënimi i Përdorimit dhe Verifikimit të AI-së</h4>
-                <p>Formulari i detyrueshëm për çdo detyrë: çfarë e pyetët Copilot-in, çfarë kodi propozoi, si e modifikuat dhe si e testuat në telefon.</p>
-                <div class="template-meta">Format: Markdown (.md) • Bashkëngjitet në çdo PR</div>
+                <p>Përshkruaj ndihmën nga AI dhe çfarë verifikove vetë. Këtë pjesë e plotëson brenda raportit java-NN.md; nuk nevojitet dokument i dytë.</p>
+                <div class="template-meta">Format: Markdown (.md) • Përfshihet në raportin e javës</div>
               </div>
               <div class="template-action">
                 <a class="btn secondary btn-sm" href="/lendet/2026-2027/mobile/templates/AI_Usage_Verification_Note.md" download>Shkarko AI Note</a>
@@ -281,12 +281,12 @@
             <div class="template-card highlight-card">
               <div class="template-icon">🧪</div>
               <div class="template-info">
-                <h4>Fleta e Punës: Ushtrimet 1 ("First Win në 45 Minuta")</h4>
-                <p>Udhëzuesi i plotë laboratorik nga repo template te publikimi live në Vercel, së bashku me protokollin 10-minutësh të asistentit.</p>
-                <div class="template-meta">Format: Markdown (.md) • Përdoret në Ushtrimet 1</div>
+                <h4>Përgatitja e ambientit · material shtesë</h4>
+                <p>Ndihmë për GitHub, Node.js dhe Vercel. Është përgatitja brenda ushtrimeve, jo një detyrë e veçantë.</p>
+                <div class="template-meta">Format: Udhëzim online • Hapi i parë i ushtrimeve të javës 2</div>
               </div>
               <div class="template-action">
-                <a class="btn emerald btn-sm" href="/lendet/2026-2027/mobile/templates/Lab1_First_Win_Worksheet_45min.md" download>Shkarko Fletën e Ushtrimeve</a>
+                <a class="btn emerald btn-sm" href="/lendet/2026-2027/mobile/java-02/kontrolli-mjeteve.html">Hap kontrollin e mjeteve</a>
               </div>
             </div>
 
@@ -1130,8 +1130,8 @@
 
               <div class="rubric-card">
                 <div class="rubric-percent">30%</div>
-                <h5 data-i18n="rubric.r1Title">Ushtrimet & GitHub Autograding</h5>
-                <p data-i18n="rubric.r1Desc">10 detyra në aplikacionin tuaj, nga 3 pikë secila. Testet dhe publikimi javor i pikëve presin aktivizimin.</p>
+                <h5 >Ushtrimet & Kontrolli i Dorëzimit</h5>
+                <p >10 ushtrime RideShare, deri në 3 pikë secili. Kontrolli i skedarëve është aktiv; vlerësimi i cilësisë dhe publikimi i pikëve nuk bëhen ende automatikisht.</p>
               </div>
 
               <div class="rubric-card">
@@ -1149,16 +1149,16 @@
 
             <!-- Automated Grading Callout -->
             <div class="policy-card" style="margin-top: 14px; background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.28);">
-              <h4><span>⚡</span> <span >Automatizimi i Vlerësimit Javor (GitHub Actions)</span></h4>
+              <h4><span>⚡</span> <span >Kontrolli i Dorëzimit Javor (GitHub Actions)</span></h4>
               <p style="font-size: 13px; line-height: 1.6;">Testet automatike japin feedback pa përdorur AI për çdo dorëzim. Vlerësimi përfundimtar aktivizohet vetëm kur publikohet rubrika dhe testet e javës. <a href="/lendet/2026-2027/mobile/dorezimet.html">Udhëzimet e dorëzimit dhe leximi i rezultateve →</a></p>
             </div>
 
             <div class="project-actions">
-              <a class="btn primary" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/TOPICS.md" target="_blank" rel="noopener" data-i18n="project.btnTopics">
-                Eksploro Temat e Sugjeruara →
+              <a class="btn primary" href="/lendet/2026-2027/mobile/java-01/">
+                Ideja dhe PRD-ja e projektit →
               </a>
-              <a class="btn secondary" href="https://arbenl.github.io/arbenl-mobile-assignments-2025/" target="_blank" rel="noopener" data-i18n="project.btnCatalog">
-                Katalogu i Rezervimeve & Notat →
+              <a class="btn secondary" href="/lendet/2026-2027/mobile/dorezimet.html">
+                Dorëzimet dhe kontrolli →
               </a>
             </div>
           </div>
