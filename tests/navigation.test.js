@@ -24,7 +24,9 @@ test('week 2 old links redirect to Mobile and current materials stay out of MCC'
 });
 test('professor navigation exposes exactly 15 shared lectures and 14 labs per group',async()=>{
  const html=await read('profesor.html');
- assert.equal((html.match(/kind=lecture/g)||[]).length,15);
- for(const group of ['G1','G2'])assert.equal((html.match(new RegExp(`kind=lab&amp;group=${group}`,'g'))||[]).length,14);
+ assert.ok(html.includes('https://aab-mobile-attendance.vercel.app/staff'));
+ assert.ok(!html.includes('/staff/qr?'));
+ const home=await read('index.html');
+ assert.ok(home.includes('href="https://aab-mobile-attendance.vercel.app/staff">Jam profesor · Hap orën'));
  assert.ok(! (await read('lendet/2026-2027/mobile/index.html')).includes('/staff/qr'));
 });

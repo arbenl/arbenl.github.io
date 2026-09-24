@@ -86,6 +86,10 @@ export async function requireStaff(
   directory: StaffDirectory = databaseStaffDirectory,
 ): Promise<StaffIdentity> {
   const identity = requireSessionIdentity(session);
+  const permittedId = process.env.PROFESSOR_GITHUB_ID;
+  if (!permittedId || identity.githubId !== permittedId) {
+    throw new AuthorizationError("Staff access required", 403);
+  }
   const staffMember = await directory.findByGitHubId(identity.githubId);
 
   if (

@@ -306,7 +306,7 @@ describe("ongoing staff authorization", () => {
     }
   });
 
-  it("authorizes a database staff member without consulting the professor ID", async () => {
+  it("denies a staff member whose GitHub ID differs from the configured professor", async () => {
     const previousProfessorId = process.env.PROFESSOR_GITHUB_ID;
     process.env.PROFESSOR_GITHUB_ID = "999";
     const directory: StaffDirectory = {
@@ -321,12 +321,7 @@ describe("ongoing staff authorization", () => {
     try {
       await expect(
         requireStaff(sessionFor("42", "renamed-professor"), directory),
-      ).resolves.toEqual({
-        userId: "00000000-0000-4000-8000-000000000042",
-        githubId: "42",
-        githubLogin: "renamed-professor",
-        role: "administrator",
-      });
+      ).rejects.toEqual(new AuthorizationError("Staff access required", 403));
     } finally {
       if (previousProfessorId === undefined) {
         delete process.env.PROFESSOR_GITHUB_ID;

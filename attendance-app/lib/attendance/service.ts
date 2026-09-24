@@ -121,6 +121,9 @@ async function requireStaffActor(
   session: Session | null,
 ): Promise<StaffActor> {
   const identity = identityFromSession(session);
+  if (identity.githubId !== getEnv().PROFESSOR_GITHUB_ID) {
+    throw new AttendanceServiceError(403, "staff_required", "Staff access required");
+  }
   const [actor] = await executor
     .select({
       userId: users.id,
