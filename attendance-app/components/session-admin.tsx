@@ -192,7 +192,7 @@ export function SessionAdmin({ sessionId }: SessionAdminProps) {
           <p className="eyebrow">Sesioni privat</p>
           <h2 id="session-admin-title">{data?.session.title ?? "Menaxhimi i sesionit"}</h2>
           {data ? (
-            <p>Java {data.session.weekNumber} · {data.session.groupName} · {data.session.state}</p>
+            <p>Java {data.session.weekNumber} · {data.session.groupName} · {data.session.state} · <strong>{data.records.filter((record) => record.status === "present").length} të pranishëm</strong></p>
           ) : null}
         </div>
         <a className="admin-link" href={`/staff/project/${sessionId}`} target="_blank" rel="noreferrer">

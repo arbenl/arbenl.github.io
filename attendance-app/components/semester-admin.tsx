@@ -178,7 +178,7 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
 
       <section className="admin-section" aria-labelledby="course-qr-title">
         <h2 id="course-qr-title">Hap QR-në e orës</h2>
-        <p>Programimi për Pajisje Mobile · 2026/27. Studentët përgatitin profilin nga “Vijueshmëria ime” para orës. Kliko QR vetëm kur klasa është gati: regjistrimi qëndron hapur 2 minuta. Studentët skanojnë QR-në nga projektori.</p>
+        <p>Programimi për Pajisje Mobile · 2026/27. Studentët përgatitin profilin nga “Vijueshmëria ime” para orës. Kliko QR vetëm kur klasa është gati: regjistrimi qëndron hapur deri në 5 minuta. Mbylle më herët nga regjistri kur të gjithë studentët në sallë konfirmohen. Studentët skanojnë QR-në nga projektori.</p>
         <div className="semester-list">
           {CURRENT_COURSE_SESSIONS.filter((item) => item.kind === "lecture").map((lecture) => (
             <article className="semester-row" key={lecture.weekNumber}>

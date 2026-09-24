@@ -80,7 +80,7 @@ afterEach(() => {
 });
 
 describe("live projector", () => {
-  it("uses server time, caps QR display at the session deadline, and rotates at 25 seconds", async () => {
+  it("uses server time, keeps one QR until the session deadline", async () => {
     const browserStart = Date.now();
     const currentServerTime = () => new Date(
       Date.parse(SERVER_TIME) + (Date.now() - browserStart),
@@ -108,7 +108,7 @@ describe("live projector", () => {
     await advance(25_000);
     expect(
       fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/challenge")),
-    ).toHaveLength(2);
+    ).toHaveLength(1);
 
     await advance(5_000);
     expect(screen.queryByAltText("QR për check-in")).toBeNull();
@@ -116,7 +116,7 @@ describe("live projector", () => {
     await advance(25_000);
     expect(
       fetchMock.mock.calls.filter(([url]) => String(url).endsWith("/challenge")),
-    ).toHaveLength(2);
+    ).toHaveLength(1);
   });
 
   it("hides a challenge at its own expiry when it expires before the session", async () => {
@@ -654,7 +654,7 @@ describe("private staff session", () => {
     await advance(1_000);
     expect(status.value).toBe("excused");
     await advance(1_000);
-    expect(screen.getByText("Java 1 · G1 · closed")).toBeTruthy();
+    expect(screen.getByText("0 të pranishëm")).toBeTruthy();
     await advance(5_000);
     expect(reads).toBe(3);
   });
