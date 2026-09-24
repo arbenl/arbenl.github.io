@@ -22,11 +22,26 @@ test('week 2 old links redirect to Mobile and current materials stay out of MCC'
  assert.ok((await read('lendet/2026-2027/mobile/java-02/prezantimi-ushtrimeve.html')).includes('Ushtrimet 2 · RideShare'));
  const mcc=await read('lendet/2026-2027/mccc/index.html');assert.ok(mcc.includes('ende nuk janë publikuar'));assert.ok(!mcc.includes('.pptx'));
 });
-test('professor navigation exposes exactly 15 shared lectures and 14 labs per group',async()=>{
+test('professor navigation points only to the authenticated staff panel',async()=>{
  const html=await read('profesor.html');
  assert.ok(html.includes('https://aab-mobile-attendance.vercel.app/staff'));
  assert.ok(!html.includes('/staff/qr?'));
  const home=await read('index.html');
  assert.ok(home.includes('href="https://aab-mobile-attendance.vercel.app/staff">Jam profesor · Hap orën'));
  assert.ok(! (await read('lendet/2026-2027/mobile/index.html')).includes('/staff/qr'));
+});
+
+test('each of fifteen weeks has a home and a consistent submission path',async()=>{
+ const hub=await read('lendet/2026-2027/mobile/index.html');
+ for(let week=1;week<=15;week++){
+  const n=String(week).padStart(2,'0');
+  assert.ok(hub.includes(`/java-${n}/`));
+  const page=await read(`lendet/2026-2027/mobile/java-${n}/index.html`);
+  assert.ok(page.includes('dorezimet.html'));
+  if(week>=3){
+   assert.ok(page.includes('prezantimi')||page.includes('Prezantimi'));
+   assert.ok(page.includes(`java-${n}.md`));
+   assert.ok((await read(`lendet/2026-2027/mobile/java-${n}/java-${n}-model.md`)).includes('Provat që bëra'));
+  }
+ }
 });

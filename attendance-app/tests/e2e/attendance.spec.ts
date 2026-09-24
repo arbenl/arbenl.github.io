@@ -94,9 +94,9 @@ for (const viewport of [
         semesterId = (await api(professor, "/api/semesters")).body.find((s: { title: string }) => s.title === semesterTitle).id;
         sessionId = (await api(professor, "/api/class-sessions")).body.find((s: { semesterId: string; weekNumber: number; kind: string }) => s.semesterId === semesterId && s.weekNumber === 2 && s.kind === "lecture").id;
         await professor.getByText("Regjistri i studentëve, eksportet dhe administrimi", { exact: true }).click();
-        await professor.getByLabel("Student ID, Emri i plotë, Grupi", { exact: true }).fill("E2E-001, Arta Kola, G1\nE2E-002, Besa Duka, G1");
+        await professor.getByLabel("Student ID, Emri i plotë, Grupi", { exact: true }).fill("E2E-001, Arta Kola, G1");
         await professor.getByRole("button", { name: "Importo të gjithë rreshtat" }).click();
-        await expect(professor.getByRole("status")).toHaveText("2 studentë u importuan në një transaksion.");
+        await expect(professor.getByRole("status")).toHaveText("1 studentë u importuan në një transaksion.");
       });
       let token = "";
       await test.step("authentic projected QR, activation during scan, rank 1 and total 1", async () => {
@@ -170,7 +170,7 @@ for (const viewport of [
         const response = await scan(second, token);
         expect(response.status()).toBe(409);
         expect((await response.json()).error.code).toBe("invalid_challenge");
-        await expect(second.getByRole("main").getByRole("alert")).toHaveText("This QR code is no longer valid");
+        await expect(second.getByRole("main").getByRole("alert")).toHaveText("QR-ja ka skaduar. Skano kodin e ri në projektor; nëse ora është mbyllur, njofto profesorin.");
         await noOverflow(second);
         expect(await sql`select id from attendance_records where session_id = ${sessionId}`).toHaveLength(1);
       });
@@ -230,6 +230,11 @@ for (const viewport of [
         await expect(student.getByText("E arsyetuar", { exact: true })).toBeVisible();
         await noOverflow(student);
         await second.goto("/student");
+        await expect(second.getByText("Regjistrimi është i hapur", { exact: true })).toBeVisible();
+        expect((await api(professor, `/api/class-sessions/${sessionId}/state`, "PATCH", {
+          state: "closed", reason: "E2E class ended",
+        })).status).toBe(200);
+        await second.reload();
         await expect(second.getByText("Mungesë", { exact: true })).toBeVisible();
         await expect(second.getByText("0 e arsyetuar", { exact: true })).toBeVisible();
         await noOverflow(second);

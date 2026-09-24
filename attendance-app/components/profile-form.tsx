@@ -19,12 +19,14 @@ interface ProfileFormProps {
   callbackUrl?: string;
   token?: string;
   registrationPermit?: string;
+  beforeClass?: boolean;
 }
 
 export function ProfileForm({
   onActivated,
   token,
   registrationPermit,
+  beforeClass = false,
   onAuthenticationRequired,
   callbackUrl = "/student/activate",
 }: ProfileFormProps) {
@@ -87,6 +89,7 @@ export function ProfileForm({
           groupName: form.get("groupName"),
           token,
           registrationPermit,
+          beforeClass,
         }),
       });
       const body = (await response.json()) as ErrorBody;
@@ -198,7 +201,7 @@ export function ProfileForm({
       <input id="emailConfirm" name="emailConfirm" type="email" autoComplete="off" maxLength={254} className="student-control" required disabled={submitting} />
       <p className="form-guidance">Emaili ruhet privatisht për materialet e lëndës. Regjistrimi i tij nuk aktivizon vetvetiu qasjen në Drive.</p>
       {message ? <p role="alert">{message}</p> : null}
-      {loadState === "error" ? null : (
+      {loadState === "error" ? <button className="student-control" type="button" onClick={() => window.location.reload()}>Provo përsëri</button> : (
         <button className="student-control primary-action" disabled={submitting || loadState !== "ready" || !semesters.length} type="submit">
           {submitting ? "Duke aktivizuar…" : "Aktivizo profilin"}
         </button>

@@ -1,0 +1,184 @@
+{
+  "3": {
+    "outcome": "Tri faqe që lidhen me njëra-tjetrën",
+    "steps": [
+      "Hap projektin Next.js dhe nis npm run dev. Nëse ende nuk e ke krijuar, ndiq udhëzuesin e nisjes më poshtë.",
+      "Krijo faqen e listës me tri udhëtime fiktive: nisja, ora dhe vendet e lira.",
+      "Klikimi mbi një udhëtim hap detajet; shto lidhjen Kthehu te lista.",
+      "Shto butonin Kërko vend dhe shfaq Në pritje. Për këtë javë mjaftojnë të dhëna demonstrimi."
+    ],
+    "checks": [
+      "Lista shfaqet në telefon pa lëvizje horizontale.",
+      "Detajet përputhen me udhëtimin që zgjodha.",
+      "Kërkesa shfaq Në pritje, pa pretenduar se shoferi e ka pranuar."
+    ]
+  },
+  "4": {
+    "outcome": "Udhëtimet ruhen në bazën e të dhënave",
+    "steps": [
+      "Vazhdo të njëjtin projekt. Vizato tabelën e udhëtimeve: id, nisja, ora, vendet dhe pronari.",
+      "Krijo tabelën në bazën e zgjedhur në ligjëratë dhe shto tri udhëtime fiktive.",
+      "Lexoji udhëtimet nga serveri dhe shfaqi në listën ekzistuese.",
+      "Shfaq mesazh kur lista është bosh ose lidhja me bazën dështon. Ruaj çelësat vetëm në variabla të mjedisit."
+    ],
+    "checks": [
+      "Rifreskimi i faqes i lexon të dhënat nga baza.",
+      "Në mungesë të të dhënave shfaqet mesazh i kuptueshëm.",
+      "GitHub nuk përmban .env ose çelësa të bazës."
+    ]
+  },
+  "5": {
+    "outcome": "Hyrja dhe veprimet sipas rolit",
+    "steps": [
+      "Shto hyrjen sipas shembullit të ligjëratës. Përdor llogari testimi për demonstrim.",
+      "Pas hyrjes shfaq emrin dhe veprimin Dil.",
+      "Shoferi shton ose ndryshon vetëm udhëtimet e veta. Udhëtari kërkon vend.",
+      "Kontrollo lejet edhe në server; provo një veprim pa hyrë dhe një udhëtim të një shoferi tjetër."
+    ],
+    "checks": [
+      "Përdoruesi i paidentifikuar nuk ndryshon udhëtime.",
+      "Një shofer nuk ndryshon udhëtimin e tjetrit.",
+      "Dalja e mbyll qasjen në veprimet private."
+    ]
+  },
+  "6": {
+    "outcome": "RideShare hapet si PWA dhe shpjegon gjendjen offline",
+    "steps": [
+      "Shto emrin, ikonat dhe manifestin e aplikacionit.",
+      "Provoje në telefon dhe kontrollo mënyrën e instalimit që ofron shfletuesi yt.",
+      "Ruaj listën e fundit për lexim kur nuk ka internet. Trego se të dhënat mund të jenë të vjetra.",
+      "Çaktivizo kërkesën për vend kur je offline ose ruaje qartë si të padërguar; mos shfaq konfirmim të rremë."
+    ],
+    "checks": [
+      "Aplikacioni ka emër dhe ikona të sakta.",
+      "Pa internet shfaqet një listë e ruajtur ose një faqe ndihmëse.",
+      "Gjendja offline nuk premton rezervim të konfirmuar."
+    ]
+  },
+  "7": {
+    "outcome": "Kontrollo MVP-në e parë",
+    "steps": [
+      "Zgjidh një skenar: Arta gjen udhëtimin dhe kërkon vend.",
+      "Demonstro hyrjen, listën, detajet dhe gjendjen e kërkesës.",
+      "Shëno dy gabime ose paqartësi dhe korrigjo të paktën njërën.",
+      "Përgatit shpjegim 2-minutësh të pjesës që ke ndërtuar vetë."
+    ],
+    "checks": [
+      "Rrjedha kryesore mund të demonstrohet nga fillimi në fund.",
+      "Raporti përshkruan një gabim dhe korrigjimin e tij.",
+      "Mund të shpjegoj ku ruhen të dhënat dhe kush lejohet t’i ndryshojë."
+    ]
+  },
+  "8": {
+    "outcome": "Pika e nisjes me lejen e përdoruesit",
+    "steps": [
+      "Shto butonin Përdor vendndodhjen time; kërko leje vetëm pasi përdoruesi ta shtypë.",
+      "Shfaq pikën e nisjes ose një përmbledhje të vendndodhjes.",
+      "Shto alternativën Shkruaj vendtakimin nëse leja refuzohet.",
+      "Provo pranimin, refuzimin dhe mungesën e mbështetjes në pajisje. Për dëshmitë përdor vendndodhje fiktive."
+    ],
+    "checks": [
+      "Leja nuk kërkohet sapo hapet faqja.",
+      "Refuzimi i lejes nuk e bllokon përdoruesin.",
+      "Dëshmitë në GitHub nuk tregojnë adresën time reale."
+    ]
+  },
+  "9": {
+    "outcome": "Preferimet dhe reagimi ndaj gabimeve",
+    "steps": [
+      "Shto butonin Ruaj udhëtimin te të preferuarat.",
+      "Përditëso pamjen menjëherë dhe shfaq që veprimi po ruhet.",
+      "Nëse ruajtja dështon, rikthe gjendjen e mëparshme dhe jep mundësinë Provo përsëri.",
+      "Provo shtypje të përsëritura dhe rifreskim të faqes."
+    ],
+    "checks": [
+      "Ruajtja e suksesshme mbetet pas rifreskimit.",
+      "Gabimi i serverit nuk lë një sukses të rremë në ekran.",
+      "Klikimet e përsëritura nuk krijojnë kopje."
+    ]
+  },
+  "10": {
+    "outcome": "Vendet dhe kërkesat përditësohen në dy ekrane",
+    "steps": [
+      "Hap dy dritare me dy përdorues testimi.",
+      "Udhëtari dërgon kërkesë; shoferi e sheh pa rifreskim manual, përmes mekanizmit të mësuar.",
+      "Shoferi pranon kërkesën; të dy shohin statusin dhe numrin e saktë të vendeve.",
+      "Ndërprit lidhjen dhe shfaq gjendjen Po rilidhemi."
+    ],
+    "checks": [
+      "Ndryshimi shihet te të dy përdoruesit.",
+      "Numri i vendeve nuk bëhet negativ.",
+      "Ndërprerja e lidhjes shpjegohet në ekran."
+    ]
+  },
+  "11": {
+    "outcome": "Përdoruesi njoftohet për përgjigjen",
+    "steps": [
+      "Shto një njoftim brenda aplikacionit kur shoferi pranon ose refuzon kërkesën.",
+      "Shëno njoftimin si të lexuar pasi hapet kërkesa.",
+      "Provo njoftime të përsëritura dhe ruaj lidhjen me kërkesën e saktë.",
+      "Push në pajisje është zgjerim opsional; nëse e përdor, kërko lejen pas një veprimi të qartë."
+    ],
+    "checks": [
+      "Njoftimi tregon përgjigjen e saktë.",
+      "Klikimi hap kërkesën përkatëse.",
+      "Aplikacioni funksionon edhe kur push nuk mbështetet."
+    ]
+  },
+  "12": {
+    "outcome": "Kërkesa të vlefshme dhe vende të sakta",
+    "steps": [
+      "Vendos kufij për fushat: vendet duhet të jenë numër pozitiv, nisja dhe ora të plotësohen.",
+      "Kontrolloji të njëjtat rregulla në server.",
+      "Provo dy kërkesa për vendin e fundit dhe klikimin dy herë nga i njëjti përdorues.",
+      "Ruaj rezultatet e provave dhe përmirëso mesazhet e gabimit."
+    ],
+    "checks": [
+      "Të dhënat e pavlefshme refuzohen edhe nga serveri.",
+      "Nuk konfirmohen dy përdorues për të njëjtin vend të fundit.",
+      "Mesazhi i gabimit tregon si korrigjohet fusha."
+    ]
+  },
+  "13": {
+    "outcome": "Mat dhe përmirëso përdorimin në telefon",
+    "steps": [
+      "Provo listën dhe detajet në një ekran të ngushtë dhe me tastierë.",
+      "Mat faqen me Lighthouse ose mjetin e shfletuesit; ruaj matjen fillestare.",
+      "Përmirëso një problem të vëzhguar: figurë e rëndë, tekst i vogël ose buton i vështirë.",
+      "Ribëj të njëjtën matje dhe krahaso rezultatet."
+    ],
+    "checks": [
+      "Butonat dhe fushat përdoren në telefon pa zmadhim.",
+      "Fokusi i tastierës është i dukshëm.",
+      "Raporti krahason matjen para dhe pas ndryshimit."
+    ]
+  },
+  "14": {
+    "outcome": "Publiko dhe provo versionin përfundimtar",
+    "steps": [
+      "Shto teste për kërkesën e suksesshme, mungesën e vendeve dhe veprimin pa leje.",
+      "Ekzekuto testet dhe npm run build; korrigjo gabimet.",
+      "Publiko në Vercel me variablat private të mjedisit.",
+      "Hap linkun e publikuar në telefon dhe verifiko rrjedhën kryesore. Shëno kufizimet e njohura."
+    ],
+    "checks": [
+      "Testet dhe ndërtimi përfundojnë me sukses.",
+      "Demoja publike hapet dhe rrjedha kryesore funksionon.",
+      "README shpjegon nisjen lokale pa publikuar sekrete."
+    ]
+  },
+  "15": {
+    "outcome": "Demonstro produktin dhe shpjego vendimet",
+    "steps": [
+      "Përgatit demonstrim të shkurtër: problemi → përdoruesi → rrjedha reale.",
+      "Trego një rast të vështirë dhe si e trajton aplikacioni.",
+      "Shpjego një vendim teknik dhe çfarë do të përmirësoje më tej.",
+      "Ruaj raportin final dhe linkun e demos. Projekti personal i biznesit prezantohet sipas udhëzimit të profesorit."
+    ],
+    "checks": [
+      "Demoja ka një fillim, veprim dhe rezultat të qartë.",
+      "Mund të shpjegoj kontributin tim pa lexuar kodin e AI-së.",
+      "Raporti përmban linkun e demos dhe kufizimet e njohura."
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+name: Attendance classroom checks
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ['attendance-app/**', '.github/workflows/attendance-checks.yml']
+  push:
+    branches: [main]
+    paths: ['attendance-app/**', '.github/workflows/attendance-checks.yml']
+permissions:
+  contents: read
+jobs:
+  classroom:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: attendance-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: attendance-app/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:integration
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: classroom-test-evidence
+          path: attendance-app/test-results
+          retention-days: 7
