@@ -1,4 +1,6 @@
 # EXIT TICKET: LIGJËRATA 1
+
+**Shkurtesat:** PWA (Progressive Web App – aplikacion web progresiv); MVP (Minimum Viable Product – produkti minimal i përdorshëm).
 **Kursi:** Programimi për Pajisje Mobile (2026/2027) • **Kolegji AAB**  
 **Kohëzgjatja:** 2 Minuta (Dorëzohet para daljes nga salla)
 

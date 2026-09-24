@@ -1,5 +1,7 @@
 # Shembull i plotësuar: RideShare
 
+**Shkurtesat:** MVP (Minimum Viable Product – produkti minimal i përdorshëm).
+
 RideShare është projekti i ushtrimeve gjatë semestrit. Ky shembull të ndihmon të përgatitësh skicën dhe specifikimin me fjalët e tua.
 
 ## Problemi

@@ -1,4 +1,6 @@
 # SHABLLON PRD (Product Requirements Document) — 1 Faqe
+
+**Shkurtesat:** PWA (Progressive Web App – aplikacion web progresiv); PRD (Product Requirements Document – dokumenti i kërkesave të produktit); MVP (Minimum Viable Product – produkti minimal i përdorshëm).
 **Kursi:** Programimi për Pajisje Mobile (2026/2027) • **Kolegji AAB**  
 **Emri i Projektit:** AAB RideShare (Shembull Ilustrues)  
 **Themeluesi / Ekipi:** [Emri Mbiemri, ID e Studentit]  

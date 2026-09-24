@@ -19,5 +19,5 @@
 ## Çfarë mbetet për përmirësim
 [PLOTËSO] Një kufizim ose gabim që vure re dhe hapi i ardhshëm.
 
-## Ndihma nga AI
+## Ndihma nga AI (Artificial Intelligence – inteligjencë artificiale)
 [PLOTËSO] Çfarë ndihme more dhe çfarë verifikove vetë, ose: Nuk përdora AI.

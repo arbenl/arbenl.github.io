@@ -1,5 +1,7 @@
 # RideShare — Java 2
 
+**Shkurtesat:** MVP (Minimum Viable Product – produkti minimal i përdorshëm); AI (Artificial Intelligence – inteligjencë artificiale).
+
 ## 1. Problemi
 [PLOTËSO] Çfarë vështirësie kanë studentët që udhëtojnë për në AAB?
 

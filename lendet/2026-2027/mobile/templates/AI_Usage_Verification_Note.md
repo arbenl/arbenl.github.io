@@ -1,4 +1,6 @@
 # SHËNIMI ZYRTAR I PËRDORIMIT DHE VERIFIKIMIT TË AI-së
+
+**Shkurtesat:** PWA (Progressive Web App – aplikacion web progresiv); AI (Artificial Intelligence – inteligjencë artificiale).
 **Kursi:** Programimi për Pajisje Mobile • **Kolegji AAB**  
 **Detyra / Java:** [P.sh. Detyra Javore 3 / Projekti PWA]  
 **Studenti:** [Emri Mbiemri, ID e Studentit]  

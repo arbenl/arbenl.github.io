@@ -1,5 +1,7 @@
 # Ushtrimet 2 — RideShare, hap pas hapi
 
+**Shkurtesat:** PRD (Product Requirements Document – dokumenti i kërkesave të produktit); AI (Artificial Intelligence – inteligjencë artificiale).
+
 Në ushtrime ndërtojmë RideShare gjatë gjithë semestrit. Secili student ka kopjen e vet të projektit. Sot planifikojmë udhëtimin e përbashkët të studentëve.
 
 ## 1. Përgatitu — 10 minuta

@@ -1,4 +1,6 @@
 # KONTRATA E FUSHËVEPRIMIT (Scope Contract) — MVP 2026
+
+**Shkurtesat:** PWA (Progressive Web App – aplikacion web progresiv); MVP (Minimum Viable Product – produkti minimal i përdorshëm).
 **Kursi:** Programimi për Pajisje Mobile • **Kolegji AAB**  
 **Studenti / Ekipi:** [Emri Mbiemri]  
 **Titulli i Projektit:** [Emri i Startup-it / Aplikacionit]
