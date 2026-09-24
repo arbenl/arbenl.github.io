@@ -142,7 +142,7 @@ for (const viewport of [
         await expect(projector.getByText("Gjithsej", { exact: false })).toHaveText("Gjithsej 1");
         const rankedList = projector.getByRole("list");
         await expect(rankedList.getByRole("listitem")).toHaveCount(1);
-        await expect(rankedList.getByRole("listitem").first()).toContainText("Arta K.");
+        await expect(rankedList.getByRole("listitem").first()).toContainText("Arta Kola");
         expect(await rankedList.evaluate((element) => ({
           tag: element.tagName, start: (element as HTMLOListElement).start,
           numbering: getComputedStyle(element).listStyleType,
@@ -238,6 +238,16 @@ for (const viewport of [
         await expect(second.getByText("Mungesë", { exact: true })).toBeVisible();
         await expect(second.getByText("0 e arsyetuar", { exact: true })).toBeVisible();
         await noOverflow(second);
+      });
+      await test.step("weekly report lists each student with a clear Po or Jo", async () => {
+        await professor.goto("/staff/report?week=2");
+        await expect(professor.getByRole("heading", { name: "Raporti i vijueshmërisë" })).toBeVisible();
+        await expect(professor.getByRole("columnheader", { name: "Prezent" })).toBeVisible();
+        await expect(professor.getByRole("row").filter({ hasText: "Arta Kola" })).toContainText("Jo");
+        await expect(professor.getByRole("row").filter({ hasText: "Besa Duka" })).toContainText("Jo");
+        await second.goto("/staff/report?week=2");
+        await expect(second.getByRole("link", { name: "Hyr me GitHub" })).toBeVisible();
+        await expect(second.getByText("Arta Kola")).toHaveCount(0);
       });
     } finally {
       await projector?.close();

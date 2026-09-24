@@ -201,6 +201,7 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
       {selectedSessionId ? <SessionAdmin key={selectedSessionId} sessionId={selectedSessionId} /> : null}
       <details className="admin-manual-tools">
         <summary>Regjistri i studentëve, eksportet dhe administrimi</summary>
+        <p><a className="admin-link" href="/staff/report">Raporti sipas javëve · Prezent Po/Jo</a></p>
       <section className="admin-section" aria-labelledby="semesters-title">
         <h2 id="semesters-title">Semestrat</h2>
         <p>Semestri aktual dhe kalendari 15-javor sinkronizohen automatikisht.</p>

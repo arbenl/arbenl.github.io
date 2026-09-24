@@ -1534,6 +1534,80 @@ async function exportRoster(session: Session | null, semesterId: string) {
   return { filename: `roster-${semesterId}.csv`, csv: [csvRow(["Student ID", "Full Name", "Group", "Email (student supplied)"]), ...rows.map(row => csvRow([row.studentId, row.fullName, row.groupName, row.email ?? ""]))].join("\r\n") + "\r\n" };
 }
 
+async function getWeeklyAttendanceReport(session: Session | null) {
+  const db = await database();
+  await requireStaffActor(db, session);
+  await finalizeExpiredClassSessions(db);
+  const [semester] = await db
+    .select({ id: semesters.id, title: semesters.title })
+    .from(semesters)
+    .where(and(eq(semesters.title, CURRENT_COURSE.title), eq(semesters.status, "active")))
+    .limit(1);
+  if (!semester) {
+    throw new AttendanceServiceError(404, "semester_not_found", "Semestri aktual nuk u gjet.");
+  }
+  const rows = await db
+    .select({
+      sessionId: classSessions.id,
+      sessionTitle: classSessions.title,
+      weekNumber: classSessions.weekNumber,
+      kind: classSessions.kind,
+      sessionGroup: classSessions.groupName,
+      state: classSessions.state,
+      studentId: roster.studentId,
+      fullName: roster.fullName,
+      studentGroup: roster.groupName,
+      status: attendanceRecords.status,
+      scannedAt: attendanceRecords.scannedAt,
+      verifiedAt: attendanceRecords.verifiedAt,
+    })
+    .from(classSessions)
+    .innerJoin(roster, and(
+      eq(roster.semesterId, classSessions.semesterId),
+      or(eq(classSessions.groupName, roster.groupName), and(
+        eq(classSessions.kind, "lecture"),
+        eq(classSessions.groupName, CURRENT_COURSE.groupName),
+        inArray(roster.groupName, ["G1", "G2"]),
+      )),
+      sql`${roster.createdAt} <= case when ${classSessions.state} = 'closed' then least(${classSessions.checkinEndsAt}, ${classSessions.updatedAt}) else ${classSessions.checkinEndsAt} end`,
+    ))
+    .leftJoin(attendanceRecords, and(
+      eq(attendanceRecords.sessionId, classSessions.id),
+      eq(attendanceRecords.rosterId, roster.id),
+    ))
+    .where(and(
+      eq(classSessions.semesterId, semester.id),
+      inArray(classSessions.state, ["open", "closed"]),
+    ))
+    .orderBy(
+      asc(classSessions.weekNumber),
+      asc(classSessions.title),
+      asc(roster.groupName),
+      asc(roster.fullName),
+      asc(roster.studentId),
+    );
+  return {
+    semesterId: semester.id,
+    semesterTitle: semester.title,
+    rows: rows.map((row) => ({
+      sessionId: row.sessionId,
+      sessionTitle: row.sessionTitle,
+      weekNumber: row.weekNumber,
+      kind: row.kind,
+      sessionGroup: row.sessionGroup,
+      state: row.state,
+      studentId: row.studentId,
+      fullName: row.fullName,
+      studentGroup: row.studentGroup,
+      status: row.status ?? (row.state === "open" ? "pending" : "absent"),
+      present: row.status === "present" ? "Po" : row.status ? "Jo" : row.state === "open" ? "Në pritje" : "Jo",
+      recordedAt: row.scannedAt || row.verifiedAt
+        ? toIso(row.scannedAt ?? row.verifiedAt ?? "")
+        : null,
+    })),
+  };
+}
+
 async function exportSemester(session: Session | null, semesterId: string) {
   const db = await database();
   return db.transaction(async (transaction) => {
@@ -1568,6 +1642,7 @@ async function exportSemester(session: Session | null, semesterId: string) {
           or(eq(classSessions.groupName, roster.groupName), and(
           eq(classSessions.kind, "lecture"), eq(classSessions.groupName, CURRENT_COURSE.groupName),
           inArray(roster.groupName, ["G1", "G2"]))),
+          sql`${roster.createdAt} <= least(${classSessions.checkinEndsAt}, ${classSessions.updatedAt})`,
         ),
       )
       .leftJoin(
@@ -1601,6 +1676,7 @@ async function exportSemester(session: Session | null, semesterId: string) {
         "Status",
         "Recorded At",
         "Reason",
+        "Prezent (Po/Jo)",
       ]),
       ...rows.map((row) =>
         csvRow([
@@ -1615,6 +1691,7 @@ async function exportSemester(session: Session | null, semesterId: string) {
             ? toIso(row.scannedAt ?? row.verifiedAt ?? "")
             : "",
           row.reason,
+          row.status === "present" ? "Po" : "Jo",
         ]),
       ),
     ];
@@ -1682,6 +1759,7 @@ export const attendanceService = {
   createManualRecord,
   createSemester,
   exportSemester,
+  getWeeklyAttendanceReport,
   exportRoster,
   ensureCurrentCourseSetup,
   launchCourseSession,
