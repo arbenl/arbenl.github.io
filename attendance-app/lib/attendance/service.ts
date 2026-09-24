@@ -25,6 +25,7 @@ import {
 } from "../db/schema";
 import { getEnv } from "../env";
 import { createChallengeToken, hashChallengeToken } from "./challenge";
+import { issueRegistrationPermit, readRegistrationPermit } from "./registration";
 import { CURRENT_COURSE, CURRENT_COURSE_SESSIONS, sessionIncludesGroup } from "./current-course";
 import {
   maskDisplayName,
@@ -70,6 +71,7 @@ export class AttendanceServiceError extends Error {
     readonly code: string,
     message: string,
     readonly retryAfter?: number,
+    readonly registrationPermit?: string,
   ) {
     super(message);
     this.name = "AttendanceServiceError";
@@ -388,6 +390,12 @@ async function ensureCurrentCourseSetup(session: Session | null) {
     await transaction.execute(
       sql`select pg_advisory_xact_lock(hashtextextended('aab-current-course-setup', 0))`,
     );
+    // Additive release migration, staff-only and serialized with course setup.
+    const column = await transaction.execute(sql`select 1 from information_schema.columns where table_schema = current_schema() and table_name = 'roster' and column_name = 'email'`);
+    if (!column.length) await transaction.execute(sql`alter table roster add column email text`);
+    const emailIndex = await transaction.execute(sql`select to_regclass('roster_semester_email_unique') as id`);
+    if (!emailIndex[0]?.id) await transaction.execute(sql`create unique index roster_semester_email_unique on roster (semester_id, lower(email)) where email is not null`);
+
 
     const pilotSemesterIds: string[] = []; // Cleanup is not part of routine setup.
 
@@ -665,6 +673,10 @@ async function activateRoster(
   input: {
     semesterId: string;
     studentId: string;
+    email?: string;
+    groupName?: "G1" | "G2";
+    token?: string;
+    registrationPermit?: string;
     firstName: string;
     lastName: string;
   },
@@ -690,6 +702,11 @@ async function activateRoster(
         throw genericRosterMismatch();
       }
 
+      // Profile identity is persistent; QR is required only for a new enrolment.
+      const email = input.email?.trim().toLowerCase();
+      if (email && (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email))) {
+        throw new AttendanceServiceError(400, "invalid_email", "Shkruaj një email të vlefshëm.");
+      }
       const [entry] = await transaction
         .select()
         .from(roster)
@@ -701,26 +718,51 @@ async function activateRoster(
         )
         .limit(1)
         .for("update");
+      if (!entry) {
+        if (!email || !input.groupName) throw genericRosterMismatch();
+        const permit = input.registrationPermit ? readRegistrationPermit(input.registrationPermit, getEnv().NEXTAUTH_SECRET) : null;
+        const allowed = permit && permit.githubId === actor.githubId && permit.semesterId === input.semesterId && sessionIncludesGroup(permit.kind, permit.groupName, input.groupName);
+        if (!allowed && !input.token) throw genericRosterMismatch();
+        const tokenHash = hashChallengeToken(input.token ?? "");
+        const valid = await transaction.execute(sql`
+          select cs.id from qr_challenges q
+          join class_sessions cs on cs.id = q.session_id
+          where q.token_hash = ${tokenHash} and cs.semester_id = ${input.semesterId}
+          and q.expires_at > statement_timestamp() and cs.state = 'open'
+          and cs.checkin_ends_at > statement_timestamp()
+          and (cs.group_name = ${input.groupName}
+            or (cs.kind = 'lecture' and cs.group_name = 'G1+G2'))
+          for share of cs
+        `);
+        if (!allowed && !valid.length) throw new AttendanceServiceError(409, "registration_qr_expired", "Për regjistrimin e parë skano QR-në e re të profesorit.");
+        const [created] = await transaction.insert(roster).values({
+          semesterId: input.semesterId, studentId: suppliedStudentId,
+          fullName: `${input.firstName.trim()} ${input.lastName.trim()}`.replace(/\s+/gu, " ").normalize("NFC"),
+          email, groupName: input.groupName, userId: actor.userId,
+          activatedAt: sql`statement_timestamp()`,
+        }).returning();
+        await audit(transaction, actor.userId, "roster.self_register", "roster", created.id,
+          "Student supplied profile during active QR session", { semesterId: input.semesterId });
+        return created;
+      }
       if (
-        !entry ||
         normalizeAlbanianName(entry.fullName) !== suppliedName ||
         (entry.userId !== null && entry.userId !== actor.userId)
       ) {
         throw genericRosterMismatch();
       }
 
-      if (entry.userId === actor.userId) {
-        return entry;
-      }
+      if (entry.userId === actor.userId && (entry.email || !email)) return entry;
 
       const [updated] = await transaction
         .update(roster)
         .set({
           userId: actor.userId,
+          email: entry.email ?? email ?? null,
           activatedAt: sql`statement_timestamp()`,
           updatedAt: sql`statement_timestamp()`,
         })
-        .where(and(eq(roster.id, entry.id), isNull(roster.userId)))
+        .where(and(eq(roster.id, entry.id), or(isNull(roster.userId), eq(roster.userId, actor.userId))))
         .returning();
       if (!updated) {
         throw genericRosterMismatch();
@@ -1075,11 +1117,13 @@ async function checkIn(
           ),
         )
         .limit(1);
-      if (!entry) {
+      if (!entry || !entry.email) {
         throw new AttendanceServiceError(
           409,
           "roster_not_activated",
-          "Activate your roster profile before checking in",
+          "Plotëso profilin një herë për këtë lëndë.",
+          undefined,
+          issueRegistrationPermit({ githubId: actor.githubId, semesterId: challenge.semesterId, groupName: challenge.groupName, kind: challenge.kind }, getEnv().NEXTAUTH_SECRET),
         );
       }
       if (!sessionIncludesGroup(challenge.kind, challenge.groupName, entry.groupName)) {
@@ -1462,6 +1506,13 @@ async function correctRecord(
   });
 }
 
+async function exportRoster(session: Session | null, semesterId: string) {
+  const db = await database();
+  await requireStaffActor(db, session);
+  const rows = await db.select({ studentId: roster.studentId, fullName: roster.fullName, groupName: roster.groupName, email: roster.email }).from(roster).where(eq(roster.semesterId, semesterId)).orderBy(asc(roster.fullName));
+  return { filename: `roster-${semesterId}.csv`, csv: [csvRow(["Student ID", "Full Name", "Group", "Email (student supplied)"]), ...rows.map(row => csvRow([row.studentId, row.fullName, row.groupName, row.email ?? ""]))].join("\r\n") + "\r\n" };
+}
+
 async function exportSemester(session: Session | null, semesterId: string) {
   const db = await database();
   return db.transaction(async (transaction) => {
@@ -1581,7 +1632,7 @@ export function attendanceServiceErrorResponse(error: unknown): Response {
       headers.set("Retry-After", String(error.retryAfter));
     }
     return Response.json(
-      { error: { code: error.code, message: error.message } },
+      { error: { code: error.code, message: error.message, ...(error.registrationPermit ? { registrationPermit: error.registrationPermit } : {}) } },
       { status: error.status, headers },
     );
   }
@@ -1600,6 +1651,7 @@ export const attendanceService = {
   createManualRecord,
   createSemester,
   exportSemester,
+  exportRoster,
   ensureCurrentCourseSetup,
   launchCourseSession,
   getSessionRecords,

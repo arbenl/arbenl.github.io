@@ -112,6 +112,7 @@ async function importAndActivate(
       studentId,
       firstName,
       lastName: lastName.join(" "),
+      email: `${studentId.toLowerCase()}@example.com`,
     },
     ip,
   );
@@ -384,6 +385,7 @@ describe("HTTP route contracts", () => {
               studentId: "A-1",
               firstName: "Arta",
               lastName: "Kola",
+              email: "arta@example.com",
             },
             activationIp,
           ),
@@ -1871,4 +1873,52 @@ describe("shared lecture and separate lab groups", () => {
     expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(43);
     expect(await sql`select id from class_sessions where semester_id = ${semester.id} and week_number=1`).toHaveLength(1);
   });
+});
+
+describe("one-time student registration", () => {
+  it("enrols from an active QR, preserves profile and supports subsequent check-in", async () => {
+    const semester = await createActiveSemester();
+    const classSession = await createOpenSession(semester.id, "G1+G2");
+    const challenge = await attendanceService.createChallenge(professor, classSession.id, "192.0.2.201");
+    const input = { semesterId: semester.id, studentId: "NEW-1", firstName: "Arta", lastName: "Kola", email: "Arta@Example.com", groupName: "G1" as const, token: challenge.token };
+    const entry = await attendanceService.activateRoster(studentA, input, "192.0.2.202");
+    expect(entry.email).toBe("arta@example.com");
+    const again = await attendanceService.activateRoster(studentA, { ...input, email: "different@example.com" }, "192.0.2.202");
+    expect(again.id).toBe(entry.id);
+    expect(again.email).toBe("arta@example.com");
+    expect((await attendanceService.checkIn(studentA, { token: challenge.token }, "192.0.2.202")).duplicate).toBe(false);
+    expect((await attendanceService.checkIn(studentA, { token: challenge.token }, "192.0.2.202")).duplicate).toBe(true);
+    await expect(attendanceService.activateRoster(studentB, { ...input, studentId: "NEW-2" }, "192.0.2.203")).rejects.toMatchObject({ code: "roster_mismatch" });
+    await expect(attendanceService.exportRoster(studentA, semester.id)).rejects.toMatchObject({ code: "staff_required" });
+    expect((await attendanceService.exportRoster(professor, semester.id)).csv).toContain("arta@example.com");
+  });
+  it("allows time to complete registration without extending attendance token validity", async () => {
+    const semester = await createActiveSemester();
+    const cs = await createOpenSession(semester.id);
+    const challenge = await attendanceService.createChallenge(professor, cs.id, "192.0.2.211");
+    const error = await attendanceService.checkIn(studentA, { token: challenge.token }, "192.0.2.212").catch(e => e);
+    expect(error.code).toBe("roster_not_activated");
+    await sql`update qr_challenges set expires_at = statement_timestamp() - interval '1 second' where session_id = ${cs.id}`;
+    const input = { semesterId: semester.id, studentId: "NEW-1", firstName: "Arta", lastName: "Kola", email: "arta@example.com", groupName: "G1" as const, registrationPermit: error.registrationPermit };
+    await expect(attendanceService.activateRoster(studentB, input, "192.0.2.213")).rejects.toMatchObject({ code: "roster_mismatch" });
+    expect((await attendanceService.activateRoster(studentA, input, "192.0.2.212")).email).toBe("arta@example.com");
+    await expect(attendanceService.checkIn(studentA, { token: challenge.token }, "192.0.2.212")).rejects.toMatchObject({ code: "invalid_challenge" });
+  });
+});
+
+it("applies the additive registration migration only through authorized course setup", async () => {
+  await sql`alter table roster drop column email`;
+  await expect(attendanceService.ensureCurrentCourseSetup(studentA)).rejects.toMatchObject({ code: "staff_required" });
+  await attendanceService.ensureCurrentCourseSetup(professor);
+  expect((await sql`select column_name from information_schema.columns where table_name='roster' and column_name='email'`)).toHaveLength(1);
+});
+
+it("rejects new registration without QR or for another lab group", async () => {
+  const semester = await createActiveSemester();
+  const cs = await createOpenSession(semester.id, "G1");
+  const challenge = await attendanceService.createChallenge(professor, cs.id, "192.0.2.221");
+  const input = { semesterId: semester.id, studentId: "N-1", firstName: "Arta", lastName: "Kola", email: "arta@example.com", groupName: "G2" as const };
+  await expect(attendanceService.activateRoster(studentA, input, "192.0.2.222")).rejects.toMatchObject({ code: "roster_mismatch" });
+  await expect(attendanceService.activateRoster(studentA, { ...input, token: challenge.token }, "192.0.2.222")).rejects.toMatchObject({ code: "registration_qr_expired" });
+  expect(await sql`select id from roster`).toHaveLength(0);
 });

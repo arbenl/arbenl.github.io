@@ -57,6 +57,11 @@ docker exec --interactive "$container_name" psql --dbname attendance_e2e \
   --username attendance_e2e --set ON_ERROR_STOP=1 \
   < drizzle/0000_live_attendance.sql > "$runtime_dir/migration.log"
 
+for migration in "$app_dir"/drizzle/000[1-9]*.sql; do
+  [[ -f "$migration" ]] || continue
+  docker exec --interactive "$container_name" psql --dbname attendance_e2e --set ON_ERROR_STOP=1 --username attendance_e2e < "$migration" >/dev/null
+done
+
 export DATABASE_URL="postgresql://attendance_e2e:attendance_e2e@127.0.0.1:${host_port}/attendance_e2e"
 export NEXTAUTH_SECRET="$(node -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("hex"))')"
 export RATE_LIMIT_SECRET="$(node -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("hex"))')"

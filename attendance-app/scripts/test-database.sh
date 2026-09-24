@@ -54,6 +54,11 @@ docker exec --interactive "$container_name" psql \
   --set ON_ERROR_STOP=1 \
   --username attendance_test < "$migration_file"
 
+for migration in "$app_dir"/drizzle/000[1-9]*.sql; do
+  [[ -f "$migration" ]] || continue
+  docker exec --interactive "$container_name" psql --dbname attendance_test --set ON_ERROR_STOP=1 --username attendance_test < "$migration" >/dev/null
+done
+
 docker exec --interactive "$container_name" psql \
   --dbname attendance_test \
   --set ON_ERROR_STOP=1 \

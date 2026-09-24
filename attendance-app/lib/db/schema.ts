@@ -107,6 +107,7 @@ export const roster = pgTable(
       .references(() => semesters.id, { onDelete: "restrict" }),
     studentId: text("student_id").notNull(),
     fullName: text("full_name").notNull(),
+    email: text("email"),
     groupName: text("group_name").notNull(),
     userId: uuid("user_id").references(() => users.id, {
       onDelete: "restrict",
@@ -116,6 +117,7 @@ export const roster = pgTable(
     updatedAt: databaseTimestamp("updated_at").defaultNow().notNull(),
   },
   (table) => [
+    uniqueIndex("roster_semester_email_unique").on(table.semesterId, sql`lower(${table.email})`).where(sql`${table.email} is not null`),
     uniqueIndex("roster_semester_student_id_unique").on(
       table.semesterId,
       table.studentId,

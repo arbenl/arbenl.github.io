@@ -17,10 +17,14 @@ interface ProfileFormProps {
   onActivated?: () => void;
   onAuthenticationRequired?: () => void;
   callbackUrl?: string;
+  token?: string;
+  registrationPermit?: string;
 }
 
 export function ProfileForm({
   onActivated,
+  token,
+  registrationPermit,
   onAuthenticationRequired,
   callbackUrl = "/student/activate",
 }: ProfileFormProps) {
@@ -65,6 +69,11 @@ export function ProfileForm({
     setMessage(null);
     const form = new FormData(event.currentTarget);
 
+    if (form.get("email")?.toString().trim().toLowerCase() !== form.get("emailConfirm")?.toString().trim().toLowerCase()) {
+      setMessage("Dy adresat e emailit duhet të jenë të njëjta.");
+      setSubmitting(false);
+      return;
+    }
     try {
       const response = await fetch("/api/roster/activate", {
         method: "POST",
@@ -74,6 +83,10 @@ export function ProfileForm({
           firstName: form.get("firstName"),
           lastName: form.get("lastName"),
           studentId: form.get("studentId"),
+          email: form.get("email"),
+          groupName: form.get("groupName"),
+          token,
+          registrationPermit,
         }),
       });
       const body = (await response.json()) as ErrorBody;
@@ -121,8 +134,9 @@ export function ProfileForm({
   return (
     <form aria-label="Aktivizo profilin" className="student-form" onSubmit={submit}>
       <p className="form-guidance">
-        Zgjidh semestrin dhe shkruaj të dhënat saktësisht si në regjistrin zyrtar.
+        Regjistrohu vetëm një herë me emrin, mbiemrin dhe indeksin e saktë. Në orët e tjera mjafton të skanosh QR-në me të njëjtën llogari GitHub.
       </p>
+      {semesters.length === 1 ? <input type="hidden" name="semesterId" value={semesters[0].id} /> : <>
       <label htmlFor="semesterId">Semestri</label>
       <select
         className="student-control"
@@ -137,7 +151,7 @@ export function ProfileForm({
             {semester.title}
           </option>
         ))}
-      </select>
+      </select></>}
 
       <label htmlFor="firstName">Emri</label>
       <input
@@ -172,9 +186,20 @@ export function ProfileForm({
         required
       />
 
+      <label htmlFor="groupName">Grupi i ushtrimeve</label>
+      <select id="groupName" name="groupName" className="student-control" required disabled={submitting}>
+        <option value="">Zgjidh grupin tënd</option>
+        <option value="G1">Grupi 1 · 14:45</option>
+        <option value="G2">Grupi 2 · 18:00</option>
+      </select>
+      <label htmlFor="email">Emaili që përdor për Google Drive</label>
+      <input id="email" name="email" type="email" autoComplete="email" maxLength={254} className="student-control" required disabled={submitting} />
+      <label htmlFor="emailConfirm">Shkruaje emailin përsëri</label>
+      <input id="emailConfirm" name="emailConfirm" type="email" autoComplete="off" maxLength={254} className="student-control" required disabled={submitting} />
+      <p className="form-guidance">Emaili ruhet privatisht për materialet e lëndës. Regjistrimi i tij nuk aktivizon vetvetiu qasjen në Drive.</p>
       {message ? <p role="alert">{message}</p> : null}
       {loadState === "error" ? null : (
-        <button className="student-control primary-action" disabled={submitting} type="submit">
+        <button className="student-control primary-action" disabled={submitting || loadState !== "ready" || !semesters.length} type="submit">
           {submitting ? "Duke aktivizuar…" : "Aktivizo profilin"}
         </button>
       )}
