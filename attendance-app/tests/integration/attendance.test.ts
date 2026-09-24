@@ -1843,6 +1843,14 @@ describe("shared lecture and separate lab groups", () => {
     const labQr = await attendanceService.createChallenge(professor, lab1.id, "192.0.2.1");
     await expect(attendanceService.checkIn(studentB, {token: labQr.token}, "192.0.2.3")).rejects.toMatchObject({code:"wrong_group"});
     await attendanceService.checkIn(studentA, {token: labQr.token}, "192.0.2.2");
+    const openReport = await attendanceService.getWeeklyAttendanceReport(professor);
+    expect(openReport.rows.filter((row) => row.sessionId === lecture.id).map((row) => row.present)).toEqual(["Po", "Po"]);
+    expect(openReport.rows.find((row) => row.sessionId === lab1.id)?.present).toBe("Po");
+    expect(openReport.rows.find((row) => row.sessionId === lab2.id)?.present).toBe("Në pritje");
+    await attendanceService.transitionClassSession(professor, lab2.id, { state: "closed", reason: "Lab completed" });
+    const closedReport = await attendanceService.getWeeklyAttendanceReport(professor);
+    expect(closedReport.rows.find((row) => row.sessionId === lab2.id)?.present).toBe("Jo");
+    await expect(attendanceService.getWeeklyAttendanceReport(studentA)).rejects.toMatchObject({ status: 403 });
     const history = await attendanceService.getStudentHistory(studentB);
     expect(history.sessions.map((row) => row.id)).toContain(lecture.id);
     expect(history.sessions.map((row) => row.id)).not.toContain(lab1.id);
@@ -1850,7 +1858,23 @@ describe("shared lecture and separate lab groups", () => {
     const exported = await attendanceService.exportSemester(professor, semesterId);
     expect(exported.csv).toContain("Arta Kola,G1,");
     expect(exported.csv).toContain("Besa Duka,G2,");
+    expect(exported.csv).toContain("Prezent (Po/Jo)");
     await expect(attendanceService.launchCourseSession(professor, 3, "lab")).rejects.toMatchObject({status:400});
+  });
+
+  it("does not mark a student absent for a class that ended before enrolment", async () => {
+    const { semesterId } = await attendanceService.ensureCurrentCourseSetup(professor);
+    const previous = await attendanceService.launchCourseSession(professor, 1, "lecture");
+    await attendanceService.transitionClassSession(professor, previous.id, { state: "closed", reason: "Class completed" });
+    await importAndActivate(semesterId, studentA, "A-1", "Arta Kola", "G1");
+    const current = await attendanceService.launchCourseSession(professor, 2, "lecture");
+    const report = await attendanceService.getWeeklyAttendanceReport(professor);
+    expect(report.rows.some((row) => row.sessionId === previous.id)).toBe(false);
+    expect(report.rows.find((row) => row.sessionId === current.id)?.present).toBe("Në pritje");
+    await attendanceService.transitionClassSession(professor, current.id, { state: "closed", reason: "Class completed" });
+    const finished = await attendanceService.getWeeklyAttendanceReport(professor);
+    expect(finished.rows.find((row) => row.sessionId === current.id)?.present).toBe("Jo");
+    expect((await attendanceService.exportSemester(professor, semesterId)).csv).not.toContain(previous.title);
   });
 
   it("updates draft schedule in place without changing completed records or duplicating the first lecture", async () => {
