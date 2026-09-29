@@ -68,19 +68,21 @@ export interface CurrentCourseSession {
 export const CURRENT_COURSE_SESSIONS: CurrentCourseSession[] = THURSDAYS.flatMap(
   (date, index) => {
     const weekNumber = index + 1;
-    const lecture: CurrentCourseSession = {
+    const lecture = (groupName: string, startTime: string): CurrentCourseSession => ({
       weekNumber,
       kind: "lecture",
-      groupName: CURRENT_COURSE.groupName,
-      startTime: "16:30",
-      title: `${date} · 16:30 · Ligjërata ${weekNumber} — ${LECTURES[index]}`,
-    };
+      groupName,
+      startTime,
+      title: `${date} · ${startTime} · Ligjërata ${weekNumber}${groupName === CURRENT_COURSE.groupName ? "" : ` · ${groupName}`} — ${LECTURES[index]}`,
+    });
     if (weekNumber === 1) {
-      return [lecture];
+      return [lecture(CURRENT_COURSE.groupName, "16:30")];
     }
     return [
-      lecture,
-      ...([{ groupName: "G1", startTime: "14:45" }, { groupName: "G2", startTime: "18:00" }]).map(({ groupName, startTime }) => ({
+      ...(weekNumber === 2
+        ? [lecture(CURRENT_COURSE.groupName, "16:30")]
+        : [lecture("G1", "16:30"), lecture("G2", "17:15")]),
+      ...([{ groupName: "G1", startTime: "14:45" }, { groupName: "G2", startTime: weekNumber >= 3 ? "18:15" : "18:00" }]).map(({ groupName, startTime }) => ({
         weekNumber,
         kind: "lab" as const,
         groupName,

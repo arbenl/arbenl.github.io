@@ -440,7 +440,9 @@ async function ensureCurrentCourseSetup(session: Session | null) {
       for (const item of existing) {
         const target = CURRENT_COURSE_SESSIONS.find((planned) =>
           planned.weekNumber === item.weekNumber && planned.kind === item.kind &&
-          (planned.groupName === item.groupName || (item.kind === "lecture" && item.groupName === "G1")));
+          (planned.groupName === item.groupName ||
+            (item.kind === "lecture" && item.weekNumber <= 2 && item.groupName === "G1" && planned.groupName === CURRENT_COURSE.groupName) ||
+            (item.kind === "lecture" && item.weekNumber >= 3 && item.groupName === CURRENT_COURSE.groupName && planned.groupName === "G1")));
         if (!target || item.state !== "draft" ||
             (item.title === target.title && item.groupName === target.groupName)) continue;
         const updated = await transaction.update(classSessions)
@@ -450,15 +452,24 @@ async function ensureCurrentCourseSetup(session: Session | null) {
         updatedSessions += updated.length;
       }
     }
-    // Old completed G1 lectures are historical records, not missing shared lectures.
+    // Keep weeks 1–2 historical. Migrate only draft shared lectures from week 3 onward.
     const existingKeys = new Set(
-      existing.map(({ weekNumber, kind, groupName }) =>
-        `${weekNumber}:${kind}:${kind === "lecture" && groupName === "G1" ? CURRENT_COURSE.groupName : groupName}`),
+      existing.map(({ weekNumber, kind, groupName, state }) => {
+        const effectiveGroup = kind === "lecture" && weekNumber <= 2 && groupName === "G1"
+          ? CURRENT_COURSE.groupName
+          : kind === "lecture" && weekNumber >= 3 && groupName === CURRENT_COURSE.groupName && state === "draft"
+            ? "G1" : groupName;
+        return `${weekNumber}:${kind}:${effectiveGroup}`;
+      }),
     );
+    const historicalSharedWeeks = new Set(existing.filter((item) =>
+      item.kind === "lecture" && item.weekNumber >= 3 && item.groupName === CURRENT_COURSE.groupName && item.state !== "draft",
+    ).map((item) => item.weekNumber));
     const missing = semester.status === "archived"
       ? []
       : CURRENT_COURSE_SESSIONS.filter(
           ({ weekNumber, kind, groupName }) =>
+            !(kind === "lecture" && historicalSharedWeeks.has(weekNumber)) &&
             !existingKeys.has(`${weekNumber}:${kind}:${groupName}`),
         );
 
@@ -953,13 +964,14 @@ async function transitionClassSession(
 async function launchCourseSession(session: Session | null, weekNumber: number, kind: "lecture" | "lab", group?: "G1" | "G2") {
   const db = await database();
   await requireStaffActor(db, session);
-  const groupName = kind === "lecture" ? CURRENT_COURSE.groupName : group;
+  const groupName = kind === "lecture" && weekNumber <= 2 ? CURRENT_COURSE.groupName : group;
   if (!CURRENT_COURSE_SESSIONS.some((item) => item.weekNumber === weekNumber && item.kind === kind && item.groupName === groupName)) {
     throw new AttendanceServiceError(400, "invalid_course_session", "Kjo orë nuk është në kalendar.");
   }
   const { semesterId } = await ensureCurrentCourseSetup(session);
   const matches = (await listClassSessions(session, semesterId)).filter((item) =>
-    item.weekNumber === weekNumber && item.kind === kind && (item.groupName === groupName || (kind === "lecture" && item.groupName === "G1")));
+    item.weekNumber === weekNumber && item.kind === kind && (item.groupName === groupName ||
+      (kind === "lecture" && weekNumber <= 2 && groupName === CURRENT_COURSE.groupName && item.groupName === "G1")));
   if (matches.length !== 1) {
     throw new AttendanceServiceError(409, "ambiguous_session", "Kalendari kërkon kontroll nga stafi.");
   }

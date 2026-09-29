@@ -297,7 +297,7 @@ describe("automatic current-course setup", () => {
     });
 
     const first = await attendanceService.ensureCurrentCourseSetup(professor);
-    expect(first).toMatchObject({ createdSessions: 43, removedPilotSemesters: 0 });
+    expect(first).toMatchObject({ createdSessions: 56, removedPilotSemesters: 0 });
 
     const [semester] = await sql`
       select id, title, week_count, status
@@ -312,7 +312,7 @@ describe("automatic current-course setup", () => {
       where semester_id = ${semester.id}
       order by week_number, case when kind = 'lecture' then 0 else 1 end, group_name
     `;
-    expect(sessions).toHaveLength(43);
+    expect(sessions).toHaveLength(56);
     expect(sessions[0]).toMatchObject({
       week_number: 1,
       kind: "lecture",
@@ -321,11 +321,13 @@ describe("automatic current-course setup", () => {
     expect(sessions[0].title).toContain("17.09.2026 · 16:30");
     expect(sessions[1]).toMatchObject({ week_number: 2, kind: "lecture" });
     expect(sessions[2]).toMatchObject({ week_number: 2, kind: "lab" });
-    expect(sessions.at(-1)?.title).toContain("24.12.2026 · 18:00");
+    expect(sessions.filter((item) => item.week_number === 3 && item.kind === "lecture").map((item) => item.group_name)).toEqual(["G1", "G2"]);
+    expect(sessions.find((item) => item.week_number === 3 && item.kind === "lecture" && item.group_name === "G2")?.title).toContain("01.10.2026 · 17:15");
+    expect(sessions.at(-1)?.title).toContain("24.12.2026 · 18:15");
 
     const second = await attendanceService.ensureCurrentCourseSetup(professor);
     expect(second).toMatchObject({ createdSessions: 0, removedPilotSemesters: 0 });
-    expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(43);
+    expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(56);
     expect(await sql`select id from semesters where title like '[PILOT SYNTHETIC%'`).toHaveLength(2);
   });
 
@@ -343,6 +345,21 @@ describe("automatic current-course setup", () => {
     expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(0);
     const [saved] = await sql`select status from semesters where id = ${semester.id}`;
     expect(saved.status).toBe("archived");
+  });
+
+  it("converts an unopened week 3 shared lecture into G1 and adds G2 without losing the session id", async () => {
+    const semester = await createActiveSemester("Programimi për Pajisje Mobile · Semestri Dimëror 2026/27");
+    const old = await attendanceService.createClassSession(professor, {
+      semesterId: semester.id, weekNumber: 3, kind: "lecture", groupName: "G1+G2",
+      title: "01.10.2026 · 16:30 · Ligjërata 3",
+    });
+    await attendanceService.ensureCurrentCourseSetup(professor);
+    const lectures = await sql`select id, group_name, title from class_sessions
+      where semester_id = ${semester.id} and week_number = 3 and kind = 'lecture' order by group_name`;
+    expect(lectures).toHaveLength(2);
+    expect(lectures[0]).toMatchObject({ id: old.id, group_name: "G1" });
+    expect(lectures[1]).toMatchObject({ group_name: "G2" });
+    expect(lectures[1].title).toContain("17:15");
   });
 });
 
@@ -1814,7 +1831,7 @@ describe("direct course QR launch", () => {
     await attendanceService.transitionClassSession(professor, opened.id, { state: "closed", reason: "Test completed" });
     await expect(attendanceService.launchCourseSession(professor, 2, "lecture")).rejects.toMatchObject({ status: 409 });
     await attendanceService.transitionSemester(professor, opened.semesterId, { state: "archived", reason: "Archived" });
-    await expect(attendanceService.launchCourseSession(professor, 3, "lecture")).rejects.toMatchObject({ status: 409 });
+    await expect(attendanceService.launchCourseSession(professor, 3, "lecture", "G1")).rejects.toMatchObject({ status: 409 });
   });
   it("does not extend an expired window when reopening the same link", async () => {
     const opened = await attendanceService.launchCourseSession(professor, 2, "lecture");
@@ -1862,6 +1879,26 @@ describe("shared lecture and separate lab groups", () => {
     await expect(attendanceService.launchCourseSession(professor, 3, "lab")).rejects.toMatchObject({status:400});
   });
 
+  it("keeps week 3 lecture check-ins and reports separate for G1 and G2", async () => {
+    const { semesterId } = await attendanceService.ensureCurrentCourseSetup(professor);
+    await importAndActivate(semesterId, studentA, "A-1", "Arta Kola", "G1");
+    await importAndActivate(semesterId, studentB, "B-1", "Besa Duka", "G2");
+    await expect(attendanceService.launchCourseSession(professor, 3, "lecture")).rejects.toMatchObject({ status: 400 });
+    const g1 = await attendanceService.launchCourseSession(professor, 3, "lecture", "G1");
+    const g2 = await attendanceService.launchCourseSession(professor, 3, "lecture", "G2");
+    const firstQr = await attendanceService.createChallenge(professor, g1.id, "192.0.2.1");
+    await expect(attendanceService.checkIn(studentB, { token: firstQr.token }, "192.0.2.2")).rejects.toMatchObject({ code: "wrong_group" });
+    await attendanceService.checkIn(studentA, { token: firstQr.token }, "192.0.2.3");
+    const secondQr = await attendanceService.createChallenge(professor, g2.id, "192.0.2.4");
+    await attendanceService.checkIn(studentB, { token: secondQr.token }, "192.0.2.5");
+    const report = await attendanceService.getWeeklyAttendanceReport(professor);
+    expect(report.rows.filter((row) => row.sessionId === g1.id).map((row) => [row.studentGroup, row.present])).toEqual([["G1", "Po"]]);
+    expect(report.rows.filter((row) => row.sessionId === g2.id).map((row) => [row.studentGroup, row.present])).toEqual([["G2", "Po"]]);
+    const history = await attendanceService.getStudentHistory(studentA);
+    expect(history.sessions.map((row) => row.id)).toContain(g1.id);
+    expect(history.sessions.map((row) => row.id)).not.toContain(g2.id);
+  });
+
   it("does not mark a student absent for a class that ended before enrolment", async () => {
     const { semesterId } = await attendanceService.ensureCurrentCourseSetup(professor);
     const previous = await attendanceService.launchCourseSession(professor, 1, "lecture");
@@ -1888,7 +1925,7 @@ describe("shared lecture and separate lab groups", () => {
     expect(saved).toMatchObject({title:old.title,group_name:"G1",state:"closed"});
     const [changed] = await sql`select title from class_sessions where id = ${draft.id}`;
     expect(changed.title).toContain("14:45");
-    expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(43);
+    expect(await sql`select id from class_sessions where semester_id = ${semester.id}`).toHaveLength(56);
     expect(await sql`select id from class_sessions where semester_id = ${semester.id} and week_number=1`).toHaveLength(1);
   });
 });

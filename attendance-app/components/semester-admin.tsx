@@ -180,22 +180,30 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
         <h2 id="course-qr-title">Hap QR-në e orës</h2>
         <p>Programimi për Pajisje Mobile · 2026/27. Studentët përgatitin profilin nga “Vijueshmëria ime” para orës. Kliko QR vetëm kur klasa është gati: regjistrimi qëndron hapur deri në 5 minuta. Mbylle më herët nga regjistri kur të gjithë studentët në sallë konfirmohen. Studentët skanojnë QR-në nga projektori.</p>
         <div className="semester-list">
-          {CURRENT_COURSE_SESSIONS.filter((item) => item.kind === "lecture").map((lecture) => (
-            <article className="semester-row" key={lecture.weekNumber}>
+          {CURRENT_COURSE_SESSIONS.filter((item) => item.kind === "lecture" && (item.groupName === CURRENT_COURSE.groupName || item.groupName === "G1")).map((lecture) => {
+            const historicalShared = lecture.weekNumber >= 3 ? sessions.find((item) =>
+              item.semesterTitle === CURRENT_COURSE.title && item.weekNumber === lecture.weekNumber &&
+              item.kind === "lecture" && item.groupName === CURRENT_COURSE.groupName && item.state !== "draft") : undefined;
+            return <article className="semester-row" key={lecture.weekNumber}>
               <div><strong>Java {lecture.weekNumber} · {lecture.title.split(" · ")[0]}</strong></div>
-              {CURRENT_COURSE_SESSIONS.filter((item) => item.weekNumber === lecture.weekNumber)
+              {historicalShared ? <a className="admin-link" href={historicalShared.state === "open"
+                ? `/staff/project/${historicalShared.id}` : `/staff?sessionId=${historicalShared.id}#session-admin-title`}>
+                Ligjëratë historike · G1 + G2 · hap regjistrin
+              </a> : null}
+              {CURRENT_COURSE_SESSIONS.filter((item) => item.weekNumber === lecture.weekNumber && !(historicalShared && item.kind === "lecture"))
                 .sort((left, right) => left.startTime.localeCompare(right.startTime)).map((planned) => {
-                const existing = sessions.find((item) => item.semesterTitle === CURRENT_COURSE.title && item.weekNumber === planned.weekNumber && item.kind === planned.kind && (item.groupName === planned.groupName || (planned.kind === "lecture" && item.groupName === "G1")));
+                const existing = sessions.find((item) => item.semesterTitle === CURRENT_COURSE.title && item.weekNumber === planned.weekNumber && item.kind === planned.kind && (item.groupName === planned.groupName ||
+                  (planned.kind === "lecture" && planned.weekNumber <= 2 && planned.groupName === CURRENT_COURSE.groupName && item.groupName === "G1")));
                 const finished = existing?.state === "closed" || existing?.state === "cancelled";
                 return <a title={finished ? "Ora ka përfunduar. Hap regjistrin e kësaj ore." : "Hap QR-në për regjistrimin e pjesëmarrjes."} className="admin-link" key={`${planned.kind}-${planned.groupName}`} href={finished
                   ? `/staff?sessionId=${existing.id}#session-admin-title`
-                  : `/staff/qr?week=${planned.weekNumber}&kind=${planned.kind}${planned.kind === "lab" ? `&group=${planned.groupName}` : ""}`}>
-                  QR {planned.kind === "lecture" ? "Ligjëratë · G1 + G2" : `Ushtrime · ${planned.groupName}`} · {planned.startTime}
+                  : `/staff/qr?week=${planned.weekNumber}&kind=${planned.kind}${planned.groupName === CURRENT_COURSE.groupName ? "" : `&group=${planned.groupName}`}`}>
+                  QR {planned.kind === "lecture" ? `Ligjëratë · ${planned.groupName === CURRENT_COURSE.groupName ? "G1 + G2" : planned.groupName}` : `Ushtrime · ${planned.groupName}`} · {planned.startTime}
                   {finished ? <span className="session-link-status">{existing.state === "cancelled" ? "E anuluar" : "E mbyllur"}</span> : null}
                 </a>;
               })}
-            </article>
-          ))}
+            </article>;
+          })}
         </div>
       </section>
       {selectedSessionId ? <SessionAdmin key={selectedSessionId} sessionId={selectedSessionId} /> : null}

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ligjërata 3 · Nga skica te tri faqe që punojnë</title>
+  <link rel="stylesheet" href="../java-02/week.css">
+  <link rel="stylesheet" href="../java-02/projector.css">
+  <link rel="stylesheet" href="../java-02/lecture.css">
+  <link rel="stylesheet" href="week-03.css">
+</head>
+<body data-start-projector="true">
+  <main>
+    <nav aria-label="Navigimi"><a href="./">← Java 3</a><span>AAB · Programimi për Pajisje Mobile</span><button id="mode" type="button">Hap në projektor</button></nav>
+    <h1>Ligjërata 3 · Komponentët dhe App Router</h1>
+    <p class="intro">01 tetor 2026 · I njëjti prezantim 45-minutësh për G1 (16:30) dhe G2 (17:15). Shigjetat ← → kalojnë slajdet; Esc i shfaq të gjitha.</p>
+
+    <section class="step" aria-label="Slajdi 1"><p class="eyebrow">LIGJËRATA 3 · 01 / 14</p><img class="slide-logo" src="/img/aab_logo_white.png" alt="Kolegji AAB"><h2>Nga skica te tri faqe që punojnë</h2><p class="statement">Arta gjen udhëtimin.<br>Ne ndërtojmë rrugën që ajo ndjek.</p></section>
+    <section class="step" aria-label="Slajdi 2"><p class="eyebrow">LIGJËRATA 3 · 02 / 14</p><h2>Çfarë sollëm nga Java 2?</h2><ul><li>Problemi: Arta kërkon një vend për në AAB.</li><li>Skica: lista, detajet, kërkesa në pritje.</li><li>PRD (Product Requirements Document – dokumenti i kërkesave të produktit): çfarë duhet të ndodhë.</li><li>Sot: secili ekran merr vendin e vet në aplikacion.</li></ul><p>45 minuta: 5 rikujtim · 15 ide dhe kod · 15 demonstrim · 10 prova dhe pyetje.</p></section>
+    <section class="step" aria-label="Slajdi 3"><p class="eyebrow">LIGJËRATA 3 · 03 / 14</p><h2>Pyetja e Artës</h2><p class="statement">“Pashë nisjen në 08:00.<br>Ku i gjej vendtakimin dhe vendet e lira?”</p><p>Përgjigjja kërkon kalim nga lista te detajet e <em>pikërisht atij</em> udhëtimi.</p></section>
+    <section class="step" aria-label="Slajdi 4"><p class="eyebrow">LIGJËRATA 3 · 04 / 14</p><h2>Tri adresa, tri detyra</h2><div class="route-flow"><div><code>/</code><strong>Lista</strong><span>Shfleto nisjet</span></div><div><code>/udhetimi/1</code><strong>Detajet</strong><span>Lexo një udhëtim</span></div><div><code>/udhetimi/1/kerkesa</code><strong>Në pritje</strong><span>Shiko hapin e radhës</span></div></div><p>E njëjta rrjedhë që vizatuam në letër, tani me adresa që mund të hapen edhe drejtpërdrejt.</p></section>
+    <section class="step" aria-label="Slajdi 5"><p class="eyebrow">LIGJËRATA 3 · 05 / 14</p><h2>Si e lexon Next.js këtë rrjedhë?</h2><pre class="file-tree"><code>src/app/page.tsx                       → /
+src/app/udhetimi/[id]/page.tsx         → /udhetimi/1
+src/app/udhetimi/[id]/kerkesa/page.tsx → /udhetimi/1/kerkesa</code></pre><p>App Router i Next.js i lidh dosjet me adresat. <code>[id]</code> ndryshon sipas udhëtimit.</p></section>
+    <section class="step" aria-label="Slajdi 6"><p class="eyebrow">LIGJËRATA 3 · 06 / 14</p><h2>Faqe apo komponent?</h2><div class="columns"><div><h3>Faqja</h3><p>Ka adresën e vet. Për shembull lista në <code>/</code> ose detajet në <code>/udhetimi/1</code>.</p></div><div><h3>Komponenti</h3><p>Është pjesë e ripërdorshme e pamjes. Një <code>KartaUdhetimi</code> mund të shfaqet tri herë në listë.</p></div></div></section>
+    <section class="step" aria-label="Slajdi 7"><p class="eyebrow">LIGJËRATA 3 · 07 / 14</p><h2>Një burim për tri karta</h2><pre><code>const udhetimet = [
+  { id: "1", nisja: "Prishtinë", ora: "08:00", vende: 2 },
+  { id: "2", nisja: "Fushë Kosovë", ora: "08:15", vende: 1 },
+  { id: "3", nisja: "Lipjan", ora: "07:45", vende: 3 }
+];</code></pre><p>Fillojmë me të dhëna fiktive. Në Javën 4 do t’i lexojmë nga baza e të dhënave.</p></section>
+    <section class="step" aria-label="Slajdi 8"><p class="eyebrow">LIGJËRATA 3 · 08 / 14</p><h2>Lidhja duhet ta ruajë zgjedhjen</h2><pre><code>&lt;Link href={`/udhetimi/${udhetim.id}`}&gt;
+  Shiko detajet
+&lt;/Link&gt;</code></pre><p>Kur Arta klikon kartën me ID <code>2</code>, hapet <code>/udhetimi/2</code>. Adresa tregon çfarë zgjodhi.</p></section>
+    <section class="step" aria-label="Slajdi 9"><p class="eyebrow">LIGJËRATA 3 · 09 / 14</p><h2>Si gjendet udhëtimi i zgjedhur?</h2><pre><code>const { id } = await params;
+const udhetim = udhetimet.find((u) =&gt; u.id === id);</code></pre><p>Faqja e detajeve lexon <code>id</code> nga adresa. Në versionet aktuale të Next.js, <code>params</code> pritet me <code>await</code>.</p></section>
+    <section class="step" aria-label="Slajdi 10"><p class="eyebrow">LIGJËRATA 3 · 10 / 14</p><h2>Po nëse ID nuk ekziston?</h2><p class="statement">Dikush hap <code>/udhetimi/99</code>.</p><p>Nuk shfaqim detajet e një udhëtimi tjetër. Thërrasim <code>notFound()</code> dhe përdoruesi sheh se kjo faqe nuk ekziston.</p><p>Një gabim i qartë është më i mirë se një përgjigje e gabuar.</p></section>
+    <section class="step" aria-label="Slajdi 11"><p class="eyebrow">LIGJËRATA 3 · 11 / 14</p><h2>Çfarë do të thotë “Në pritje” sot?</h2><div class="columns"><div><h3>Në ushtrimin e sotëm</h3><p>Klikimi hap një ekran demonstrimi me tekst “Simulim: Në pritje”. Asgjë nuk i dërgohet shoferit.</p></div><div><h3>Në aplikacionin e plotë</h3><p>Kërkesa do të ruhet, shoferi do të përgjigjet dhe statusi do të përditësohet. Këto hapa vijnë më vonë.</p></div></div></section>
+    <section class="step" aria-label="Slajdi 12"><p class="eyebrow">LIGJËRATA 3 · 12 / 14</p><h2>Prova e vogël në telefon</h2><ul><li>Lista lexohet pa lëvizje horizontale.</li><li>Prekja e kartës hap udhëtimin e duhur.</li><li>“Kthehu te lista” të kthen te zgjedhjet.</li><li>Adresa e pavlefshme jep përgjigje të qartë.</li></ul></section>
+    <section class="step" aria-label="Slajdi 13"><p class="eyebrow">LIGJËRATA 3 · 13 / 14</p><h2>Demonstrimi i profesorit</h2><ol><li>Hapim listën e tri udhëtimeve.</li><li>Zgjedhim një udhëtim dhe kontrollojmë detajet.</li><li>Kalojmë te “Simulim: Në pritje”.</li><li>Ndryshojmë ID në adresë dhe shohim çfarë ndodh.</li></ol><a href="../demo/rideshare/" target="_blank" rel="noopener">Hap demonstrimin RideShare ↗</a></section>
+    <section class="step" aria-label="Slajdi 14"><p class="eyebrow">LIGJËRATA 3 · 14 / 14</p><h2>Tani kalojmë në ushtrime</h2><ul><li>Një grup të dhënash fiktive.</li><li>Tri faqe të lidhura.</li><li>Një komponent i ripërdorshëm.</li><li>Tri prova të shkruara në <code>java-03.md</code>.</li></ul><p>Të njëjtën rrjedhë mund ta përdorësh për shërbimet e biznesit tënd.</p><a href="prezantimi-ushtrimeve.html">Hap prezantimin e ushtrimeve →</a></section>
+
+    <div id="controls" hidden><button id="prev" type="button">← Para</button><span id="counter" aria-live="polite"></span><button id="next" type="button">Tjetri →</button><button id="exit" type="button">Mbyll pamjen e projektorit</button></div>
+  </main>
+  <script src="../java-02/projector.js"></script>
+</body>
+</html>

@@ -50,6 +50,26 @@ for(const width of [320,375,430,1280]){
 }
 
 for(const width of [375,1280]){
+ test(`week 3 lecture and lab presentation stay navigable at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:812});
+  const base='/lendet/2026-2027/mobile/java-03/';
+  await page.goto(origin+base);
+  await page.getByRole('link',{name:'Hap prezantimin',exact:true}).click();
+  await expect(page.locator('.step')).toHaveCount(14);
+  if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
+  await expect(page.locator('#counter')).toHaveText('1 / 14');
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('#counter')).toHaveText('2 / 14');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  await page.goto(origin+base);
+  await page.getByRole('link',{name:'Hap prezantimin e ushtrimeve',exact:true}).click();
+  await expect(page.locator('.step')).toHaveCount(12);
+  if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
+  await expect(page.locator('#counter')).toHaveText('1 / 12');
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('#counter')).toHaveText('2 / 12');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+ });
  test(`RideShare demonstration explains both roles and outcomes at ${width}px`,async({page},testInfo)=>{
   await page.setViewportSize({width,height:812});
   await page.goto(origin+'/lendet/2026-2027/mobile/demo/rideshare/');
