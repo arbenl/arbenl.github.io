@@ -32,6 +32,18 @@ test('the canonical student lecture package contains no speaker-note parts',asyn
  const packagePaths=stdout.split('\n').filter(Boolean);
  assert.ok(!packagePaths.some(path=>/^ppt\/notes(?:Slides|Masters)\//.test(path)));
 });
+test('week 3 lecture and lab decks are linked to the correct student materials',async()=>{
+ const {lecture3}=JSON.parse(await readFile('materials/manifest.json','utf8'));
+ const week=await readFile('lendet/2026-2027/mobile/java-03/index.html','utf8');
+ assert.ok(week.includes('prezantimi-ligjerates.html'));
+ assert.ok(week.includes('prezantimi-ushtrimeve.html'));
+ assert.ok(week.includes(lecture3.file.split('/').at(-1)));
+ assert.equal(sha256(await readFile(lecture3.file)),lecture3.sha256);
+ const {stdout}=await execFileAsync('unzip',['-Z1',lecture3.file]);
+ const packagePaths=stdout.split('\n').filter(Boolean);
+ assert.equal(packagePaths.filter(path=>/^ppt\/slides\/slide\d+\.xml$/.test(path)).length,14);
+ assert.ok(!packagePaths.some(path=>/^ppt\/notes(?:Slides|Masters)\//.test(path)));
+});
 test('the semester has fifteen Thursdays and ten graded labs after the first week',async()=>{
  const plan=JSON.parse(await readFile('grading/course-plan.json','utf8'));
  assert.equal(plan.weeks.length,15);

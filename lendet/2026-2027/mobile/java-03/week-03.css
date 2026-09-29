@@ -1,0 +1,14 @@
+.slide-logo{display:block;width:min(200px,42vw);height:auto;margin:4px 0 30px}
+.route-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:26px 0}
+.route-flow>div{display:flex;flex-direction:column;gap:12px;min-width:0;padding:20px;border:1px solid #546581;border-radius:12px;background:#142238}
+.route-flow strong{font-size:clamp(20px,2.3vw,30px)}
+.route-flow span{color:#c5d2e4;font-size:clamp(17px,1.8vw,23px)}
+.route-flow code{color:#89ddff;font-size:clamp(16px,1.65vw,22px);overflow-wrap:anywhere}
+.step pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:clamp(16px,1.75vw,23px);line-height:1.5}
+.step pre code{background:transparent}
+.step p,.step ol{font-size:clamp(19px,2vw,27px)}
+.step li{line-height:1.35}
+.step .columns p{font-size:clamp(19px,2vw,27px)}
+.step a{overflow-wrap:anywhere}
+@media(max-width:760px){.route-flow{grid-template-columns:1fr}.route-flow>div{padding:15px}.slide-logo{width:145px}.step pre{font-size:15px}}
+@media print{.route-flow{grid-template-columns:repeat(3,minmax(0,1fr))}}

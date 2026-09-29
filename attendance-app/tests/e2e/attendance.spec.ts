@@ -91,6 +91,9 @@ for (const viewport of [
         await professor.goto("/staff");
         await expect(professor.getByRole("heading", { name: "Hap QR-në e orës" })).toBeVisible();
         await expect(professor.getByText("Duke ngarkuar panelin…")).toHaveCount(0);
+        await expect(professor.locator('a[href="/staff/qr?week=3&kind=lecture&group=G1"]')).toBeVisible();
+        await expect(professor.locator('a[href="/staff/qr?week=3&kind=lecture&group=G2"]')).toBeVisible();
+        await expect(professor.locator('a[href="/staff/qr?week=3&kind=lab&group=G2"]')).toBeVisible();
         semesterId = (await api(professor, "/api/semesters")).body.find((s: { title: string }) => s.title === semesterTitle).id;
         sessionId = (await api(professor, "/api/class-sessions")).body.find((s: { semesterId: string; weekNumber: number; kind: string }) => s.semesterId === semesterId && s.weekNumber === 2 && s.kind === "lecture").id;
         await professor.getByText("Regjistri i studentëve, eksportet dhe administrimi", { exact: true }).click();

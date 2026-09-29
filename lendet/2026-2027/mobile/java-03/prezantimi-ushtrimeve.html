@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ushtrimet 3 · RideShare nga skica te kodi</title>
+  <link rel="stylesheet" href="../java-02/week.css">
+  <link rel="stylesheet" href="../java-02/projector.css">
+  <link rel="stylesheet" href="week-03.css">
+</head>
+<body data-start-projector="true">
+  <main>
+    <nav aria-label="Navigimi"><a href="./">← Java 3</a><a href="ushtrimet.html">Hapat dhe kodi</a><button id="mode" type="button">Hap në projektor</button></nav>
+    <h1>Ushtrimet 3 · RideShare</h1>
+    <p class="intro">01 tetor 2026 · G1: 14:45 · G2: 18:15 · Shigjetat ← → kalojnë slajdet.</p>
+    <section class="step" aria-label="Slajdi 1"><p class="eyebrow">USHTRIMET 3 · 01 / 12</p><h2>Sot skica bëhet aplikacion</h2><p class="statement">Lista → Detajet → Simulim: Në pritje</p><p>Në fund ke tri faqe të lidhura në repository-n tënd RideShare dhe një raport të shkurtër me prova.</p></section>
+    <section class="step" aria-label="Slajdi 2"><p class="eyebrow">USHTRIMET 3 · 02 / 12</p><h2>90 minuta, një rrjedhë</h2><ol><li>0–20 min: përgatitja dhe demonstrimi.</li><li>20–65 min: lista, detajet dhe ekrani në pritje.</li><li>65–75 min: prova në telefon me një koleg.</li><li>75–90 min: GitHub, raporti dhe dorëzimi.</li></ol><p>Në mes të orës profesori hap QR-në e ushtrimeve. Skanoje dhe prit konfirmimin e vijueshmërisë.</p></section>
+    <section class="step" aria-label="Slajdi 3"><p class="eyebrow">USHTRIMET 3 · 03 / 12</p><h2>Hap të njëjtin projekt</h2><ol><li>Hap repository-n ku ke <code>java-02.md</code> dhe skicën e krijuar me ndihmën e AI.</li><li>Skica të tregon tri ekranet që ndërton sot.</li><li>Hap aplikacionin Next.js; nis <code>npm run dev</code>. Mos krijo repository tjetër.</li></ol><a href="../nis-projektin.html" target="_blank" rel="noopener">Ndihmë: nise projektin ↗</a></section>
+    <section class="step" aria-label="Slajdi 4"><p class="eyebrow">USHTRIMET 3 · 04 / 12</p><h2>Shiko rrjedhën para kodit</h2><ol><li>Arta zgjedh një kartë në listë.</li><li>Lexon orën, vendtakimin dhe vendet.</li><li>Klikon “Kërko vend” dhe sheh një ekran demonstrimi.</li></ol><p>Pyetje: si e di faqja e detajeve cilën kartë zgjodhi Arta?</p><a href="../demo/rideshare/" target="_blank" rel="noopener">Demonstrimi RideShare ↗</a></section>
+    <section class="step" aria-label="Slajdi 5"><p class="eyebrow">USHTRIMET 3 · 05 / 12</p><h2>1. Tri udhëtime fiktive</h2><p>Te <code>src/lib/udhetimet.ts</code> ruaj për secilin: <code>id</code>, nisjen, destinacionin, orën, vendtakimin dhe vendet e lira.</p><p>Përdor të dhëna demonstrimi. Një udhëtim le të ketë <strong>zero vende</strong>, që ta provojmë edhe atë rast.</p><a href="ushtrimet.html#kodi" target="_blank" rel="noopener">Hapat dhe kodi ↗</a></section>
+    <section class="step" aria-label="Slajdi 6"><p class="eyebrow">USHTRIMET 3 · 06 / 12</p><h2>2. Një kartë, tri përdorime</h2><p>Krijo <code>KartaUdhetimi</code>. Faqja kryesore e përdor për secilin udhëtim.</p><p>Çdo kartë ka lidhjen “Shiko detajet” me ID e vet. Provo dy karta të ndryshme: a ndryshon adresa?</p></section>
+    <section class="step" aria-label="Slajdi 7"><p class="eyebrow">USHTRIMET 3 · 07 / 12</p><h2>3. Detajet e udhëtimit</h2><p>Krijo <code>src/app/udhetimi/[id]/page.tsx</code>. Lexo ID nga adresa dhe gjej udhëtimin përkatës.</p><p>Shfaq vendtakimin, orën dhe vendet. Shto “Kthehu te lista”.</p><p>Nëse ID nuk gjendet, shfaq faqen 404.</p></section>
+    <section class="step" aria-label="Slajdi 8"><p class="eyebrow">USHTRIMET 3 · 08 / 12</p><h2>4. Ekrani “Në pritje”</h2><p>Te detajet, “Kërko vend” hap adresën <code>/udhetimi/1/kerkesa</code>.</p><p>Shfaq tekstin <strong>“Simulim: Në pritje”</strong> dhe sqaro se kërkesa nuk është dërguar. Nëse ka zero vende, shfaq “Nuk ka vende të lira”.</p></section>
+    <section class="step" aria-label="Slajdi 9"><p class="eyebrow">USHTRIMET 3 · 09 / 12</p><h2>5. Provoje me një koleg</h2><ol><li>Hap listën në telefon; a lexohet pa lëvizje anash?</li><li>Hap udhëtimin e dytë; a përputhen detajet?</li><li>Kliko “Kërko vend”; a është i qartë simulimi?</li></ol><p>Nëse ke kohë, provo edhe ID <code>99</code>: a del 404?</p></section>
+    <section class="step" aria-label="Slajdi 10"><p class="eyebrow">USHTRIMET 3 · 10 / 12</p><h2>6. Ruaj kodin dhe provat</h2><ol><li>Plotëso <code>java-03.md</code> me çfarë ndërtove dhe tri prova reale.</li><li>Në GitHub Desktop kliko <strong>Commit to main</strong> dhe <strong>Push origin</strong>.</li><li>Hap repository-n online: a i sheh kodin dhe raportin?</li></ol><a href="java-03-model.md" download="java-03.md">Shkarko java-03.md</a></section>
+    <section class="step" aria-label="Slajdi 11"><p class="eyebrow">USHTRIMET 3 · 11 / 12</p><h2>7. Dorëzo linkun</h2><ol><li>Hap formularin; zgjidh <strong>Java 3</strong> dhe vendos linkun kryesor të repository-t.</li><li>Ruaj numrin e dorëzimit dhe lexo pesë kontrollet teknike.</li><li>Nëse diçka mungon: korrigjo, bëj Push dhe komento <code>rikontrollo</code>.</li></ol><a href="https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-submission.yml" target="_blank" rel="noopener">Hap formularin ↗</a></section>
+    <section class="step" aria-label="Slajdi 12"><p class="eyebrow">USHTRIMET 3 · 12 / 12</p><h2>Përfundove kur…</h2><ol><li>Lista, detajet dhe ekrani demonstrues lidhen me njëra-tjetrën.</li><li>Mund të shpjegosh çfarë është faqe dhe çfarë është komponent.</li><li>Kodi dhe <code>java-03.md</code> janë në repository-n tënd.</li><li>Ke numrin e dorëzimit dhe ke lexuar raportin.</li></ol><a href="ushtrimet.html">Kthehu te hapat e shkruar →</a></section>
+    <div id="controls" hidden><button id="prev" type="button">← Para</button><span id="counter" aria-live="polite"></span><button id="next" type="button">Tjetri →</button><button id="exit" type="button">Mbyll pamjen e projektorit</button></div>
+  </main>
+  <script src="../java-02/projector.js"></script>
+</body>
+</html>

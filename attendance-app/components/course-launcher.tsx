@@ -19,7 +19,7 @@ export function CourseLauncher({ week, kind, group }: { week: number; kind: "lec
   }, [week, kind, group]);
   if (sessionId) return <LiveProjector sessionId={sessionId} />;
   return <main className="page-shell"><section className="status-card">
-    <h1>Java {week} · {kind === "lecture" ? "Ligjëratë" : `Ushtrime · ${group}`}</h1>
+    <h1>Java {week} · {kind === "lecture" ? `Ligjëratë${group ? ` · ${group}` : ""}` : `Ushtrime · ${group}`}</h1>
     {error ? <><p role="alert">{error}</p><button onClick={() => window.location.reload()}>Provo përsëri</button></>
       : <p role="status">Duke hapur QR-në për këtë orë…</p>}
     <p><a href="/staff">Kthehu te paneli</a></p>

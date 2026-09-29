@@ -193,7 +193,7 @@ export function ProfileForm({
       <select id="groupName" name="groupName" className="student-control" required disabled={submitting}>
         <option value="">Zgjidh grupin tënd</option>
         <option value="G1">Grupi 1 · 14:45</option>
-        <option value="G2">Grupi 2 · 18:00</option>
+        <option value="G2">Grupi 2 · 18:15</option>
       </select>
       <label htmlFor="email">Emaili që përdor për Google Drive</label>
       <input id="email" name="email" type="email" autoComplete="email" maxLength={254} className="student-control" required disabled={submitting} />
