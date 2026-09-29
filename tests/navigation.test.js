@@ -40,16 +40,16 @@ test('each of fifteen weeks has a home and a consistent submission path',async()
   assert.ok(page.includes('dorezimet.html'));
   if(week>=2){
    for(const heading of ['1. Ligjërata','2. Ushtrimet','3. Dorëzimi'])assert.ok(page.includes(heading),`week ${week}: missing ${heading}`);
-   assert.ok(page.includes('href="#hapat"'),`week ${week}: missing in-page exercise link`);
+   assert.ok(page.includes(week===3?'href="ushtrimet.html"':'href="#hapat"'),`week ${week}: missing exercise entry`);
    assert.ok(page.includes('id="hapat"'),`week ${week}: missing exercise steps`);
-   assert.ok(page.includes('4. Dorëzo para se të largohesh'),`week ${week}: missing final step`);
+   assert.ok(page.includes(week===3?'4. Dorëzo dhe lexo përgjigjen':'4. Dorëzo para se të largohesh'),`week ${week}: missing final step`);
    assert.ok(page.includes('issues/new?template=mobile-submission.yml'),`week ${week}: missing direct submission`);
   }
   if(week>=3){
    assert.ok(page.includes(`java-${n}.md`));
    assert.ok((await read(`lendet/2026-2027/mobile/java-${n}/java-${n}-model.md`)).includes('Provat që bëra'));
    const exercises=await read(`lendet/2026-2027/mobile/java-${n}/ushtrimet.html`);
-   assert.ok(exercises.includes('4. Dorëzo para se të largohesh'),`week ${week}: old exercise link stopped working`);
+   assert.ok(exercises.includes(week===3?'5. Merr përgjigjen e GitHub-it':'4. Dorëzo para se të largohesh'),`week ${week}: exercise link stopped working`);
   }
  }
 });
