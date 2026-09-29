@@ -97,3 +97,33 @@ for(const width of [375,1280]){
   await expect(page.getByRole('button',{name:'Nuk ka vende të lira',exact:true})).toBeDisabled();
  });
 }
+
+for(const width of [320,375,1280]){
+ test(`week 3 RideShare demo teaches cards, routes, pending and 404 at ${width}px`,async({page},testInfo)=>{
+  await page.setViewportSize({width,height:812});
+  const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.goto(origin+'/lendet/2026-2027/mobile/java-03/');
+  await page.getByRole('link',{name:'Hap demonstrimin e Javës 3 · tri karta dhe 404'}).click();
+  await expect(page.locator('.trip-card')).toHaveCount(3);
+  await expect(page.locator('.arrow-note')).toHaveCount(2);
+  await page.screenshot({path:testInfo.outputPath(`week03-list-${width}.png`),fullPage:true});
+  await page.locator('[data-trip-id="2"]').getByRole('link',{name:'Shiko detajet →'}).click();
+  await expect(page.locator('#route-label')).toHaveText('/udhetimi/2');
+  await expect(page.getByText('Te stacioni kryesor')).toBeVisible();
+  await page.getByRole('link',{name:'Kërko vend →'}).click();
+  await expect(page.getByRole('heading',{name:'Simulim: Në pritje'})).toBeVisible();
+  await expect(page.getByText('Kjo kërkesë nuk është dërguar te shoferi. Nuk ka rezervim real.')).toBeVisible();
+  await page.getByRole('link',{name:'Zgjidh një udhëtim tjetër'}).click();
+  await page.locator('[data-trip-id="3"]').getByRole('link',{name:'Shiko detajet →'}).click();
+  await expect(page.getByRole('button',{name:'Nuk ka vende të lira'})).toBeDisabled();
+  await page.getByLabel('Adresa e udhëtimit').fill('/udhetimi/99');
+  await page.getByRole('button',{name:'Hap adresën'}).click();
+  await expect(page.getByRole('heading',{name:'Udhëtimi nuk u gjet'})).toBeVisible();
+  await expect(page.locator('#route-label')).toHaveText('/udhetimi/99');
+  await page.reload();
+  await expect(page.getByRole('heading',{name:'Udhëtimi nuk u gjet'})).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  expect(errors).toEqual([]);
+  await page.screenshot({path:testInfo.outputPath(`week03-demo-${width}.png`),fullPage:true});
+ });
+}
