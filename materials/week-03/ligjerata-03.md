@@ -10,22 +10,26 @@ I njëjti prezantim 45-minutësh për G1 dhe G2
 
 - Problemi: Arta kërkon një vend për në AAB.
 - Skica: lista, detajet, kërkesa në pritje.
-- PRD (Product Requirements Document): çfarë duhet të ndodhë.
+- PRD (Product Requirements Document – dokumenti i kërkesave të produktit): çfarë duhet të ndodhë.
 - Sot: secili ekran merr vendin e vet në aplikacion.
 
-# Pyetja e Artës
+# Pyetja e Artës na tregon çfarë të ndërtojmë
 
 “Pashë nisjen në 08:00. Ku i gjej vendtakimin dhe vendet e lira?”
 
-Nga lista duhet të hapet udhëtimi që Arta zgjodhi.
+Nevoja → Veprimi → Rezultati
 
-# Tri adresa, tri detyra
+- Arta kërkon më shumë hollësi për udhëtimin që pa.
+- Ajo prek “Shiko detajet” te ajo kartë.
+- Hapet faqja e **atij** udhëtimi, jo e një tjetri.
 
-| Adresa | Çfarë sheh Arta? |
-|---|---|
-| `/` | Lista e nisjeve |
-| `/udhetimi/1` | Detajet e udhëtimit 1 |
-| `/udhetimi/1/kerkesa` | Simulim: Në pritje |
+# Rruga e Artës: tri ekrane të lidhura
+
+1. **Lista** `/` → Arta zgjedh kartën me ID 2.
+2. **Detajet** `/udhetimi/2` → lexon orën dhe vendtakimin.
+3. **Kërkesa** `/udhetimi/2/kerkesa` → sheh simulimin “Në pritje”.
+
+ID 2 ruhet gjatë gjithë rrjedhës.
 
 # Dosjet bëhen adresa
 
@@ -35,13 +39,13 @@ src/app/udhetimi/[id]/page.tsx         → /udhetimi/1
 src/app/udhetimi/[id]/kerkesa/page.tsx → /udhetimi/1/kerkesa
 ```
 
-App Router i Next.js lidh dosjet me adresat.
+App Router i Next.js lidh dosjet me adresat. E njëjta dosje `[id]` hap udhëtimin 1, 2 ose 3; nuk krijojmë skedar të ri për secilin.
 
-# Faqe apo komponent?
+# Faqja dhe komponenti
 
-- Faqja ka adresën e vet, për shembull `/udhetimi/1`.
-- Komponenti është pjesë e ripërdorshme e pamjes.
-- `KartaUdhetimi` shfaqet tri herë në të njëjtën listë.
+- Faqja `/` ka adresën e vet dhe vendos çfarë shfaqet.
+- Brenda saj, i njëjti komponent `KartaUdhetimi` shfaqet tri herë.
+- Kartat kanë modelin e njëjtë, por të dhëna të ndryshme.
 
 # Një burim për tri karta
 
@@ -53,7 +57,7 @@ const udhetimet = [
 ];
 ```
 
-Fillojmë me të dhëna fiktive. Në Javën 4 vjen baza e të dhënave.
+Karta dhe faqja e detajeve lexojnë të njëjtën listë. Kështu ora e kartës nuk kundërshton orën te detajet. Në Javën 4 do t'i lexojmë të dhënat nga baza.
 
 # Lidhja ruan zgjedhjen
 
@@ -63,7 +67,7 @@ Fillojmë me të dhëna fiktive. Në Javën 4 vjen baza e të dhënave.
 </Link>
 ```
 
-Karta me ID `2` hap `/udhetimi/2`.
+Karta me ID `2` → klikimi → `/udhetimi/2`. Numri në adresë i tregon faqes cilat të dhëna të lexojë.
 
 # Detajet lexojnë ID-në
 
@@ -74,17 +78,22 @@ const udhetim = udhetimet.find((u) => u.id === id);
 
 Në versionet aktuale të Next.js, `params` pritet me `await`.
 
+`/udhetimi/2` → `id = "2"` → gjej udhëtimin 2.
+
 # Kur ID nuk ekziston
 
-Nëse dikush hap `/udhetimi/99`, shfaqim 404 me `notFound()`.
+Pyetja: a gjendet ID në listën e udhëtimeve?
 
-Nuk tregojmë detajet e një udhëtimi tjetër.
+- Po, ID 2 → shfaq detajet e udhëtimit 2.
+- Jo, ID 99 → thirr `notFound()` dhe shfaq 404.
 
-# “Në pritje” sot është simulim
+Nuk tregojmë detajet e një udhëtimi tjetër vetëm për të mbushur ekranin.
 
-- Klikimi hap një ekran demonstrimi.
-- Asgjë nuk i dërgohet shoferit.
-- Rezervimin dhe konfirmimin real i shtojmë më vonë.
+# “Në pritje” është simulim, jo rezervim
+
+- Sot: klikimi shfaq “Simulim: Në pritje”; asgjë nuk ruhet dhe shoferi nuk merr njoftim.
+- Më vonë: kërkesa do të ruhet, shoferi do të përgjigjet dhe statusi do të ndryshojë.
+- Nëse udhëtimi ka zero vende, nuk ofrojmë butonin “Kërko vend”.
 
 # Prova në telefon
 
@@ -93,12 +102,12 @@ Nuk tregojmë detajet e një udhëtimi tjetër.
 - “Kthehu te lista” të kthen te zgjedhjet.
 - ID e panjohur jep përgjigje të qartë.
 
-# Demonstrimi i profesorit
+# Parashiko, pastaj provo në demonstrim
 
-1. Hapim listën e tri udhëtimeve.
-2. Zgjedhim një udhëtim dhe kontrollojmë detajet.
-3. Kalojmë te “Simulim: Në pritje”.
-4. Ndryshojmë ID në adresë dhe shohim 404.
+1. Para klikimit të kartës 2: cila adresë duhet të hapet? `/udhetimi/2`.
+2. Në detaje: nga vjen vendtakimi? Nga i njëjti objekt i udhëtimit.
+3. Te karta me zero vende: a lejohet kërkesa? Jo.
+4. Te ID `99`: a duhet të shfaqet udhëtimi 1? Jo, 404.
 
 [Hap demonstrimin e Javës 3](https://arbenl.github.io/lendet/2026-2027/mobile/java-03/demo/)
 
