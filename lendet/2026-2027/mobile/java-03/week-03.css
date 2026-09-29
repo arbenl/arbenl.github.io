@@ -1,14 +1,31 @@
 .slide-logo{display:block;width:min(200px,42vw);height:auto;margin:4px 0 30px}
-.route-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:26px 0}
-.route-flow>div{display:flex;flex-direction:column;gap:12px;min-width:0;padding:20px;border:1px solid #546581;border-radius:12px;background:#142238}
-.route-flow strong{font-size:clamp(20px,2.3vw,30px)}
-.route-flow span{color:#c5d2e4;font-size:clamp(17px,1.8vw,23px)}
-.route-flow code{color:#89ddff;font-size:clamp(16px,1.65vw,22px);overflow-wrap:anywhere}
+.route-flow,.reason-chain{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px;margin:26px 0;padding:0}
+.route-flow li,.reason-chain>div{position:relative;display:flex;flex-direction:column;gap:10px;min-width:0;padding:18px;border:1px solid #546581;border-radius:12px;background:#142238;list-style:none}
+.route-flow li:not(:last-child)::after,.reason-chain>div:not(:last-child)::after{content:"→";position:absolute;right:-29px;top:40%;color:#89ddff;font-size:28px;font-weight:700}
+.route-flow strong,.reason-chain strong{font-size:clamp(20px,2.1vw,27px);color:#fff}
+.route-flow span,.reason-chain span{color:#c5d2e4;font-size:clamp(17px,1.6vw,21px)}
+.route-flow span[aria-hidden],.reason-chain span[aria-hidden]{font-size:30px}
+.route-flow code{color:#89ddff;font-size:clamp(16px,1.5vw,20px);overflow-wrap:anywhere}
+.takeaway{border-left:4px solid #65d8ff;padding:8px 16px;background:#142238}
+.concept-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:center}
+.page-shell{padding:18px;border:2px solid #65d8ff;border-radius:16px;background:#112039}
+.page-shell>p{margin:0 0 12px;font-weight:700}
+.mini-trip{display:flex;justify-content:space-between;gap:12px;margin:8px 0;padding:12px;border:1px solid #546581;border-radius:9px;background:#1c2a44;font-size:clamp(17px,1.7vw,23px)}
+.mini-trip small{align-self:center;color:#89ddff;font-size:clamp(13px,1.2vw,17px);overflow-wrap:anywhere}
+.concept-explain p{margin:12px 0}
+.cause-effect{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;margin:24px 0}
+.cause-effect span{min-width:0;overflow-wrap:anywhere;text-align:center}
+.cause-effect span:nth-child(odd){padding:14px;border:1px solid #546581;border-radius:10px;background:#142238}
+.cause-effect span[aria-hidden]{color:#89ddff;font-size:27px}
+.decision-question{max-width:600px;margin:auto;padding:16px;border:2px solid #89ddff;border-radius:12px;text-align:center;font-weight:700;background:#142238}
+.decision-branches{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:24px 0}
+.decision-branches>div{display:flex;flex-direction:column;gap:8px;padding:16px;border:1px solid #546581;border-radius:12px;background:#142238}
+.decision-branches strong{color:#89ddff}
 .step pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:clamp(16px,1.75vw,23px);line-height:1.5}
 .step pre code{background:transparent}
 .step p,.step ol{font-size:clamp(19px,2vw,27px)}
 .step li{line-height:1.35}
 .step .columns p{font-size:clamp(19px,2vw,27px)}
 .step a{overflow-wrap:anywhere}
-@media(max-width:760px){.route-flow{grid-template-columns:1fr}.route-flow>div{padding:15px}.slide-logo{width:145px}.step pre{font-size:15px}}
-@media print{.route-flow{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.route-flow,.reason-chain{grid-template-columns:1fr;gap:30px}.route-flow li,.reason-chain>div{padding:15px}.route-flow li:not(:last-child)::after,.reason-chain>div:not(:last-child)::after{content:"↓";right:50%;top:auto;bottom:-33px}.concept-layout,.decision-branches{grid-template-columns:1fr}.cause-effect{grid-template-columns:1fr;gap:5px}.cause-effect span[aria-hidden]{transform:rotate(90deg)}.mini-trip{flex-direction:column;gap:2px}.slide-logo{width:145px}.step pre{font-size:15px}}
+@media print{.route-flow,.reason-chain{grid-template-columns:repeat(3,minmax(0,1fr))}.concept-layout,.decision-branches{grid-template-columns:1fr 1fr}.cause-effect{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr)}}

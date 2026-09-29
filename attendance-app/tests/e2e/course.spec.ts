@@ -63,7 +63,7 @@ for(const width of [375,1280]){
   await expect(page.getByRole('link',{name:'Dorëzo punën · Java 3'})).toHaveAttribute('href',/issues\/new\?template=mobile-submission\.yml/);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
  });
- test(`week 3 lecture and lab presentation stay navigable at ${width}px`,async({page})=>{
+ test(`week 3 lecture and lab presentation stay navigable at ${width}px`,async({page},testInfo)=>{
   await page.setViewportSize({width,height:812});
   const base='/lendet/2026-2027/mobile/java-03/';
   await page.goto(origin+base);
@@ -71,8 +71,15 @@ for(const width of [375,1280]){
   await expect(page.locator('.step')).toHaveCount(14);
   if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
   await expect(page.locator('#counter')).toHaveText('1 / 14');
-  await page.keyboard.press('ArrowRight');
-  await expect(page.locator('#counter')).toHaveText('2 / 14');
+  await expect(page.locator('.route-flow li')).toHaveCount(3);
+  await expect(page.locator('.mini-trip')).toHaveCount(3);
+  await expect(page.locator('.decision-branches > div')).toHaveCount(2);
+  for(let slide=2;slide<=14;slide++){
+   await page.keyboard.press('ArrowRight');
+   await expect(page.locator('#counter')).toHaveText(`${slide} / 14`);
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+   if(width===1280 && (slide===4 || slide===6))await page.screenshot({path:testInfo.outputPath(`lecture-flow-${slide}.png`)});
+  }
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   await page.goto(origin+base);
   await page.getByRole('link',{name:'Prezantimi për projektor',exact:true}).click();
