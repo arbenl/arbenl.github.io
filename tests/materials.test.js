@@ -44,6 +44,17 @@ test('week 3 lecture and lab decks are linked to the correct student materials',
  assert.equal(packagePaths.filter(path=>/^ppt\/slides\/slide\d+\.xml$/.test(path)).length,14);
  assert.ok(!packagePaths.some(path=>/^ppt\/notes(?:Slides|Masters)\//.test(path)));
 });
+test('week 3 has its own professor demo while week 2 keeps the original prototype',async()=>{
+ const base='lendet/2026-2027/mobile/';
+ const lecture=await readFile(`${base}java-03/prezantimi-ligjerates.html`,'utf8');
+ const lab=await readFile(`${base}java-03/prezantimi-ushtrimeve.html`,'utf8');
+ const demo=await readFile(`${base}java-03/demo/index.html`,'utf8');
+ const old=await readFile(`${base}demo/rideshare/index.html`,'utf8');
+ assert.ok(lecture.includes('href="demo/"'));
+ assert.ok(lab.includes('href="demo/"'));
+ assert.ok(demo.includes('Java 3') && demo.includes('route-input'));
+ assert.ok(old.includes('← Java 2'));
+});
 test('the semester has fifteen Thursdays and ten graded labs after the first week',async()=>{
  const plan=JSON.parse(await readFile('grading/course-plan.json','utf8'));
  assert.equal(plan.weeks.length,15);

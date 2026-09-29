@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RideShare · Demonstrimi i Javës 3</title>
+  <link rel="stylesheet" href="demo.css">
+  <script src="demo.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#app">Kalo te aplikacioni</a>
+  <main>
+    <nav class="top" aria-label="Navigimi">
+      <a href="../">← Java 3</a>
+      <div class="top-actions"><a href="../prezantimi-ligjerates.html">Prezantimi</a><button id="reset" class="secondary" type="button">Nise nga lista</button></div>
+    </nav>
+    <header>
+      <p class="eyebrow">AAB · Programimi për Pajisje Mobile · Java 3</p>
+      <h1>Skica tani ka adresa dhe tri karta</h1>
+      <p class="intro">Zgjidh një udhëtim, kontrollo detajet dhe shih çfarë ndodh kur ID-ja nuk ekziston. Shigjetat brenda aplikacionit shpjegojnë arsyen e çdo hapi.</p>
+      <p class="simulation">Demonstrim mësimor me të dhëna fiktive. “Kërko vend” hap vetëm një ekran simulimi; asgjë nuk ruhet ose dërgohet.</p>
+    </header>
+
+    <ol class="flow" aria-label="Rrjedha e demonstrimit">
+      <li id="flow-list">1 · Lista <code>/</code></li>
+      <li id="flow-details">2 · Detajet <code>/udhetimi/2</code></li>
+      <li id="flow-pending">3 · Në pritje <code>/udhetimi/2/kerkesa</code></li>
+      <li id="flow-missing">Prova · 404 <code>/udhetimi/99</code></li>
+    </ol>
+
+    <div class="workspace">
+      <section class="app-frame" id="app" aria-labelledby="app-heading">
+        <div class="app-bar"><span>Adresa në aplikacion</span><code id="route-label">/</code></div>
+        <div id="screen"></div>
+      </section>
+      <aside class="teacher" aria-labelledby="lesson-title">
+        <p class="eyebrow">Për shpjegim në projektor</p>
+        <h2 id="lesson-title"></h2>
+        <p id="lesson-text"></p>
+        <ul id="why-list"></ul>
+        <p id="lesson-question" class="question"></p>
+      </aside>
+    </div>
+
+    <section class="try-route" aria-labelledby="try-route-title">
+      <div><h2 id="try-route-title">Provo një ID tjetër</h2><p>Shkruaj një adresë si <code>/udhetimi/2</code> ose provo <code>/udhetimi/99</code>. Kështu tregon pse na duhet përgjigjja 404.</p></div>
+      <form id="route-form"><label for="route-input">Adresa e udhëtimit</label><div class="route-controls"><input id="route-input" name="route" value="/udhetimi/99" maxlength="80" autocomplete="off"><button type="submit">Hap adresën</button></div></form>
+    </section>
+    <p class="hash-note">Kjo faqe statike e demonstrimit përdor <code>#</code> në adresën e shfletuesit. Në aplikacionin Next.js të ushtrimeve, rrugët janë <code>/udhetimi/2</code> dhe <code>/udhetimi/99</code>, pa <code>#</code>.</p>
+    <footer><a href="../ushtrimet.html">Vazhdo te ushtrimet e Javës 3 →</a><span>Rrjedha e Javës 2 mbetet te <a href="../../demo/rideshare/">demonstrimi fillestar</a>.</span></footer>
+  </main>
+</body>
+</html>

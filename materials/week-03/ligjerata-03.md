@@ -100,6 +100,8 @@ Nuk tregojmë detajet e një udhëtimi tjetër.
 3. Kalojmë te “Simulim: Në pritje”.
 4. Ndryshojmë ID në adresë dhe shohim 404.
 
+[Hap demonstrimin e Javës 3](https://arbenl.github.io/lendet/2026-2027/mobile/java-03/demo/)
+
 # Tani kalojmë në ushtrime
 
 - Një grup të dhënash fiktive.
