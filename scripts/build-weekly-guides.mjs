@@ -18,6 +18,7 @@ for(const w of plan.weeks.filter(w=>w.week>=3)){
  await writeFile(`${dir}/java-${n}-model.md`,template);
  if(w.week===3){
   // The first coding week has a full guided lab; keep its generated URLs stable.
+  await writeFile(`${dir}/java-${n}-model.md`,await readFile('materials/week-03/java-03-model.md','utf8'));
   await writeFile(`${dir}/index.html`,await readFile('materials/week-03/index.html','utf8'));
   await writeFile(`${dir}/ushtrimet.html`,await readFile('materials/week-03/ushtrimet.html','utf8'));
   continue;

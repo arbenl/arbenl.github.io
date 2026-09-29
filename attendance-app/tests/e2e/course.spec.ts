@@ -50,6 +50,19 @@ for(const width of [320,375,430,1280]){
 }
 
 for(const width of [375,1280]){
+ test(`week 3 student can follow the lab and find GitHub feedback at ${width}px`,async({page})=>{
+  await page.setViewportSize({width,height:812});
+  const base='/lendet/2026-2027/mobile/java-03/';
+  await page.goto(origin+base);
+  await page.getByRole('link',{name:'Fillo ushtrimet · 90 minuta'}).click();
+  await expect(page.getByRole('heading',{name:'1. Hap projektin · 0–10 min'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'5. Merr përgjigjen e GitHub-it · 70–90 min'})).toBeVisible();
+  await page.getByRole('link',{name:'udhetimet.ts'}).click();
+  await expect(page).toHaveURL(/#hapi-a$/);
+  await expect(page.getByRole('heading',{name:'Hapi A · të dhënat e njëjta për të gjitha faqet'})).toBeVisible();
+  await expect(page.getByRole('link',{name:'Dorëzo punën · Java 3'})).toHaveAttribute('href',/issues\/new\?template=mobile-submission\.yml/);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+ });
  test(`week 3 lecture and lab presentation stay navigable at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:812});
   const base='/lendet/2026-2027/mobile/java-03/';
@@ -62,7 +75,7 @@ for(const width of [375,1280]){
   await expect(page.locator('#counter')).toHaveText('2 / 14');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   await page.goto(origin+base);
-  await page.getByRole('link',{name:'Hap prezantimin e ushtrimeve',exact:true}).click();
+  await page.getByRole('link',{name:'Prezantimi për projektor',exact:true}).click();
   await expect(page.locator('.step')).toHaveCount(12);
   if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
   await expect(page.locator('#counter')).toHaveText('1 / 12');
