@@ -26,6 +26,6 @@
 .step p,.step ol{font-size:clamp(19px,2vw,27px)}
 .step li{line-height:1.35}
 .step .columns p{font-size:clamp(19px,2vw,27px)}
-.step a{overflow-wrap:anywhere}
+.step a,.step code{overflow-wrap:anywhere}
 @media(max-width:760px){.route-flow,.reason-chain{grid-template-columns:1fr;gap:30px}.route-flow li,.reason-chain>div{padding:15px}.route-flow li:not(:last-child)::after,.reason-chain>div:not(:last-child)::after{content:"↓";right:50%;top:auto;bottom:-33px}.concept-layout,.decision-branches{grid-template-columns:1fr}.cause-effect{grid-template-columns:1fr;gap:5px}.cause-effect span[aria-hidden]{transform:rotate(90deg)}.mini-trip{flex-direction:column;gap:2px}.slide-logo{width:145px}.step pre{font-size:15px}}
 @media print{.route-flow,.reason-chain{grid-template-columns:repeat(3,minmax(0,1fr))}.concept-layout,.decision-branches{grid-template-columns:1fr 1fr}.cause-effect{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr)}}

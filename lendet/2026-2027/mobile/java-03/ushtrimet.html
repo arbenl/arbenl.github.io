@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ushtrimet 3 · RideShare nga skica te kodi · Mobile 2026/2027</title>
   <link rel="stylesheet" href="/assets/catalog.css">
+  <script src="lab-help.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Kalo te përmbajtja</a>
@@ -12,20 +13,31 @@
     <nav class="crumb" aria-label="Vendndodhja"><a href="/lendet/2026-2027/mobile/">Mobile 2026/2027</a> / <a href="./">Java 3</a></nav>
     <p class="eyebrow">Ushtrimet 3 · 01.10.2026 · RideShare</p>
     <h1>Nga tri ekrane në letër te tri faqe që punojnë</h1>
-    <p class="lead">Vazhdo projektin RideShare të Javës 2. Ndiq hapat me radhë: shiko një rezultat në ekran, provoje, pastaj kalo te tjetri. Në minutën 70 dorëzon linkun; pjesën e fundit e përdor për përgjigjen e GitHub-it.</p>
-    <p class="notice"><strong>Orari:</strong> G1 fillon ushtrimet në 14:45; G2 në 18:15. Profesori hap QR-në e grupit tënd në mes të orës. Skanimi i suksesshëm tregon praninë, ndërsa kodi dhe raporti dorëzohen veçmas.</p>
+    <p class="lead">Sot të gjithë ndërtojmë të njëjtën rrjedhë RideShare: tri karta → detajet → një kërkesë e simuluar. Vazhdo projektin e Javës 2. Ndiq hapat me radhë: shiko një rezultat në ekran, provoje, pastaj kalo te tjetri. Në minutën 70 dorëzon linkun; pjesën e fundit e përdor për përgjigjen e GitHub-it.</p>
+    <p class="notice"><strong>Orari:</strong> G1 fillon ushtrimet në 14:45; G2 në 18:15. Profesori hap QR-në (Quick Response – përgjigje e shpejtë) e grupit tënd në mes të orës. Skanimi i suksesshëm tregon praninë, ndërsa kodi dhe raporti dorëzohen veçmas.</p>
     <div class="actions"><a class="button" href="#hapat">Fillo ushtrimin · 90 minuta</a><a class="button secondary" href="demo/">Shiko rezultatin që do të ndërtosh</a><a class="button secondary" href="../nis-projektin.html">Nuk e kam nisur ende Next.js</a></div>
 
+    <section class="card" id="ku-punoj"><h2>Dy vende për punën tënde</h2><p><strong>Kodi</strong> është brenda aplikacionit Next.js. <strong>Raporti</strong> ruhet pranë README në repository. Shembull, nëse e nise me udhëzimin tonë:</p><pre><code>rideshare-mobile/          ← repository yt personal
+├── README.md
+├── java-02.md
+├── java-03.md             ← raporti i sotëm, jashtë aplikacioni/
+└── aplikacioni/
+    ├── package.json       ← terminalin e hap këtu
+    └── src/
+        ├── app/
+        ├── components/
+        └── lib/</code></pre><p>Në VS Code (Visual Studio Code), hap dosjen e repository-t. Te <strong>Terminal → New Terminal</strong> shkruaj <code>cd aplikacioni</code>, pastaj <code>npm run dev</code>. Nëse <code>package.json</code> është në rrënjë, përdor vetëm <code>npm run dev</code>.</p><p>Repository do të thotë dosja e projektit në GitHub. Përdor <strong>të njëjtën llogari GitHub</strong> për repository-n dhe formularin e dorëzimit. Mos bëj Push te repository i profesorit.</p></section>
+    <nav class="week-picker" aria-label="Hapat e ushtrimit"><a href="#ora-1">1. Hap</a><a href="#ora-2">2. Kartat</a><a href="#ora-3">3. Ekranet</a><a href="#ora-4">4. Provat</a><a href="#ora-5">5. Dorëzo</a></nav>
     <section id="hapat" class="section-head" aria-labelledby="hapat-title"><h2 id="hapat-title">Hapat e orës · 90 minuta</h2></section>
     <div class="weeks">
-      <section class="card"><h3>1. Hap projektin · 0–10 min</h3><ol><li>Hap <strong>të njëjtin repository personal</strong> të Javës 2; mos krijo tjetër.</li><li>Hap skicën dhe <code>java-02.md</code>. Krahasoji me <a href="demo/">demonstrimin e Javës 3</a>.</li><li>Në dosjen ku gjendet <code>package.json</code> nis <code>npm run dev</code> dhe hap adresën që jep terminali.</li><li>Shkarko <a href="java-03-model.md" download="java-03.md">java-03.md</a> tani; plotëso provat një nga një gjatë punës.</li></ol><p><strong>Kontrolli:</strong> faqja jote hapet në shfletues. Nëse projekti nuk niset, përdor <a href="../nis-projektin.html">udhëzimin e nisjes</a> dhe kërko ndihmë tani.</p></section>
-      <section class="card"><h3>2. Shfaq tri kartat · 10–35 min</h3><ol><li>Krijo <a href="#hapi-a"><code>udhetimet.ts</code></a> me tri udhëtime fiktive.</li><li>Krijo <a href="#hapi-b"><code>KartaUdhetimi.tsx</code></a> dhe përdore në <a href="#hapi-c"><code>page.tsx</code></a>.</li><li>Shto <a href="#hapi-f">stilet për telefon</a>.</li></ol><p><strong>Kontrolli:</strong> te adresa kryesore sheh saktësisht tri karta. Hap pamjen e telefonit; nuk duhet të ketë lëvizje anash. Shëno rezultatin te Prova 1 në raport.</p></section>
-      <section class="card"><h3>3. Lidhi ekranet · 35–55 min</h3><ol><li>Krijo <a href="#hapi-d">faqen e detajeve</a>. Kliko kartën e dytë: adresa bëhet <code>/udhetimi/2</code> dhe shfaqet vendtakimi i saj.</li><li>Krijo <a href="#hapi-e">faqen e kërkesës</a>. Kliko “Kërko vend”: duhet të lexosh <strong>Simulim: Në pritje</strong>.</li><li>Provo udhëtimin me zero vende dhe ID <code>99</code>: kjo e fundit jep 404.</li></ol><p><strong>Kontrolli:</strong> mund të lëvizësh listë → detaje → kërkesë → mbrapa, pa rezervim real. Shëno rezultatet te Prova 2 dhe Prova 3.</p></section>
-      <section class="card"><h3>4. Provo, shkruaj, ruaj · 55–70 min</h3><ol><li>Me një koleg bëj <strong>tri provat</strong>: lista në telefon, detajet e kartës 2 dhe mesazhi “Në pritje”. Shëno edhe kur diçka nuk punon.</li><li>Kontrollo që <code>java-03.md</code> ka nga një fjali për secilën provë dhe fshi të gjitha <code>[PLOTËSO]</code>.</li><li>Ruaje <code>java-03.md</code> pranë README. Në GitHub Desktop bëj <strong>Commit to main</strong> → <strong>Push origin</strong>. Kontrollo në faqen e repository-t që skedarët u shfaqën.</li></ol><p><strong>Kontrolli:</strong> repository yt online përmban kodin dhe raportin e sotëm.</p></section>
-      <section class="card"><h3>5. Merr përgjigjen e GitHub-it · 70–90 min</h3><ol><li>Hap formularin më poshtë. Zgjidh <strong>Java 3</strong>, vendos linkun e <strong>repository-t kryesor</strong> dhe kliko Submit. Ky krijon një dorëzim (Issue).</li><li>Hap dorëzimin tënd dhe prit komentin me <strong>5 kontrolle</strong>. Rifresko faqen nëse përgjigjja nuk shfaqet menjëherë; mos hap dorëzim të dytë.</li><li>Nëse ka ❌, lexo skedarin që mungon, korrigjoje, bëj <strong>Commit</strong> → <strong>Push</strong>, pastaj komento vetëm <code>rikontrollo</code> te <strong>i njëjti dorëzim</strong>.</li></ol><p><strong>Përfundove kur:</strong> ke linkun e dorëzimit dhe e ke lexuar përgjigjen. Nëse GitHub ka vonesë, ruaj linkun dhe lajmëro profesorin; puna jote mbetet e dorëzuar.</p><div class="actions"><a class="button" href="https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-submission.yml">Dorëzo punën · Java 3</a><a class="button secondary" href="../dorezimet.html">Si dorëzoj? · 3 hapa</a></div></section>
+      <section id="ora-1" class="card"><h3>1. Hap projektin · 0–10 min</h3><ol><li>Hap <strong>të njëjtin repository personal</strong> të Javës 2; mos krijo tjetër.</li><li>Hap skicën dhe <code>java-02.md</code>. Krahasoji me <a href="demo/">demonstrimin e Javës 3</a>.</li><li>Nëse kodi është në <code>aplikacioni/</code>, hape terminalin aty. Në dosjen ku gjendet <code>package.json</code> nis <code>npm run dev</code> dhe hap adresën që jep terminali.</li><li>Shkarko <a href="java-03-model.md" download="java-03.md">java-03.md</a> tani; plotëso provat një nga një gjatë punës.</li></ol><p><strong>Kontrolli:</strong> faqja jote hapet në shfletues. Nëse projekti nuk niset, përdor <a href="../nis-projektin.html">udhëzimin e nisjes</a> dhe kërko ndihmë tani.</p></section>
+      <section id="ora-2" class="card"><h3>2. Shfaq tri kartat · 10–35 min</h3><ol><li>Krijo <a href="#hapi-a"><code>udhetimet.ts</code></a> me tri udhëtime fiktive.</li><li>Krijo <a href="#hapi-b"><code>KartaUdhetimi.tsx</code></a> dhe përdore në <a href="#hapi-c"><code>page.tsx</code></a>.</li><li>Shto <a href="#hapi-f">stilet për telefon</a>.</li></ol><p><strong>Kontrolli:</strong> te adresa kryesore sheh saktësisht tri karta. Në Chrome/Edge: kliko me të djathtën → Inspect → ikonën e telefonit/tabletit; nuk duhet të ketë lëvizje anash. Shëno rezultatin te Prova 1 në raport.</p></section>
+      <section id="ora-3" class="card"><h3>3. Lidhi ekranet · 35–55 min</h3><ol><li>Krijo <a href="#hapi-d">faqen e detajeve</a>. Kliko kartën e dytë: adresa bëhet <code>/udhetimi/2</code> dhe shfaqet vendtakimi i saj.</li><li>Krijo <a href="#hapi-e">faqen e kërkesës</a>. Kliko “Kërko vend”: duhet të lexosh <strong>Simulim: Në pritje</strong>.</li><li>Hap kartën 3: “Nuk ka vende të lira” duhet të jetë i çaktivizuar. Shto <a href="#hapi-g">faqen “Udhëtimi nuk u gjet”</a> dhe provo adresën <code>/udhetimi/99</code>.</li></ol><p><strong>Kontrolli:</strong> mund të lëvizësh listë → detaje → kërkesë → mbrapa, pa rezervim real. Shëno rezultatet te Prova 2 dhe Prova 3.</p></section>
+      <section id="ora-4" class="card"><h3>4. Provo, shkruaj, ruaj · 55–70 min</h3><ol><li>Me një koleg bëj <strong>tri provat</strong>: 1) lista në telefon; 2) detajet e kartës 2, zero vende dhe ID 99; 3) mesazhi “Në pritje” dhe kthimi mbrapa. Shëno edhe kur diçka nuk punon.</li><li>Kontrollo që <code>java-03.md</code> ka nga një fjali për secilën provë dhe fshi të gjitha <code>[PLOTËSO]</code>.</li><li>Ruaje <code>java-03.md</code> pranë README, <strong>jashtë dosjes aplikacioni/</strong>. Skedari duhet të përfundojë me <code>.md</code>, jo <code>.md.txt</code>. Në GitHub Desktop zgjidh repository-n tënd. Te <strong>Summary</strong> shkruaj <code>Java 3: kartat dhe faqet</code>, pastaj <strong>Commit to main</strong> → <strong>Push origin</strong>. Kontrollo në faqen e repository-t që skedarët u shfaqën.</li></ol><p><strong>Kontrolli:</strong> repository yt online përmban kodin dhe raportin e sotëm.</p></section>
+      <section id="ora-5" class="card"><h3>5. Merr përgjigjen e GitHub-it · 70–90 min</h3><ol><li>Hap formularin më poshtë. Zgjidh <strong>Java 3</strong>, vendos linkun kryesor të <strong>repository-t tënd publik</strong> (p.sh. <code>https://github.com/llogaria-jote/rideshare-mobile</code>) dhe kliko Submit. Ky krijon një dorëzim (Issue). Mos vendos linkun e localhost-it, Vercel-it ose të një skedari; këtu kërkohet linku kryesor i GitHub-it.</li><li>Hap dorëzimin tënd dhe prit komentin <strong>Kontrolli automatik i dorëzimit</strong>, poshtë formularit. Ai shfaq <strong>5 kontrolle</strong>, p.sh. <strong>5/5 kontrolle teknike kaluan</strong>. Rifresko faqen nëse përgjigjja nuk shfaqet menjëherë; mos hap dorëzim të dytë.</li><li>Nëse ka ❌, lexo skedarin që mungon, korrigjoje, bëj <strong>Commit</strong> → <strong>Push</strong>, pastaj komento vetëm <code>rikontrollo</code> te <strong>i njëjti dorëzim</strong>.</li></ol><p><strong>Përfundove kur:</strong> ke linkun e dorëzimit dhe e ke lexuar përgjigjen. Nëse GitHub ka vonesë, ruaj linkun dhe lajmëro profesorin; puna jote mbetet e dorëzuar.</p><div class="actions"><a class="button" href="https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-submission.yml">Dorëzo punën · Java 3</a><a class="button secondary" href="../dorezimet.html">Si dorëzoj? · 3 hapa</a></div></section>
     </div>
 
-    <section class="card"><h2>Nëse përdor AI gjatë orës</h2><p>Jepi <code>java-02.md</code> dhe përshkrimin e skicës, pa të dhëna personale. Kërko ndihmë për tri faqet e Javës 3; mbaj kontrollin e çdo skedari dhe provo rezultatin vetë.</p><pre><code>Kam skicën e RideShare për listën, detajet dhe kërkesën. Më ndihmo
+    <section class="card"><h2>Nëse përdor AI (Artificial Intelligence – inteligjencë artificiale) gjatë orës</h2><p>Jepi <code>java-02.md</code> dhe përshkrimin e skicës, pa të dhëna personale. Kërko ndihmë për tri faqet e Javës 3; mbaj kontrollin e çdo skedari dhe provo rezultatin vetë.</p><pre><code>Kam skicën e RideShare për listën, detajet dhe kërkesën. Më ndihmo
 t'i ndërtoj në Next.js me App Router, vetëm me të dhëna fiktive.
 Përdor një komponent karte dhe adresën /udhetimi/[id].
 Kërkesa duhet të thotë "Simulim: Në pritje"; pa databazë e pagesë.
@@ -34,8 +46,8 @@ Jep një skedar në çdo hap dhe më thuaj si ta provoj në telefon.</code></pre
     <section class="card"><h2>Çfarë do të thotë përgjigjja e GitHub-it?</h2><ol><li><code>java-03.md</code> pranë README, pa shenja <code>[PLOTËSO]</code>.</li><li><code>package.json</code> Next.js në rrënjë ose në <code>aplikacioni/</code>.</li><li>Rezultati i shkruar për secilën nga tri provat.</li><li>Faqja kryesore, detajet dhe faqja e kërkesës.</li><li>Një komponent <code>.tsx</code> te <code>components/</code>.</li></ol><p>✅ do të thotë se kushti teknik u gjet; ❌ të tregon çfarë të korrigjosh. Kjo nuk është nota: kontrolli nuk e ekzekuton aplikacionin dhe nuk vlerëson cilësinë. Prandaj i provon ekranet me një koleg gjatë orës.</p></section>
 
     <section id="kodi" class="section-head" aria-labelledby="kodi-title"><h2 id="kodi-title">Kodi i shembullit, një skedar në çdo hap</h2></section>
-    <p>Ky është një model mësimor. Mund t’i ndryshosh emrat dhe vendet me të dhëna fiktive. Nëse projekti yt nuk përdor dosjen <code>src</code>, krijo skedarët përkatës në <code>app</code>, <code>components</code> dhe <code>lib</code> në rrënjë. Shembulli përdor aliasin standard <code>@/</code> të projektit të krijuar me udhëzimin tonë.</p>
-    <section id="hapi-a" class="card"><h3>Hapi A · të dhënat e njëjta për të gjitha faqet</h3><p>Krijo <code>src/lib/udhetimet.ts</code>. ID-ja mbetet e njëjtë edhe kur ndryshon renditja e listës.</p><pre><code>export type Udhetim = {
+    <p>Për secilin skedar: krijo dosjet në VS Code → krijo skedarin → kopjo kodin → ruaj me Ctrl+S (ose ⌘S në Mac) → shiko shfletuesin. Ky është një model mësimor. Mund t’i ndryshosh emrat dhe vendet me të dhëna fiktive. <strong>Të gjitha rrugët më poshtë janë brenda aplikacionit</strong>: në shembullin tonë fillojnë me <code>aplikacioni/src/</code>. <code>src</code> do të thotë kodi burimor. Nëse projekti yt nuk përdor dosjen <code>src</code>, krijo skedarët përkatës në <code>app</code>, <code>components</code> dhe <code>lib</code> në rrënjë. Mos fshi <code>layout.tsx</code>: ai e mban strukturën e aplikacionit dhe e importon CSS-në. Shembulli përdor aliasin standard <code>@/</code> të projektit të krijuar me udhëzimin tonë.</p>
+    <section id="hapi-a" class="card" data-example-file="src/lib/udhetimet.ts"><h3>Hapi A · të dhënat e njëjta për të gjitha faqet</h3><p>Krijo <code>src/lib/udhetimet.ts</code>. ID (identifier – identifikuesi) mbetet i njëjtë edhe kur ndryshon renditja e listës.</p><pre><code>export type Udhetim = {
   id: string;
   nisja: string;
   destinacioni: string;
@@ -55,8 +67,8 @@ export const udhetimet: Udhetim[] = [
 
 export function gjejUdhetimin(id: string) {
   return udhetimet.find((udhetim) =&gt; udhetim.id === id);
-}</code></pre></section>
-    <section id="hapi-b" class="card"><h3>Hapi B · një kartë e ripërdorshme</h3><p>Krijo <code>src/components/KartaUdhetimi.tsx</code>. Një kartë merr një udhëtim si të dhënë.</p><pre><code>import Link from "next/link";
+}</code></pre><p><a href="#hapi-b">Vazhdo te hapi B →</a> · <a href="#hapat">Kthehu te plani i orës</a></p></section>
+    <section id="hapi-b" class="card" data-example-file="src/components/KartaUdhetimi.tsx"><h3>Hapi B · një kartë e ripërdorshme</h3><p>Krijo <code>src/components/KartaUdhetimi.tsx</code>. Një kartë merr një udhëtim si të dhënë. Ende nuk shfaqet vetë; faqja e listës e përdor në hapin C.</p><pre><code>import Link from "next/link";
 import type { Udhetim } from "@/lib/udhetimet";
 
 export function KartaUdhetimi({ udhetim }: { udhetim: Udhetim }) {
@@ -69,8 +81,8 @@ export function KartaUdhetimi({ udhetim }: { udhetim: Udhetim }) {
       &lt;/Link&gt;
     &lt;/article&gt;
   );
-}</code></pre></section>
-    <section id="hapi-c" class="card"><h3>Hapi C · faqja e listës</h3><p>Zëvendëso përmbajtjen e <code>src/app/page.tsx</code>. <code>key</code> e ndihmon React të dallojë kartat.</p><pre><code>import { KartaUdhetimi } from "@/components/KartaUdhetimi";
+}</code></pre><p><a href="#hapi-c">Vazhdo te hapi C →</a> · <a href="#hapat">Kthehu te plani i orës</a></p></section>
+    <section id="hapi-c" class="card" data-example-file="src/app/page.tsx"><h3>Hapi C · faqja e listës</h3><p>Zëvendëso përmbajtjen e <code>src/app/page.tsx</code>. <code>key</code> e ndihmon React të dallojë kartat.</p><pre><code>import { KartaUdhetimi } from "@/components/KartaUdhetimi";
 import { udhetimet } from "@/lib/udhetimet";
 
 export default function Home() {
@@ -85,8 +97,21 @@ export default function Home() {
       &lt;/div&gt;
     &lt;/main&gt;
   );
-}</code></pre><p><strong>Provo tani:</strong> a shfaqen tri karta te <code>http://localhost:3000</code>?</p></section>
-    <section id="hapi-d" class="card"><h3>Hapi D · detajet e udhëtimit të zgjedhur</h3><p>Krijo dosjet dhe skedarin <code>src/app/udhetimi/[id]/page.tsx</code>. Kllapat në emrin e dosjes janë pjesë e App Router.</p><pre><code>import Link from "next/link";
+}</code></pre><p><strong>Provo tani:</strong> a shfaqen tri karta te adresa që jep terminali, zakonisht <code>http://localhost:3000</code>? Lidhjet e detajeve do të punojnë pasi të bësh hapin D.</p><p><a href="#hapi-f">Vazhdo te hapi F →</a> · <a href="#hapat">Kthehu te plani i orës</a></p></section>
+    <section id="hapi-f" class="card" data-example-file="src/app/globals.css"><h3>Hapi F · lexoje në telefon</h3><p>Shto këto rregulla në fund të <code>src/app/globals.css</code>. Nëse projekti yt ka stile të tjera, përshtati pa fshirë punën që ke bërë.</p><pre><code>body { margin: 0; font-family: system-ui, sans-serif;
+  background: #0b1220; color: #edf2fc; }
+* { box-sizing: border-box; }
+a { color: #89ddff; }
+main { max-width: 720px; margin: auto; padding: 24px; }
+.trip-list { display: grid; gap: 16px; }
+.trip-card { border: 1px solid #8090aa; border-radius: 12px; padding: 18px; }
+.action { display: inline-flex; align-items: center; min-height: 44px;
+  margin-top: 12px; padding: 8px 14px; border-radius: 8px;
+  background: #3548d4; color: white; }
+.action:disabled { background: #39455b; color: #e4eaf4; cursor: default; }
+</code></pre><p>Në Chrome/Edge: kliko me të djathtën → Inspect → ikonën e telefonit/tabletit. Zgjidh 375 px ose një model telefoni. Kontrollo tekstin, prekjen e lidhjeve dhe mungesën e lëvizjes horizontale.</p><p><a href="#hapi-d">Vazhdo te hapi D →</a> · <a href="#hapat">Kthehu te plani i orës</a></p></section>
+
+    <section id="hapi-d" class="card" data-example-file="src/app/udhetimi/[id]/page.tsx"><h3>Hapi D · detajet e udhëtimit të zgjedhur</h3><p>Krijo dosjet dhe skedarin <code>src/app/udhetimi/[id]/page.tsx</code>. Krijo dosjen <code>udhetimi</code>, brenda saj dosjen me emrin e saktë <code>[id]</code>, pastaj skedarin <code>page.tsx</code>. Kllapat duhen shkruar. App Router lidh këto dosje me adresat e faqeve.</p><pre><code>import Link from "next/link";
 import { notFound } from "next/navigation";
 import { gjejUdhetimin } from "@/lib/udhetimet";
 
@@ -108,11 +133,11 @@ export default async function Detajet({
         &lt;Link className="action" href={`/udhetimi/${id}/kerkesa`}&gt;
           Kërko vend
         &lt;/Link&gt;
-      ) : &lt;p&gt;Nuk ka vende të lira.&lt;/p&gt;}
+      ) : &lt;button className="action" disabled&gt;Nuk ka vende të lira&lt;/button&gt;}
     &lt;/main&gt;
   );
-}</code></pre><p><strong>Provo tani:</strong> kliko kartat 1 dhe 2. Ndrysho ID në <code>99</code>; duhet të dalë 404.</p></section>
-    <section id="hapi-e" class="card"><h3>Hapi E · kërkesa është vetëm demonstrim</h3><p>Krijo <code>src/app/udhetimi/[id]/kerkesa/page.tsx</code>. Ky ekran nuk ruan asgjë në server.</p><pre><code>import Link from "next/link";
+}</code></pre><p><strong>Provo tani:</strong> kliko kartat 1 dhe 2. Hap kartën 3: veprimi është i çaktivizuar. Adresa me <code>99</code> shfaq 404; mesazhin dhe kthimin te lista i shton në hapin G.</p><p><a href="#hapi-e">Vazhdo te hapi E →</a> · <a href="#hapat">Kthehu te plani i orës</a></p></section>
+    <section id="hapi-e" class="card" data-example-file="src/app/udhetimi/[id]/kerkesa/page.tsx"><h3>Hapi E · kërkesa është vetëm demonstrim</h3><p>Krijo <code>src/app/udhetimi/[id]/kerkesa/page.tsx</code>. Brenda <code>[id]</code> krijo dosjen <code>kerkesa</code> dhe skedarin <code>page.tsx</code>. Ky ekran nuk ruan asgjë në server.</p><pre><code>import Link from "next/link";
 import { notFound } from "next/navigation";
 import { gjejUdhetimin } from "@/lib/udhetimet";
 
@@ -135,16 +160,19 @@ export default async function Kerkesa({
       ) : &lt;h1&gt;Nuk ka vende të lira.&lt;/h1&gt;}
     &lt;/main&gt;
   );
-}</code></pre></section>
-    <section id="hapi-f" class="card"><h3>Hapi F · lexoje në telefon</h3><p>Shto këto rregulla në fund të <code>src/app/globals.css</code>. Nëse projekti yt ka stile të tjera, përshtati pa fshirë punën që ke bërë.</p><pre><code>body { margin: 0; font-family: system-ui, sans-serif; }
-main { max-width: 720px; margin: auto; padding: 24px; }
-.trip-list { display: grid; gap: 16px; }
-.trip-card { border: 1px solid #8090aa; border-radius: 12px; padding: 18px; }
-.action { display: inline-flex; align-items: center; min-height: 44px;
-  margin-top: 12px; padding: 8px 14px; border-radius: 8px;
-  background: #3548d4; color: white; }
-</code></pre><p>Te mjetet e zhvilluesit në shfletues zgjidh madhësinë e telefonit. Kontrollo tekstin, prekjen e lidhjeve dhe mungesën e lëvizjes horizontale.</p></section>
+}</code></pre><p><a href="#hapi-g">Vazhdo te hapi G →</a> · <a href="#hapat">Kthehu te plani i orës</a></p></section>
+    <section id="hapi-g" class="card" data-example-file="src/app/udhetimi/[id]/not-found.tsx"><h3>Hapi G · ndihmoje përdoruesin kur ID mungon</h3><p>Krijo <code>src/app/udhetimi/[id]/not-found.tsx</code>. Emri <code>not-found.tsx</code> ka vizë në mes. Next.js e shfaq kur thirret <code>notFound()</code>.</p><pre><code>import Link from "next/link";
 
+export default function UdhetimiNukUGjet() {
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Udhëtimi nuk u gjet&lt;/h1&gt;
+      &lt;p&gt;Kjo adresë nuk përputhet me një udhëtim në listë.&lt;/p&gt;
+      &lt;Link className="action" href="/"&gt;Kthehu te lista&lt;/Link&gt;
+    &lt;/main&gt;
+  );
+}</code></pre><p><strong>Provo tani:</strong> në adresën lokale hap <code>/udhetimi/99</code>, pastaj kliko “Kthehu te lista”. Duhet të shohësh sërish tri kartat.</p><p><a href="#ora-4">Kalo te provat dhe raporti →</a> · <a href="#hapat">Kthehu te plani i orës</a></p></section>
+    <section class="card"><h2>Nëse ngec, kontrollo këto</h2><dl><dt><strong>“package.json nuk gjendet”</strong></dt><dd>Je në dosjen e gabuar. Nëse ke <code>aplikacioni/</code>, shkruaj <code>cd aplikacioni</code>, pastaj <code>npm run dev</code>.</dd><dt><strong>“Cannot find module @/…”</strong></dt><dd>Kontrollo emrin dhe vendin e skedarit: <code>src/lib/udhetimet.ts</code> dhe <code>src/components/KartaUdhetimi.tsx</code>. Shkronjat e mëdha/vogla duhen të sakta.</dd><dt><strong>Klikimi jep 404</strong></dt><dd>Nëse është ID 1 ose 2, kontrollo dosjen <code>udhetimi/[id]</code>. Nëse është ID 99, ky është rezultati i pritur.</dd><dt><strong>GitHub thotë se skedari mungon</strong></dt><dd>Shiko repository-n online: a bëre Push? A është raporti pranë README? Korrigjo, bëj Push dhe komento <code>rikontrollo</code> te dorëzimi i parë.</dd></dl></section>
     <p class="notice"><strong>Kufiri i Javës 3:</strong> kjo është një rrjedhë me të dhëna fiktive. Nuk ka rezervim, hyrje përdoruesi, databazë ose pagesë. Këto nuk kërkohen për dorëzimin e sotëm.</p>
     <p><a href="https://nextjs.org/docs/app/getting-started/layouts-and-pages">Next.js: Layouts and Pages</a> · <a href="https://nextjs.org/docs/app/getting-started/linking-and-navigating">Next.js: Linking and Navigating</a> · <a href="../dorezimet.html">Dorëzimi në GitHub</a></p>
     <div class="actions"><a class="button secondary" href="./">← Kthehu te Java 3</a></div>
