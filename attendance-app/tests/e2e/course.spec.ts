@@ -60,6 +60,17 @@ for(const width of [375,1280]){
   await page.getByRole('link',{name:'udhetimet.ts'}).click();
   await expect(page).toHaveURL(/#hapi-a$/);
   await expect(page.getByRole('heading',{name:'Hapi A · të dhënat e njëjta për të gjitha faqet'})).toBeVisible();
+  await page.context().grantPermissions(['clipboard-read','clipboard-write']);
+  await page.getByRole('button',{name:'Kopjo kodin · src/lib/udhetimet.ts',exact:true}).click();
+  await expect(page.locator('#hapi-a [role="status"]')).toContainText('U kopjua');
+  expect(await page.evaluate(()=>navigator.clipboard.readText())).toEqual(await page.locator('#hapi-a pre code').textContent());
+  for(const [from,to] of [['a','b'],['b','c'],['c','f'],['f','d'],['d','e'],['e','g']]){
+   await page.locator('#hapi-'+from).getByRole('link',{name:'Vazhdo te hapi '+to.toUpperCase()+' →'}).click();
+   await expect(page).toHaveURL(new RegExp('#hapi-'+to+'$'));
+  }
+  await expect(page.getByRole('heading',{name:'Hapi G · ndihmoje përdoruesin kur ID mungon'})).toBeVisible();
+  await page.locator('#hapi-g').getByRole('link',{name:'Kalo te provat dhe raporti →'}).click();
+  await expect(page).toHaveURL(/#ora-4$/);
   await expect(page.getByRole('link',{name:'Dorëzo punën · Java 3'})).toHaveAttribute('href',/issues\/new\?template=mobile-submission\.yml/);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
  });
@@ -102,8 +113,12 @@ for(const width of [375,1280]){
   await expect(page.locator('.step')).toHaveCount(12);
   if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
   await expect(page.locator('#counter')).toHaveText('1 / 12');
-  await page.keyboard.press('ArrowRight');
-  await expect(page.locator('#counter')).toHaveText('2 / 12');
+  for(let slide=2;slide<=12;slide++){
+   await page.keyboard.press('ArrowRight');
+   await expect(page.locator('#counter')).toHaveText(`${slide} / 12`);
+   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+   if(width===1280 && [6,8,11].includes(slide))await page.screenshot({path:testInfo.outputPath(`lab-step-${slide}.png`)});
+  }
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
  });
  test(`RideShare demonstration explains both roles and outcomes at ${width}px`,async({page},testInfo)=>{

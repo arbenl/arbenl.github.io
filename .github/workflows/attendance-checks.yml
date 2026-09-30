@@ -2,10 +2,10 @@ name: Attendance classroom checks
 on:
   workflow_dispatch:
   pull_request:
-    paths: ['attendance-app/**', '.github/workflows/attendance-checks.yml']
+    paths: ['attendance-app/**', 'materials/week-03/ushtrimet.html', '.github/workflows/attendance-checks.yml']
   push:
     branches: [main]
-    paths: ['attendance-app/**', '.github/workflows/attendance-checks.yml']
+    paths: ['attendance-app/**', 'materials/week-03/ushtrimet.html', '.github/workflows/attendance-checks.yml']
 permissions:
   contents: read
 jobs:
@@ -27,6 +27,7 @@ jobs:
       - run: npm run test:integration
       - run: npm run build
       - run: npx playwright install --with-deps chromium
+      - run: npm run test:week03-example
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4
         if: always()
