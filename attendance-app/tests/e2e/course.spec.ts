@@ -68,19 +68,35 @@ for(const width of [375,1280]){
   const base='/lendet/2026-2027/mobile/java-03/';
   await page.goto(origin+base);
   await page.getByRole('link',{name:'Hap prezantimin',exact:true}).click();
-  await expect(page.locator('.step')).toHaveCount(14);
+  await expect(page.locator('.step')).toHaveCount(18);
   if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
-  await expect(page.locator('#counter')).toHaveText('1 / 14');
+  await expect(page.locator('#counter')).toHaveText('1 / 18');
+  await page.screenshot({path:testInfo.outputPath(`lecture-cover-${width}.png`)});
   await expect(page.locator('.route-flow li')).toHaveCount(3);
   await expect(page.locator('.mini-trip')).toHaveCount(3);
   await expect(page.locator('.decision-branches > div')).toHaveCount(2);
-  for(let slide=2;slide<=14;slide++){
+  for(let slide=2;slide<=18;slide++){
    await page.keyboard.press('ArrowRight');
-   await expect(page.locator('#counter')).toHaveText(`${slide} / 14`);
+   await expect(page.locator('#counter')).toHaveText(`${slide} / 18`);
+   const reveal=page.locator('.step:visible .reveal');
+   if(await reveal.count()){
+    const answer=page.locator('#'+await reveal.getAttribute('aria-controls'));
+    await expect(answer).toBeHidden();
+    await reveal.click();
+    await expect(answer).toBeVisible();
+    await expect(reveal).toHaveAttribute('aria-expanded','true');
+    await expect(page.locator('#counter')).toHaveText(`${slide} / 18`);
+    await reveal.click();
+    await expect(answer).toBeHidden();
+    await expect(reveal).toHaveAttribute('aria-expanded','false');
+   }
    expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
-   if(width===1280 && (slide===4 || slide===6))await page.screenshot({path:testInfo.outputPath(`lecture-flow-${slide}.png`)});
+   if(width===1280 && [3,5,6,10,17,18].includes(slide))await page.screenshot({path:testInfo.outputPath(`lecture-flow-${slide}.png`)});
   }
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  await page.emulateMedia({media:'print'});
+  for(const id of ['answer-choice','answer-404','answer-route'])await expect(page.locator('#'+id)).toBeVisible();
+  await page.emulateMedia({media:'screen'});
   await page.goto(origin+base);
   await page.getByRole('link',{name:'Prezantimi për projektor',exact:true}).click();
   await expect(page.locator('.step')).toHaveCount(12);

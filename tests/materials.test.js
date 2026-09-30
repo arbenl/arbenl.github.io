@@ -41,7 +41,7 @@ test('week 3 lecture and lab decks are linked to the correct student materials',
  assert.equal(sha256(await readFile(lecture3.file)),lecture3.sha256);
  const {stdout}=await execFileAsync('unzip',['-Z1',lecture3.file]);
  const packagePaths=stdout.split('\n').filter(Boolean);
- assert.equal(packagePaths.filter(path=>/^ppt\/slides\/slide\d+\.xml$/.test(path)).length,14);
+ assert.equal(packagePaths.filter(path=>/^ppt\/slides\/slide\d+\.xml$/.test(path)).length,18);
  assert.ok(!packagePaths.some(path=>/^ppt\/notes(?:Slides|Masters)\//.test(path)));
 });
 test('week 3 has its own professor demo while week 2 keeps the original prototype',async()=>{
