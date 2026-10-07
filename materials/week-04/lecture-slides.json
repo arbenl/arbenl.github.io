@@ -1,33 +1,51 @@
 [
   {
-    "title": "Si komunikon RideShare me databazën",
-    "kicker": "JAVA 4 · 08.10.2026",
+    "title": "Nisja për në AAB ndryshoi. Po aplikacioni?",
+    "kicker": "JAVA 4 · 08.10.2026 · SFIDA E HAPJES · 0–2 MIN",
     "body": [
-      "Telefoni kërkon faqen. Next.js lexon udhëtimet në Neon dhe kthen pamjen.",
-      "GitHub ruan kodin. Vercel ekzekuton aplikacionin. Neon ruan të dhënat."
+      "Udhëtimi Prishtinë–AAB ishte në 08:15. Nisja kalon në 08:25.",
+      "Sot bëjmë që lista dhe detajet të tregojnë të njëjtën orë të re."
+    ],
+    "quiz": {
+      "question": "Ku do ta ndryshonit orën që të dy ekranet të pajtohen?",
+      "options": [
+        "Veçmas në kartë dhe në faqen e detajeve.",
+        "Në një burim të përbashkët që e lexojnë të dy ekranet.",
+        "Askund. Ora në aplikacion ndryshon vetvetiu."
+      ],
+      "correct": 1,
+      "explanation": "Një burim i përbashkët shmang dy orë të ndryshme. Sot ky burim është Neon. Pas ndryshimit, rifreskojmë listën dhe detajet që serveri t’i lexojë përsëri.",
+      "deferAnswer": true
+    }
+  },
+  {
+    "title": "Çfarë kemi tashmë nga Java 3?",
+    "kicker": "RIKUJTIM NË ÇIFT · 2–4 MIN",
+    "body": [
+      "KartaUdhetimi shfaq udhëtimin. Lista hap detajet dhe simulimin e kërkesës.",
+      "Njëri shpjegon rrugën mes ekraneve, tjetri kujton burimin e të dhënave. Pastaj ndërroni rolet."
+    ],
+    "quiz": {
+      "question": "Ku ruheshin udhëtimet në shembullin e Javës 3?",
+      "options": [
+        "Në një varg të të dhënave brenda kodit.",
+        "Në databazën Neon.",
+        "Te GitHub Issues."
+      ],
+      "correct": 0,
+      "explanation": "Udhëtimet ishin në një varg në kod. Mbajmë komponentin dhe adresat e Javës 3. Sot e zëvendësojmë vargun me lexim nga Neon përmes serverit.",
+      "deferAnswer": true
+    }
+  },
+  {
+    "title": "Sot ekranet lexojnë nga një burim",
+    "kicker": "SYNIMI I JAVËS 4 · HARTA E APLIKACIONIT",
+    "body": [
+      "Neon ruan udhëtimet. Next.js i lexon dhe ndërton listën e detajet.",
+      "Në fund shpjegon ku ndryshon ora, kush e lexon dhe pse duhet rifreskimi."
     ],
     "openingImage": "/assets/course/mobile-2026/week04-lecture-infrastructure.png",
     "openingAlt": "RideShare për itinerarin Prishtinë–AAB. Laptopi dërgon kodin në GitHub dhe Vercel publikon Next.js. Telefoni kërkon faqen përmes HTTPS. Serveri Next.js dërgon SELECT në Neon/PostgreSQL, merr rreshtat dhe kthen pamjen. DATABASE_URL mbetet në server. SQL Editor ndryshon orën në databazë; lista dhe detajet e lexojnë pas rifreskimit."
-  },
-  {
-    "title": "Shoferi ndryshon orën",
-    "kicker": "PROBLEMI · 0–5 MIN",
-    "body": [
-      "Arta zgjodhi udhëtimin e orës 08:15. Shoferi e ndryshon nisjen në 08:25.",
-      "Parashiko: ku duhet të shihet ora e re — në kartë, në detaje apo në të dyja?",
-      "Diskuto me personin pranë teje për 20 sekonda; pastaj zbulojmë përgjigjen."
-    ],
-    "answer": "Në të dyja. Ora është e dhënë: e ndryshojmë një herë në databazë dhe të dy ekranet e lexojnë përsëri."
-  },
-  {
-    "title": "Çfarë mbajmë nga Java 3",
-    "kicker": "VAZHDIMI",
-    "body": [
-      "Tri kartat, komponenti KartaUdhetimi dhe adresat mbeten.",
-      "Lista → /udhetimi/2 → /udhetimi/2/kerkesa",
-      "Ndryshon burimi: vargu në kod zëvendësohet me një pyetje te Neon."
-    ],
-    "code": "Java 3: udhetimet.find(...)\nJava 4: await gjejUdhetimin(id)"
   },
   {
     "title": "Databaza dhe shërbimi Neon",
