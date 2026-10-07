@@ -22,5 +22,21 @@
     "sha256": "383fbf13e37ef207e6350a3fcbe4250b2c53991723d4bd4017885b4c08cccb16",
     "audience": "student",
     "speakerNotes": false
+  },
+  "lecture4": {
+    "file": "lendet/2026-2027/mobile/lectures/ligjerata-04-neon-postgresql-rideshare-2026.pptx",
+    "slides": 19,
+    "updated": "2026-10-07",
+    "sha256": "adf19dfd20d416d47b8de4b337e08d42f83b905758f043c3407950f274ff1d09",
+    "audience": "student",
+    "speakerNotes": false
+  },
+  "lab4": {
+    "file": "lendet/2026-2027/mobile/lectures/ushtrimet-04-neon-rideshare-2026.pptx",
+    "slides": 13,
+    "updated": "2026-10-07",
+    "sha256": "cfbbb0e462b307b9ad7a04e21afb5053a3c4f6137889e96451f9d59d07b0e0d1",
+    "audience": "student",
+    "speakerNotes": false
   }
 }

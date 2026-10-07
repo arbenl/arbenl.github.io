@@ -1,0 +1,247 @@
+[
+  {
+    "title": "RideShare mban mend udhëtimet",
+    "kicker": "JAVA 4 · 08.10.2026",
+    "body": [
+      "Javën e kaluar ndërtuam ekranet. Sot u japim një burim të përbashkët të dhënash.",
+      "Neon + PostgreSQL · Ligjëratë 45 minuta për secilin grup"
+    ]
+  },
+  {
+    "title": "Shoferi ndryshon orën",
+    "kicker": "PROBLEMI · 0–5 MIN",
+    "body": [
+      "Arta zgjodhi udhëtimin e orës 08:15. Shoferi e ndryshon nisjen në 08:25.",
+      "Parashiko: ku duhet të shihet ora e re — në kartë, në detaje apo në të dyja?",
+      "Diskuto me personin pranë teje për 20 sekonda; pastaj zbulojmë përgjigjen."
+    ],
+    "answer": "Në të dyja. Ora është e dhënë: e ndryshojmë një herë në databazë dhe të dy ekranet e lexojnë përsëri."
+  },
+  {
+    "title": "Çfarë mbajmë nga Java 3",
+    "kicker": "VAZHDIMI",
+    "body": [
+      "Tri kartat, komponenti KartaUdhetimi dhe adresat mbeten.",
+      "Lista → /udhetimi/2 → /udhetimi/2/kerkesa",
+      "Ndryshon burimi: vargu në kod zëvendësohet me një pyetje te Neon."
+    ],
+    "code": "Java 3: udhetimet.find(...)\nJava 4: await gjejUdhetimin(id)"
+  },
+  {
+    "title": "Databaza dhe shërbimi Neon",
+    "kicker": "KONCEPTET · 5–15 MIN",
+    "body": [
+      "DB (Database – bazë e të dhënave) ruan të dhënat veçmas nga ekranet.",
+      "PostgreSQL është sistemi që organizon tabelat dhe ekzekuton pyetjet SQL. Neon ofron PostgreSQL në cloud.",
+      "Neon është zgjedhja jonë kryesore përmes Vercel Marketplace. Supabase mbetet alternativë."
+    ],
+    "sources": [
+      "https://neon.com/docs/guides/vercel-native-integration",
+      "https://vercel.com/docs/marketplace-storage"
+    ]
+  },
+  {
+    "title": "Një tabelë, tri udhëtime",
+    "kicker": "MODELI I RIDESHARE",
+    "body": [
+      "Gjeje udhëtimin e Artës: Fushë Kosovë, 08:15. Cili është identifikuesi?",
+      "Prek rreshtin për ta zgjedhur. Pastaj ndrysho vetëm orën në mendje: a ndryshon edhe ID?"
+    ],
+    "table": [
+      [
+        "id",
+        "nisja",
+        "ora",
+        "vende"
+      ],
+      [
+        "1",
+        "Prishtinë",
+        "08:00",
+        "2"
+      ],
+      [
+        "2",
+        "Fushë Kosovë",
+        "08:15",
+        "1"
+      ],
+      [
+        "3",
+        "Lipjan",
+        "07:45",
+        "0"
+      ]
+    ],
+    "selectRow": 2,
+    "answer": "ID mbetet 2. Identifikuesi tregon cilin udhëtim kemi; ora është një veti që mund të ndryshojë."
+  },
+  {
+    "title": "Rregullat që ruajnë kuptimin",
+    "kicker": "INTEGRITETI",
+    "body": [
+      "PRIMARY KEY: nuk mund të kemi dy udhëtime me të njëjtin ID.",
+      "NOT NULL: nisja nuk mund të mungojë.",
+      "CHECK (vende >= 0): databaza refuzon −1 vende.",
+      "Zero vende është e vlefshme: udhëtimi ekziston, por është i plotë."
+    ],
+    "code": "id TEXT PRIMARY KEY\nnisja TEXT NOT NULL\nvende INTEGER CHECK (vende >= 0)",
+    "answer": "Provoje në mendje: −1 vende refuzohet nga CHECK. Zero vende pranohet, sepse udhëtimi mund të jetë i plotë."
+  },
+  {
+    "title": "SQL është mënyra si pyesim",
+    "kicker": "LEXIMI",
+    "body": [
+      "SQL (Structured Query Language – gjuhë e strukturuar për pyetje).",
+      "SELECT zgjedh kolonat. FROM tregon tabelën. ORDER BY vendos rendin.",
+      "Kjo pyetje sjell të gjitha udhëtimet, jo vetëm ato me vende të lira."
+    ],
+    "code": "SELECT id, nisja, ora, vende\nFROM udhetimet\nORDER BY id;"
+  },
+  {
+    "title": "Ndrysho vetëm udhëtimin 2",
+    "kicker": "NDRYSHIMI",
+    "body": [
+      "UPDATE ndryshon të dhënat. WHERE tregon cilin rresht.",
+      "Sfida 20-sekondëshe: çfarë ndodh nëse fshijmë rreshtin WHERE?"
+    ],
+    "code": "UPDATE udhetimet\nSET ora = '08:25'\nWHERE id = '2';",
+    "answer": "Ora 08:25 vendoset te të gjitha udhëtimet. Prandaj, para Run kontrollojmë cilët rreshta do të ndryshojmë."
+  },
+  {
+    "title": "Ku jeton kodi? Ku jetojnë të dhënat?",
+    "kicker": "HARTA E APLIKACIONIT",
+    "body": [
+      "Nëse ndryshon ora në Neon, a duhet Push në GitHub? Parashiko para përgjigjes."
+    ],
+    "diagram": "/assets/course/mobile-2026/week04-ecosystem.png",
+    "diagramAlt": "Dy rrugë: Git në kompjuter dërgon kodin me Push në GitHub, prej ku Vercel ndërton e publikon Next.js. Gjatë përdorimit, telefoni kërkon faqen nga serveri Next.js në Vercel; serveri pyet Neon, ku PostgreSQL ruan udhëtimet. DATABASE_URL mbetet në server.",
+    "answer": "Jo. Push nevojitet për ndryshimet e kodit. Ndryshimi i një rreshti në Neon lexohet kur aplikacioni e pyet databazën përsëri."
+  },
+  {
+    "title": "Rruga e të dhënave",
+    "kicker": "SERVERI · 15–25 MIN",
+    "body": [
+      "Ndajeni rrugën në klasë: një student është telefoni, një është serveri, një është databaza.",
+      "Telefoni kërkon udhëtimet. Serveri pyet Neon. Databaza kthen rreshtat; serveri ndërton kartat.",
+      "Kush e mban kredencialin? Telefoni merr pamjen; sekreti mbetet në server."
+    ],
+    "code": "Telefoni → Next.js në server → Neon\nTelefoni ← Kartat e udhëtimeve ← Rreshtat",
+    "sources": [
+      "https://nextjs.org/docs/app/guides/data-security"
+    ]
+  },
+  {
+    "title": "DATABASE_URL është kredencial",
+    "kicker": "KUFIRI PRIVAT",
+    "body": [
+      "Në kompjuter: .env.local pranë package.json. Në Vercel: Environment Variables.",
+      "Në GitHub ruajmë kodin dhe schema.sql; .env.local përjashtohet me .gitignore.",
+      "server-only mbron kufirin e kodit të serverit. Nuk është sistem hyrjeje ose leje përdoruesish."
+    ],
+    "code": "process.env.DATABASE_URL\n// Pa NEXT_PUBLIC_ për këtë sekret",
+    "sources": [
+      "https://nextjs.org/docs/app/guides/data-security",
+      "https://vercel.com/docs/marketplace-storage"
+    ]
+  },
+  {
+    "title": "Pyetja përdor identitetin e zgjedhur",
+    "kicker": "DETAJET",
+    "body": [
+      "Adresa /udhetimi/2 jep id = \"2\".",
+      "Driver-i Neon e kalon vlerën si parametër; nuk bashkojmë tekstin e përdoruesit me SQL.",
+      "Lista dhe detajet lexojnë të njëjtën tabelë."
+    ],
+    "code": "await sql`\n  SELECT * FROM udhetimet\n  WHERE id = ${id}\n`;",
+    "sources": [
+      "https://neon.com/docs/serverless/serverless-driver"
+    ]
+  },
+  {
+    "title": "Pse përdorim await?",
+    "kicker": "PRITJA",
+    "body": [
+      "Vargu i Javës 3 ishte menjëherë në kujtesë. Databaza përgjigjet përmes rrjetit.",
+      "await pret përgjigjen para se të ndërtojmë kartat.",
+      "force-dynamic në faqet e këtij ushtrimi kërkon lexim të ri kur faqja hapet ose rifreskohet. Nuk është përditësim automatik në kohë reale."
+    ],
+    "code": "const udhetimet = await lexoUdhetimet();",
+    "sources": [
+      "https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config"
+    ]
+  },
+  {
+    "title": "Tri përgjigje të ndryshme",
+    "kicker": "SJELLJA E APLIKACIONIT",
+    "body": [
+      "Ka rreshta → shfaq kartat.",
+      "Zero rreshta → “Nuk ka udhëtime për momentin.”",
+      "Lidhja dështoi → “Nuk u lidhëm me databazën. Provo përsëri.”",
+      "ID 99 mungon → “Udhëtimi nuk u gjet”, me kthim te lista."
+    ],
+    "answer": "Lista bosh është përgjigje e suksesshme me zero rreshta. Gabimi do të thotë se nuk arritëm ta lexojmë përgjigjen."
+  },
+  {
+    "title": "Tani ndryshon baza, jo kodi",
+    "kicker": "DEMONSTRIMI · 25–37 MIN",
+    "body": [
+      "Para klikimit, voto: pas ndryshimit në Neon, a përditësohen kartat pa rifreskim?",
+      "Provojmë 08:15 → 08:25 në listë dhe detaje, pastaj listën bosh dhe lidhjen e munguar.",
+      "Një student parashikon; një tjetër verifikon rezultatin. Në fund rikthejmë konfigurimin."
+    ],
+    "href": "demonstrimi.html",
+    "link": "Hap rrjedhën e demonstrimit ↗",
+    "answer": "Në këtë ushtrim duhet hapje ose rifreskim i faqes. force-dynamic nuk është abonim në kohë reale."
+  },
+  {
+    "title": "Kush mund ta ndryshojë udhëtimin?",
+    "kicker": "SIGURIA DHE KUFIJTË · 37–45 MIN",
+    "body": [
+      "Sot ndryshon vetëm pronari i databazës nga SQL Editor; aplikacioni ynë ka vetëm lexim.",
+      "Mbajtja private e DATABASE_URL nuk vendos leje për shoferët.",
+      "Javën tjetër: hyrja dhe kontrolli në server që shoferi ndryshon vetëm udhëtimet e veta.",
+      "RLS (Row Level Security – siguri në nivel rreshti) është një mekanizëm shtesë; nuk e kemi aktivizuar në ushtrimin e sotëm."
+    ]
+  },
+  {
+    "title": "Cili rast është lista bosh?",
+    "kicker": "PROVO KUPTIMIN",
+    "body": [
+      "Databaza përgjigjet, por kthen zero rreshta. Çfarë duhet të shohë Arta?",
+      "Voto individualisht; shpjego përse para se ta kontrollosh."
+    ],
+    "quiz": {
+      "question": "Zgjidh përgjigjen",
+      "options": [
+        "Lista është bosh; shfaq një mesazh të qartë.",
+        "Shfaq gabim të fjalëkalimit.",
+        "Shfaq udhëtimin e javës së kaluar."
+      ],
+      "correct": 0,
+      "explanation": "Kemi përgjigje të suksesshme me zero rreshta. Gabimi i lidhjes trajtohet veçmas; nuk shpikim udhëtime."
+    }
+  },
+  {
+    "title": "Çfarë do të mbyllni në 90 minuta",
+    "kicker": "USHTRIMET",
+    "body": [
+      "Neon i lidhur + tabela me tri udhëtime fiktive.",
+      "Lista dhe detajet lexojnë nga databaza.",
+      "Tri prova në java-04.md: ndryshimi, lista bosh, lidhja e munguar.",
+      "Dorëzim në minutën 70; 20 minuta për përgjigjen dhe korrigjimet në GitHub."
+    ],
+    "href": "prezantimi-ushtrimeve.html",
+    "link": "Hap prezantimin e ushtrimeve →"
+  },
+  {
+    "title": "Ekranet ndryshojnë. Burimi mbetet një.",
+    "kicker": "PËRMBYLLJA",
+    "body": [
+      "Një orë ndryshoi në Neon. Lista dhe detajet treguan të njëjtin ndryshim.",
+      "Kjo është aftësia e re: ta ndash informacionin nga pamja dhe ta lexosh përmes serverit.",
+      "Në biznesin tënd, i njëjti parim shërben për orare shërbimesh, termine ose porosi.",
+      "Exit ticket: ku ruhet ora, kush e lexon dhe ku qëndron sekreti?"
+    ]
+  }
+]

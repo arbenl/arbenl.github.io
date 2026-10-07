@@ -1,0 +1,156 @@
+[
+  {
+    "title": "Sot RideShare lexon nga Neon",
+    "kicker": "USHTRIMET 4 · 08.10.2026",
+    "body": [
+      "Ju jeni ekipi i RideShare: shoferi ndryshoi nisjen dhe Arta duhet ta shohë orën e saktë.",
+      "Sot: Neon → lista dhe detajet → prova të vërteta → përgjigjja në GitHub."
+    ],
+    "href": "ushtrimet.html",
+    "link": "Hap udhëzimin me kod ↗"
+  },
+  {
+    "title": "90 minuta me kohë për korrigjime",
+    "kicker": "PLANI",
+    "body": [
+      "0–10: projekt + raport. 10–25: Neon. 25–35: tabela.",
+      "35–55: kod. 55–70: prova + Push. 70–90: dorëzim + korrigjime.",
+      "Në çift: njëri vepron, tjetri lexon rezultatin e pritur. Ndërroni rolet te minutat 35 dhe 55."
+    ]
+  },
+  {
+    "title": "1. Kontrollo pikën e nisjes",
+    "kicker": "0–10 MIN",
+    "body": [
+      "Ku: repository yt personal → VS Code → Terminal.",
+      "Bëj: cd aplikacioni nëse kodi është aty; npm run dev.",
+      "Kontrollo: shfaqen tri kartat e Javës 3.",
+      "Shkarko java-04.md dhe ruaje pranë README, jashtë aplikacioni/."
+    ],
+    "href": "java-04-model.md",
+    "link": "Shkarko raportin java-04.md"
+  },
+  {
+    "title": "Ku jeton kodi? Ku jetojnë të dhënat?",
+    "kicker": "HARTA E APLIKACIONIT",
+    "body": [
+      "Nëse ndryshon ora në Neon, a duhet Push në GitHub? Parashiko para përgjigjes."
+    ],
+    "diagram": "/assets/course/mobile-2026/week04-ecosystem.png",
+    "diagramAlt": "Dy rrugë: Git në kompjuter dërgon kodin me Push në GitHub, prej ku Vercel ndërton e publikon Next.js. Gjatë përdorimit, telefoni kërkon faqen nga serveri Next.js në Vercel; serveri pyet Neon, ku PostgreSQL ruan udhëtimet. DATABASE_URL mbetet në server.",
+    "answer": "Jo. Push nevojitet për ndryshimet e kodit. Ndryshimi i një rreshti në Neon lexohet kur aplikacioni e pyet databazën përsëri."
+  },
+  {
+    "title": "2. Krijo Neon në projektin Vercel",
+    "kicker": "10–25 MIN",
+    "body": [
+      "Ku: projekti yt → Storage / Marketplace → Neon.",
+      "Bëj: zgjidh Free, krijo databazën dhe Connect Project.",
+      "Kontrollo: DATABASE_URL ekziston në Environment Variables.",
+      "Hap Neon Console → SQL Editor. Përdor të njëjtën degë/databazë gjatë orës."
+    ],
+    "href": "ushtrimet.html#ora-2",
+    "link": "Hap konfigurimin me hapa ↗",
+    "sources": [
+      "https://neon.com/docs/guides/vercel-native-integration",
+      "https://vercel.com/docs/marketplace-storage"
+    ]
+  },
+  {
+    "title": "3. Krijo tri udhëtimet",
+    "kicker": "25–35 MIN",
+    "body": [
+      "Ku: Neon SQL Editor dhe schema.sql pranë package.json.",
+      "Bëj: kopjo SQL-në e udhëzimit dhe kliko Run.",
+      "Kontrollo: ID 1, 2 dhe 3 shfaqen; ID 3 ka zero vende.",
+      "Ruaj schema.sql edhe në projekt, që ta dorëzosh."
+    ],
+    "href": "ushtrimet.html#hapi-sql",
+    "link": "Hap SQL-në për kopjim ↗",
+    "answer": "Nëse e ekzekuton dy herë, mbeten tri udhëtime: PRIMARY KEY dhe ON CONFLICT parandalojnë kopjet. Provoje dhe numëro rreshtat."
+  },
+  {
+    "title": "4A. Vendos lidhjen private lokalisht",
+    "kicker": "35–55 MIN",
+    "body": [
+      "Ndal serverin me Ctrl+C. Instalo dy paketat më poshtë.",
+      "Krijo .env.local pranë package.json; ngjit Connection string si DATABASE_URL.",
+      "Kontrollo .gitignore: .env* duhet të jetë i përjashtuar. Sekreti nuk shkon në GitHub."
+    ],
+    "code": "npm install @neondatabase/serverless server-only",
+    "href": "ushtrimet.html#ora-4",
+    "link": "Hap konfigurimin lokal ↗"
+  },
+  {
+    "title": "4B. Kopjo pesë skedarët me radhë",
+    "kicker": "BRENDA 35–55 MIN",
+    "body": [
+      "A · db.ts: lidhja private. B · udhetimet.ts: pyetjet SQL.",
+      "C · page.tsx: lista. D · detajet. E · simulimi i kërkesës.",
+      "Mbaj komponentin, stilet dhe not-found.tsx të Javës 3.",
+      "Në fund: npm run dev. Kontrollo tri kartat dhe detajet e ID 2."
+    ],
+    "href": "ushtrimet.html#hapi-a",
+    "link": "Ndiq A → B → C → D → E ↗"
+  },
+  {
+    "title": "5A. Provo ndryshimin e orës",
+    "kicker": "55–70 MIN · PROVA 1",
+    "body": [
+      "Para Run: kolegu parashikon cilat ekrane do të ndryshojnë.",
+      "Ndrysho vetëm ID 2 në 08:25. Rifresko listën dhe detajet: të dyja duhet të tregojnë 08:25.",
+      "Shkruaj rezultatin real te Prova 1. Rikthe 08:15 dhe provo përsëri."
+    ],
+    "code": "UPDATE udhetimet SET ora = '08:25' WHERE id = '2';",
+    "href": "ushtrimet.html#ora-5",
+    "link": "Hap tri provat ↗",
+    "answer": "Ndryshon vetëm udhëtimi 2, në të dy ekranet. Nëse njëri mbetet 08:15, kontrollo helper-in, await dhe rifreskimin."
+  },
+  {
+    "title": "5B. Provo boshllëkun dhe gabimin",
+    "kicker": "55–70 MIN · PROVAT 2–3",
+    "body": [
+      "Ndërroni rolet. Njëri përgatit provën, tjetri parashikon mesazhin.",
+      "Prova 2: WHERE false → listë bosh. Hiqe kushtin.",
+      "Prova 3: riemërto DATABASE_URL dhe rinis → gabim lidhjeje. Rikthe emrin dhe rinis.",
+      "A mund ta shpjegosh ndryshimin mes këtyre dy rezultateve?"
+    ],
+    "href": "ushtrimet.html#ora-5",
+    "link": "Hap udhëzimin e saktë të provave ↗",
+    "answer": "Te prova 2 databaza ktheu zero rreshta. Te prova 3 aplikacioni nuk arriti të lidhet. Mos shkruaj “kaloi” pa e parë rezultatin."
+  },
+  {
+    "title": "5C. Ruaje punën në GitHub",
+    "kicker": "DERI NË MINUTËN 70",
+    "body": [
+      "Kontrollo: java-04.md pranë README; schema.sql dhe kodi brenda aplikacionit.",
+      "Hiq [PLOTËSO] dhe rikthe konfigurimin e provave. .env.local nuk duhet të shfaqet te ndryshimet.",
+      "GitHub Desktop → Commit to main → Push origin.",
+      "Hap repository-n online dhe verifiko skedarët. Commit ruan lokalisht; Push i dërgon online."
+    ]
+  },
+  {
+    "title": "6. Dorëzo dhe lexo përgjigjen",
+    "kicker": "70–90 MIN",
+    "body": [
+      "Zgjidh Java 4. Vendos linkun kryesor të repository-t tënd publik.",
+      "Pas Create / Submit new issue, lexo komentin “Kontrolli automatik i dorëzimit”.",
+      "Synimi: 5/5 kontrolle teknike; funksionimin e provon ti në klasë.",
+      "Nëse ka mungesa: korrigjo → Commit → Push → komento rikontrollo te i njëjti Issue."
+    ],
+    "href": "ushtrimet.html#ora-6",
+    "link": "Hap dorëzimin dhe udhëzimet ↗"
+  },
+  {
+    "title": "Para se të largohesh",
+    "kicker": "PËRFUNDIMI",
+    "body": [
+      "Demo 30-sekondëshe për kolegun: ndrysho orën → rifresko → trego listën dhe detajet.",
+      "A i dallon listën bosh dhe gabimin e lidhjes? A ke lexuar përgjigjen në GitHub?",
+      "Përfundove herët? Provo sfidën “Udhëtimi u mbush” në udhëzim.",
+      "Exit ticket: shpjego pa lexuar kodin kush e ruan orën dhe kush e mban sekretin."
+    ],
+    "href": "./",
+    "link": "Kthehu te Java 4 →"
+  }
+]

@@ -40,16 +40,16 @@ test('each of fifteen weeks has a home and a consistent submission path',async()
   assert.ok(page.includes('dorezimet.html'));
   if(week>=2){
    for(const heading of ['1. Ligjërata','2. Ushtrimet','3. Dorëzimi'])assert.ok(page.includes(heading),`week ${week}: missing ${heading}`);
-   assert.ok(page.includes(week===3?'href="ushtrimet.html"':'href="#hapat"'),`week ${week}: missing exercise entry`);
+   assert.ok(page.includes(week<=4 && week>=3?'href="ushtrimet.html"':'href="#hapat"'),`week ${week}: missing exercise entry`);
    assert.ok(page.includes('id="hapat"'),`week ${week}: missing exercise steps`);
-   assert.ok(page.includes(week===3?'4. Dorëzo dhe lexo përgjigjen':'4. Dorëzo para se të largohesh'),`week ${week}: missing final step`);
+   assert.ok(page.includes(week<=4 && week>=3?'4. Dorëzo dhe lexo përgjigjen':'4. Dorëzo para se të largohesh'),`week ${week}: missing final step`);
    assert.ok(page.includes('issues/new?template=mobile-submission.yml'),`week ${week}: missing direct submission`);
   }
   if(week>=3){
    assert.ok(page.includes(`java-${n}.md`));
    assert.ok((await read(`lendet/2026-2027/mobile/java-${n}/java-${n}-model.md`)).includes('Provat që bëra'));
    const exercises=await read(`lendet/2026-2027/mobile/java-${n}/ushtrimet.html`);
-   assert.ok(exercises.includes(week===3?'5. Merr përgjigjen e GitHub-it':'4. Dorëzo para se të largohesh'),`week ${week}: exercise link stopped working`);
+   assert.ok(exercises.includes(week===4?'6. Dorëzo dhe lexo përgjigjen':week===3?'5. Merr përgjigjen e GitHub-it':'4. Dorëzo para se të largohesh'),`week ${week}: exercise link stopped working`);
   }
  }
 });
@@ -59,7 +59,7 @@ test('course abbreviations are explained in student pages and projector slides',
   'java-01/index.html':['PWA (Progressive Web App','PRD-në (Product Requirements Document','MVP-së (Minimum Viable Product'],
   'java-02/prezantimi-ligjerates.html':['MVP-së (Minimum Viable Product','PRD (Product Requirements Document'],
   'java-02/prezantimi-ushtrimeve.html':['QR (Quick Response','AI (Artificial Intelligence'],
-  'java-04/index.html':['RLS (Row Level Security'],
+  'java-04/index.html':['DB (Database','SQL (Structured Query Language'],
   'java-14/index.html':['CI/CD (Continuous Integration / Continuous Delivery']
  };
  for(const [file,terms] of Object.entries(checks)){

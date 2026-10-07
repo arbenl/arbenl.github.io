@@ -47,4 +47,5 @@ console.log("Built browser assets with content versions.");
 await import("./build-catalog.mjs");
 await import("./build-syllabus.mjs");
 
+await import("./build-week04-web.mjs");
 await import("./build-weekly-guides.mjs");
