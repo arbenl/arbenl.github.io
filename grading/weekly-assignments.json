@@ -14,17 +14,17 @@
     ]
   },
   "4": {
-    "outcome": "Udhëtimet ruhen në bazën e të dhënave",
+    "outcome": "Lista dhe detajet lexojnë udhëtimet nga Neon PostgreSQL",
     "steps": [
-      "Vazhdo të njëjtin projekt. Vizato tabelën e udhëtimeve: id, nisja, ora, vendet dhe pronari.",
-      "Krijo tabelën në bazën e zgjedhur në ligjëratë dhe shto tri udhëtime fiktive.",
-      "Lexoji udhëtimet nga serveri dhe shfaqi në listën ekzistuese.",
-      "Shfaq mesazh kur lista është bosh ose lidhja me bazën dështon. Ruaj çelësat vetëm në variabla të mjedisit."
+      "Lidh Neon përmes Vercel Marketplace dhe ruaj DATABASE_URL privatisht në .env.local.",
+      "Ekzekuto schema.sql në SQL Editor: krijo tabelën udhetimet dhe tri rreshta fiktivë.",
+      "Përditëso helper-in dhe tri faqet që të lexojnë me await nga i njëjti burim.",
+      "Provo ndryshimin e orës, listën bosh dhe gabimin e lidhjes; ruaj tri rezultatet në java-04.md dhe dorëzo në minutën 70."
     ],
     "checks": [
-      "Rifreskimi i faqes i lexon të dhënat nga baza.",
-      "Në mungesë të të dhënave shfaqet mesazh i kuptueshëm.",
-      "GitHub nuk përmban .env ose çelësa të bazës."
+      "Ndryshimi i ID 2 në SQL Editor shihet në listë dhe detaje pas rifreskimit.",
+      "Lista bosh ka mesazh të veçantë dhe tri kartat rikthehen pasi hiqet kushti i provës.",
+      "Lidhja e munguar jep mesazh të kuptueshëm; konfigurimi rikthehet dhe .env.local nuk shkon në GitHub."
     ]
   },
   "5": {

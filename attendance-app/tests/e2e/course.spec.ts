@@ -178,3 +178,41 @@ for(const width of [320,375,1280]){
   await page.screenshot({path:testInfo.outputPath(`week03-demo-${width}.png`),fullPage:true});
  });
 }
+
+for(const width of [375,1280]){
+ test(`week 4 Neon guide and both presentations at ${width}px`,async({page},testInfo)=>{
+  await page.setViewportSize({width,height:width===1280?720:812});
+  const base='/lendet/2026-2027/mobile/java-04/';
+  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.goto(origin+base);
+  await expect(page.getByRole('link',{name:'Hap prezantimin',exact:true})).toHaveAttribute('href','prezantimi-ligjerates.html');
+  await page.getByRole('link',{name:'Fillo ushtrimet · 90 minuta'}).click();
+  await expect(page.locator('[data-example-file]')).toHaveCount(6);
+  await page.context().grantPermissions(['clipboard-read','clipboard-write']);
+  await page.getByRole('button',{name:'Kopjo kodin · schema.sql',exact:true}).click();
+  expect(await page.evaluate(()=>navigator.clipboard.readText())).toEqual(await page.locator('#hapi-sql pre code').textContent());
+  await expect(page.locator('#ora-6')).toContainText('5/5 kontrolle teknike');
+  await expect(page.getByRole('link',{name:'Dorëzo punën · Java 4'})).toHaveAttribute('href',/week=Java%204/);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  for(const [deck,count] of [['prezantimi-ligjerates.html',19],['prezantimi-ushtrimeve.html',13]] as const){
+   await page.goto(origin+base+deck);
+   await expect(page.locator('.step')).toHaveCount(count);
+   await expect(page.locator('.ecosystem img')).toHaveCount(1);
+   if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
+   for(let slide=1;slide<=count;slide++){
+    if(slide>1)await page.keyboard.press('ArrowRight');
+    await expect(page.locator('#counter')).toHaveText(`${slide} / ${count}`);
+    const visible=page.locator('.step:visible');
+    await expect(visible).toHaveCount(1);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    const choose=visible.locator('.choose-trip');if(await choose.count()){await choose.click();await expect(choose).toHaveAttribute('aria-pressed','true');}
+    const quiz=visible.locator('.quiz');if(await quiz.count()){await quiz.locator('[data-correct="false"]').first().click();await expect(quiz.locator('[role="status"]')).toContainText('Mendo');await quiz.locator('[data-correct="true"]').click();await expect(quiz.locator('[role="status"]')).toContainText('Saktë');await quiz.getByRole('button',{name:'Provo përsëri'}).click();await expect(quiz.locator('[role="status"]')).toBeEmpty();}
+    const reveal=visible.getByRole('button',{name:'Zbulo përgjigjen'});
+    if(await reveal.count()){await reveal.click();await expect(visible.locator('.answer')).toBeVisible();if(width===1280&&await visible.locator('.ecosystem').count()){const answer=await visible.locator('.answer').boundingBox();const controls=await page.locator('#controls').boundingBox();expect(answer!.y+answer!.height).toBeLessThan(controls!.y);}await reveal.click();}
+    if(width===1280 && [1,5,10,14].includes(slide))await page.screenshot({path:testInfo.outputPath(`week04-${deck}-${slide}.png`)});
+   }
+   await page.keyboard.press('Escape');await expect(page.locator('.step:visible')).toHaveCount(count);
+  }
+  expect(errors).toEqual([]);
+ });
+}

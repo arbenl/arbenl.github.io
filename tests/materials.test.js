@@ -81,3 +81,22 @@ test('the restaurant demo discloses its purpose and exposes the complete order f
   assert.ok(html.includes(`data-flow-state="${state}"`),`missing ${state} flow state`);
  }
 });
+
+test('week 4 browser slides, student downloads and copied examples stay consistent',async()=>{
+ const manifest=JSON.parse(await readFile('materials/manifest.json','utf8'));
+ for(const [key,kind,count] of [['lecture4','ligjerates',19],['lab4','ushtrimeve',13]]){
+  const entry=manifest[key];assert.equal(entry.slides,count);assert.equal(entry.speakerNotes,false);
+  assert.equal(sha256(await readFile(entry.file)),entry.sha256);
+  const {stdout}=await execFileAsync('unzip',['-Z1',entry.file]);const parts=stdout.split('\n');
+  assert.equal(parts.filter(p=>/^ppt\/slides\/slide\d+\.xml$/.test(p)).length,count);
+  assert.ok(!parts.some(p=>/^ppt\/notes(?:Slides|Masters)\//.test(p)));
+  const html=await readFile(`lendet/2026-2027/mobile/java-04/prezantimi-${kind}.html`,'utf8');
+  assert.equal((html.match(/class="step"/g)||[]).length,count);
+  assert.ok(html.includes('week04-ecosystem.png'));
+ }
+ const guide=await readFile('lendet/2026-2027/mobile/java-04/ushtrimet.html','utf8');
+ assert.equal((guide.match(/data-example-file=/g)||[]).length,6);
+ assert.ok(guide.includes('server-only')&&guide.includes('DATABASE_URL')&&guide.includes('5/5'));
+ const plan=JSON.parse(await readFile('grading/course-plan.json','utf8'));
+ assert.match(plan.weeks[3].title,/Neon/);assert.match(plan.database.primary,/Neon/);assert.match(plan.database.secondary,/Supabase/);
+});

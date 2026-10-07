@@ -35,8 +35,8 @@
     },
     {
       "week": 4,
-      "title": "PostgreSQL, Supabase dhe RLS",
-      "lab": "RideShare: udhëtimet, vendet dhe pronësia e të dhënave",
+      "title": "PostgreSQL me Neon dhe leximi nga serveri",
+      "lab": "RideShare: tri udhëtime në Neon, lista dhe detajet nga databaza",
       "graded": true,
       "date": "2026-10-08",
       "lectureHours": 2,
@@ -146,5 +146,9 @@
   "deadlineStatus": "proposed",
   "calendarStatus": "AAB institutional breaks require confirmation",
   "project": "One Next.js application for a real family or local business throughout the semester",
-  "labProject": "RideShare"
+  "labProject": "RideShare",
+  "database": {
+    "primary": "Neon PostgreSQL përmes Vercel Marketplace",
+    "secondary": "Supabase (alternativë)"
+  }
 }
