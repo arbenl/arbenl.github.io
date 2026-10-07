@@ -1,10 +1,45 @@
 [
   {
-    "title": "Infrastruktura e ushtrimit të javës 4",
-    "kicker": "USHTRIMET 4 · 08.10.2026",
+    "title": "Një ndryshim ore, dy ekrane për ta provuar",
+    "kicker": "USHTRIMET 4 · 08.10.2026 · PARASHIKO PARA KODIT",
     "body": [
-      "Zhvillojmë lokalisht, publikojmë në Vercel dhe lexojmë të dhënat në Neon.",
-      "Ndryshimi i orës shihet pas rifreskimit të listës dhe detajeve."
+      "Sot RideShare për Prishtinë–AAB do t’i lexojë udhëtimet nga Neon.",
+      "Ora në databazë ndryshon nga 08:15 në 08:25. Telefoni ende nuk është rifreskuar."
+    ],
+    "quiz": {
+      "question": "Çfarë prisni në ekran para rifreskimit?",
+      "options": [
+        "Shfaqet vetvetiu ora 08:25.",
+        "Mbetet pamja e mëparshme derisa të rifreskojmë.",
+        "Duhet Push në GitHub për ndryshimin e orës në Neon."
+      ],
+      "correct": 1,
+      "explanation": "Në këtë ushtrim nuk kemi përditësim në kohë reale. Rifreskimi e bën serverin të lexojë përsëri Neon. Push duhet për ndryshimin e kodit, jo për ndryshimin e një rreshti në databazë.",
+      "deferAnswer": true
+    }
+  },
+  {
+    "title": "Java 3 është pika jonë e nisjes",
+    "kicker": "KONTROLL NË ÇIFT · BRENDA 0–10 MIN",
+    "body": [
+      "Hap projektin e Javës 3 në VS Code. Në Terminal, brenda aplikacioni/ nëse kodi është aty, ekzekuto npm run dev.",
+      "Njëri hap ekranet, tjetri i kontrollon. Shënoni vetëm atë që e shihni duke funksionuar."
+    ],
+    "checklist": [
+      "Lista shfaq tri kartat e udhëtimeve.",
+      "Karta hap detajet e udhëtimit me ID 2.",
+      "Nga detajet hapet simulimi i kërkesës."
+    ],
+    "checklistComplete": "Gati për Neon. Shkarko raportin dhe ruaje si java-04.md pranë README, jashtë aplikacioni/.",
+    "href": "java-04-model.md",
+    "link": "Shkarko raportin java-04.md"
+  },
+  {
+    "title": "Harta e punës sonë sot",
+    "kicker": "REZULTATI I USHTRIMIT · HARTA E INFRASTRUKTURËS",
+    "body": [
+      "Lidhim Neon, zëvendësojmë vargun me lexim SQL dhe provojmë listën e detajet.",
+      "Suksesi: ndryshojmë orën një herë, rifreskojmë të dy ekranet dhe shpjegojmë rezultatin."
     ],
     "href": "ushtrimet.html",
     "link": "Hap udhëzimin me kod ↗",
@@ -15,32 +50,10 @@
     "title": "90 minuta me kohë për korrigjime",
     "kicker": "PLANI",
     "body": [
-      "0–10: projekt + raport. 10–25: Neon. 25–35: tabela.",
+      "0–10: rikujtim + projekt + raport. 10–25: Neon. 25–35: tabela.",
       "35–55: kod. 55–70: prova + Push. 70–90: dorëzim + korrigjime.",
-      "Në çift: njëri vepron, tjetri lexon rezultatin e pritur. Ndërroni rolet te minutat 35 dhe 55."
+      "Në çift: njëri vepron, tjetri parashikon dhe kontrollon. Ndërroni rolet te minutat 35 dhe 55."
     ]
-  },
-  {
-    "title": "1. Kontrollo pikën e nisjes",
-    "kicker": "0–10 MIN",
-    "body": [
-      "Ku: repository yt personal → VS Code → Terminal.",
-      "Bëj: cd aplikacioni nëse kodi është aty; npm run dev.",
-      "Kontrollo: shfaqen tri kartat e Javës 3.",
-      "Shkarko java-04.md dhe ruaje pranë README, jashtë aplikacioni/."
-    ],
-    "href": "java-04-model.md",
-    "link": "Shkarko raportin java-04.md"
-  },
-  {
-    "title": "Ku jeton kodi? Ku jetojnë të dhënat?",
-    "kicker": "HARTA E APLIKACIONIT",
-    "body": [
-      "Nëse ndryshon ora në Neon, a duhet Push në GitHub? Parashiko para përgjigjes."
-    ],
-    "diagram": "/assets/course/mobile-2026/week04-ecosystem.png",
-    "diagramAlt": "Dy rrugë: Git në kompjuter dërgon kodin me Push në GitHub, prej ku Vercel ndërton e publikon Next.js. Gjatë përdorimit, telefoni kërkon faqen nga serveri Next.js në Vercel; serveri pyet Neon, ku PostgreSQL ruan udhëtimet. DATABASE_URL mbetet në server.",
-    "answer": "Jo. Push nevojitet për ndryshimet e kodit. Ndryshimi i një rreshti në Neon lexohet kur aplikacioni e pyet databazën përsëri."
   },
   {
     "title": "2. Krijo Neon në projektin Vercel",

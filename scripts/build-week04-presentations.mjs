@@ -19,7 +19,7 @@ for(const kind of ['lecture','lab']) {
   const slide=p.slides.add();slide.background.fill='#0b101b';
   text(slide,d.kicker,64,34,1070,34,18,'#89ddff',true);
   text(slide,String(i+1).padStart(2,'0')+' / '+data.length,1134,34,90,34,18,'#b7c5db');
-  if(i===0) {
+  if(d.openingImage) {
    slide.images.add({blob:logo,contentType:'image/png',alt:'Kolegji AAB',fit:'contain',position:{left:1080,top:83,width:130,height:54}});
    text(slide,d.title,64,90,990,75,44,'#ffffff',true);
    slide.images.add({blob:await fs.readFile(root+d.openingImage),contentType:'image/png',alt:d.openingAlt,fit:'contain',position:{left:64,top:175,width:1150,height:405}});
@@ -29,6 +29,19 @@ for(const kind of ['lecture','lab']) {
    slide.images.add({blob:await fs.readFile(root+d.diagram),contentType:'image/png',alt:d.diagramAlt,fit:'contain',position:{left:40,top:160,width:1200,height:450}});
    text(slide,d.body.join(' '),64,622,1150,36,22);
    text(slide,'Përgjigjja: '+d.answer,64,668,1150,44,17,'#8ee9d1');
+  } else if(d.quiz) {
+   if(i===0)slide.images.add({blob:logo,contentType:'image/png',alt:'Kolegji AAB',fit:'contain',position:{left:1080,top:83,width:130,height:54}});
+   text(slide,d.title,64,98,i===0?990:1150,100,44,'#ffffff',true);
+   text(slide,d.body.join('\n\n'),64,205,1150,175,27);
+   text(slide,d.quiz.question,64,390,1150,70,28,'#89ddff',true);
+   text(slide,d.quiz.options.map((o,j)=>String.fromCharCode(65+j)+' · '+o).join('\n\n'),64,465,1150,145,25);
+   if(d.quiz.deferAnswer)text(slide,'Votoni, krahasoni arsyetimet dhe hapni përgjigjen në versionin interaktiv.',64,625,1150,40,22,'#8ee9d1');
+   else text(slide,'Përgjigjja: '+d.quiz.explanation,64,620,1150,75,22,'#8ee9d1');
+  } else if(d.checklist) {
+   text(slide,d.title,64,98,1150,100,44,'#ffffff',true);
+   text(slide,d.body.join('\n\n'),64,205,1150,180,27);
+   text(slide,d.checklist.map(item=>'□ '+item).join('\n\n'),64,400,1150,150,27,'#89ddff');
+   text(slide,d.checklistComplete,64,565,1150,75,24,'#8ee9d1');
   } else {
    text(slide,d.title,64,98,1150,100,44,'#ffffff',true);
    let y=215;
@@ -43,7 +56,6 @@ for(const kind of ['lecture','lab']) {
    text(slide,d.body.join('\n\n').replace('Prek rreshtin','Zgjidh rreshtin'),64,y,1150,h,size);
    y+=h+14;
    if(d.code)text(slide,d.code,64,y,1150,140,25,'#8ee9d1');
-   if(d.quiz){text(slide,d.quiz.options.map((o,j)=>String.fromCharCode(65+j)+' · '+o).join('\n'),64,425,1150,115,25);text(slide,'Përgjigjja: '+d.quiz.explanation,64,575,1150,95,24,'#8ee9d1');}
    if(d.answer)text(slide,'Përgjigjja: '+d.answer,64,d.code||d.table?600:560,1150,d.code||d.table?60:115,d.code||d.table?22:24,'#8ee9d1');
   }
   if(d.href)text(slide,'Në faqe: '+d.link,64,663,1150,30,18,'#89ddff');

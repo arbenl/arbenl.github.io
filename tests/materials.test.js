@@ -92,7 +92,14 @@ test('week 4 browser slides, student downloads and copied examples stay consiste
   assert.ok(!parts.some(p=>/^ppt\/notes(?:Slides|Masters)\//.test(p)));
   const html=await readFile(`lendet/2026-2027/mobile/java-04/prezantimi-${kind}.html`,'utf8');
   assert.equal((html.match(/class="step"/g)||[]).length,count);
-  assert.ok(html.includes('week04-ecosystem.png'));
+  assert.ok(html.includes(`week04-${key==='lecture4'?'lecture':'lab'}-infrastructure.png`));
+  const sections=html.match(/<section class="step"[\s\S]*?<\/section>/g);
+  assert.ok(sections[0].includes('class="quiz"'),'start with a prediction and student vote');
+  assert.ok(!sections[0].includes('opening-illustration'),'introduce the problem before the architecture');
+  assert.ok(sections[1].includes(key==='lecture4'?'class="quiz"':'class="readiness"'),'recall or verify the previous week');
+  assert.ok(sections[2].includes('opening-illustration'),'show the infrastructure after the problem and recall');
+  assert.ok(sections[0].includes('disabled>Zbulo përgjigjen pas diskutimit'));
+  assert.ok(sections[0].includes('class="quiz-answer"')&&sections[0].includes(' hidden>'));
  }
  const guide=await readFile('lendet/2026-2027/mobile/java-04/ushtrimet.html','utf8');
  assert.equal((guide.match(/data-example-file=/g)||[]).length,6);
