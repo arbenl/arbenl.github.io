@@ -7,7 +7,9 @@
       "Sot: Neon → lista dhe detajet → prova të vërteta → përgjigjja në GitHub."
     ],
     "href": "ushtrimet.html",
-    "link": "Hap udhëzimin me kod ↗"
+    "link": "Hap udhëzimin me kod ↗",
+    "openingImage": "/assets/course/mobile-2026/week04-lab-story.png",
+    "openingAlt": "Studentët lidhin RideShare me Neon, lexojnë udhëtimet përmes serverit, provojnë ndryshimin e orës, listën bosh dhe gabimin e lidhjes, pastaj dorëzojnë kodin dhe java-04.md në GitHub."
   },
   {
     "title": "90 minuta me kohë për korrigjime",
