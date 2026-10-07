@@ -20,9 +20,10 @@ for(const kind of ['lecture','lab']) {
   text(slide,d.kicker,64,34,1070,34,18,'#89ddff',true);
   text(slide,String(i+1).padStart(2,'0')+' / '+data.length,1134,34,90,34,18,'#b7c5db');
   if(i===0) {
-   slide.images.add({blob:logo,contentType:'image/png',alt:'Kolegji AAB',fit:'contain',position:{left:64,top:115,width:180,height:75}});
-   text(slide,d.title,64,225,1150,145,58,'#ffffff',true);
-   text(slide,d.body.join('\n\n'),64,400,1120,180,30);
+   slide.images.add({blob:logo,contentType:'image/png',alt:'Kolegji AAB',fit:'contain',position:{left:1080,top:83,width:130,height:54}});
+   text(slide,d.title,64,90,990,75,44,'#ffffff',true);
+   slide.images.add({blob:await fs.readFile(root+d.openingImage),contentType:'image/png',alt:d.openingAlt,fit:'contain',position:{left:64,top:175,width:1150,height:405}});
+   text(slide,d.body.join('\n'),64,595,1150,65,23);
   } else if(d.diagram) {
    text(slide,d.title,64,80,1150,75,42,'#ffffff',true);
    slide.images.add({blob:await fs.readFile(root+d.diagram),contentType:'image/png',alt:d.diagramAlt,fit:'contain',position:{left:40,top:160,width:1200,height:450}});
