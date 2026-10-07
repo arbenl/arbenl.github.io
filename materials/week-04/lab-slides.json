@@ -1,15 +1,15 @@
 [
   {
-    "title": "Sot RideShare lexon nga Neon",
+    "title": "Infrastruktura e ushtrimit të javës 4",
     "kicker": "USHTRIMET 4 · 08.10.2026",
     "body": [
-      "Ju jeni ekipi i RideShare: shoferi ndryshoi nisjen dhe Arta duhet ta shohë orën e saktë.",
-      "Sot: Neon → lista dhe detajet → prova të vërteta → përgjigjja në GitHub."
+      "Zhvillojmë lokalisht, publikojmë në Vercel dhe lexojmë të dhënat në Neon.",
+      "Ndryshimi i orës shihet pas rifreskimit të listës dhe detajeve."
     ],
     "href": "ushtrimet.html",
     "link": "Hap udhëzimin me kod ↗",
-    "openingImage": "/assets/course/mobile-2026/week04-lab-story.png",
-    "openingAlt": "Studentët lidhin RideShare me Neon, lexojnë udhëtimet përmes serverit, provojnë ndryshimin e orës, listën bosh dhe gabimin e lidhjes, pastaj dorëzojnë kodin dhe java-04.md në GitHub."
+    "openingImage": "/assets/course/mobile-2026/week04-lab-infrastructure.png",
+    "openingAlt": "RideShare për itinerarin Prishtinë–AAB. Në laptop përdoren VS Code, Next.js lokal dhe Git/GitHub Desktop. Kodi, schema.sql dhe java-04.md dërgohen në GitHub. Vercel ndërton dhe ekzekuton Next.js. Serveri lokal dhe ai në Vercel lexojnë Neon/PostgreSQL me SELECT. Telefoni komunikon me serverin përmes HTTPS. Kredenciali qëndron në .env.local ose Environment Variables. SQL Editor ndryshon orën, më pas provohen rifreskimi, lista bosh dhe gabimi i lidhjes dhe dorëzohet repository në GitHub."
   },
   {
     "title": "90 minuta me kohë për korrigjime",

@@ -1,13 +1,13 @@
 [
   {
-    "title": "RideShare mban mend udhëtimet",
+    "title": "Si komunikon RideShare me databazën",
     "kicker": "JAVA 4 · 08.10.2026",
     "body": [
-      "Javën e kaluar ndërtuam ekranet. Sot u japim një burim të përbashkët të dhënash.",
-      "Neon + PostgreSQL · Ligjëratë 45 minuta për secilin grup"
+      "Telefoni kërkon faqen. Next.js lexon udhëtimet në Neon dhe kthen pamjen.",
+      "GitHub ruan kodin. Vercel ekzekuton aplikacionin. Neon ruan të dhënat."
     ],
-    "openingImage": "/assets/course/mobile-2026/week04-lecture-story.png",
-    "openingAlt": "Arta sheh nisjen në 08:15. Shoferi e ndryshon në 08:25 në Neon. Pas rifreskimit, lista dhe detajet në telefon tregojnë të njëjtën orë të re."
+    "openingImage": "/assets/course/mobile-2026/week04-lecture-infrastructure.png",
+    "openingAlt": "RideShare për itinerarin Prishtinë–AAB. Laptopi dërgon kodin në GitHub dhe Vercel publikon Next.js. Telefoni kërkon faqen përmes HTTPS. Serveri Next.js dërgon SELECT në Neon/PostgreSQL, merr rreshtat dhe kthen pamjen. DATABASE_URL mbetet në server. SQL Editor ndryshon orën në databazë; lista dhe detajet e lexojnë pas rifreskimit."
   },
   {
     "title": "Shoferi ndryshon orën",
