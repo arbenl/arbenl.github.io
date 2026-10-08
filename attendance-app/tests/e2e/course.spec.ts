@@ -197,7 +197,7 @@ for(const width of [375,1280]){
   for(const [deck,count] of [['prezantimi-ligjerates.html',19],['prezantimi-ushtrimeve.html',13]] as const){
    await page.goto(origin+base+deck);
    await expect(page.locator('.step')).toHaveCount(count);
-   await expect(page.locator('.ecosystem img')).toHaveCount(1);
+   await expect(page.locator('.opening-illustration img')).toHaveCount(1);
    if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
    for(let slide=1;slide<=count;slide++){
     if(slide>1)await page.keyboard.press('ArrowRight');
