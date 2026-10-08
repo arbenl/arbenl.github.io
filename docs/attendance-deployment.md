@@ -172,3 +172,33 @@ Mos fshi të vetmin rresht të stafit: bootstrap-i fillestar është njëherësh
 ## Kufijtë e sistemit
 
 Sistemi siguron identitet GitHub, përputhje me listën, grup të saktë, afat të serverit, një evidencë për student/sesion dhe audit për ndryshimet administrative. Nuk përdor GPS, Wi-Fi të kampusit ose verifikim biometrik. Ai nuk vendos automatikisht notë ose të drejtë provimi; rregullat akademike zbatohen mbi eksportin e verifikuar sipas politikës së institucionit.
+
+## Raporti i përbashkët sipas javëve
+
+Lidhja **Raporti javor · Pjesëmarrja dhe detyrat** në faqen e lëndës hap `/report`.
+Raporti kërkon GitHub dhe anëtarësi në semestrin aktual ose rolin e profesorit.
+Tregon emrat sipas alfabetit shqip, grupin, check-in-et e konfirmuara dhe lidhjen
+te dorëzimi javor. Nuk shfaq email, indeks, arsyet e korrigjimeve ose nota.
+Regjistri i plotë administrativ mbetet te `/staff/report`.
+
+Dorëzimet lexohen nga të gjitha faqet e issues publike në
+`arbenl/arbenl-mobile-assignments-2025`, përfshirë issues të mbyllura. Formulari
+Javët 1–15 dhe formulari i mëparshëm J02 njihen; përsëritjet bashkohen sipas
+GitHub user ID dhe javës. Lidhja shkon te issue më e fundit. Llogaritë pa profil
+shfaqen veçmas me username, pa hamendësuar emrin. Leximi cache-ohet 5 minuta;
+kur GitHub dështon, statusi është i panjohur, jo “Nuk u gjet”. Ky është raport
+dorëzimi, jo vlerësim i cilësisë ose notë.
+
+### Kontrolli i pretendimit për kufi 30
+
+Kontrolli i 8 tetorit gjeti 33 check-in-e në ligjëratën G2 të javës 3 në
+sistemin aktiv. Query i listës nuk ka limit 30. Testi i integrimit verifikon
+80 check-in-e të njëkohshme nga e njëjta IP dhe kthimin e të 80 emrave; testi
+i ndërfaqes verifikon që të 80 shfaqen sipas alfabetit. Lista në projektor
+lëviz brenda ekranit, që QR-ja dhe totali të mbeten të dukshëm.
+
+Dritarja aktuale mbetet 5 minuta nga hapja e orës. Skanimi vetë nuk mjafton:
+studenti duhet të përfundojë GitHub/profilin dhe të shohë konfirmimin para
+mbylljes së afatit. Nuk u vërtetua shkaku i çdo rasti të munguar historik;
+nevojitet mesazhi që shfaq telefoni dhe sesioni konkret. Korrigjimet e
+verifikuara bëhen me arsye në panel.

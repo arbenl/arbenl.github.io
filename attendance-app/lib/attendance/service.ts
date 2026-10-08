@@ -1546,6 +1546,32 @@ async function exportRoster(session: Session | null, semesterId: string) {
   return { filename: `roster-${semesterId}.csv`, csv: [csvRow(["Student ID", "Full Name", "Group", "Email (student supplied)"]), ...rows.map(row => csvRow([row.studentId, row.fullName, row.groupName, row.email ?? ""]))].join("\r\n") + "\r\n" };
 }
 
+async function getCourseActivityReport(session: Session | null) {
+  const db = await database();
+  const actor = await requireActor(db, session);
+  const [semester] = await db.select({ id: semesters.id }).from(semesters)
+    .where(and(eq(semesters.title, CURRENT_COURSE.title), eq(semesters.status, "active"))).limit(1);
+  if (!semester) throw new AttendanceServiceError(404, "semester_not_found", "Semestri aktual nuk u gjet.");
+  const [membership] = await db.select({ id: roster.id }).from(roster)
+    .where(and(eq(roster.semesterId, semester.id), eq(roster.userId, actor.userId))).limit(1);
+  if (!membership) await requireStaffActor(db, session);
+
+  // Select only the shared report's fields. Private IDs, email and correction reasons stay private.
+  const students = await db.select({ rosterId: roster.id, fullName: roster.fullName,
+    groupName: roster.groupName, githubId: users.githubId, login: users.githubUsername })
+    .from(roster).leftJoin(users, eq(users.id, roster.userId))
+    .where(eq(roster.semesterId, semester.id));
+  const sessions = await db.select({ id: classSessions.id, week: classSessions.weekNumber,
+    kind: classSessions.kind, groupName: classSessions.groupName, title: classSessions.title,
+    state: classSessions.state }).from(classSessions)
+    .where(and(eq(classSessions.semesterId, semester.id), inArray(classSessions.state, ["open", "closed"])));
+  const present = await db.select({ rosterId: attendanceRecords.rosterId, sessionId: attendanceRecords.sessionId })
+    .from(attendanceRecords).innerJoin(classSessions, eq(classSessions.id, attendanceRecords.sessionId))
+    .where(and(eq(classSessions.semesterId, semester.id), eq(attendanceRecords.status, "present"),
+      inArray(classSessions.state, ["open", "closed"])));
+  return { students: students.sort((a, b) => a.fullName.localeCompare(b.fullName, "sq", { sensitivity: "base" })), sessions, present };
+}
+
 async function getWeeklyAttendanceReport(session: Session | null) {
   const db = await database();
   await requireStaffActor(db, session);
@@ -1772,6 +1798,7 @@ export const attendanceService = {
   createSemester,
   exportSemester,
   getWeeklyAttendanceReport,
+  getCourseActivityReport,
   exportRoster,
   ensureCurrentCourseSetup,
   launchCourseSession,
