@@ -206,8 +206,19 @@ for(const width of [375,1280]){
     await expect(visible).toHaveCount(1);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     const choose=visible.locator('.choose-trip');if(await choose.count()){await choose.click();await expect(choose).toHaveAttribute('aria-pressed','true');}
-    const quiz=visible.locator('.quiz');if(await quiz.count()){await quiz.locator('[data-correct="false"]').first().click();await expect(quiz.locator('[role="status"]')).toContainText('Mendo');await quiz.locator('[data-correct="true"]').click();await expect(quiz.locator('[role="status"]')).toContainText('Saktë');await quiz.getByRole('button',{name:'Provo përsëri'}).click();await expect(quiz.locator('[role="status"]')).toBeEmpty();}
-    const reveal=visible.getByRole('button',{name:'Zbulo përgjigjen'});
+    const quiz=visible.locator('.quiz');
+    if(await quiz.count()){
+     const answer=quiz.locator('.quiz-answer'),revealQuiz=quiz.getByRole('button',{name:'Zbulo përgjigjen pas diskutimit',exact:true});
+     await expect(revealQuiz).toBeDisabled();
+     await quiz.locator('[data-correct="false"]').first().click();
+     await expect(quiz.locator('.vote-status')).toContainText('Zgjodhët');await expect(answer).toBeHidden();
+     await revealQuiz.click();await expect(answer).toContainText('Krahasoni arsyetimin tuaj');
+     await quiz.locator('[data-correct="true"]').click();await expect(answer).toBeHidden();
+     await revealQuiz.click();await expect(answer).toContainText('Saktë');
+     await quiz.getByRole('button',{name:'Voto përsëri',exact:true}).click();
+     await expect(answer).toBeHidden();await expect(revealQuiz).toBeDisabled();
+    }
+    const reveal=visible.getByRole('button',{name:'Zbulo përgjigjen',exact:true});
     if(await reveal.count()){await reveal.click();await expect(visible.locator('.answer')).toBeVisible();if(width===1280&&await visible.locator('.ecosystem').count()){const answer=await visible.locator('.answer').boundingBox();const controls=await page.locator('#controls').boundingBox();expect(answer!.y+answer!.height).toBeLessThan(controls!.y);}await reveal.click();}
     if(width===1280 && [1,5,10,14].includes(slide))await page.screenshot({path:testInfo.outputPath(`week04-${deck}-${slide}.png`)});
    }

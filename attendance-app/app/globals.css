@@ -934,3 +934,6 @@ body:has(.projector-shell) .app-header {
   .report-table { min-width: 0; font-size: 9pt; }
   .report-table thead th { position: static; color: #000; background: #eee; }
 }
+
+.attendance-report .admin-page-header h1 { font-size: clamp(1.8rem, 4vw, 3rem); }
+.attendance-report summary { cursor: pointer; padding: .5rem 0; color: var(--portal-muted); }

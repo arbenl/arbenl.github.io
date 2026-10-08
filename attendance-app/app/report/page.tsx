@@ -46,7 +46,7 @@ export default async function CourseReportPage({ searchParams }: {
     <section className="admin-section" aria-labelledby="activity-week">
       <h2 id="activity-week">Java {week}</h2>
       <p className="report-overview">{participants} studentë me pjesëmarrje të konfirmuar · {submissions ? `${weeklySubmissions.length} studentë me dorëzim` : "Dorëzimet përkohësisht të padisponueshme"}</p>
-      <p>“Po” tregon check-in të konfirmuar. “—” tregon se nuk ka konfirmim në këtë orë; nuk është vendim për mungesën. “Nuk u gjet” do të thotë se nuk u gjet formular dorëzimi nga e njëjta llogari GitHub, jo se puna është vlerësuar. Dorëzimet përditësohen brenda 5 minutave.</p>
+      <details><summary>Si lexohet raporti?</summary><p>“Po” tregon check-in të konfirmuar. “—” tregon se nuk ka konfirmim në këtë orë; nuk është vendim për mungesën. “Nuk u gjet” do të thotë se nuk u gjet formular dorëzimi nga e njëjta llogari GitHub, jo se puna është vlerësuar. Dorëzimet përditësohen brenda 5 minutave.</p></details>
       {!sessions.length ? <p>Nuk ka ende orë të hapur ose të përfunduar këtë javë.</p> : null}
       {submissions === null ? <p role="alert">GitHub nuk mund të lexohet tani. Dorëzimet shënohen “E panjohur”; provo përsëri më vonë.</p> : null}
       <div className="report-table-scroll"><table className="report-table">
