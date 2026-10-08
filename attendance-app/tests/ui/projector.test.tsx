@@ -80,6 +80,17 @@ afterEach(() => {
 });
 
 describe("live projector", () => {
+  it("renders all 80 confirmed names alphabetically without a display cap", async () => {
+    const entries = Array.from({ length: 80 }, (_, i) => ({ rosterId: String(i), displayName: `Student ${String(80-i).padStart(2, "0")}`, recordedAt: SERVER_TIME }));
+    vi.spyOn(globalThis, "fetch").mockImplementation(async input => String(input).endsWith("/live") ? response(snapshot({entries, total:80})) : response(challenge()));
+    render(<LiveProjector sessionId={SESSION_ID} />);
+    await settle();
+    const list = screen.getByRole("list", {name:"Të gjithë studentët e konfirmuar"});
+    expect(list.querySelectorAll("li")).toHaveLength(80);
+    expect(list.querySelector("li strong")?.textContent).toBe("Student 01");
+    expect(screen.getByText("80")).toBeTruthy();
+  });
+
   it("uses server time, keeps one QR until the session deadline", async () => {
     const browserStart = Date.now();
     const currentServerTime = () => new Date(

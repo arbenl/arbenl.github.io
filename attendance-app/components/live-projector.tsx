@@ -200,6 +200,9 @@ export function LiveProjector({ sessionId }: LiveProjectorProps) {
         <p className="projector-guidance">
           Mos e shpërndani QR-në. Çdo hyrje shfaqet live dhe regjistrohet me kohën e serverit.
         </p>
+        <p className="projector-guidance">
+          Skanimi përfundon vetëm kur telefoni shfaq “Vijueshmëria u konfirmua”. Hyr me GitHub dhe plotëso profilin nëse kërkohet, para se të mbarojë numërimi.
+        </p>
       </section>
 
       <section className="projector-roster" aria-labelledby="attendance-list-title">
@@ -216,8 +219,9 @@ export function LiveProjector({ sessionId }: LiveProjectorProps) {
           </p>
         ) : null}
         {loadError ? <p role="alert">Nuk mund të ngarkohen të dhënat live.</p> : null}
-        <ol className={stale ? "projector-list is-stale" : "projector-list"}>
-          {snapshot?.entries.map((entry) => (
+        <p>Lista përmban të gjithë të konfirmuarit, sipas alfabetit. Lëviz brenda saj për të parë emrat e tjerë. <a href="/report">Hap raportin sipas javëve →</a></p>
+        <ol tabIndex={0} aria-label="Të gjithë studentët e konfirmuar" className={stale ? "projector-list is-stale" : "projector-list"}>
+          {snapshot?.entries.toSorted((a, b) => a.displayName.localeCompare(b.displayName, "sq", { sensitivity: "base" })).map((entry) => (
             <li key={entry.rosterId}>
               <strong>{entry.displayName}</strong>
               <time dateTime={entry.recordedAt}>

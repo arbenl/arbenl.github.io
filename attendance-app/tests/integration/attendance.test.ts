@@ -2034,3 +2034,35 @@ it("pre-class registration cannot enrol into another or archived semester", asyn
   await expect(attendanceService.activateRoster(studentA,{...input,semesterId},"198.51.100.99")).rejects.toMatchObject({status:409});
   expect(await sql`select id from attendance_records`).toHaveLength(0);
 });
+
+
+describe("shared class activity report and large QR classes", () => {
+  it("allows enrolled students and staff, refuses outsiders, and excludes private student fields", async () => {
+    const semester = await createActiveSemester("Programimi për Pajisje Mobile · Semestri Dimëror 2026/27");
+    await importAndActivate(semester.id, studentA, "A-1", "Arta Test", "G1");
+    const report = await attendanceService.getCourseActivityReport(studentA);
+    expect(report.students.map(s => s.fullName)).toEqual(["Arta Test"]);
+    expect(report.students[0]).not.toHaveProperty("email");
+    expect(report.students[0]).not.toHaveProperty("studentId");
+    await expect(attendanceService.getCourseActivityReport(studentB)).rejects.toMatchObject({status:403});
+    await expect(attendanceService.getCourseActivityReport(null)).rejects.toMatchObject({status:401});
+    expect((await attendanceService.getCourseActivityReport(professor)).students).toHaveLength(1);
+  });
+
+  it("accepts 80 simultaneous students behind the same campus IP and returns every name", async () => {
+    const semester = await createActiveSemester("Programimi për Pajisje Mobile · Semestri Dimëror 2026/27");
+    await sql`insert into users(github_id, github_username) select (1000+n)::text, 'load-student-' || n from generate_series(1,80) as n`;
+    await sql`insert into roster(semester_id, student_id, full_name, group_name, user_id, email, activated_at)
+      select ${semester.id}, github_id, 'Student Test ' || github_id, 'G1', id, github_id || '@example.com', statement_timestamp()
+      from users where github_id::integer between 1001 and 1080`;
+    const opened = await createOpenSession(semester.id);
+    const qr = await attendanceService.createChallenge(professor, opened.id, "198.51.100.1");
+    const accepted = await Promise.all(Array.from({length:80}, (_, i) => attendanceService.checkIn(sessionFor(String(1001+i), `load-student-${i+1}`), {token:qr.token}, "198.51.100.20")));
+    expect(accepted.every(r => r.status === "present")).toBe(true);
+    const live = await attendanceService.getLiveSession(professor, opened.id, "198.51.100.1");
+    expect(live.total).toBe(80);
+    expect(live.entries).toHaveLength(80);
+    const report = await attendanceService.getCourseActivityReport(sessionFor("1001", "load-student-1"));
+    expect(report.present).toHaveLength(80);
+  }, 30_000);
+});

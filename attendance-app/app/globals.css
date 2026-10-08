@@ -922,3 +922,15 @@ body:has(.projector-shell) .app-header {
 .report-presence.is-present { color: #a7f3d0; background: rgb(16 185 129 / 18%); }
 .report-presence.is-absent { color: #fecaca; background: rgb(239 68 68 / 17%); }
 .report-presence.is-pending { color: #fef08a; background: rgb(234 179 8 / 17%); }
+
+/* Keep the QR and total visible while a large class scrolls through every name. */
+.projector-list { max-height: 65vh; overflow-y: auto; overscroll-behavior: contain; padding-right: .5rem; }
+.projector-roster a { color: #bae6fd; }
+@media (max-width: 60rem) { .projector-list { max-height: 55vh; } }
+@media print {
+  .app-header, .report-week-picker { display: none; }
+  .report-table-scroll { max-height: none; overflow: visible; }
+  .attendance-report { width: 100%; color: #000; background: #fff; }
+  .report-table { min-width: 0; font-size: 9pt; }
+  .report-table thead th { position: static; color: #000; background: #eee; }
+}
