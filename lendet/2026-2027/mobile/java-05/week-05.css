@@ -12,3 +12,5 @@
 @media(max-width:760px){.concept-flow{display:block;margin:18px 0}.concept-flow li{margin:0 0 24px;padding:10px;font-size:20px!important}.concept-flow li:not(:last-child)::after{content:"↓";right:50%;top:auto;bottom:-32px}.comparison>div{grid-template-columns:1fr;gap:5px}.step .slide-logo{position:static;width:110px}.step:first-of-type .eyebrow{padding:0}.step pre{font-size:16px}.quiz button{font-size:18px}.card table{font-size:14px}.card th,.card td{padding:6px}}
 
 .step .explanations p{overflow-wrap:anywhere}.card .button{white-space:normal;max-width:100%;overflow-wrap:anywhere}.card{min-width:0}
+
+body[data-week="5"] main{overflow-wrap:anywhere}.card[data-example-file] .button{display:block;width:100%;text-align:center}.card table{table-layout:fixed}
