@@ -12,7 +12,7 @@ await fs.mkdir(work+'/output',{recursive:true});
 const source=await PresentationFile.importPptx(await FileBlob.load(root+'/lendet/2026-2027/mobile/lectures/ligjerata-04-neon-postgresql-rideshare-2026.pptx'));
 for(const i of [0,8]){const png=await source.export({slide:source.slides.items[i],format:'png',scale:1});await fs.writeFile(work+'/reference-'+(i+1)+'.png',new Uint8Array(await png.arrayBuffer()));}
 const logo=await fs.readFile(root+'/img/aab_logo_white.png');
-for(const kind of ['lecture','lab']){
+for(const kind of (process.env.WEEK05_KIND?[process.env.WEEK05_KIND]:['lecture','lab'])){
  const data=JSON.parse(await fs.readFile(root+'/materials/week-05/'+kind+'-slides.json','utf8'));
  const p=Presentation.create({slideSize:{width:1280,height:720}});
  function text(s,value,x,y,w,h,size=27,color='#eaf1ff',bold=false){const o=s.shapes.add({geometry:'textbox',position:{left:x,top:y,width:w,height:h},fill:'none',line:{fill:'none',width:0}});o.text=value;o.text.style={typeface:'Arial',fontSize:size,color,bold,autoFit:'none'};return o;}
@@ -30,7 +30,8 @@ for(const kind of ['lecture','lab']){
   if(d.code)text(s,d.code,64,400,1150,150,27,'#fcd34d');
   if(d.quiz){text(s,d.quiz.question,64,370,1150,45,25,'#fcd34d',true);text(s,d.quiz.options.map((o,j)=>String.fromCharCode(65+j)+' · '+o).join('\n\n'),64,425,1150,155,25);text(s,'Përgjigjja: '+d.quiz.explanation,64,600,1150,70,22,'#b8eddb');}
   if(d.checklist)text(s,d.checklist.map(x=>'□ '+x).join('\n\n'),64,420,1150,150,26,'#fcd34d');
-  if(d.answer)text(s,'Përgjigjja: '+d.answer,64,585,1150,70,22,'#b8eddb');
+  if(d.question)text(s,d.question,64,555,1150,40,23,'#fcd34d',true);
+  if(d.answer)text(s,'Përgjigjja: '+d.answer,64,d.question?600:585,1150,d.question?65:70,d.question?21:22,'#b8eddb');
   if(d.href)text(s,'Në faqe: '+d.link,64,665,1150,30,18,'#fcd34d');
   if(d.sources)text(s,d.sources.join(' | '),64,697,1150,20,11,'#b7c5db');
  }

@@ -14,3 +14,7 @@
 .step .explanations p{overflow-wrap:anywhere}.card .button{white-space:normal;max-width:100%;overflow-wrap:anywhere}.card{min-width:0}
 
 body[data-week="5"] main{overflow-wrap:anywhere}.card[data-example-file] .button{display:block;width:100%;text-align:center}.card table{table-layout:fixed}
+
+.step .reveal-question{font-size:22px;font-weight:700;color:var(--week-accent,#fcd34d);margin:14px 0 10px;overflow-wrap:anywhere}@media(max-width:760px){.step .reveal-question{font-size:19px}}
+
+@media(min-width:761px) and (max-height:800px){.projector .step:has(.reveal-question) h2{font-size:32px}.projector .step:has(.reveal-question) .explanations p{font-size:20px;line-height:1.4;margin:8px 0}.projector .step:has(.reveal-question) .comparison{margin:8px 0}.projector .step:has(.reveal-question) .comparison>div{padding:8px 0}.projector .step:has(.reveal-question) .comparison dt,.projector .step:has(.reveal-question) .comparison dd{font-size:22px;line-height:1.35}.projector .step:has(.reveal-question) pre{font-size:19px;line-height:1.35;padding:10px;margin:10px 0}.projector .step .reveal-question{font-size:20px;line-height:1.4;margin:10px 0 6px}.projector .step:has(.reveal-question) .answer{font-size:18px;line-height:1.4;padding:8px;margin:10px 0}}
