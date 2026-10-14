@@ -18,3 +18,26 @@ body[data-week="5"] main{overflow-wrap:anywhere}.card[data-example-file] .button
 .step .reveal-question{font-size:22px;font-weight:700;color:var(--week-accent,#fcd34d);margin:14px 0 10px;overflow-wrap:anywhere}@media(max-width:760px){.step .reveal-question{font-size:19px}}
 
 @media(min-width:761px) and (max-height:800px){.projector .step:has(.reveal-question) h2{font-size:32px}.projector .step:has(.reveal-question) .explanations p{font-size:20px;line-height:1.4;margin:8px 0}.projector .step:has(.reveal-question) .comparison{margin:8px 0}.projector .step:has(.reveal-question) .comparison>div{padding:8px 0}.projector .step:has(.reveal-question) .comparison dt,.projector .step:has(.reveal-question) .comparison dd{font-size:22px;line-height:1.35}.projector .step:has(.reveal-question) pre{font-size:19px;line-height:1.35;padding:10px;margin:10px 0}.projector .step .reveal-question{font-size:20px;line-height:1.4;margin:10px 0 6px}.projector .step:has(.reveal-question) .answer{font-size:18px;line-height:1.4;padding:8px;margin:10px 0}}
+
+
+/* Student lab guide: space to read, check the result, and move to the next step. */
+.lab-guide #hapat{margin:36px 0}
+.lab-guide .lab-plan{padding-left:24px}
+.lab-guide .lab-plan li{margin:10px 0}
+.lab-guide section.card{margin-block:32px}
+.lab-guide section[id],.lab-guide h3[id]{scroll-margin-top:24px}
+.lab-guide .card>h2:first-child,.lab-guide .card>h3:first-child{margin-top:0}
+.lab-guide .card>h3:not(:first-child){margin-top:36px}
+.lab-guide .card h4{font-size:19px;line-height:1.5;margin:30px 0 12px}
+.lab-guide .card li{margin-block:14px;padding-left:4px}
+.lab-guide .card ol,.lab-guide .card ul{padding-left:24px}
+.lab-guide .code-explainer{border-left:3px solid var(--week-accent,#fcd34d);background:#19263a;padding:14px 18px;margin:18px 0}
+.lab-guide .code-explainer p{margin:0}
+.lab-guide .step-transition{border-top:1px solid #52627b;margin-top:32px;padding-top:22px}
+.lab-guide .step-transition strong,.lab-guide .code-explainer strong{color:var(--week-accent,#fcd34d)}
+.lab-guide .step-transition p{margin:0 0 14px}
+.lab-guide .step-transition .button{margin-top:4px;min-height:48px}
+.lab-guide .plan-return{margin:20px 0 0;font-size:14px}
+.lab-guide .plan-return a{display:inline-flex;align-items:center;min-height:44px}
+.lab-guide .lab-finish{border-top:3px solid var(--week-accent,#fcd34d)}
+@media(max-width:640px){.lab-guide section.card{margin-block:24px}.lab-guide .code-explainer{padding:12px}.lab-guide .card>h3:not(:first-child){margin-top:28px}.lab-guide .step-transition .button{display:flex;width:100%;text-align:center}}
