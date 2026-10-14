@@ -53,7 +53,8 @@
         "Udhëtimi 2 është i Dritonit"
       ]
     ],
-    "answer": "Arta është identifikuar, por nuk ka leje të ndryshojë orën e Dritonit."
+    "answer": "Arta është identifikuar, por nuk ka leje të ndryshojë orën e Dritonit.",
+    "question": "A mund ta ndryshojë Arta orën e udhëtimit të Dritonit?"
   },
   {
     "title": "Karta e studentit nuk të bën profesor",
@@ -63,7 +64,8 @@
       "Për të ndryshuar notat duhet rol i autorizuar dhe qasje në lëndën përkatëse.",
       "Po kështu, hyrja në RideShare nuk të bën pronar të çdo udhëtimi."
     ],
-    "answer": "Përmend një rast tjetër: klienti i lokalit mund të rezervojë, por nuk ndryshon orarin e punonjësit."
+    "answer": "Jo. Karta identifikon studentin; ndryshimi i notave kërkon rol dhe qasje të autorizuar. Edhe klienti i lokalit mund të rezervojë, por nuk ndryshon orarin e punonjësit.",
+    "question": "A të jep karta e studentit leje për të ndryshuar notat?"
   },
   {
     "title": "Hyrja me GitHub",
@@ -119,7 +121,8 @@
         "shofer"
       ]
     ],
-    "answer": "Nëse Arta dërgon role=shofer nga shfletuesi, serveri e injoron. Roli merret nga databaza."
+    "answer": "Nëse Arta dërgon role=shofer nga shfletuesi, serveri e injoron. Roli merret nga databaza.",
+    "question": "Çfarë ndodh nëse Arta dërgon role=shofer nga shfletuesi?"
   },
   {
     "title": "Shoferi ka leje vetëm për udhëtimin e vet",
@@ -153,7 +156,8 @@
         "Jo"
       ]
     ],
-    "answer": "Roli shofer nuk mjafton. Duhet edhe shofer_id = ID e përdoruesit në sesion."
+    "answer": "Roli shofer nuk mjafton. Duhet edhe shofer_id = ID e përdoruesit në sesion.",
+    "question": "A mund ta ndryshojë Dritoni udhëtimin e një shoferi tjetër?"
   },
   {
     "title": "Kontrolli para ruajtjes",
@@ -169,7 +173,8 @@
     ],
     "answer": "Nëse ndonjë kontroll dështon, databaza nuk ndryshon. Mesazhi tregon arsyen.",
     "href": "demo/",
-    "link": "Hap modelin ilustrues të lejeve →"
+    "link": "Hap modelin ilustrues të lejeve →",
+    "question": "Çfarë ndodh nëse një nga kontrollet dështon?"
   },
   {
     "title": "ID-ja e pronarit vjen nga sesioni",
@@ -179,10 +184,11 @@
       "p.id: identiteti i verifikuar; nuk e marrim nga një input i përdoruesit."
     ],
     "code": "UPDATE udhetimet SET ora = ${ora}\nWHERE id = ${id} AND shofer_id = ${p.id}\nRETURNING id;",
-    "answer": "Në kodin e plotë kontrollojmë edhe rolin. RETURNING tregon nëse u ndryshua një rresht.",
+    "answer": "Kushti shofer_id = p.id kërkon pronarin e saktë. Në kodin e plotë kontrollojmë edhe rolin. RETURNING tregon nëse u ndryshua një rresht.",
     "sources": [
       "https://www.postgresql.org/docs/current/sql-update.html"
-    ]
+    ],
+    "question": "Çfarë e ndalon ndryshimin e udhëtimit të një pronari tjetër?"
   },
   {
     "title": "Fshehja e butonit dhe mbrojtja e veprimit",
@@ -205,7 +211,8 @@
     "answer": "Një buton i fshehur nuk është masë e mjaftueshme sigurie.",
     "sources": [
       "https://nextjs.org/docs/app/guides/authentication"
-    ]
+    ],
+    "question": "A mjafton ta fshehim butonin për ta mbrojtur veprimin?"
   },
   {
     "title": "Dalja dhe skadimi i sesionit",
@@ -218,7 +225,8 @@
     "answer": "Për prodhim duhen edhe politika revokimi dhe monitorimi. Në laborator provojmë daljen në shfletuesin tonë.",
     "sources": [
       "https://next-auth.js.org/configuration/options"
-    ]
+    ],
+    "question": "A i revokon dalja edhe kopjet e vjedhura të tokenit?"
   },
   {
     "title": "Sekretet kanë punë të ndryshme",
@@ -238,7 +246,8 @@
         "Identiteti i aplikacionit RideShare"
       ]
     ],
-    "answer": "ID-ja e studentit dhe Client ID e aplikacionit janë gjëra të ndryshme."
+    "answer": "ID-ja e studentit dhe Client ID e aplikacionit janë gjëra të ndryshme.",
+    "question": "A është Client ID e OAuth App e njëjtë me ID-në e studentit?"
   },
   {
     "title": "Demonstrim: një ruajtje dhe dy refuzime",
@@ -276,7 +285,8 @@
       "Ora e gabuar: “Shkruaj një orë të vlefshme”. Neon nuk përgjigjet: “Provo përsëri”.",
       "Vetëm pas ruajtjes së konfirmuar shfaqim sukses."
     ],
-    "answer": "401 (Unauthorized) zakonisht tregon mungesë identifikimi; 403 (Forbidden) refuzim lejeje. Formulari ynë shfaq mesazhe të lexueshme përmes ridrejtimit."
+    "answer": "401 (Unauthorized) zakonisht tregon mungesë identifikimi; 403 (Forbidden) refuzim lejeje. Formulari ynë shfaq mesazhe të lexueshme përmes ridrejtimit.",
+    "question": "Çfarë dallimi kanë mungesa e identifikimit dhe mungesa e lejes?"
   },
   {
     "title": "Rezultati i ushtrimeve në 90 minuta",
@@ -316,6 +326,7 @@
       "3. Pse duhen kontrolle në server edhe kur formulari fshihet?",
       "Shpjego me një shembull tëndin pa lexuar kodin."
     ],
-    "answer": "GitHub verifikon llogarinë; Neon ruan rolin dhe pronarin; serveri vendos për çdo ndryshim."
+    "answer": "GitHub verifikon llogarinë; Neon ruan rolin dhe pronarin; serveri vendos për çdo ndryshim.",
+    "question": "Kush verifikon identitetin, ku ruhet roli dhe kush vendos për ndryshimin?"
   }
 ]
