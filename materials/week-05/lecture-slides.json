@@ -33,6 +33,16 @@
     ]
   },
   {
+    "title": "Harta e Javës 5: ndryshojmë me leje",
+    "kicker": "SYNIMI I JAVËS · RRJEDHA E RIDESHARE",
+    "body": [
+      "Javën 4 lexuam orën. Sot shoferi e ndryshon nga aplikacioni, pasi serveri verifikon lejen.",
+      "Prova në laborator është lokale: pronari ruan orën, përdoruesi pa leje refuzohet."
+    ],
+    "openingImage": "/assets/course/mobile-2026/week05-lecture-infrastructure.png",
+    "openingAlt": "Harta e RideShare për Javën 5. Kodi kalon nga VS Code dhe Git në repository-n GitHub dhe publikohet në Vercel. Kjo rrugë ndahet nga përdorimi i aplikacionit. GitHub verifikon identitetin gjatë hyrjes. Telefoni dërgon kërkesën dhe cookie-n e sesionit te Next.js në server. Serveri verifikon sesionin, lexon rolin dhe pronarin nga Neon/PostgreSQL dhe lejon UPDATE vetëm për shoferin pronar. Suksesi kthehet në ekran; pa leje kërkesa refuzohet dhe ora nuk ndryshon. Sekretet mbeten në server. Në laborator kjo rrjedhë provohet lokalisht, me të njëjtin Neon."
+  },
+  {
     "title": "Identiteti, roli dhe pronësia",
     "kicker": "KONCEPTET · 7–12 MIN",
     "body": [
