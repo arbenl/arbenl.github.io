@@ -22,6 +22,12 @@ for(const kind of (process.env.WEEK05_KIND?[process.env.WEEK05_KIND]:['lecture',
   text(s,d.kicker,64,30,1060,35,18,'#fcd34d',true);text(s,String(i+1).padStart(2,'0')+' / '+data.length,1135,30,100,35,18,'#b7c5db');
   if(i===0)s.images.add({blob:logo,contentType:'image/png',fit:'contain',alt:'Kolegji AAB',position:{left:1080,top:82,width:140,height:60}});
   text(s,d.title,64,95,i===0?1000:1150,95,43,'#ffffff',true);
+  if(d.openingImage){
+   const image=await fs.readFile(path.join(root,d.openingImage));
+   s.images.add({blob:image,contentType:'image/png',fit:'contain',alt:d.openingAlt,position:{left:40,top:185,width:1200,height:420}});
+   text(s,d.body.join('\n\n'),64,615,1150,85,22);
+   continue;
+  }
   let bodyY=205,bodyH=300;
   if(d.table){tableOwners.push(i+1);const t=s.tables.add({rows:d.table.length,columns:d.table[0].length,left:64,top:205,width:1150,height:245,columnWidths:[350,230,270,300],values:d.table});t.cells.block({row:0,column:0,rowCount:d.table.length,columnCount:4}).assign({fill:'#1e2632',textStyle:{typeface:'Arial',fontSize:24,color:'#eaf1ff'},margins:{left:14,right:14,top:10,bottom:10}});t.cells.block({row:0,column:0,rowCount:1,columnCount:4}).assign({textStyle:{typeface:'Arial',fontSize:24,color:'#fcd34d',bold:true}});bodyY=470;bodyH=80;}
   text(s,d.body.join('\n\n'),64,bodyY,1150,bodyH,d.table?24:27);
