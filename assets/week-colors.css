@@ -1,0 +1,17 @@
+/* Weekly accents preserve navigation and contrast; week numbers remain the primary labels. */
+[data-week="1"]{--week-accent:#c4b5fd}
+[data-week="2"]{--week-accent:#93c5fd}
+[data-week="3"]{--week-accent:#67e8f9}
+[data-week="4"]{--week-accent:#6ee7b7}
+[data-week="5"]{--week-accent:#fcd34d}
+[data-week="6"]{--week-accent:#fda4af}
+[data-week="7"]{--week-accent:#fdba74}
+[data-week="8"]{--week-accent:#bef264}
+[data-week="9"]{--week-accent:#f9a8d4}
+[data-week="10"]{--week-accent:#5eead4}
+[data-week="11"]{--week-accent:#a5b4fc}
+[data-week="12"]{--week-accent:#f5d0a9}
+[data-week="13"]{--week-accent:#7dd3fc}
+[data-week="14"]{--week-accent:#e879f9}
+[data-week="15"]{--week-accent:#fde68a}
+.week[data-week]{border-left:5px solid var(--week-accent)}.week[data-week] .week-num{color:var(--week-accent)}body[data-week] main{border-top:4px solid var(--week-accent)}body[data-week] .eyebrow,body[data-week] h1,body[data-week] main a:not(.button){color:var(--week-accent)}body[data-week] .button:not(.secondary){background:var(--week-accent);border-color:var(--week-accent);color:#101724}body[data-week] .button.secondary{border-color:var(--week-accent)}body[data-week] :focus-visible{outline-color:var(--week-accent)}body[data-week] .step th{color:var(--week-accent)}body[data-week] .step .reveal{border-color:var(--week-accent)}

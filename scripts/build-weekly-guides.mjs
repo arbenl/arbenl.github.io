@@ -16,12 +16,13 @@ for(const w of plan.weeks.filter(w=>w.week>=3)){
  await mkdir(dir,{recursive:true});
  const template=`# RideShare — Java ${w.week}\n\n## Çfarë ndërtova\n[PLOTËSO] Përshkruaj ndryshimin e kësaj jave me fjalët e tua.\n\n## Provat që bëra\n${data.checks.map((c,i)=>`### Prova ${i+1}: ${c}\n[PLOTËSO] Hapat, rezultati i pritur dhe çfarë ndodhi.`).join('\n\n')}\n\n## Ku gjendet puna\n[PLOTËSO] Shëno skedarët kryesorë dhe linkun e demonstrimit nëse është publikuar.\n\n## Çfarë mbetet për përmirësim\n[PLOTËSO] Një kufizim ose gabim që vure re dhe hapi i ardhshëm.\n\n## Ndihma nga AI (Artificial Intelligence – inteligjencë artificiale)\n[PLOTËSO] Çfarë ndihme more dhe çfarë verifikove vetë, ose: Nuk përdora AI.\n`;
  await writeFile(`${dir}/java-${n}-model.md`,template);
- if(w.week===3 || w.week===4){
+ if(w.week===3 || w.week===4 || w.week===5){
   // Guided coding weeks have authored student materials at stable URLs.
   await writeFile(`${dir}/java-${n}-model.md`,await readFile(`materials/week-${n}/java-${n}-model.md`,'utf8'));
   await writeFile(`${dir}/index.html`,await readFile(`materials/week-${n}/index.html`,'utf8'));
   await writeFile(`${dir}/ushtrimet.html`,await readFile(`materials/week-${n}/ushtrimet.html`,'utf8'));
   if(w.week===4) for(const file of ["prezantimi-ligjerates.html","prezantimi-ushtrimeve.html","week-04.css","week-04.js","demonstrimi.html","schema.sql"]) await writeFile(`${dir}/${file}`,await readFile(`materials/week-04/${file}`));
+  if(w.week===5) for(const file of ["prezantimi-ligjerates.html","prezantimi-ushtrimeve.html","week-05.css","week-05.js","demonstrimi.html","schema-java05.sql"]) await writeFile(`${dir}/${file}`,await readFile(`materials/week-05/${file}`));
   continue;
  }
  const acronymDefinitions={PWA:'Progressive Web App – aplikacion web progresiv',PRD:'Product Requirements Document – dokumenti i kërkesave të produktit',MVP:'Minimum Viable Product – produkti minimal i përdorshëm',RLS:'Row Level Security – siguri në nivel rreshti',API:'Application Programming Interface – ndërfaqe programimi e aplikacionit','CI/CD':'Continuous Integration / Continuous Delivery – integrim dhe shpërndarje e vazhdueshme',AI:'Artificial Intelligence – inteligjencë artificiale'};
