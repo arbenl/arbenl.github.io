@@ -1,0 +1,321 @@
+[
+  {
+    "title": "A mund ta ndryshojë Arta orën e shoferit?",
+    "kicker": "JAVA 5 · 15.10.2026 · 0–4 MIN",
+    "body": [
+      "Arta hyn në RideShare dhe sheh udhëtimin 2: nisja 08:15.",
+      "A mjafton që ajo është brenda aplikacionit për ta ndryshuar në 08:25?"
+    ],
+    "quiz": {
+      "question": "Parashiko para demonstrimit",
+      "options": [
+        "Po, sepse ka hyrë me GitHub.",
+        "Jo, duhet të jetë shoferi i këtij udhëtimi.",
+        "Po, nëse e gjen adresën e panelit."
+      ],
+      "correct": 1,
+      "explanation": "Hyrja provon identitetin. Ndryshimi kërkon edhe rolin shofer dhe pronësinë e udhëtimit."
+    }
+  },
+  {
+    "title": "Çfarë kemi ndërtuar deri tani",
+    "kicker": "VAZHDIMI · 4–7 MIN",
+    "body": [
+      "Java 2: problemi dhe skica. Java 3: lista, detajet dhe adresat.",
+      "Java 4: Neon ruan orën; lista dhe detajet e lexojnë.",
+      "Java 5: identiteti dhe lejet për ndryshimin e orës."
+    ],
+    "flow": [
+      "Skica · J2",
+      "Ekranet · J3",
+      "Databaza · J4",
+      "Lejet · J5"
+    ]
+  },
+  {
+    "title": "Identiteti, roli dhe pronësia",
+    "kicker": "KONCEPTET · 7–12 MIN",
+    "body": [
+      "Autentifikimi: kush je? GitHub verifikon llogarinë.",
+      "Autorizimi: çfarë lejohet të bësh? Serveri kontrollon rolin dhe pronarin."
+    ],
+    "comparison": [
+      [
+        "Identiteti",
+        "Jam Arta · ID 101"
+      ],
+      [
+        "Roli",
+        "Jam udhëtare"
+      ],
+      [
+        "Pronësia",
+        "Udhëtimi 2 është i Dritonit"
+      ]
+    ],
+    "answer": "Arta është identifikuar, por nuk ka leje të ndryshojë orën e Dritonit."
+  },
+  {
+    "title": "Karta e studentit nuk të bën profesor",
+    "kicker": "NJË SHEMBULL NGA AAB",
+    "body": [
+      "Karta tregon kush je dhe të lejon të hysh si student.",
+      "Për të ndryshuar notat duhet rol i autorizuar dhe qasje në lëndën përkatëse.",
+      "Po kështu, hyrja në RideShare nuk të bën pronar të çdo udhëtimi."
+    ],
+    "answer": "Përmend një rast tjetër: klienti i lokalit mund të rezervojë, por nuk ndryshon orarin e punonjësit."
+  },
+  {
+    "title": "Hyrja me GitHub",
+    "kicker": "IDENTITETI · 12–16 MIN",
+    "body": [
+      "Studenti përdor llogarinë GitHub që e ka tashmë.",
+      "Aplikacioni ynë nuk kërkon dhe nuk ruan fjalëkalimin e GitHub-it.",
+      "OAuth (Open Authorization – autorizim i hapur) lejon këtë rrjedhë; këtu përdorim profilin e verifikuar për hyrje."
+    ],
+    "flow": [
+      "Hyr me GitHub",
+      "GitHub verifikon",
+      "Kthim në RideShare",
+      "Sesion"
+    ],
+    "sources": [
+      "https://next-auth.js.org/providers/github",
+      "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app"
+    ]
+  },
+  {
+    "title": "Sesioni: aplikacioni të njeh pas rifreskimit",
+    "kicker": "SESIONI",
+    "body": [
+      "Pas hyrjes, biblioteka ruan një cookie sesioni në shfletues.",
+      "Cookie (skedar i vogël i shfletuesit) dërgohet me kërkesën; serveri e verifikon.",
+      "Në shembull sesioni ka afat dy orë. Vetëm emri i shkruar në ekran nuk është provë identiteti."
+    ],
+    "flow": [
+      "Shfletuesi + cookie",
+      "Serveri verifikon",
+      "Profili në Neon"
+    ],
+    "sources": [
+      "https://next-auth.js.org/configuration/options"
+    ]
+  },
+  {
+    "title": "Roli ruhet në Neon",
+    "kicker": "LEJET · 16–20 MIN",
+    "body": [
+      "Çdo përdorues i ri fillon si udhëtar.",
+      "Administratori i laboratorit cakton rolin shofer nga SQL Editor. Nuk ka buton “Bëhu shofer” në aplikacion.",
+      "Serveri e lexon rolin përsëri para çdo ndryshimi."
+    ],
+    "comparison": [
+      [
+        "Arta · ID 101",
+        "udhetar"
+      ],
+      [
+        "Dritoni · ID 202",
+        "shofer"
+      ]
+    ],
+    "answer": "Nëse Arta dërgon role=shofer nga shfletuesi, serveri e injoron. Roli merret nga databaza."
+  },
+  {
+    "title": "Shoferi ka leje vetëm për udhëtimin e vet",
+    "kicker": "PRONËSIA",
+    "body": [
+      "Dritoni është shofer, por udhëtimi 1 i përket një shoferi tjetër."
+    ],
+    "table": [
+      [
+        "Përdoruesi",
+        "ID udhëtimit",
+        "Pronari",
+        "Ndryshon orën?"
+      ],
+      [
+        "Arta · udhëtare",
+        "2",
+        "Dritoni",
+        "Jo"
+      ],
+      [
+        "Dritoni · shofer",
+        "2",
+        "Dritoni",
+        "Po"
+      ],
+      [
+        "Dritoni · shofer",
+        "1",
+        "Shofer tjetër",
+        "Jo"
+      ]
+    ],
+    "answer": "Roli shofer nuk mjafton. Duhet edhe shofer_id = ID e përdoruesit në sesion."
+  },
+  {
+    "title": "Kontrolli para ruajtjes",
+    "kicker": "SERVERI · 20–24 MIN",
+    "body": [
+      "Serveri ndjek të njëjtat pyetje për çdo kërkesë, edhe kur butoni nuk shfaqet."
+    ],
+    "flow": [
+      "Ka sesion?",
+      "Është shofer?",
+      "Është pronari?",
+      "Ora është e vlefshme?"
+    ],
+    "answer": "Nëse ndonjë kontroll dështon, databaza nuk ndryshon. Mesazhi tregon arsyen.",
+    "href": "demo/",
+    "link": "Hap modelin ilustrues të lejeve →"
+  },
+  {
+    "title": "ID-ja e pronarit vjen nga sesioni",
+    "kicker": "SHEMBULL I SHPJEGUAR",
+    "body": [
+      "id: udhëtimi që po ndryshojmë. ora: vlera që propozoi formulari.",
+      "p.id: identiteti i verifikuar; nuk e marrim nga një input i përdoruesit."
+    ],
+    "code": "UPDATE udhetimet SET ora = ${ora}\nWHERE id = ${id} AND shofer_id = ${p.id}\nRETURNING id;",
+    "answer": "Në kodin e plotë kontrollojmë edhe rolin. RETURNING tregon nëse u ndryshua një rresht.",
+    "sources": [
+      "https://www.postgresql.org/docs/current/sql-update.html"
+    ]
+  },
+  {
+    "title": "Fshehja e butonit dhe mbrojtja e veprimit",
+    "kicker": "NJË GABIM I ZAKONSHËM",
+    "body": [
+      "Ndërfaqja i fsheh formularin udhëtarit që të mos e hutojë.",
+      "Por shfletuesi mund të modifikohet. Dikush mund të provojë një kërkesë direkte.",
+      "Serveri e kontrollon sesionin dhe lejen sërish para UPDATE."
+    ],
+    "comparison": [
+      [
+        "Ndërfaqja",
+        "Tregon veprimet e dobishme"
+      ],
+      [
+        "Serveri",
+        "Vendos nëse veprimi lejohet"
+      ]
+    ],
+    "answer": "Një buton i fshehur nuk është masë e mjaftueshme sigurie.",
+    "sources": [
+      "https://nextjs.org/docs/app/guides/authentication"
+    ]
+  },
+  {
+    "title": "Dalja dhe skadimi i sesionit",
+    "kicker": "MBYLLJA E HYRJES",
+    "body": [
+      "Dil e heq sesionin nga ky shfletues. Kthimi te paneli kërkon hyrje përsëri.",
+      "Pas skadimit duhet identifikim i ri; një skedë e vjetër nuk jep leje përgjithmonë.",
+      "Në modelin me JWT (JSON Web Token – token web në format JSON), dalja nuk revokon automatikisht kopje të vjedhura të tokenit."
+    ],
+    "answer": "Për prodhim duhen edhe politika revokimi dhe monitorimi. Në laborator provojmë daljen në shfletuesin tonë.",
+    "sources": [
+      "https://next-auth.js.org/configuration/options"
+    ]
+  },
+  {
+    "title": "Sekretet kanë punë të ndryshme",
+    "kicker": "KONFIGURIMI",
+    "body": [
+      "DATABASE_URL: lidh serverin me Neon. GITHUB_ID: identifikon OAuth App, jo studentin.",
+      "GITHUB_SECRET: sekreti i OAuth App. NEXTAUTH_SECRET: mbron sesionet.",
+      "Asnjë sekret nuk shkon në GitHub ose në NEXT_PUBLIC_."
+    ],
+    "comparison": [
+      [
+        "GitHub ID e përdoruesit",
+        "Identiteti i Artës ose Dritonit"
+      ],
+      [
+        "Client ID e OAuth App",
+        "Identiteti i aplikacionit RideShare"
+      ]
+    ],
+    "answer": "ID-ja e studentit dhe Client ID e aplikacionit janë gjëra të ndryshme."
+  },
+  {
+    "title": "Demonstrim: një ruajtje dhe dy refuzime",
+    "kicker": "PROVOJMË SË BASHKU · 24–34 MIN",
+    "body": [
+      "Parashiko rezultatin përpara çdo klikimi.",
+      "Shoferi ndryshon ID 2 → lista dhe detajet tregojnë orën e re.",
+      "Ndryshon ID në 1 → refuzohet. Pas daljes, formulari i vjetër nuk ka më leje."
+    ],
+    "href": "demonstrimi.html",
+    "link": "Hap rrjedhën e demonstrimit →"
+  },
+  {
+    "title": "Çfarë ndodh nëse ndryshoj ID në formular?",
+    "kicker": "DISKUTIM · 34–38 MIN",
+    "body": [
+      "Dritoni ka leje për ID 2. Në DevTools e ndryshon input-in e fshehur nga 2 në 1."
+    ],
+    "quiz": {
+      "question": "Cili kontroll e ndalon?",
+      "options": [
+        "Butoni kishte ngjyrë tjetër.",
+        "Sesioni mban vetëm emrin.",
+        "Serveri kërkon që shofer_id të përputhet me identitetin e sesionit."
+      ],
+      "correct": 2,
+      "explanation": "ID 1 ka pronar tjetër. UPDATE nuk gjen rresht me të dy kushtet dhe nuk ndryshon orën."
+    }
+  },
+  {
+    "title": "Mesazhet duhet të shpjegojnë çfarë ndodhi",
+    "kicker": "REAGIMI NDAJ PËRDORUESIT",
+    "body": [
+      "Pa hyrje: “Hyr në llogari”. Pa leje: “Nuk ke leje për këtë udhëtim”.",
+      "Ora e gabuar: “Shkruaj një orë të vlefshme”. Neon nuk përgjigjet: “Provo përsëri”.",
+      "Vetëm pas ruajtjes së konfirmuar shfaqim sukses."
+    ],
+    "answer": "401 (Unauthorized) zakonisht tregon mungesë identifikimi; 403 (Forbidden) refuzim lejeje. Formulari ynë shfaq mesazhe të lexueshme përmes ridrejtimit."
+  },
+  {
+    "title": "Rezultati i ushtrimeve në 90 minuta",
+    "kicker": "PUNA PRAKTIKE · 38–41 MIN",
+    "body": [
+      "Hyrje GitHub, panel me emrin dhe rolin, dalje.",
+      "Shoferi ruan orën e udhëtimit të vet në Neon.",
+      "Tri prova në java-05.md; dorëzim në minutën 70 dhe kohë për korrigjime."
+    ],
+    "href": "prezantimi-ushtrimeve.html",
+    "link": "Hap prezantimin e ushtrimeve →"
+  },
+  {
+    "title": "I njëjti parim për biznesin tënd",
+    "kicker": "LIDHJA ME PROJEKTIN INDIVIDUAL · 41–44 MIN",
+    "body": [
+      "Në një servis: klienti sheh terminin; tekniku ndryshon vetëm terminet e caktuara atij.",
+      "Në porosi ushqimi: klienti sheh porosinë e vet; kuzhina përditëson statusin e porosive të lokalit.",
+      "Emërto përdoruesin, veprimin dhe pronarin në biznesin që ke zgjedhur."
+    ],
+    "comparison": [
+      [
+        "RideShare",
+        "Shoferi → udhëtimi i vet"
+      ],
+      [
+        "Biznesi yt",
+        "Punonjësi → puna që i përket"
+      ]
+    ]
+  },
+  {
+    "title": "Para se të mbyllim ligjëratën",
+    "kicker": "EXIT TICKET · 44–45 MIN",
+    "body": [
+      "1. Kush e verifikon identitetin? 2. Ku ruhet roli?",
+      "3. Pse duhen kontrolle në server edhe kur formulari fshihet?",
+      "Shpjego me një shembull tëndin pa lexuar kodin."
+    ],
+    "answer": "GitHub verifikon llogarinë; Neon ruan rolin dhe pronarin; serveri vendos për çdo ndryshim."
+  }
+]

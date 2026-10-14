@@ -28,17 +28,17 @@
     ]
   },
   "5": {
-    "outcome": "Hyrja dhe veprimet sipas rolit",
+    "outcome": "Hyrja me GitHub dhe ndryshimi i orës vetëm nga shoferi pronar",
     "steps": [
-      "Shto hyrjen sipas shembullit të ligjëratës. Përdor llogari testimi për demonstrim.",
-      "Pas hyrjes shfaq emrin dhe veprimin Dil.",
-      "Shoferi shton ose ndryshon vetëm udhëtimet e veta. Udhëtari kërkon vend.",
-      "Kontrollo lejet edhe në server; provo një veprim pa hyrë dhe një udhëtim të një shoferi tjetër."
+      "Vazhdo projektin dhe databazën Neon nga Java 4. Lidh hyrjen GitHub sipas udhëzimit.",
+      "Shto panelin, rolin në Neon dhe pronarin e udhëtimit 2. Çdo përdorues i ri është udhëtar.",
+      "Provo ndryshimin e orës nga shoferi pronar dhe refuzimin e ndryshimit të udhëtimit tjetër.",
+      "Provo sesionin dhe daljen; shkruaj tri prova në java-05.md dhe dorëzo në minutën 70."
     ],
     "checks": [
-      "Përdoruesi i paidentifikuar nuk ndryshon udhëtime.",
-      "Një shofer nuk ndryshon udhëtimin e tjetrit.",
-      "Dalja e mbyll qasjen në veprimet private."
+      "Pa hyrje paneli kërkon identifikim; pas daljes formulari i vjetër nuk ka leje.",
+      "Shoferi i ID 2 ruan orën dhe ndryshimi shihet në listë, detaje dhe Neon.",
+      "ID 1 ose roli udhëtar refuzohet në server; ora në databazë nuk ndryshon."
     ]
   },
   "6": {

@@ -1,1 +1,189 @@
-<!doctype html><html lang="sq"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ushtrimet 5 · RideShare · Mobile 2026/2027</title><link rel="stylesheet" href="/assets/catalog.css"></head><body><a class="skip" href="#main">Kalo te përmbajtja</a><main id="main"><nav class="crumb" aria-label="Vendndodhja"><a href="/">Lëndët</a> / <a href="/lendet/2026-2027/mobile/">Mobile 2026/2027</a></nav><nav class="crumb" aria-label="Kthehu te java"><a href="./">← Java 5</a></nav><p class="eyebrow">Ushtrimet 5 · RideShare</p><h1>Ushtrimet 5: Hyrja dhe veprimet sipas rolit</h1><p class="lead">Të njëjtët hapa gjenden edhe në faqen e Javës 5.</p><div class="weeks"><section class="card"><h3>1. Përgatitu</h3><p>Hape projektin dhe kontrollo punën e javës së kaluar. Përdor të dhëna fiktive.</p></section><section class="card"><h3>2. Ndërto</h3><ol><li>Shto hyrjen sipas shembullit të ligjëratës. Përdor llogari testimi për demonstrim.</li><li>Pas hyrjes shfaq emrin dhe veprimin Dil.</li><li>Shoferi shton ose ndryshon vetëm udhëtimet e veta. Udhëtari kërkon vend.</li><li>Kontrollo lejet edhe në server; provo një veprim pa hyrë dhe një udhëtim të një shoferi tjetër.</li></ol></section><section class="card"><h3>3. Provoje me një koleg</h3><ol><li>Përdoruesi i paidentifikuar nuk ndryshon udhëtime.</li><li>Një shofer nuk ndryshon udhëtimin e tjetrit.</li><li>Dalja e mbyll qasjen në veprimet private.</li></ol><p>Shkruaj në raport çfarë prite dhe çfarë ndodhi realisht. Nëse prova dështon, shënoje.</p></section><section class="card"><h3>4. Dorëzo para se të largohesh</h3><ol><li>Ruaj kodin dhe raportin <code>java-05.md</code> pranë README në GitHub.</li><li>Hap formularin, zgjidh <strong>Java 5</strong> dhe vendos linkun e repository-t.</li><li>Lexo kontrollin automatik. Pas korrigjimit, komento <code>rikontrollo</code> te i njëjti dorëzim.</li></ol><p><a href="java-05-model.md" download="java-05.md">Shkarko modelin · java-05.md</a></p></section></div><p class="notice"><strong>Kur përfundon?</strong> Ke ruajtur punën, ke raportuar provat dhe ke numrin e dorëzimit në GitHub. Kjo javë është një nga 10 ushtrimet e vlerësuara (deri në 3 pikë). Kontrolli automatik verifikon skedarët, jo cilësinë ose pikët.</p><div class="actions"><a class="button" href="https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-submission.yml">Dorëzo punën · Java 5</a><a class="button" href="../dorezimet.html">Si dorëzoj? · 3 hapa</a></div><div class="actions"><a class="button" href="./">← Kthehu te Java 5</a></div></main><footer>Programimi për Pajisje Mobile · AAB · Prof. Arben Lila</footer></body></html>
+<!doctype html><html lang="sq"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ushtrimet 5 · Hyrja dhe lejet · Mobile 2026/2027</title><link rel="stylesheet" href="/assets/catalog.css"><link rel="stylesheet" href="/assets/week-colors.css"><link rel="stylesheet" href="week-05.css"><script src="../java-03/lab-help.js" defer></script></head><body data-week="5"><a class="skip" href="#main">Kalo te përmbajtja</a><main id="main"><nav class="crumb" aria-label="Vendndodhja"><a href="/">Lëndët</a> / <a href="../">Mobile 2026/2027</a> / <a href="./">Java 5</a></nav><p class="eyebrow">Java 5 · 15.10.2026 · RideShare</p><h1>Hyrja me GitHub dhe ndryshimi me leje</h1><p class="lead">Sot shton një veprim të vogël dhe të provueshëm: shoferi ndryshon orën e udhëtimit të vet. Përdor të njëjtin projekt dhe Neon nga Java 4.</p><p class="notice">Puno në çift për ndihmë, por secili ruan aplikacionin, OAuth App dhe databazën e vet. Mos ndani sekrete. Skano QR (Quick Response – përgjigje e shpejtë) kur e shfaq profesori; dorëzimi i detyrës bëhet veçmas.</p><section id="hapat"><h2>Plani i 90 minutave</h2><ol><li><a href="#ora-1">0–10 · Përgatitu</a></li><li><a href="#ora-2">10–25 · Lidh hyrjen me GitHub</a></li><li><a href="#ora-3">25–45 · SQL dhe kodi me radhë</a></li><li><a href="#ora-4">45–55 · Hyr dhe cakto pronarin</a></li><li><a href="#ora-5">55–70 · Provo lejet, plotëso raportin, bëj Push</a></li><li><a href="#ora-6">70–90 · Dorëzo, lexo përgjigjen dhe korrigjo</a></li></ol></section><section class="card" id="ora-1"><h2>1. Përgatitu · 0–10 min</h2><ol><li>Hap repository-n ekzistues në GitHub Desktop → Open in Visual Studio Code.</li><li>Në terminal: <code>cd aplikacioni</code> nëse kodi është aty; <code>npm run dev</code>.</li><li>Kontrollo tri kartat dhe detajet që lexojnë nga Neon. Nëse Java 4 nuk punon, <a href="../java-04/ushtrimet.html">rikthe pikën e nisjes</a> dhe kërko ndihmë menjëherë.</li><li><a href="java-05-model.md" download="java-05.md">Shkarko java-05.md</a> pranë README, jashtë aplikacioni/.</li></ol><p>Shembujt përdorin <code>src/</code>. Nëse ke app/ pa src/, hiq vetëm prefiksin src/ nga rrugët e skedarëve. Nëse package.json është pranë README, puno aty.</p></section><section class="card" id="ora-2"><h2>2. Lidh hyrjen · 10–25 min</h2><p><strong>Ku:</strong> GitHub → fotografia e profilit → Settings → Developer settings → OAuth Apps → <a href="https://github.com/settings/applications/new" target="_blank" rel="noopener">New OAuth App</a>. OAuth (Open Authorization – autorizim i hapur) përdoret këtu për hyrjen me profilin GitHub.</p><table><thead><tr><th>Fusha</th><th>Çfarë vendos</th></tr></thead><tbody><tr><td>Application name</td><td>RideShare Java 5 – emri yt</td></tr><tr><td>Homepage URL</td><td>http://localhost:3000</td></tr><tr><td>Authorization callback URL</td><td>http://localhost:3000/api/auth/callback/github</td></tr></tbody></table><p>Kliko Register application, kopjo <strong>Client ID</strong>, pastaj Generate a new client secret. Client ID nuk është emaili, username ose ID-ja jote e studentit.</p><p>Ndal serverin me Ctrl+C. Nga dosja ku ndodhet package.json ekzekuto:</p><pre><code>npm install next-auth@4.24.15</code></pre><p>Përdorim versionin e njëjtë në të gjitha shembujt; mos përziej udhëzime për v5 ose <code>next-auth@beta</code>. Për të gjeneruar NEXTAUTH_SECRET, ekzekuto:</p><pre><code>node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"</code></pre><p>Shto këto rreshta në <strong>.env.local pranë package.json</strong>. Zëvendëso tekstin brenda thonjëzave me vlerat e tua. DATABASE_URL e Javës 4 mbetet aty.</p><pre><code>GITHUB_ID="CLIENT_ID_I_OAUTH_APP"
+GITHUB_SECRET="CLIENT_SECRET_I_OAUTH_APP"
+NEXTAUTH_SECRET="VLERA_E_GJENERUAR_NGA_KOMANDA"
+NEXTAUTH_URL="http://localhost:3000"</code></pre><p class="notice"><strong>Kontrollo portin:</strong> shembulli përdor 3000. Nëse terminali përdor 3001, ndrysho Homepage, callback dhe NEXTAUTH_URL në 3001, ose mbyll procesin që zë portin 3000. localhost dhe 127.0.0.1 nuk duhen përzier në konfigurim.</p><p><strong>Kontrollo .gitignore:</strong> rreshti <code>.env*</code> mbetet. Mos kopjo sekretet në kod, raport, pamje ose Issue. Rinis serverin pas çdo ndryshimi të variablave.</p></section><section class="card" id="ora-3"><h2>3. SQL dhe kodi · 25–45 min</h2><p><strong>Fillimisht SQL:</strong> ruaj schema-java05.sql pranë package.json dhe ekzekutoje në Neon SQL Editor, në databazën e Javës 4. Nuk fshin udhëtimet. Pastaj kopjo A → G. Skedarët ekzistues të kartës, db.ts dhe udhetimet.ts mbeten.</p><p>Harta e punës: <strong>A identiteti → B rruga e hyrjes → C butonat → D lejet → E veprimi → F paneli → G lidhja nga lista.</strong> Kopjo bllokun e plotë vetëm te skedari i shënuar; kodet përmbajnë shpjegime pranë rreshtave kyç.</p></section><section class="card" id="hapi-sql" data-example-file="schema-java05.sql"><h3>SQL · rolet dhe pronari</h3><p><strong>Skedari:</strong> <code>schema-java05.sql</code></p><p>Ekzekuto në Neon SQL Editor para hyrjes. Pastaj ruaje këtë skedar pranë package.json.</p><pre><code>-- Ekzekuto vetëm në databazën tënde të laboratorit nga Java 4.
+CREATE TABLE IF NOT EXISTS profilet (
+  github_id TEXT PRIMARY KEY,
+  emri TEXT NOT NULL,
+  roli TEXT NOT NULL DEFAULT &#x27;udhetar&#x27; CHECK (roli IN (&#x27;udhetar&#x27;, &#x27;shofer&#x27;))
+);
+ALTER TABLE udhetimet ADD COLUMN IF NOT EXISTS shofer_id TEXT REFERENCES profilet(github_id);
+-- Pronari fiktiv i ID 1: nuk është llogari reale dhe nuk përdoret për hyrje.
+INSERT INTO profilet (github_id, emri, roli)
+VALUES (&#x27;DEMO-SHOFER-2&#x27;, &#x27;Shoferi tjetër (demo)&#x27;, &#x27;shofer&#x27;)
+ON CONFLICT (github_id) DO NOTHING;
+UPDATE udhetimet SET shofer_id = &#x27;DEMO-SHOFER-2&#x27;
+WHERE id = &#x27;1&#x27; AND shofer_id IS NULL;
+SELECT id, ora, shofer_id FROM udhetimet ORDER BY id;
+</code></pre><p><a href="#hapi-a">Vazhdo te hapi tjetër →</a> · <a href="#hapat">Plani i orës</a></p></section><section class="card" id="hapi-a" data-example-file="src/lib/auth.ts"><h3>A · identiteti dhe sesioni</h3><p><strong>Skedari:</strong> <code>src/lib/auth.ts</code></p><p>Krijo këtë skedar. GitHub verifikon llogarinë; ID-ja e sesionit vjen nga biblioteka, jo nga formulari.</p><pre><code>import &quot;server-only&quot;;
+import type { DefaultSession, NextAuthOptions } from &quot;next-auth&quot;;
+import GitHubProvider from &quot;next-auth/providers/github&quot;;
+
+// GitHub verifikon identitetin. Rolin e lexojmë veçmas nga Neon.
+export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
+  providers: [GitHubProvider({
+    clientId: process.env.GITHUB_ID ?? &quot;&quot;,
+    clientSecret: process.env.GITHUB_SECRET ?? &quot;&quot;,
+  })],
+  session: { strategy: &quot;jwt&quot;, maxAge: 2 * 60 * 60 },
+  callbacks: {
+    async session({ session, token }) {
+      if (session.user &amp;&amp; token.sub) session.user.id = token.sub;
+      return session;
+    },
+  },
+};
+
+declare module &quot;next-auth&quot; {
+  interface Session {
+    user: { id: string } &amp; DefaultSession[&quot;user&quot;];
+  }
+}
+</code></pre><p><a href="#hapi-b">Vazhdo te hapi tjetër →</a> · <a href="#hapat">Plani i orës</a></p></section><section class="card" id="hapi-b" data-example-file="src/app/api/auth/[...nextauth]/route.ts"><h3>B · adresa që trajton hyrjen</h3><p><strong>Skedari:</strong> <code>src/app/api/auth/[...nextauth]/route.ts</code></p><p>Krijo dosjen [...nextauth] me kllapat katrore dhe tri pikat saktësisht si këtu.</p><pre><code>import NextAuth from &quot;next-auth&quot;;
+import { authOptions } from &quot;@/lib/auth&quot;;
+
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
+</code></pre><p><a href="#hapi-c">Vazhdo te hapi tjetër →</a> · <a href="#hapat">Plani i orës</a></p></section><section class="card" id="hapi-c" data-example-file="src/components/Hyrja.tsx"><h3>C · butonat Hyr dhe Dil</h3><p><strong>Skedari:</strong> <code>src/components/Hyrja.tsx</code></p><p>Krijo komponentin. Ky kod hap rrjedhën e bibliotekës; nuk vendos rolin.</p><pre><code>&quot;use client&quot;;
+import { signIn, signOut } from &quot;next-auth/react&quot;;
+
+export default function Hyrja({ brenda }: { brenda: boolean }) {
+  return brenda
+    ? &lt;button onClick={() =&gt; signOut({ callbackUrl: &quot;/panel&quot; })}&gt;Dil&lt;/button&gt;
+    : &lt;button onClick={() =&gt; signIn(&quot;github&quot;, { callbackUrl: &quot;/panel&quot; })}&gt;Hyr me GitHub&lt;/button&gt;;
+}
+</code></pre><p><a href="#hapi-d">Vazhdo te hapi tjetër →</a> · <a href="#hapat">Plani i orës</a></p></section><section class="card" id="hapi-d" data-example-file="src/lib/lejet.ts"><h3>D · kontrolli në server</h3><p><strong>Skedari:</strong> <code>src/lib/lejet.ts</code></p><p>Krijo helper-in. profiliIm lexon sesionin dhe Neon. ndryshoOren kontrollon rolin, fushat dhe pronarin.</p><pre><code>import &quot;server-only&quot;;
+import { getServerSession } from &quot;next-auth&quot;;
+import { authOptions } from &quot;./auth&quot;;
+import { getSql } from &quot;./db&quot;;
+
+type Profil = { id: string; emri: string; roli: &quot;udhetar&quot; | &quot;shofer&quot; };
+
+export async function profiliIm(): Promise&lt;Profil | null&gt; {
+  const session = await getServerSession(authOptions);
+  const id = session?.user?.id;
+  if (!id || !/^\d+$/.test(id)) return null;
+  const sql = getSql();
+  // Çdo hyrje e re fillon si udhëtar. Formulari nuk mund të zgjedhë rol.
+  await sql`INSERT INTO profilet (github_id, emri) VALUES (${id}, ${session.user.name ?? &quot;Student&quot;})
+    ON CONFLICT (github_id) DO NOTHING`;
+  const rows = await sql`SELECT github_id AS id, emri, roli FROM profilet WHERE github_id = ${id}`;
+  return rows[0] as Profil;
+}
+
+export async function ndryshoOren(id: string, ora: string) {
+  const p = await profiliIm();
+  if (!p) return &quot;hyr&quot;;
+  if (p.roli !== &quot;shofer&quot;) return &quot;ndaluar&quot;;
+  if (!/^[123]$/.test(id) || !/^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(ora)) return &quot;fushe&quot;;
+  const sql = getSql();
+  // Pronari vjen nga sesioni; jo nga një fushë e formularit.
+  const rows = await sql`UPDATE udhetimet SET ora = ${ora}
+    WHERE id = ${id} AND shofer_id = ${p.id}
+      AND EXISTS (SELECT 1 FROM profilet WHERE github_id = ${p.id} AND roli = &#x27;shofer&#x27;)
+    RETURNING id`;
+  return rows.length === 1 ? &quot;ruajtur&quot; : &quot;ndaluar&quot;;
+}
+</code></pre><p><a href="#hapi-e">Vazhdo te hapi tjetër →</a> · <a href="#hapat">Plani i orës</a></p></section><section class="card" id="hapi-e" data-example-file="src/app/panel/actions.ts"><h3>E · veprimi i ruajtjes</h3><p><strong>Skedari:</strong> <code>src/app/panel/actions.ts</code></p><p>Krijo skedarin. use server e ekzekuton veprimin në server. Leja kontrollohet brenda funksionit, jo vetëm kur faqja hapet.</p><pre><code>&quot;use server&quot;;
+import { redirect } from &quot;next/navigation&quot;;
+import { revalidatePath } from &quot;next/cache&quot;;
+import { ndryshoOren } from &quot;@/lib/lejet&quot;;
+
+export async function ruajOren(formData: FormData) {
+  let mesazh: string;
+  try {
+    mesazh = await ndryshoOren(String(formData.get(&quot;id&quot;) ?? &quot;&quot;), String(formData.get(&quot;ora&quot;) ?? &quot;&quot;));
+  } catch {
+    mesazh = &quot;databaza&quot;;
+  }
+  if (mesazh === &quot;ruajtur&quot;) {
+    revalidatePath(&quot;/&quot;);
+    revalidatePath(&quot;/udhetimi/2&quot;);
+  }
+  // redirect qëndron jashtë try/catch: Next.js e përdor si kontroll rrjedhe.
+  redirect(&quot;/panel?m=&quot; + mesazh);
+}
+</code></pre><p><a href="#hapi-f">Vazhdo te hapi tjetër →</a> · <a href="#hapat">Plani i orës</a></p></section><section class="card" id="hapi-f" data-example-file="src/app/panel/page.tsx"><h3>F · paneli im</h3><p><strong>Skedari:</strong> <code>src/app/panel/page.tsx</code></p><p>Krijo panelin. Udhetarit i shfaqet emri; shoferit i shfaqet formulari. Fshehja e formularit ndihmon përdorimin; mbrojtja është te D.</p><pre><code>import Link from &quot;next/link&quot;;
+import Hyrja from &quot;@/components/Hyrja&quot;;
+import { profiliIm } from &quot;@/lib/lejet&quot;;
+import { ruajOren } from &quot;./actions&quot;;
+
+export const dynamic = &quot;force-dynamic&quot;;
+const mesazhet: Record&lt;string, string&gt; = {
+  hyr: &quot;Hyr në llogari para se të ndryshosh udhëtimin.&quot;,
+  ndaluar: &quot;Nuk ke leje për këtë udhëtim. Ora nuk ndryshoi.&quot;,
+  fushe: &quot;Shkruaj një orë të vlefshme, p.sh. 08:25. ID duhet të jetë 1, 2 ose 3.&quot;,
+  ruajtur: &quot;Ora u ruajt me sukses. Kontrollo listën dhe detajet.&quot;,
+  databaza: &quot;Nuk u lidhëm me databazën. Kontrollo Neon dhe provo përsëri.&quot;,
+};
+
+export default async function Panel({ searchParams }: {
+  searchParams: Promise&lt;{ m?: string }&gt;;
+}) {
+  const { m } = await searchParams;
+  let p;
+  try { p = await profiliIm(); }
+  catch { return &lt;main className=&quot;app-shell&quot;&gt;&lt;h1&gt;Paneli im&lt;/h1&gt;&lt;p role=&quot;alert&quot;&gt;{mesazhet.databaza}&lt;/p&gt;&lt;Link href=&quot;/panel&quot;&gt;Provo përsëri&lt;/Link&gt;&lt;/main&gt;; }
+  return &lt;main className=&quot;app-shell&quot;&gt;
+    &lt;h1&gt;Paneli im&lt;/h1&gt;
+    {m &amp;&amp; mesazhet[m] &amp;&amp; &lt;p role=&quot;status&quot;&gt;{mesazhet[m]}&lt;/p&gt;}
+    {!p ? &lt;p&gt;Lista është publike. Për panelin hyr me llogarinë tënde GitHub.&lt;/p&gt; : &lt;&gt;
+      &lt;p&gt;Përshëndetje, {p.emri}. Roli: &lt;strong&gt;{p.roli}&lt;/strong&gt;.&lt;/p&gt;
+      &lt;p&gt;ID ime GitHub: &lt;code&gt;{p.id}&lt;/code&gt;&lt;/p&gt;
+    &lt;/&gt;}
+    &lt;Hyrja brenda={Boolean(p)} /&gt;
+    {p?.roli === &quot;shofer&quot; ? &lt;form action={ruajOren}&gt;
+      &lt;h2&gt;Ndrysho orën e udhëtimit tim&lt;/h2&gt;
+      &lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;2&quot; /&gt;
+      &lt;label htmlFor=&quot;ora&quot;&gt;Ora e re&lt;/label&gt;{&quot; &quot;}
+      &lt;input id=&quot;ora&quot; name=&quot;ora&quot; type=&quot;time&quot; defaultValue=&quot;08:15&quot; required /&gt;{&quot; &quot;}
+      &lt;button type=&quot;submit&quot;&gt;Ruaj orën&lt;/button&gt;
+      &lt;p&gt;Formulari i laboratorit provon ID 2. Serveri verifikon pronarin edhe nëse ID ndryshohet.&lt;/p&gt;
+    &lt;/form&gt; : p &amp;&amp; &lt;p&gt;Si udhëtar mund të shohësh udhëtimet; nuk mund të ndryshosh orën e shoferit.&lt;/p&gt;}
+    &lt;p&gt;&lt;Link href=&quot;/&quot;&gt;Kthehu te udhëtimet&lt;/Link&gt;&lt;/p&gt;
+    &lt;p&gt;Kërkesa për vend mbetet simulim këtë javë.&lt;/p&gt;
+  &lt;/main&gt;;
+}
+</code></pre><p><a href="#hapi-g">Vazhdo te hapi tjetër →</a> · <a href="#hapat">Plani i orës</a></p></section><section class="card" id="hapi-g" data-example-file="src/app/page.tsx"><h3>G · hyrja për panelin nga lista</h3><p><strong>Skedari:</strong> <code>src/app/page.tsx</code></p><p>Zëvendëso faqen e listës me këtë version. Leximi nga Neon mbetet; shtohet lidhja Hyr / Paneli im.</p><pre><code>import Link from &quot;next/link&quot;;
+import { KartaUdhetimi } from &quot;@/components/KartaUdhetimi&quot;;
+import { lexoUdhetimet, type Udhetim } from &quot;@/lib/udhetimet&quot;;
+
+// Lexo bazën përsëri në çdo kërkesë për këtë faqe.
+export const dynamic = &quot;force-dynamic&quot;;
+
+export default async function Home() {
+  let udhetimet: Udhetim[];
+  try {
+    udhetimet = await lexoUdhetimet();
+  } catch {
+    return (
+      &lt;main&gt;
+        &lt;h1&gt;RideShare&lt;/h1&gt;
+      &lt;p&gt;&lt;Link href=&quot;/panel&quot;&gt;Hyr / Paneli im&lt;/Link&gt;&lt;/p&gt;
+        &lt;p role=&quot;alert&quot;&gt;Nuk u lidhëm me databazën. Provo përsëri.&lt;/p&gt;
+        &lt;a className=&quot;action&quot; href=&quot;/&quot;&gt;Provo përsëri&lt;/a&gt;
+      &lt;/main&gt;
+    );
+  }
+
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;RideShare · Udhëtimet për AAB&lt;/h1&gt;
+      &lt;p&gt;&lt;Link href=&quot;/panel&quot;&gt;Hyr / Paneli im&lt;/Link&gt;&lt;/p&gt;
+      &lt;p&gt;Burimi: Neon · të dhëna fiktive për ushtrime&lt;/p&gt;
+      {udhetimet.length === 0 ? (
+        &lt;p&gt;Nuk ka udhëtime për momentin.&lt;/p&gt;
+      ) : (
+        &lt;div className=&quot;trip-list&quot;&gt;
+          {udhetimet.map((udhetim) =&gt; (
+            &lt;KartaUdhetimi key={udhetim.id} udhetim={udhetim} /&gt;
+          ))}
+        &lt;/div&gt;
+      )}
+    &lt;/main&gt;
+  );
+}
+</code></pre><p><a href="#ora-4">Vazhdo te hapi tjetër →</a> · <a href="#hapat">Plani i orës</a></p></section><section class="card" id="ora-4"><h2>4. Hyr dhe cakto pronarin · 45–55 min</h2><ol><li>Nis npm run dev dhe hap <strong>http://localhost:3000/panel</strong>, ose Hyr / Paneli im nga lista.</li><li>Kliko Hyr me GitHub. Në faqen GitHub prano hyrjen në OAuth App tënd. Pas kthimit duhet të shfaqet emri dhe roli <strong>udhetar</strong>.</li><li>Kopjo numrin pas <strong>ID ime GitHub</strong> në panel. Në dy komandat e mëposhtme zëvendëso SHENO_ID_TENDE me këtë numër. Mbaji thonjëzat.</li><li>Ekzekuto në Neon SQL Editor dhe rifresko panelin. Duhet të shfaqet roli shofer dhe formulari për ID 2.</li></ol><pre><code>UPDATE profilet SET roli = 'shofer' WHERE github_id = 'SHENO_ID_TENDE';
+UPDATE udhetimet SET shofer_id = 'SHENO_ID_TENDE' WHERE id = '2';
+SELECT id, ora, shofer_id FROM udhetimet ORDER BY id;</code></pre><p><strong>Pse nga SQL Editor?</strong> Në laborator ti je administratori i databazës tënde fiktive. Në aplikacionin real përdoruesi nuk zgjedh vetë rol ose pronar. Nuk ndryshojmë rolin nga një input, URL ose buton në shfletues.</p></section><section class="card" id="ora-5"><h2>5. Provo, plotëso raportin dhe bëj Push · 55–70 min</h2><h3>Prova 1 · sesioni</h3><ol><li>Pa hyrë, hap /panel: duhet të kërkojë Hyr me GitHub.</li><li>Hyr dhe rifresko. Emri dhe roli mbeten.</li><li>Hap panelin në dy skeda të të njëjtit shfletues. Dil në njërën; rifresko tjetrën. Duhet të kërkojë hyrje përsëri.</li></ol><h3>Prova 2 · veprimi i lejuar</h3><ol><li>Hyr si shofer i ID 2, vendos 08:25 dhe kliko Ruaj orën.</li><li>Paneli tregon sukses. Lista, detajet e ID 2 dhe SQL Editor tregojnë 08:25.</li><li>Rikthe 08:15. Shkruaj në java-05.md çfarë pe realisht.</li></ol><h3>Prova 3 · nuk mjafton ta ndryshosh shfletuesin</h3><ol><li>Si shofer, në panel: klikim i djathtë mbi Ruaj → Inspect; hapet DevTools (Developer Tools – mjetet e zhvilluesit).</li><li>Te Elements gjej <code>&lt;input type="hidden" name="id" value="2"&gt;</code>. Dyklik mbi vlerën 2 → shkruaj 1. Mbyll DevTools, kliko Ruaj.</li><li>Duhet të shohësh <strong>Nuk ke leje për këtë udhëtim</strong>. Në SQL Editor verifiko që ora e ID 1 mbeti 08:00.</li><li>Për provën e rolit, hape sërish formularin për ID 2. Pa e rifreskuar panelin, në SQL Editor ekzekuto komandën më poshtë. Kliko Ruaj në formularin e vjetër: duhet të refuzohet.</li></ol><pre><code>UPDATE profilet SET roli = 'udhetar' WHERE github_id = 'SHENO_ID_TENDE';</code></pre><ol start="5"><li>Rikthe rolin shofer nga komanda e hapit 4. Hap panelin në dy skeda. Dil në të parën dhe provo Ruaj nga formulari i vjetër i të dytës: kërkohet hyrje.</li><li>Shkruaj mesazhet dhe verifikimin e databazës në raport. Mos shkruaj “kaloi” pa provuar. Rikthe rolin shofer dhe orën 08:15 për demonstrimin.</li></ol><p class="notice">Ndryshimet në DevTools vlejnë vetëm për provën. Serveri nuk i beson ID-së së formularit për pronësinë. Nëse ruajtja pa leje punon, ndalo dhe kontrollo helper-in D me profesorin.</p><h3>Ruaje punën</h3><ol><li>Hiq [PLOTËSO] nga java-05.md. Raporti është pranë README; kodi dhe schema-java05.sql brenda aplikacionit.</li><li>GitHub Desktop → kontrollo ndryshimet. .env.local nuk duhet të shfaqet. Commit to main → Push origin.</li><li>Hap repository-n online dhe verifiko skedarët.</li></ol></section><section class="card" id="ora-6"><h2>6. Dorëzo dhe lexo përgjigjen · 70–90 min</h2><ol><li>Hap formularin më poshtë; zgjidh <strong>Java 5</strong> dhe vendos linkun kryesor të të njëjtit repository publik.</li><li>Pas Submit new issue, lexo komentin Kontrolli automatik i dorëzimit: raporti, projekti Next.js, tri provat, skedarët e hyrjes/lejeve dhe emrat e skedarëve privatë.</li><li>Synimi është <strong>5/5 kontrolle teknike</strong>. Kontrolli nuk ekzekuton kodin, nuk lidhet me databazën dhe nuk jep notë. Funksionimin e demonstron ti.</li><li>Nëse mungon diçka: korrigjo → Commit → Push → komento <code>rikontrollo</code> te i njëjti Issue. Mos hap dorëzim tjetër.</li></ol><a class="button" href="https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-submission.yml&amp;week=Java%205">Dorëzo punën · Java 5</a><p>Deri në 3 pikë cilësie sipas rubrikës së lëndës. Shpjego një ruajtje dhe një refuzim para se të largohesh.</p></section><details class="notice"><summary>Nëse hyrja nuk punon</summary><ul><li><strong>Callback mismatch:</strong> krahaso adresën dhe portin në GitHub me NEXTAUTH_URL dhe terminalin.</li><li><strong>Client ID/secret:</strong> duhet të jenë të të njëjtit OAuth App. Pas ndryshimit rinis npm run dev.</li><li><strong>Relation profilet does not exist:</strong> ekzekuto schema-java05.sql në të njëjtën degë/databazë si DATABASE_URL.</li><li><strong>Nuk shfaqet formulari:</strong> hyr një herë që të krijohet profili, kontrollo ID-në, rolin dhe pronarin në SQL Editor; rifresko.</li><li><strong>Nuk ka tabelën udhetimet:</strong> rikthe SQL-në e Javës 4 para SQL-së së Javës 5.</li></ul></details><details><summary>Publikimi në Vercel pas provës lokale</summary><p>Për 90 minutat, prova lokale është e detyrueshme; publikimi është zgjerim. Krijo OAuth App të dytë për adresën e qëndrueshme të projektit në Vercel. Homepage është https://PROJEKTI-YT.vercel.app; callback shton /api/auth/callback/github. Një OAuth App GitHub ka një callback URL: mbaji lokale dhe prodhim veçmas.</p><p>Në Vercel vendos GITHUB_ID, GITHUB_SECRET të aplikacionit të prodhimit, NEXTAUTH_SECRET të veçantë dhe NEXTAUTH_URL me adresën HTTPS. DATABASE_URL mbetet. Redeploy pas ndryshimit. Mos përdor adresë Preview të rastësishme si callback.</p></details><p><strong>Burime:</strong> <a href="https://next-auth.js.org/providers/github">GitHub provider</a> · <a href="https://next-auth.js.org/configuration/nextjs">Sesioni në server</a> · <a href="https://nextjs.org/docs/app/guides/authentication">Kontrollet e autorizimit në Next.js</a></p><a class="button secondary" href="./">← Java 5</a></main><footer>Kolegji AAB · Programimi për Pajisje Mobile · Prof. Arben Lila</footer></body></html>
