@@ -6,6 +6,7 @@ import {
   eq,
   inArray,
   isNull,
+  isNotNull,
   or,
   sql,
 } from "drizzle-orm";
@@ -27,7 +28,7 @@ import { getEnv } from "../env";
 import { createChallengeToken, hashChallengeToken } from "./challenge";
 import { CHECKIN_WINDOW_SECONDS } from "./policy";
 import { issueRegistrationPermit, readRegistrationPermit } from "./registration";
-import { CURRENT_COURSE, CURRENT_COURSE_SESSIONS, sessionIncludesGroup } from "./current-course";
+import { CURRENT_COURSE, CURRENT_COURSE_SESSIONS } from "./current-course";
 import {
   normalizeAlbanianName,
   normalizeStudentId,
@@ -532,12 +533,7 @@ async function getStudentHistory(session: Session | null) {
     .innerJoin(semesters, eq(semesters.id, roster.semesterId))
     .innerJoin(
       classSessions,
-      and(
-        eq(classSessions.semesterId, roster.semesterId),
-        or(eq(classSessions.groupName, roster.groupName), and(
-          eq(classSessions.kind, "lecture"), eq(classSessions.groupName, CURRENT_COURSE.groupName),
-          inArray(roster.groupName, ["G1", "G2"]))),
-      ),
+      eq(classSessions.semesterId, roster.semesterId),
     )
     .leftJoin(
       attendanceRecords,
@@ -550,6 +546,10 @@ async function getStudentHistory(session: Session | null) {
       and(
         eq(roster.userId, actor.userId),
         inArray(classSessions.state, ["open", "closed"]),
+        // Include the session actually attended, even when the student visits another group.
+        or(isNotNull(attendanceRecords.id), eq(classSessions.groupName, roster.groupName), and(
+          eq(classSessions.kind, "lecture"), eq(classSessions.groupName, CURRENT_COURSE.groupName),
+          inArray(roster.groupName, ["G1", "G2"]))),
       ),
     )
     .orderBy(
@@ -742,7 +742,7 @@ async function activateRoster(
         if (!email || !input.groupName) throw genericRosterMismatch();
         const permit = input.registrationPermit ? readRegistrationPermit(input.registrationPermit, getEnv().NEXTAUTH_SECRET) : null;
         const beforeClass = input.beforeClass === true && (await transaction.select({id:semesters.id}).from(semesters).where(and(eq(semesters.id,input.semesterId),eq(semesters.title,CURRENT_COURSE.title),eq(semesters.status,"active"))).limit(1)).length === 1;
-        const allowed = beforeClass || permit && permit.githubId === actor.githubId && permit.semesterId === input.semesterId && sessionIncludesGroup(permit.kind, permit.groupName, input.groupName);
+        const allowed = beforeClass || permit && permit.githubId === actor.githubId && permit.semesterId === input.semesterId;
         if (!allowed && !input.token) throw genericRosterMismatch();
         const tokenHash = hashChallengeToken(input.token ?? "");
         const valid = await transaction.execute(sql`
@@ -751,8 +751,6 @@ async function activateRoster(
           where q.token_hash = ${tokenHash} and cs.semester_id = ${input.semesterId}
           and q.expires_at > statement_timestamp() and cs.state = 'open'
           and cs.checkin_ends_at > statement_timestamp()
-          and (cs.group_name = ${input.groupName}
-            or (cs.kind = 'lecture' and cs.group_name = 'G1+G2'))
           for share of cs
         `);
         if (!allowed && !valid.length) throw new AttendanceServiceError(409, "registration_qr_expired", "Për regjistrimin e parë skano QR-në e re të profesorit.");
@@ -1160,13 +1158,8 @@ async function checkIn(
           issueRegistrationPermit({ githubId: actor.githubId, semesterId: challenge.semesterId, groupName: challenge.groupName, kind: challenge.kind }, getEnv().NEXTAUTH_SECRET),
         );
       }
-      if (!sessionIncludesGroup(challenge.kind, challenge.groupName, entry.groupName)) {
-        throw new AttendanceServiceError(
-          403,
-          "wrong_group",
-          "This session is for another group",
-        );
-      }
+      // The QR identifies the hour attended; the profile group is a schedule preference,
+      // not an attendance restriction. Membership remains bound to this semester.
 
       const accepted = await transaction.execute(sql`
         with accepted as (
@@ -1409,9 +1402,12 @@ async function getSessionRecords(
     .where(
       and(
         eq(roster.semesterId, sql`(select semester_id from class_sessions where id = ${sessionId})`),
-        classSession.kind === "lecture" && classSession.groupName === CURRENT_COURSE.groupName
-          ? inArray(roster.groupName, ["G1", "G2"])
-          : eq(roster.groupName, classSession.groupName),
+        or(
+          isNotNull(attendanceRecords.id),
+          classSession.kind === "lecture" && classSession.groupName === CURRENT_COURSE.groupName
+            ? inArray(roster.groupName, ["G1", "G2"])
+            : eq(roster.groupName, classSession.groupName),
+        ),
       ),
     )
     .orderBy(asc(roster.studentId), asc(roster.id));
@@ -1450,10 +1446,7 @@ async function createManualRecord(
     const [target] = await transaction
       .select({
         semesterId: classSessions.semesterId,
-        sessionGroup: classSessions.groupName,
-        sessionKind: classSessions.kind,
         rosterSemesterId: roster.semesterId,
-        rosterGroup: roster.groupName,
       })
       .from(classSessions)
       .innerJoin(roster, eq(roster.id, input.rosterId))
@@ -1462,11 +1455,8 @@ async function createManualRecord(
     if (!target) {
       throw new AttendanceServiceError(404, "record_target_not_found", "Record target not found");
     }
-    if (
-      target.semesterId !== target.rosterSemesterId ||
-      !sessionIncludesGroup(target.sessionKind, target.sessionGroup, target.rosterGroup)
-    ) {
-      throw new AttendanceServiceError(409, "wrong_group", "Roster entry is not in this session");
+    if (target.semesterId !== target.rosterSemesterId) {
+      throw new AttendanceServiceError(409, "wrong_semester", "Studenti nuk është në regjistrin e këtij semestri.");
     }
 
     try {
@@ -1601,15 +1591,7 @@ async function getWeeklyAttendanceReport(session: Session | null) {
       verifiedAt: attendanceRecords.verifiedAt,
     })
     .from(classSessions)
-    .innerJoin(roster, and(
-      eq(roster.semesterId, classSessions.semesterId),
-      or(eq(classSessions.groupName, roster.groupName), and(
-        eq(classSessions.kind, "lecture"),
-        eq(classSessions.groupName, CURRENT_COURSE.groupName),
-        inArray(roster.groupName, ["G1", "G2"]),
-      )),
-      sql`${roster.createdAt} <= case when ${classSessions.state} = 'closed' then least(${classSessions.checkinEndsAt}, ${classSessions.updatedAt}) else ${classSessions.checkinEndsAt} end`,
-    ))
+    .innerJoin(roster, eq(roster.semesterId, classSessions.semesterId))
     .leftJoin(attendanceRecords, and(
       eq(attendanceRecords.sessionId, classSessions.id),
       eq(attendanceRecords.rosterId, roster.id),
@@ -1617,6 +1599,14 @@ async function getWeeklyAttendanceReport(session: Session | null) {
     .where(and(
       eq(classSessions.semesterId, semester.id),
       inArray(classSessions.state, ["open", "closed"]),
+      or(isNotNull(attendanceRecords.id), and(
+        or(eq(classSessions.groupName, roster.groupName), and(
+          eq(classSessions.kind, "lecture"),
+          eq(classSessions.groupName, CURRENT_COURSE.groupName),
+          inArray(roster.groupName, ["G1", "G2"]),
+        )),
+        sql`${roster.createdAt} <= case when ${classSessions.state} = 'closed' then least(${classSessions.checkinEndsAt}, ${classSessions.updatedAt}) else ${classSessions.checkinEndsAt} end`,
+      )),
     ))
     .orderBy(
       asc(classSessions.weekNumber),
@@ -1676,13 +1666,7 @@ async function exportSemester(session: Session | null, semesterId: string) {
       .from(classSessions)
       .innerJoin(
         roster,
-        and(
-          eq(roster.semesterId, classSessions.semesterId),
-          or(eq(classSessions.groupName, roster.groupName), and(
-          eq(classSessions.kind, "lecture"), eq(classSessions.groupName, CURRENT_COURSE.groupName),
-          inArray(roster.groupName, ["G1", "G2"]))),
-          sql`${roster.createdAt} <= least(${classSessions.checkinEndsAt}, ${classSessions.updatedAt})`,
-        ),
+        eq(roster.semesterId, classSessions.semesterId),
       )
       .leftJoin(
         attendanceRecords,
@@ -1695,6 +1679,12 @@ async function exportSemester(session: Session | null, semesterId: string) {
         and(
           eq(classSessions.semesterId, semesterId),
           eq(classSessions.state, "closed"),
+          or(isNotNull(attendanceRecords.id), and(
+            or(eq(classSessions.groupName, roster.groupName), and(
+              eq(classSessions.kind, "lecture"), eq(classSessions.groupName, CURRENT_COURSE.groupName),
+              inArray(roster.groupName, ["G1", "G2"]))),
+            sql`${roster.createdAt} <= least(${classSessions.checkinEndsAt}, ${classSessions.updatedAt})`,
+          )),
         ),
       )
       .orderBy(
@@ -1761,7 +1751,6 @@ export function attendanceServiceErrorResponse(error: unknown): Response {
     const messages: Record<string,string> = {
       invalid_challenge: "QR-ja ka skaduar. Skano kodin e ri në projektor; nëse ora është mbyllur, njofto profesorin.",
       checkin_closed: "Regjistrimi për këtë orë është mbyllur. Nëse ishe i pranishëm, njofto profesorin.",
-      wrong_group: "Ky QR është për grupin tjetër. Skano kodin e grupit tënd.",
       staff_required: "Kjo hapësirë është vetëm për profesorin.",
       rate_limited: "Ke provuar disa herë radhazi. Prit pak dhe provo përsëri.",
     };

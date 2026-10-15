@@ -1155,7 +1155,7 @@ describe("challenge acceptance and live attendance", () => {
     `).toHaveLength(1);
   });
 
-  it("keeps QR tokens valid during the session, rejects expiry and cross-group use at the database deadline", async () => {
+  it("keeps QR tokens valid during the session, accepts visiting groups and rejects expiry at the database deadline", async () => {
     const semester = await createActiveSemester();
     await importAndActivate(semester.id, studentA, "A-1", "Arta Kola", "G1");
     await importAndActivate(semester.id, studentB, "B-1", "Besa Dema", "G2");
@@ -1177,7 +1177,7 @@ describe("challenge acceptance and live attendance", () => {
     ).resolves.toMatchObject({ status: "present" });
     await expect(
       attendanceService.checkIn(studentB, { token: second.token }, "192.0.2.3"),
-    ).rejects.toMatchObject({ code: "wrong_group" });
+    ).resolves.toMatchObject({ status: "present" });
 
     await sql`
       update qr_challenges set expires_at = now() - interval '1 second'
@@ -1845,7 +1845,7 @@ describe("direct course QR launch", () => {
 
 
 describe("shared lecture and separate lab groups", () => {
-  it("accepts both groups in one lecture and keeps lab check-ins, history and exports separate", async () => {
+  it("accepts both groups in lectures and includes visiting students in lab reports", async () => {
     const { semesterId } = await attendanceService.ensureCurrentCourseSetup(professor);
     await importAndActivate(semesterId, studentA, "A-1", "Arta Kola", "G1");
     await importAndActivate(semesterId, studentB, "B-1", "Besa Duka", "G2");
@@ -1861,7 +1861,7 @@ describe("shared lecture and separate lab groups", () => {
     const lab2 = await attendanceService.launchCourseSession(professor, 2, "lab", "G2");
     expect(lab1.id).not.toBe(lab2.id);
     const labQr = await attendanceService.createChallenge(professor, lab1.id, "192.0.2.1");
-    await expect(attendanceService.checkIn(studentB, {token: labQr.token}, "192.0.2.3")).rejects.toMatchObject({code:"wrong_group"});
+    await expect(attendanceService.checkIn(studentB, {token: labQr.token}, "192.0.2.3")).resolves.toMatchObject({status:"present"});
     await attendanceService.checkIn(studentA, {token: labQr.token}, "192.0.2.2");
     const openReport = await attendanceService.getWeeklyAttendanceReport(professor);
     expect(openReport.rows.filter((row) => row.sessionId === lecture.id).map((row) => row.present)).toEqual(["Po", "Po"]);
@@ -1873,7 +1873,7 @@ describe("shared lecture and separate lab groups", () => {
     await expect(attendanceService.getWeeklyAttendanceReport(studentA)).rejects.toMatchObject({ status: 403 });
     const history = await attendanceService.getStudentHistory(studentB);
     expect(history.sessions.map((row) => row.id)).toContain(lecture.id);
-    expect(history.sessions.map((row) => row.id)).not.toContain(lab1.id);
+    expect(history.sessions.find((row) => row.id === lab1.id)?.status).toBe("present");
     expect(history.sessions.map((row) => row.id)).toContain(lab2.id);
     const exported = await attendanceService.exportSemester(professor, semesterId);
     expect(exported.csv).toContain("Arta Kola,G1,");
@@ -1882,7 +1882,7 @@ describe("shared lecture and separate lab groups", () => {
     await expect(attendanceService.launchCourseSession(professor, 3, "lab")).rejects.toMatchObject({status:400});
   });
 
-  it("keeps week 3 lecture check-ins and reports separate for G1 and G2", async () => {
+  it("records week 3 lecture attendance in the session actually attended across groups", async () => {
     const { semesterId } = await attendanceService.ensureCurrentCourseSetup(professor);
     await importAndActivate(semesterId, studentA, "A-1", "Arta Kola", "G1");
     await importAndActivate(semesterId, studentB, "B-1", "Besa Duka", "G2");
@@ -1890,12 +1890,12 @@ describe("shared lecture and separate lab groups", () => {
     const g1 = await attendanceService.launchCourseSession(professor, 3, "lecture", "G1");
     const g2 = await attendanceService.launchCourseSession(professor, 3, "lecture", "G2");
     const firstQr = await attendanceService.createChallenge(professor, g1.id, "192.0.2.1");
-    await expect(attendanceService.checkIn(studentB, { token: firstQr.token }, "192.0.2.2")).rejects.toMatchObject({ code: "wrong_group" });
+    await expect(attendanceService.checkIn(studentB, { token: firstQr.token }, "192.0.2.2")).resolves.toMatchObject({ status: "present" });
     await attendanceService.checkIn(studentA, { token: firstQr.token }, "192.0.2.3");
     const secondQr = await attendanceService.createChallenge(professor, g2.id, "192.0.2.4");
     await attendanceService.checkIn(studentB, { token: secondQr.token }, "192.0.2.5");
     const report = await attendanceService.getWeeklyAttendanceReport(professor);
-    expect(report.rows.filter((row) => row.sessionId === g1.id).map((row) => [row.studentGroup, row.present])).toEqual([["G1", "Po"]]);
+    expect(report.rows.filter((row) => row.sessionId === g1.id).map((row) => [row.studentGroup, row.present])).toEqual([["G1", "Po"], ["G2", "Po"]]);
     expect(report.rows.filter((row) => row.sessionId === g2.id).map((row) => [row.studentGroup, row.present])).toEqual([["G2", "Po"]]);
     const history = await attendanceService.getStudentHistory(studentA);
     expect(history.sessions.map((row) => row.id)).toContain(g1.id);
@@ -1933,6 +1933,45 @@ describe("shared lecture and separate lab groups", () => {
   });
 });
 
+describe("visiting group attendance records", () => {
+  it.each(["lab", "lecture"] as const)("includes a visiting student in %s live list, history, staff report and CSV", async (kind) => {
+    const { semesterId } = await attendanceService.ensureCurrentCourseSetup(professor);
+    const visitor = await importAndActivate(semesterId, studentB, "B-1", "Besa Duka", "G2");
+    await importAndActivate(semesterId, studentC, "C-1", "Cana Kola", "G2");
+    const opened = await attendanceService.launchCourseSession(professor, 3, kind, "G1");
+    // Reproduce an already recorded visitor, independently of QR acceptance.
+    await sql`insert into attendance_records(session_id, roster_id, status, scanned_at)
+      values (${opened.id}, ${visitor.id}, 'present', statement_timestamp())`;
+    const live = await attendanceService.getLiveSession(professor, opened.id, "192.0.2.81");
+    expect(live.entries.map(row => row.displayName)).toEqual(["Besa Duka"]);
+    const records = await attendanceService.getSessionRecords(professor, opened.id);
+    expect(records.records.map(row => [row.fullName, row.status])).toEqual([["Besa Duka", "present"]]);
+    expect((await attendanceService.getStudentHistory(studentB)).sessions.find(row => row.id === opened.id)?.status).toBe("present");
+    expect((await attendanceService.getStudentHistory(studentC)).sessions.map(row => row.id)).not.toContain(opened.id);
+    await attendanceService.transitionClassSession(professor, opened.id, {state: "closed", reason: "Class completed"});
+    const weekly = await attendanceService.getWeeklyAttendanceReport(professor);
+    expect(weekly.rows.filter(row => row.sessionId === opened.id).map(row => [row.studentGroup, row.present])).toEqual([["G2", "Po"]]);
+    const exported = await attendanceService.exportSemester(professor, semesterId);
+    expect(exported.csv).toContain("B-1,Besa Duka,G2,");
+    expect(exported.csv).toContain("present,");
+    expect(exported.csv).not.toContain("Cana Kola");
+    expect((await attendanceService.getCourseActivityReport(studentB)).present).toContainEqual({rosterId: visitor.id, sessionId: opened.id});
+  });
+
+  it("allows staff to record a visiting student but refuses a different semester", async () => {
+    const { semesterId } = await attendanceService.ensureCurrentCourseSetup(professor);
+    const visitor = await importAndActivate(semesterId, studentB, "B-1", "Besa Duka", "G2");
+    const other = await createActiveSemester("Other course");
+    const outsider = await importAndActivate(other.id, studentC, "C-1", "Cana Kola", "G1");
+    const opened = await attendanceService.launchCourseSession(professor, 3, "lab", "G1");
+    await expect(attendanceService.createManualRecord(professor, opened.id, {rosterId: visitor.id, status: "present", reason: "Attended with G1"})).resolves.toMatchObject({status: "present"});
+    await expect(attendanceService.createManualRecord(professor, opened.id, {rosterId: outsider.id, status: "present", reason: "Other semester"})).rejects.toMatchObject({status: 409});
+    const qr = await attendanceService.createChallenge(professor, opened.id, "192.0.2.82");
+    await expect(attendanceService.checkIn(studentC, {token: qr.token}, "192.0.2.83")).rejects.toMatchObject({code: "roster_not_activated"});
+    expect(await sql`select id from attendance_records where session_id = ${opened.id}`).toHaveLength(1);
+  });
+});
+
 describe("one-time student registration", () => {
   it("enrols from an active QR, preserves profile and supports subsequent check-in", async () => {
     const semester = await createActiveSemester();
@@ -1957,7 +1996,7 @@ describe("one-time student registration", () => {
     const error = await attendanceService.checkIn(studentA, { token: challenge.token }, "192.0.2.212").catch(e => e);
     expect(error.code).toBe("roster_not_activated");
     await sql`update qr_challenges set expires_at = statement_timestamp() - interval '1 second' where session_id = ${cs.id}`;
-    const input = { semesterId: semester.id, studentId: "NEW-1", firstName: "Arta", lastName: "Kola", email: "arta@example.com", groupName: "G1" as const, registrationPermit: error.registrationPermit };
+    const input = { semesterId: semester.id, studentId: "NEW-1", firstName: "Arta", lastName: "Kola", email: "arta@example.com", groupName: "G2" as const, registrationPermit: error.registrationPermit };
     await expect(attendanceService.activateRoster(studentB, input, "192.0.2.213")).rejects.toMatchObject({ code: "roster_mismatch" });
     expect((await attendanceService.activateRoster(studentA, input, "192.0.2.212")).email).toBe("arta@example.com");
     await expect(attendanceService.checkIn(studentA, { token: challenge.token }, "192.0.2.212")).rejects.toMatchObject({ code: "invalid_challenge" });
@@ -1971,14 +2010,15 @@ it("applies the additive registration migration only through authorized course s
   expect((await sql`select column_name from information_schema.columns where table_name='roster' and column_name='email'`)).toHaveLength(1);
 });
 
-it("rejects new registration without QR or for another lab group", async () => {
+it.each(["G1", "G2"] as const)("requires a valid QR for first registration and accepts a visitor from %s", async (groupName) => {
   const semester = await createActiveSemester();
-  const cs = await createOpenSession(semester.id, "G1");
+  const cs = await createOpenSession(semester.id, groupName === "G1" ? "G2" : "G1");
   const challenge = await attendanceService.createChallenge(professor, cs.id, "192.0.2.221");
-  const input = { semesterId: semester.id, studentId: "N-1", firstName: "Arta", lastName: "Kola", email: "arta@example.com", groupName: "G2" as const };
+  const input = { semesterId: semester.id, studentId: "N-1", firstName: "Arta", lastName: "Kola", email: "arta@example.com", groupName };
   await expect(attendanceService.activateRoster(studentA, input, "192.0.2.222")).rejects.toMatchObject({ code: "roster_mismatch" });
-  await expect(attendanceService.activateRoster(studentA, { ...input, token: challenge.token }, "192.0.2.222")).rejects.toMatchObject({ code: "registration_qr_expired" });
-  expect(await sql`select id from roster`).toHaveLength(0);
+  await expect(attendanceService.activateRoster(studentA, { ...input, token: challenge.token }, "192.0.2.222")).resolves.toMatchObject({ groupName });
+  await expect(attendanceService.checkIn(studentA, { token: challenge.token }, "192.0.2.222")).resolves.toMatchObject({ status: "present" });
+  expect(await sql`select id from roster`).toHaveLength(1);
 });
 
 
@@ -2052,11 +2092,11 @@ describe("shared class activity report and large QR classes", () => {
     expect((await attendanceService.getCourseActivityReport(professor)).students).toHaveLength(1);
   });
 
-  it("accepts 80 simultaneous students behind the same campus IP and returns every name", async () => {
+  it("accepts 80 simultaneous students from both groups behind the same campus IP", async () => {
     const semester = await createActiveSemester("Programimi për Pajisje Mobile · Semestri Dimëror 2026/27");
     await sql`insert into users(github_id, github_username) select (1000+n)::text, 'load-student-' || n from generate_series(1,80) as n`;
     await sql`insert into roster(semester_id, student_id, full_name, group_name, user_id, email, activated_at)
-      select ${semester.id}, github_id, 'Student Test ' || github_id, 'G1', id, github_id || '@example.com', statement_timestamp()
+      select ${semester.id}, github_id, 'Student Test ' || github_id, case when github_id::integer % 2 = 0 then 'G2' else 'G1' end, id, github_id || '@example.com', statement_timestamp()
       from users where github_id::integer between 1001 and 1080`;
     const opened = await createOpenSession(semester.id);
     const qr = await attendanceService.createChallenge(professor, opened.id, "198.51.100.1");

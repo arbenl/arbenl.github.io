@@ -195,6 +195,7 @@ export function ProfileForm({
         <option value="G1">Grupi 1 · 14:45</option>
         <option value="G2">Grupi 2 · 18:15</option>
       </select>
+      <p className="form-guidance">Zgjidh grupin tënd të zakonshëm. Nëse ndërron orarin, mund të skanosh edhe QR-në e grupit tjetër; profili yt mbetet i njëjtë.</p>
       <label htmlFor="email">Emaili që përdor për Google Drive</label>
       <input id="email" name="email" type="email" autoComplete="email" maxLength={254} className="student-control" required disabled={submitting} />
       <label htmlFor="emailConfirm">Shkruaje emailin përsëri</label>
