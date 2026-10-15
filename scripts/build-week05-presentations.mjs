@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {execFileSync} from 'node:child_process';
+import {validateSlideQuestions} from './week05-slide-contract.mjs';
 const runtime=process.env.RUNTIME_NODE_MODULES,skill=process.env.SKILL_DIR;
 const {Presentation,PresentationFile,FileBlob}=await import(pathToFileURL(path.join(runtime,'@oai/artifact-tool/dist/artifact_tool.mjs')));
 const {finalizePresentation}=await import(pathToFileURL(path.join(skill,'container_tools/artifact_tool_utils.mjs')));
@@ -14,6 +15,7 @@ for(const i of [0,8]){const png=await source.export({slide:source.slides.items[i
 const logo=await fs.readFile(root+'/img/aab_logo_white.png');
 for(const kind of (process.env.WEEK05_KIND?[process.env.WEEK05_KIND]:['lecture','lab'])){
  const data=JSON.parse(await fs.readFile(root+'/materials/week-05/'+kind+'-slides.json','utf8'));
+ validateSlideQuestions(data,kind);
  const p=Presentation.create({slideSize:{width:1280,height:720}});
  function text(s,value,x,y,w,h,size=27,color='#eaf1ff',bold=false){const o=s.shapes.add({geometry:'textbox',position:{left:x,top:y,width:w,height:h},fill:'none',line:{fill:'none',width:0}});o.text=value;o.text.style={typeface:'Arial',fontSize:size,color,bold,autoFit:'none'};return o;}
  const tableOwners=[];

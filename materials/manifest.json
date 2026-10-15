@@ -42,16 +42,16 @@
   "lecture5": {
     "file": "lendet/2026-2027/mobile/lectures/ligjerata-05-hyrja-lejet-rideshare-2026.pptx",
     "slides": 20,
-    "updated": "2026-10-14",
-    "sha256": "3b00a777c007175e4f62d35b25db8333e61c30efad707be27aa8e8dfb81e7fdb",
+    "updated": "2026-10-15",
+    "sha256": "af23f6cc235b409be840e47f4511d5264f06690c844a661d4b8628b17cc9f8a4",
     "audience": "student",
     "speakerNotes": false
   },
   "lab5": {
     "file": "lendet/2026-2027/mobile/lectures/ushtrimet-05-hyrja-lejet-rideshare-2026.pptx",
-    "slides": 13,
-    "updated": "2026-10-14",
-    "sha256": "c9d1a0b2f31f659b6ec682d74e2cba3b9a195f6db83acab77fc7b5fc79140026",
+    "slides": 14,
+    "updated": "2026-10-15",
+    "sha256": "c065a3549fb511be78f096073d0d72bade63c10a005ea8414a7fc3ef1b7575f2",
     "audience": "student",
     "speakerNotes": false
   }
