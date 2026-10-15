@@ -110,7 +110,7 @@ test('week 4 browser slides, student downloads and copied examples stay consiste
 
 test('week 5 continues week 4 with verified decks, exact code and five-check instructions',async()=>{
  const manifest=JSON.parse(await readFile('materials/manifest.json','utf8'));const base='lendet/2026-2027/mobile/java-05/';
- for(const [key,count]of [['lecture5',20],['lab5',13]]){const item=manifest[key];assert.equal(sha256(await readFile(item.file)),item.sha256);const {stdout}=await execFileAsync('unzip',['-Z1',item.file]);const parts=stdout.split('\n');assert.equal(parts.filter(p=>/^ppt\/slides\/slide\d+\.xml$/.test(p)).length,count);assert.ok(!parts.some(p=>/^ppt\/notes(?:Slides|Masters)\//.test(p)));}
+ for(const [key,count]of [['lecture5',20],['lab5',14]]){const item=manifest[key];assert.equal(sha256(await readFile(item.file)),item.sha256);const {stdout}=await execFileAsync('unzip',['-Z1',item.file]);const parts=stdout.split('\n');assert.equal(parts.filter(p=>/^ppt\/slides\/slide\d+\.xml$/.test(p)).length,count);assert.ok(!parts.some(p=>/^ppt\/notes(?:Slides|Masters)\//.test(p)));}
  const guide=await readFile(base+'ushtrimet.html','utf8');assert.equal([...guide.matchAll(/data-example-file=/g)].length,8);assert.ok(guide.includes('next-auth@4.24.15'));assert.ok(guide.includes('5/5 kontrolle teknike'));assert.ok(guide.includes('schema-java05.sql'));assert.ok(guide.includes('rikontrollo'));
  const examples=JSON.parse(await readFile('materials/week-05/example-files.json','utf8'));const decode=s=>s.replaceAll('&lt;','<').replaceAll('&gt;','>').replaceAll('&quot;','"').replaceAll('&#x27;',"'").replaceAll('&amp;','&');for(const [,file,code]of guide.matchAll(/data-example-file="([^"]+)"[\s\S]*?<pre><code>([\s\S]*?)<\/code>/g))assert.equal(decode(code),examples[file]);
  for(const name of ['prezantimi-ligjerates.html','prezantimi-ushtrimeve.html']){const deck=await readFile(base+name,'utf8');assert.ok(deck.includes('data-week="5"'));assert.ok(deck.includes('concept-flow'));}
@@ -121,7 +121,16 @@ test('each week keeps numbered navigation with a distinct accessible accent',asy
  for(let n=1;n<=15;n++){const page=await readFile(`lendet/2026-2027/mobile/java-${String(n).padStart(2,'0')}/index.html`,'utf8');assert.ok(page.includes(`data-week="${n}"`));assert.ok(page.includes('/assets/week-colors.css'));assert.ok(page.includes('1. Ligjërata'));}
 });
 
-test('week 5 lecture shows a question immediately before every answer reveal',async()=>{
- const slides=JSON.parse(await readFile('materials/week-05/lecture-slides.json','utf8'));const html=await readFile('lendet/2026-2027/mobile/java-05/prezantimi-ligjerates.html','utf8');
- for(const [i,slide]of slides.entries())if(slide.answer){assert.ok(slide.question?.endsWith('?'),`slide ${i+1} needs a clear question`);const question=`id="question-${i}">${slide.question}</p><button class="reveal" aria-describedby="question-${i}"`;assert.ok(html.includes(question),`slide ${i+1}: question must precede its associated button`);}
+test('week 5 lecture and lab always show questions before answer reveals',async()=>{
+ const {validateSlideQuestions}=await import('../scripts/week05-slide-contract.mjs');
+ assert.throws(()=>validateSlideQuestions([{answer:'Një përgjigje pa pyetje'}],'lab'),/question/);
+ assert.throws(()=>validateSlideQuestions([{quiz:{question:'Voto'}}],'lecture'),/question/);
+ for(const [kind,name]of [['lecture','ligjerates'],['lab','ushtrimeve']]){
+  const slides=JSON.parse(await readFile(`materials/week-05/${kind}-slides.json`,'utf8'));const html=await readFile(`lendet/2026-2027/mobile/java-05/prezantimi-${name}.html`,'utf8');
+  validateSlideQuestions(slides,kind);
+  for(const [i,slide]of slides.entries()){
+   if(slide.answer){const question=`id="question-${i}">${slide.question}</p><button class="reveal" aria-describedby="question-${i}"`;assert.ok(html.includes(question),`${kind} slide ${i+1}: question must immediately precede its associated button`);}
+   if(slide.quiz){const question=`id="quiz-question-${i}">${slide.quiz.question}</p><div class="quiz-actions"><button class="quiz-reveal" aria-describedby="quiz-question-${i}"`;assert.ok(html.includes(question),`${kind} slide ${i+1}: quiz question must precede the reveal controls`);}
+  }
+ }
 });

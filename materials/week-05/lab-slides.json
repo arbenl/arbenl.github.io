@@ -25,6 +25,16 @@
     "checklistComplete": "Pika e nisjes është gati. Vazhdoni te konfigurimi."
   },
   {
+    "title": "Harta e ushtrimeve: nga hyrja te dorëzimi",
+    "kicker": "REZULTATI I SOTËM · 90 MINUTA",
+    "body": [
+      "Hyr me GitHub, ndrysho orën e ID 2 dhe provo refuzimin për ID 1.",
+      "Next.js punon lokalisht. Në fund dërgon kodin dhe raportin në repository-n tënd."
+    ],
+    "openingImage": "/assets/course/mobile-2026/week05-lab-infrastructure.png",
+    "openingAlt": "Rrjedha lokale e ushtrimeve RideShare. Shfletuesi i laptopit hap localhost:3000/panel dhe dërgon kërkesën me cookie te serveri lokal Next.js. GitHub verifikon identitetin gjatë hyrjes. Serveri lexon rolin dhe pronarin nga Neon/PostgreSQL dhe lejon ndryshimin e udhëtimit ID 2 që i përket shoferit. ID 1 i përket dikujt tjetër dhe refuzohet. Sekretet mbeten në .env.local. Veçmas, GitHub Desktop dërgon kodin, SQL-në dhe java-05.md në repository; studenti dorëzon linkun dhe lexon pesë kontrollet teknike."
+  },
+  {
     "title": "Plani i 90 minutave",
     "kicker": "ORGANIZIMI",
     "body": [
@@ -81,7 +91,8 @@
       "Rifresko: sesioni duhet të mbetet.",
       "Mos krijo llogari të re dhe mos përdor kredencialet e profesorit."
     ],
-    "answer": "Roli fillestar është udhetar sepse është leja më e vogël e nevojshme."
+    "answer": "Roli fillestar është udhetar sepse është leja më e vogël e nevojshme.",
+    "question": "Pse hyrja e parë të jep rolin udhëtar?"
   },
   {
     "title": "Cakto pronarin vetëm nga SQL Editor",
@@ -128,7 +139,8 @@
     ],
     "answer": "Edhe formulari i vjetër kalon në server. Sesioni, roli dhe pronari kontrollohen sërish.",
     "href": "ushtrimet.html#ora-5",
-    "link": "Hap provat e shpjeguara hap pas hapi →"
+    "link": "Hap provat e shpjeguara hap pas hapi →",
+    "question": "Pse serveri duhet ta kontrollojë sërish edhe formularin e vjetër?"
   },
   {
     "title": "Ruaj, dorëzo dhe korrigjo",
