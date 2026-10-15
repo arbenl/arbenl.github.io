@@ -17,8 +17,8 @@ Shkruaj çfarë u shfaq në panel, listë, detaje dhe SQL Editor. Rikthe 08:15.
 
 ### Prova 3: Veprimi pa leje refuzohet
 [PLOTËSO] Nga formulari i hapur ndryshova ID në 1 dhe provova Ruaj.
-Pastaj provova formularin e vjetër pasi roli u kthye udhetar dhe pas daljes.
-Shkruaj mesazhet dhe a mbeti e pandryshuar ora në databazë.
+Shkruaj mesazhin e refuzimit dhe si verifikove në Neon që ID 1 mbeti 08:00.
+Provat shtesë me heqjen e rolit dhe formularin e vjetër janë opsionale pas dorëzimit.
 
 ## Ku gjendet puna
 [PLOTËSO] Linku i repository-t dhe skedarët e rinj; demo në Vercel nëse e publikove.

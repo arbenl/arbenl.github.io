@@ -11,7 +11,7 @@
   },
   {
     "title": "Pika e nisjes",
-    "kicker": "0–10 MIN",
+    "kicker": "0–8 MIN",
     "body": [
       "Hap të njëjtin repository dhe npm run dev.",
       "Duhet të shfaqen tri kartat që lexojnë nga Neon.",
@@ -38,9 +38,9 @@
     "title": "Plani i 90 minutave",
     "kicker": "ORGANIZIMI",
     "body": [
-      "0–10: kontrolli. 10–25: OAuth App dhe variablat lokale.",
-      "25–45: SQL dhe kodi. 45–55: hyrja dhe caktimi i rolit.",
-      "55–70: provat + Push. 70–90: dorëzim dhe përgjigjja."
+      "0–8: kontrolli. 8–20: OAuth App dhe variablat lokale.",
+      "20–40: SQL dhe kodi. 40–50: hyrja dhe pronari.",
+      "50–60: tri prova. 60–65: raporti + Push. 65–90: dorëzim, përgjigjja dhe korrigjimet."
     ],
     "flow": [
       "Përgatitu",
@@ -51,7 +51,7 @@
   },
   {
     "title": "OAuth App në GitHub",
-    "kicker": "10–25 MIN · KONFIGURIMI",
+    "kicker": "8–20 MIN · KONFIGURIMI",
     "body": [
       "GitHub Settings → Developer settings → OAuth Apps → New OAuth App.",
       "Homepage: http://localhost:3000",
@@ -63,7 +63,7 @@
   },
   {
     "title": "Variablat mbeten lokale",
-    "kicker": "BRENDA 10–25 MIN",
+    "kicker": "BRENDA 8–20 MIN",
     "body": [
       "Shto GITHUB_ID, GITHUB_SECRET, NEXTAUTH_SECRET dhe NEXTAUTH_URL në .env.local.",
       "DATABASE_URL e Javës 4 mbetet. Gjenero sekretin e sesionit me komandën në udhëzim.",
@@ -74,7 +74,7 @@
   },
   {
     "title": "SQL dhe skedarët me radhë",
-    "kicker": "25–45 MIN",
+    "kicker": "20–40 MIN",
     "body": [
       "Ekzekuto schema-java05.sql në të njëjtën databazë Neon.",
       "Kopjo A → G sipas emrit të skedarit. Kodi i listës shton vetëm hyrjen për panelin.",
@@ -85,7 +85,7 @@
   },
   {
     "title": "Hyrja e parë është si udhëtar",
-    "kicker": "45–50 MIN",
+    "kicker": "40–45 MIN",
     "body": [
       "Hap /panel → Hyr me GitHub. Duhet të shfaqet emri, ID dhe roli udhetar.",
       "Rifresko: sesioni duhet të mbetet.",
@@ -96,7 +96,7 @@
   },
   {
     "title": "Cakto pronarin vetëm nga SQL Editor",
-    "kicker": "50–55 MIN",
+    "kicker": "45–50 MIN",
     "body": [
       "Kopjo ID-në tënde nga paneli në dy komandat e udhëzimit.",
       "Në databazën tënde cakto veten shofer dhe pronar të ID 2.",
@@ -107,16 +107,16 @@
   },
   {
     "title": "Prova 1: hyrja dhe dalja",
-    "kicker": "55–70 MIN · PROVAT",
+    "kicker": "50–60 MIN · PROVAT",
     "body": [
       "Hap panelin pa hyrë. Hyr me GitHub, rifresko dhe shiko emrin.",
-      "Hape panelin edhe në një skedë tjetër. Dil në të parën.",
-      "Rifresko të dytën: duhet të kërkojë hyrje. Shkruaj rezultatin në raport."
+      "Kliko Dil: paneli duhet të kërkojë hyrje përsëri.",
+      "Shkruaj rezultatin në raport; hyr sërish për provën 2."
     ]
   },
   {
     "title": "Prova 2: ruajtja e lejuar",
-    "kicker": "55–70 MIN · PROVAT",
+    "kicker": "50–60 MIN · PROVAT",
     "body": [
       "Si shofer i ID 2 ruaj 08:25.",
       "Kontrollo suksesin, listën, detajet dhe rreshtin në Neon.",
@@ -131,24 +131,24 @@
   },
   {
     "title": "Prova 3: refuzimi i veprimit",
-    "kicker": "55–70 MIN · PROVAT",
+    "kicker": "50–60 MIN · PROVAT",
     "body": [
       "DevTools → Elements: input name=\"id\", value=\"2\" → ndrysho në \"1\".",
       "Ruaj: duhet refuzim; ora e ID 1 në Neon nuk ndryshon.",
-      "Provo edhe formularin e hapur para heqjes së rolit ose para daljes."
+      "Shëno refuzimin në raport. Sfidat me heqje roli/formular të vjetër janë pas dorëzimit."
     ],
-    "answer": "Edhe formulari i vjetër kalon në server. Sesioni, roli dhe pronari kontrollohen sërish.",
+    "answer": "Serveri lexon identitetin dhe pronarin nga të dhënat e verifikuara. ID 1 nuk i përket këtij shoferi, prandaj ora mbetet 08:00.",
     "href": "ushtrimet.html#ora-5",
     "link": "Hap provat e shpjeguara hap pas hapi →",
-    "question": "Pse serveri duhet ta kontrollojë sërish edhe formularin e vjetër?"
+    "question": "Pse refuzohet ID 1 edhe nëse e ndryshojmë formularin?"
   },
   {
     "title": "Ruaj, dorëzo dhe korrigjo",
-    "kicker": "70–90 MIN",
+    "kicker": "65–90 MIN",
     "body": [
-      "GitHub Desktop → Commit → Push origin. .env.local nuk shfaqet te ndryshimet.",
-      "Dorëzo Java 5 me linkun e të njëjtit repository publik.",
-      "Lexo 5 kontrollet teknike. Pas korrigjimit komento rikontrollo te i njëjti Issue."
+      "60–65: plotëso java-05.md, pastaj Commit → Push origin.",
+      "65–70: dorëzo Java 5; mbaje Issue-në hapur për komentin e GitHub.",
+      "70–90: lexo 5 kontrollet. Korrigjo → Commit → Push → komento rikontrollo te e njëjta Issue."
     ],
     "href": "ushtrimet.html#ora-6",
     "link": "Hap dorëzimin dhe kontrollin →"
