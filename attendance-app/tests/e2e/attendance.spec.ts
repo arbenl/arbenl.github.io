@@ -37,10 +37,10 @@ async function noOverflow(page: Page) {
   expect(size.body, "body-level horizontal overflow").toBeLessThanOrEqual(size.viewport);
 }
 
-async function activate(page: Page, firstName: string, lastName: string, studentId: string) {
+async function activate(page: Page, firstName: string, lastName: string, studentId: string, group = "G1") {
   await page.getByRole("button", { name: "Aktivizo profilin", exact: true }).waitFor();
   await expect(page.locator('input[name="semesterId"]')).toHaveValue(/.+/);
-  await page.getByLabel("Grupi i ushtrimeve", { exact: true }).selectOption("G1");
+  await page.getByLabel("Grupi i ushtrimeve", { exact: true }).selectOption(group);
   await page.getByLabel("Emaili që përdor për Google Drive", { exact: true }).fill(`${studentId.toLowerCase()}@example.com`);
   await page.getByLabel("Shkruaje emailin përsëri", { exact: true }).fill(`${studentId.toLowerCase()}@example.com`);
   await page.getByLabel("Emri", { exact: true }).fill(firstName);
@@ -70,7 +70,7 @@ for (const viewport of [
   { width: 375, height: 812 },
   { width: 430, height: 932 },
 ]) {
-  test(`professor and two students: complete flow at ${viewport.width}×${viewport.height}`, async ({ browser, page: professor }) => {
+  test(`professor and two students including a visiting group: complete flow at ${viewport.width}×${viewport.height}`, async ({ browser, page: professor }) => {
     const studentContext = await browser.newContext({ viewport });
     const secondContext = await browser.newContext({ viewport });
     const student = await studentContext.newPage();
@@ -95,9 +95,9 @@ for (const viewport of [
         await expect(professor.locator('a[href="/staff/qr?week=3&kind=lecture&group=G2"]')).toBeVisible();
         await expect(professor.locator('a[href="/staff/qr?week=3&kind=lab&group=G2"]')).toBeVisible();
         semesterId = (await api(professor, "/api/semesters")).body.find((s: { title: string }) => s.title === semesterTitle).id;
-        sessionId = (await api(professor, "/api/class-sessions")).body.find((s: { semesterId: string; weekNumber: number; kind: string }) => s.semesterId === semesterId && s.weekNumber === 2 && s.kind === "lecture").id;
+        sessionId = (await api(professor, "/api/class-sessions")).body.find((s: { semesterId: string; weekNumber: number; kind: string; groupName: string }) => s.semesterId === semesterId && s.weekNumber === 3 && s.kind === "lab" && s.groupName === "G1").id;
         await professor.getByText("Regjistri i studentëve, eksportet dhe administrimi", { exact: true }).click();
-        await professor.getByLabel("Student ID, Emri i plotë, Grupi", { exact: true }).fill("E2E-001, Arta Kola, G1");
+        await professor.getByLabel("Student ID, Emri i plotë, Grupi", { exact: true }).fill("E2E-001, Arta Kola, G2");
         await professor.getByRole("button", { name: "Importo të gjithë rreshtat" }).click();
         await expect(professor.getByRole("status")).toHaveText("1 studentë u importuan në një transaksion.");
       });
@@ -108,7 +108,7 @@ for (const viewport of [
         projector = await professor.context().newPage();
         await projector.setViewportSize(viewport);
         await projector.goto("/staff");
-        await projector.locator('a[href="/staff/qr?week=2&kind=lecture"]').click();
+        await projector.locator('a[href="/staff/qr?week=3&kind=lab&group=G1"]').click();
         const response = await challenge;
         expect(response.status()).toBe(201);
         token = (await response.json()).token;
@@ -139,7 +139,7 @@ for (const viewport of [
         expect((await unactivated.json()).error.code).toBe("roster_not_activated");
         await expect(student.getByRole("heading", { name: "Aktivizo profilin", exact: true })).toBeVisible();
         await expect(student).toHaveURL(/\/check-in$/);
-        await activate(student, "Arta", "Kola", "E2E-001");
+        await activate(student, "Arta", "Kola", "E2E-001", "G2");
         await expect(student.getByRole("heading", { name: "Vijueshmëria u konfirmua" })).toBeVisible();
         await noOverflow(student);
         await expect(projector.getByText("Gjithsej", { exact: false })).toHaveText("Gjithsej 1");
@@ -243,12 +243,12 @@ for (const viewport of [
         await noOverflow(second);
       });
       await test.step("weekly report lists each student with a clear Po or Jo", async () => {
-        await professor.goto("/staff/report?week=2");
+        await professor.goto("/staff/report?week=3");
         await expect(professor.getByRole("heading", { name: "Raporti i vijueshmërisë" })).toBeVisible();
         await expect(professor.getByRole("columnheader", { name: "Prezent" })).toBeVisible();
         await expect(professor.getByRole("row").filter({ hasText: "Arta Kola" })).toContainText("Jo");
         await expect(professor.getByRole("row").filter({ hasText: "Besa Duka" })).toContainText("Jo");
-        await second.goto("/staff/report?week=2");
+        await second.goto("/staff/report?week=3");
         await expect(second.getByRole("link", { name: "Hyr me GitHub" })).toBeVisible();
         await expect(second.getByText("Arta Kola")).toHaveCount(0);
       });
