@@ -41,14 +41,14 @@ Në një instalim të ri, profesori hyn fillimisht me llogarinë GitHub që për
 
 ## Përgatitja e semestrit
 
-Kur profesori hap `/staff`, sistemi sinkronizon automatikisht semestrin **Programimi për Pajisje Mobile · Semestri Dimëror 2026/27** dhe 29 sesionet e grupit `G1`. Java 1 ka vetëm ligjëratë më 17 shtator. Javët 2–15 kanë ligjëratë në 16:30 dhe ushtrime në 18:30 çdo të enjte, deri më 24 dhjetor 2026. Sinkronizimi është idempotent: hapja e përsëritur e panelit nuk krijon dublikatë. Semestrat e arkivuar me prefiksin e rezervuar `[PILOT SYNTHETIC]` pastrohen nga databaza gjatë këtij sinkronizimi.
+Kur profesori hap `/staff`, sistemi sinkronizon automatikisht semestrin **Programimi për Pajisje Mobile · Semestri Dimëror 2026/27** dhe orët e të dy grupeve sipas kalendarit te `attendance-app/lib/attendance/current-course.ts`. Java 1 ka vetëm ligjëratë. Nga java 3 ligjëratat ndahen në G1 (16:30) dhe G2 (17:15); ushtrimet mbahen në G1 (14:45) dhe G2 (18:15). Sinkronizimi është idempotent: hapja e përsëritur e panelit nuk krijon dublikatë. Semestrat e arkivuar me prefiksin e rezervuar `[PILOT SYNTHETIC]` pastrohen nga databaza gjatë këtij sinkronizimi.
 
 Ligji i Kosovës për festat zyrtare nuk ka festë zyrtare të enjten brenda kësaj periudhe; Krishtlindjet Katolike janë të premten, 25 dhjetor. Nëse AAB shpall ndryshim të veçantë akademik, anulo sesionin përkatës ose krijo një orë zëvendësuese nga seksioni **Ndryshime manuale**.
 
 Për përgatitjen operative:
 
 1. Hyr në `/staff` me llogarinë GitHub të autorizuar; kalendari krijohet vetë.
-2. Importo listën zyrtare para orës së parë, duke përdorur grupin `G1`.
+2. Kërko që studentët të përgatitin profilin nga “Vijueshmëria ime” para hapjes së QR-së. Nëse importon listën zyrtare, ruaj grupin e zakonshëm `G1` ose `G2` të secilit student.
 3. Kontrollo listën e sesioneve dhe përdor **Ndryshime manuale** vetëm për orë shtesë, zëvendësime ose një semestër tjetër.
 4. Në fund të semestrit, eksporto evidencën dhe arkivoje me arsye.
 
@@ -63,7 +63,7 @@ Student ID, Full Name, Group
 
 Header-i `Student ID, Full Name, Group` është opsional. Mos përdor pikëpresje. Fushat janë Student ID, emri i plotë dhe grupi; emaili nuk importohet. Importi është shtues dhe atomik: nëse një rresht është i pavlefshëm ose Student ID përsëritet brenda të njëjtit semestër, asnjë rresht i asaj kërkese nuk ruhet. Korrigjo burimin dhe importo përsëri vetëm rreshtat që mungojnë. Mos vendos lista reale në repository ose në skedarë testimi.
 
-Emri i grupit përputhet **saktësisht** pas heqjes së hapësirave në fillim dhe fund. `G1`, `g1` dhe `Grupi 1` janë grupe të ndryshme. Kur krijon sesionin, kopjo të njëjtën vlerë që përdoret në listë. Nuk ka grup special `*`; për disa grupe krijo sesionin përkatës për secilin grup.
+Përdor emërtimet `G1` dhe `G2` për grupin e zakonshëm të studentit. Grupi organizon orarin dhe listën e pritshme, por nuk kufizon check-in-in: çdo student i regjistruar në të njëjtin semestër mund të skanojë QR-në aktive të cilitdo grup, si në ligjëratë ashtu edhe në ushtrime. Kjo vlen edhe gjatë regjistrimit të parë. Profili ruan grupin e zakonshëm, ndërsa evidenca ruan orën që studenti ndoqi. Afati 60-sekondësh dhe një evidencë për student/sesion mbeten në fuqi.
 
 Semestri kalon vetëm `draft → active → archived`. Një semestër i arkivuar nuk riaktivizohet nga paneli. Sesioni kalon vetëm `draft → open → closed`, ose në `cancelled` nga `draft`/`open`. Një sesion i mbyllur ose anuluar nuk rihapet; në rast gabimi krijo një sesion zëvendësues me titull dhe arsye të qartë.
 
@@ -105,7 +105,7 @@ Nga paneli privat, stafi mund të krijojë një evidencë manuale për një stud
 
 Çdo shtim ose korrigjim manual kërkon arsye. Sistemi ruan aktorin, kohën, veprimin dhe arsyen në `audit_log`. Mos korrigjo direkt tabelat e databazës gjatë përdorimit normal. Për student pa telefon ose për një problem teknik, verifiko identitetin dhe praninë para se të bësh shtimin manual.
 
-**Eksporto CSV** është funksion vetëm për staf dhe regjistron veprimin në audit. Eksporti përmban nga një rresht për çdo student të grupit në çdo sesion të mbyllur të semestrit, përfshirë `absent` kur nuk ka evidencë. Sesionet `draft`, `open` dhe `cancelled` nuk përfshihen. Kolonat janë:
+**Eksporto CSV** është funksion vetëm për staf dhe regjistron veprimin në audit. Eksporti përmban nga një rresht për çdo student të grupit në çdo sesion të mbyllur të semestrit, përfshirë `absent` kur nuk ka evidencë. Përfshihen edhe studentët e grupeve të tjera që kanë evidencë në atë orë; studentët e grupeve të tjera pa evidencë nuk shtohen si mungesa të asaj ore. Sesionet `draft`, `open` dhe `cancelled` nuk përfshihen. Kolonat janë:
 
 ```text
 Student ID, Full Name, Group, Session, Week, Kind, Status, Recorded At, Reason
@@ -171,7 +171,7 @@ Mos fshi të vetmin rresht të stafit: bootstrap-i fillestar është njëherësh
 
 ## Kufijtë e sistemit
 
-Sistemi siguron identitet GitHub, përputhje me listën, grup të saktë, afat të serverit, një evidencë për student/sesion dhe audit për ndryshimet administrative. Nuk përdor GPS, Wi-Fi të kampusit ose verifikim biometrik. Ai nuk vendos automatikisht notë ose të drejtë provimi; rregullat akademike zbatohen mbi eksportin e verifikuar sipas politikës së institucionit.
+Sistemi siguron identitet GitHub, anëtarësi në të njëjtin semestër, pjesëmarrje fleksibile mes grupeve, afat të serverit, një evidencë për student/sesion dhe audit për ndryshimet administrative. Nuk përdor GPS, Wi-Fi të kampusit ose verifikim biometrik. Ai nuk vendos automatikisht notë ose të drejtë provimi; rregullat akademike zbatohen mbi eksportin e verifikuar sipas politikës së institucionit.
 
 ## Raporti i përbashkët sipas javëve
 
