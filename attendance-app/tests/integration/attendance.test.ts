@@ -1816,6 +1816,9 @@ describe("direct course QR launch", () => {
     ]);
     expect(a.id).toBe(b.id);
     expect(a.checkinEndsAt).toEqual(b.checkinEndsAt);
+    expect(new Date(a.checkinEndsAt!).getTime() - new Date(a.updatedAt).getTime()).toBe(60_000);
+    const challenge = await attendanceService.createChallenge(professor, a.id, "192.0.2.60");
+    expect(new Date(challenge.expiresAt).getTime()).toBe(new Date(a.checkinEndsAt!).getTime());
     expect(a.state).toBe("open");
     expect(await sql`select id from class_sessions where state = 'open'`).toHaveLength(1);
     const lab = await attendanceService.launchCourseSession(professor, 2, "lab", "G1");

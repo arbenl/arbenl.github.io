@@ -1,6 +1,8 @@
 import { createHash, randomBytes } from "node:crypto";
 
-const CHALLENGE_LIFETIME_MILLISECONDS = 5 * 60_000;
+import { CHECKIN_WINDOW_SECONDS } from "./policy";
+
+const CHALLENGE_LIFETIME_MILLISECONDS = CHECKIN_WINDOW_SECONDS * 1_000;
 
 export function createChallengeToken(): string {
   return randomBytes(32).toString("hex");

@@ -201,7 +201,7 @@ export function LiveProjector({ sessionId }: LiveProjectorProps) {
           Mos e shpërndani QR-në. Çdo hyrje shfaqet live dhe regjistrohet me kohën e serverit.
         </p>
         <p className="projector-guidance">
-          Skanimi përfundon vetëm kur telefoni shfaq “Vijueshmëria u konfirmua”. Hyr me GitHub dhe plotëso profilin nëse kërkohet, para se të mbarojë numërimi.
+          Hyni me GitHub dhe përgatitni profilin para hapjes së QR-së. Gjatë numërimit 60-sekondësh skanoni kodin; regjistrimi përfundon vetëm kur telefoni shfaq “Vijueshmëria u konfirmua”.
         </p>
       </section>
 

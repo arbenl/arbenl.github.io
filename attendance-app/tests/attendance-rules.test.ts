@@ -53,12 +53,12 @@ describe("attendance challenge rules", () => {
     expect(hashChallengeToken(token).toString("hex")).toBe(expected);
   });
 
-  it("expires a challenge at five minutes or the session deadline", () => {
+  it("expires a challenge at sixty seconds or the session deadline", () => {
     const now = new Date("2026-09-17T10:00:00.000Z");
     const sessionDeadline = new Date("2026-09-17T10:10:00.000Z");
 
     expect(challengeExpiresAt(now, sessionDeadline)).toEqual(
-      new Date("2026-09-17T10:05:00.000Z"),
+      new Date("2026-09-17T10:01:00.000Z"),
     );
   });
 

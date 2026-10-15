@@ -25,6 +25,7 @@ import {
 } from "../db/schema";
 import { getEnv } from "../env";
 import { createChallengeToken, hashChallengeToken } from "./challenge";
+import { CHECKIN_WINDOW_SECONDS } from "./policy";
 import { issueRegistrationPermit, readRegistrationPermit } from "./registration";
 import { CURRENT_COURSE, CURRENT_COURSE_SESSIONS, sessionIncludesGroup } from "./current-course";
 import {
@@ -942,7 +943,7 @@ async function transitionClassSession(
         state: input.state,
         checkinEndsAt:
           input.state === "open"
-            ? sql`statement_timestamp() + interval '5 minutes'`
+            ? sql`statement_timestamp() + make_interval(secs => ${CHECKIN_WINDOW_SECONDS})`
             : input.state === "draft" ? null : current.checkinEndsAt,
         updatedAt: sql`statement_timestamp()`,
       })

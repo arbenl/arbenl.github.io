@@ -33,12 +33,12 @@
       "Vazhdo projektin dhe databazën Neon nga Java 4. Lidh hyrjen GitHub sipas udhëzimit.",
       "Shto panelin, rolin në Neon dhe pronarin e udhëtimit 2. Çdo përdorues i ri është udhëtar.",
       "Provo ndryshimin e orës nga shoferi pronar dhe refuzimin e ndryshimit të udhëtimit tjetër.",
-      "Provo sesionin dhe daljen; shkruaj tri prova në java-05.md dhe dorëzo në minutën 70."
+      "Provo hyrjen, rifreskimin dhe daljen; shkruaj tri prova në java-05.md dhe nis dorëzimin në minutën 65."
     ],
     "checks": [
-      "Pa hyrje paneli kërkon identifikim; pas daljes formulari i vjetër nuk ka leje.",
+      "Pa hyrje paneli kërkon identifikim; pas hyrjes dhe rifreskimit shfaq profilin, pas daljes kërkon hyrje përsëri.",
       "Shoferi i ID 2 ruan orën dhe ndryshimi shihet në listë, detaje dhe Neon.",
-      "ID 1 ose roli udhëtar refuzohet në server; ora në databazë nuk ndryshon."
+      "ID 1 i një pronari tjetër refuzohet në server; ora në databazë mbetet 08:00."
     ]
   },
   "6": {

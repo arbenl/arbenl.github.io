@@ -80,6 +80,29 @@ afterEach(() => {
 });
 
 describe("live projector", () => {
+  it("counts down from 60 seconds, hides the QR at zero, and retains confirmed students", async () => {
+    const browserStart = Date.now();
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      const elapsed = Date.now() - browserStart;
+      const serverTime = new Date(Date.parse(SERVER_TIME) + elapsed).toISOString();
+      if (String(input).endsWith("/challenge")) return response(challenge({serverTime, expiresAt: "2026-09-17T10:01:00.000Z"}));
+      return response(snapshot({serverTime, checkinEndsAt: "2026-09-17T10:01:00.000Z", state: elapsed < 60_000 ? "open" : "closed", entries:[{rosterId:"confirmed",displayName:"Arta K.",recordedAt:SERVER_TIME}],total:1}));
+    });
+    render(<LiveProjector sessionId={SESSION_ID} />);
+    await settle();
+    expect(screen.getByText("01:00")).toBeTruthy();
+    expect(screen.getByAltText("QR për check-in")).toBeTruthy();
+    await advance(59_000);
+    expect(screen.getByText("00:01")).toBeTruthy();
+    expect(screen.getByAltText("QR për check-in")).toBeTruthy();
+    await advance(1_000);
+    expect(screen.getByText("00:00")).toBeTruthy();
+    expect(screen.queryByAltText("QR për check-in")).toBeNull();
+    expect(screen.getByText("Check-in u mbyll")).toBeTruthy();
+    expect(screen.getByText("Arta K.")).toBeTruthy();
+    expect(screen.getByText("1",{selector:".projector-total strong"})).toBeTruthy();
+  });
+
   it("renders all 80 confirmed names alphabetically without a display cap", async () => {
     const entries = Array.from({ length: 80 }, (_, i) => ({ rosterId: String(i), displayName: `Student ${String(80-i).padStart(2, "0")}`, recordedAt: SERVER_TIME }));
     vi.spyOn(globalThis, "fetch").mockImplementation(async input => String(input).endsWith("/live") ? response(snapshot({entries, total:80})) : response(challenge()));
