@@ -23,7 +23,7 @@ Jepi skicën dhe kërkoji: “Gjej një udhëtim për në AAB dhe kërko një ve
 Ndiq [udhëzimin me vetëm 3 hapa](../dorezimet.html). Përdor repository-n personal rideshare-mobile, ose atë personal që ke krijuar më parë. Ngarko java-02.md dhe skica.jpg/png në faqen kryesore me Add file → Upload files → Commit changes. Nuk kërkohet terminal, push ose Pull Request.
 
 ## 7. Dorëzo linkun dhe lexo raportin — 10 minuta
-Hap [formularin](https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-submission.yml), zgjidh Java 2 dhe vendos linkun kryesor të repository-t. Kliko Create / Submit new issue. Ruaje faqen dhe lexo raportin automatik. Nëse diçka mungon, korrigjo skedarët dhe komento rikontrollo te i njëjti dorëzim.
+Hap [formularin](https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues/new?template=mobile-submission.yml), zgjidh Java 2 dhe vendos linkun kryesor të repository-t. Kliko Create / Submit new issue. Ruaje faqen dhe lexo raportin automatik. Nëse diçka mungon, korrigjo skedarët dhe komento rikontrollo te i njëjti dorëzim.
 
 ## Kur e kam përfunduar?
 - Kam java-02.md të plotësuar dhe skicën e lexueshme në GitHub.

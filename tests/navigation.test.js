@@ -8,7 +8,7 @@ test('every new page has valid local links, assets and fragment targets',async()
  const files=['index.html','profesor.html','profili.html',...await walk('lendet'),...await walk('vitet')].filter(p=>p.endsWith('.html'));
  for(const file of files){const html=await read(file);for(const match of html.matchAll(/(?:href|src)="([^"]+)"/g)){
   const url=new URL(match[1].replaceAll('&amp;','&'),'https://arbenl.github.io/'+file);
-  if(url.origin!=='https://arbenl.github.io'||url.pathname.startsWith('/arbenl-mobile-assignments-2025/'))continue;
+  if(url.origin!=='https://arbenl.github.io'||url.pathname.startsWith('/arbenl-mobile-assignments-2026-2027/'))continue;
   let target=decodeURIComponent(url.pathname).slice(1)||'index.html';
   let info;try{info=await stat(target);}catch{assert.fail(`${file}: missing ${target}`);}
   if(info.isDirectory())target=path.join(target,'index.html');
@@ -66,4 +66,17 @@ test('course abbreviations are explained in student pages and projector slides',
   const html=await read(`lendet/2026-2027/mobile/${file}`);
   for(const term of terms)assert.ok(html.includes(term),`${file}: missing ${term}`);
  }
+});
+
+
+test('current Mobile course submission links use the 2026-2027 repository',async()=>{
+ const files=(await walk('lendet/2026-2027/mobile')).filter(p=>/\.(html|js|md)$/.test(p));
+ for(const file of files){
+  const text=await read(file);
+  assert.ok(!text.includes('arbenl-mobile-assignments-2025'),`${file}: outdated repository name`);
+ }
+ const guide=await read('lendet/2026-2027/mobile/dorezimet.html');
+ assert.ok(guide.includes('https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues/new?template=mobile-submission.yml'));
+ const week6=await read('lendet/2026-2027/mobile/java-06/ushtrimet.html');
+ assert.ok(week6.includes('arbenl-mobile-assignments-2026-2027/issues/new?template=mobile-submission.yml&amp;week=Java%206'));
 });

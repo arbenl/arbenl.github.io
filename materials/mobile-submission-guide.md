@@ -7,6 +7,6 @@ Semestri ka **15 javë dhe 15 dorëzime javore**. Prej tyre, **10 ushtrime vler�
 3. Hap formularin, zgjidh javën dhe vendos linkun kryesor të repository-t. Kliko Create / Submit new issue. Lexo raportin automatik poshtë dorëzimit.
 
 Udhëzimi: https://arbenl.github.io/lendet/2026-2027/mobile/dorezimet.html
-Formulari: https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-submission.yml
+Formulari: https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues/new?template=mobile-submission.yml
 
 Pas korrigjimit të dokumenteve, komento rikontrollo në të njëjtin dorëzim. Mos hap tjetër për të njëjtën javë. Kontrolli teknik nuk është notë. Mos publiko të dhëna personale ose sekrete. Repository privat kërkon dorëzim të asistuar; vetëm ftimi i profesorit nuk aktivizon kontrollin automatik.

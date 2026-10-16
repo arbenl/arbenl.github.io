@@ -1,7 +1,7 @@
 import {readFile,writeFile} from 'node:fs/promises';
 import {validateSlideQuestions} from './week05-slide-contract.mjs';
 const dir='materials/week-06',e=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
-const submit='https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-submission.yml&week=Java%206';
+const submit='https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues/new?template=mobile-submission.yml&week=Java%206';
 const animation='<iframe class="infra-embed" src="infrastructure.html?embed=1" title="Animacioni i infrastrukturës së RideShare · Java 6" loading="lazy"></iframe><p><a href="infrastructure.html" target="_blank" rel="noopener">Hap animacionin në ekran të plotë ↗</a></p>';
 const diagram='<figure class="infrastructure-illustration"><a href="infrastructure.svg" target="_blank" rel="noopener"><img src="infrastructure.svg" alt="Git dhe GitHub publikojnë kodin në Vercel. Telefoni përdor service worker; me internet lexon Next.js dhe Neon/PostgreSQL, pa internet lexon kopjen lokale."></a><figcaption>Ilustrimi: publikimi i kodit dhe leximi i listës janë dy rrugë të ndryshme.</figcaption></figure>';
 for(const kind of ['lecture','lab']){

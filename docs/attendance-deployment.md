@@ -182,7 +182,7 @@ te dorëzimi javor. Nuk shfaq email, indeks, arsyet e korrigjimeve ose nota.
 Regjistri i plotë administrativ mbetet te `/staff/report`.
 
 Dorëzimet lexohen nga të gjitha faqet e issues publike në
-`arbenl/arbenl-mobile-assignments-2025`, përfshirë issues të mbyllura. Formulari
+`arbenl/arbenl-mobile-assignments-2026-2027`, përfshirë issues të mbyllura. Formulari
 Javët 1–15 dhe formulari i mëparshëm J02 njihen; përsëritjet bashkohen sipas
 GitHub user ID dhe javës. Lidhja shkon te issue më e fundit. Llogaritë pa profil
 shfaqen veçmas me username, pa hamendësuar emrin. Leximi cache-ohet 5 minuta;

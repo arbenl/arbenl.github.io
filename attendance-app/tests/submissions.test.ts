@@ -3,7 +3,7 @@ import { loadSubmissions, parseSubmissions, type SubmissionIssue } from "../lib/
 
 function issue(number: number, week = 3, userId = 100): SubmissionIssue {
   return { number, title: "[MOBILE DORËZIM]", body: `### Java\n\nJava ${week}\n\n### Linku i punës në GitHub\n\nhttps://github.com/student/project`,
-    html_url: `https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/${number}`, created_at: "2026-10-01T12:00:00Z", user: { id: userId, login: `student${userId}` } };
+    html_url: `https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues/${number}`, created_at: "2026-10-01T12:00:00Z", user: { id: userId, login: `student${userId}` } };
 }
 afterEach(() => vi.restoreAllMocks());
 describe("weekly submissions", () => {
@@ -19,7 +19,7 @@ describe("weekly submissions", () => {
       Array.from({ length: 100 }, (_, i) => issue(i + 1, 3, i + 100))), { headers: { link: '<https://api.github.com/next>; rel="next"' } }))
       .mockResolvedValueOnce(new Response(JSON.stringify([issue(101, 3, 300)])));
     expect(await loadSubmissions()).toHaveLength(101);
-    expect(fetchMock.mock.calls[0][0]).toContain("state=all");
+    expect(fetchMock.mock.calls[0][0]).toContain("https://api.github.com/repos/arbenl/arbenl-mobile-assignments-2026-2027/issues?state=all");
     expect(fetchMock.mock.calls[1][0]).toContain("page=2");
   });
   it("fails the whole read when a later page is unavailable, rather than reporting missing work", async () => {

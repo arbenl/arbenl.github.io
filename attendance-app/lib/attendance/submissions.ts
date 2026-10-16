@@ -39,7 +39,7 @@ export async function loadSubmissions(): Promise<WeeklySubmission[]> {
   const issues: SubmissionIssue[] = [];
   // Read every page, including closed submissions. Never treat a failed page as no work.
   for (let page = 1; page <= 50; page += 1) {
-    const response = await fetch(`https://api.github.com/repos/arbenl/arbenl-mobile-assignments-2025/issues?state=all&since=2026-09-01T00:00:00Z&per_page=100&page=${page}`, {
+    const response = await fetch(`https://api.github.com/repos/arbenl/arbenl-mobile-assignments-2026-2027/issues?state=all&since=2026-09-01T00:00:00Z&per_page=100&page=${page}`, {
       headers: { Accept: "application/vnd.github+json" },
       next: { revalidate: 300 },
       signal: AbortSignal.timeout(15_000),

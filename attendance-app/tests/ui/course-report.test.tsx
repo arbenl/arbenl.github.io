@@ -11,7 +11,7 @@ afterEach(() => { cleanup(); vi.clearAllMocks(); });
 describe("shared weekly course report", () => {
   it("renders 80 students, confirmed attendance and submissions without private profile fields", async () => {
     mocks.report.mockResolvedValue({ students: Array.from({length:80}, (_,i) => ({rosterId:String(i), fullName:`Student ${i+1}`, groupName:"G1", githubId:String(1000+i)})), sessions:[{id:"lecture",week:3,kind:"lecture",groupName:"G1",title:"Lecture",state:"closed"}], present:[{rosterId:"0",sessionId:"lecture"}] });
-    mocks.submissions.mockResolvedValue([{githubId:"1000",login:"student",week:3,number:50,url:"https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/50"}, {githubId:"9000",login:"unlinked",week:3,number:51,url:"https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/51"}]);
+    mocks.submissions.mockResolvedValue([{githubId:"1000",login:"student",week:3,number:50,url:"https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues/50"}, {githubId:"9000",login:"unlinked",week:3,number:51,url:"https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues/51"}]);
     render(await CourseReportPage({searchParams:Promise.resolve({week:"3"})}));
     expect(screen.getAllByRole("row")).toHaveLength(81);
     expect(screen.getByRole("link",{name:"Dorëzuar · #50"}).getAttribute("href")).toContain("/issues/50");

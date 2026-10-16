@@ -30,7 +30,7 @@ byId('tools').addEventListener('submit',event=>{
  event.preventDefault();const count=checks.filter(([id])=>byId(id).value==='Punon').length;
  report=['# Kontrolli i mjeteve — Java 02',`GitHub: ${byId('username').value.trim()||'Nuk kam hyrë ende'}`,`Kompjuteri: ${byId('os').value}`,`Rezultati: ${count}/8 prova të kryera me sukses. Vetëdeklarim, në pritje të verifikimit në klasë.`,'',...checks.map(([id,title])=>`${title}: ${byId(id).value}`),'','Versionet:',byId('versions').value,'','Faqja e publikuar:',byId('demo-url').value||'Ende pa link','','Ndihma e nevojshme:',byId('blocker').value||'Nuk shënova problem.'].join('\n');
  byId('report').value=report;
- const url=new URL('https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new');
+ const url=new URL('https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues/new');
  url.searchParams.set('title',`[MJETET] ${count}/8 — ${byId('username').value.trim()||'Java 02'}`);url.searchParams.set('body',report);
  byId('send').href=url.toString();byId('result').hidden=false;byId('result').scrollIntoView({behavior:'smooth'});
 });
