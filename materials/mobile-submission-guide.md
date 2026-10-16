@@ -1,5 +1,7 @@
 # Dorëzimi Mobile — RideShare
 
+**Mund ta dorëzosh detyrën gjatë ushtrimeve ose gjatë javës.** Dorëzimi brenda orës është synim për të marrë ndihmë, jo afat i detyrueshëm. Kontrolli automatik dhe komanda `rikontrollo` punojnë edhe jashtë orarit të mësimit. Afatin përfundimtar e njofton profesori.
+
 Semestri ka **15 javë dhe 15 dorëzime javore**. Prej tyre, **10 ushtrime vlerësohen me deri në 3 pikë secila** (30 pikë laboratori): javët 2–6, 8–10, 12 dhe 14. Javët 1, 7, 11, 13 dhe 15 dorëzohen për feedback dhe evidencë progresi, pa pikë shtesë laboratori. Projekti individual dhe demoja vlerësohen veçmas.
 
 1. Krijo një repository personal rideshare-mobile në llogarinë tënde GitHub: Public + Add README. Nëse ke një repository personal, përdor atë gjatë gjithë semestrit.
