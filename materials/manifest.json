@@ -54,5 +54,21 @@
     "sha256": "c32e22717b66eca88728a94686e5c3238ecce45d8c9b39bc88e32a12a8042e8a",
     "audience": "student",
     "speakerNotes": false
+  },
+  "lecture6": {
+    "file": "lendet/2026-2027/mobile/lectures/ligjerata-06-pwa-offline-rideshare-2026.pptx",
+    "slides": 20,
+    "updated": "2026-10-16",
+    "sha256": "cad0527ba5498446afd2ce5e5e5e8cdf441665996df3b7ef1e59c0319c81df75",
+    "audience": "student",
+    "speakerNotes": false
+  },
+  "lab6": {
+    "file": "lendet/2026-2027/mobile/lectures/ushtrimet-06-pwa-offline-rideshare-2026.pptx",
+    "slides": 14,
+    "updated": "2026-10-16",
+    "sha256": "e3adce3569f0b777a7629f674cc209537ffed9c5b988d90b5a4446ccda3d778c",
+    "audience": "student",
+    "speakerNotes": false
   }
 }

@@ -15,7 +15,8 @@
     "db:migrate": "drizzle-kit migrate",
     "test:week03-example": "node scripts/test-week03-example.mjs",
     "test:week04-example": "node scripts/test-week04-example.mjs",
-    "test:week05-example": "node scripts/test-week05-example.mjs"
+    "test:week05-example": "node scripts/test-week05-example.mjs",
+    "test:week06-example": "node scripts/test-week06-example.mjs"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",

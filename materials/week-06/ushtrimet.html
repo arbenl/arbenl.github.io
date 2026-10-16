@@ -1,0 +1,168 @@
+<!doctype html><html lang="sq"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ushtrimet 6 · PWA dhe puna offline · Mobile 2026/2027</title><link rel="stylesheet" href="/assets/catalog.css"><link rel="stylesheet" href="/assets/week-colors.css"><link rel="stylesheet" href="week-06.css"><script src="../java-03/lab-help.js" defer></script></head><body data-week="6" class="lab-guide"><a class="skip" href="#main">Kalo te përmbajtja</a><main id="main"><nav class="crumb" aria-label="Vendndodhja"><a href="/">Lëndët</a> / <a href="../">Mobile 2026/2027</a> / <a href="./">Java 6</a></nav><p class="eyebrow">Java 6 · 22.10.2026 · PWA (Progressive Web App – aplikacion web progresiv)</p><h1>RideShare: lista që hapet edhe pa internet</h1><p class="lead">Në këtë orë shton një lexues offline mbi projektin që ke. Shoferi dhe lejet e Javës 5 ruhen. Lexuesi shfaq vetëm të dhënat publike; nuk konfirmon rezervim.</p><p class="notice"><strong>Një rezultat i vogël, i plotë:</strong> tri karta pas ndërprerjes dhe rifreskimit, koha e ruajtjes dhe përditësimi kur lidhja rikthehet. Nis dorëzimin në minutën 65 që të kesh 25 minuta për feedback.</p><section class="card" id="hapat"><h2>Plani i 90 minutave</h2><ol class="lab-plan"><li><a href="#ora-1">0–10 · Përgatitu</a></li><li><a href="#hapi-a">10–18 · A: manifesti dhe ikonat</a></li><li><a href="#hapi-b">18–28 · B: lista publike</a></li><li><a href="#hapi-c">28–40 · C: service worker</a></li><li><a href="#hapi-d">40–48 · D: lexuesi offline</a></li><li><a href="#hapi-e">48–55 · E → F: aktivizoje</a></li><li><a href="#provat">55–63 · Tri prova</a></li><li><a href="#raporti">63–65 · Raporti dhe Push</a></li><li><a href="#dorezimi">65–90 · Dorëzimi dhe përgjigjja</a></li></ol></section><section class="card"><h2>Shiko ku kalon lista</h2><figure class="infrastructure-illustration"><a href="infrastructure.svg" target="_blank" rel="noopener"><img src="infrastructure.svg" alt="Git dhe GitHub publikojnë kodin në Vercel. Telefoni përdor service worker; me internet lexon Next.js dhe Neon/PostgreSQL, pa internet lexon kopjen lokale."></a><figcaption>Ilustrimi: publikimi i kodit dhe leximi i listës janë dy rrugë të ndryshme.</figcaption></figure><details><summary>Hap animacionin dhe ndiqe kërkesën</summary><iframe class="infra-embed" src="infrastructure.html?embed=1" title="Animacioni i infrastrukturës së RideShare · Java 6" loading="lazy"></iframe><p><a href="infrastructure.html" target="_blank" rel="noopener">Hap animacionin në ekran të plotë ↗</a></p></details><p><strong>Në laborator:</strong> Next.js punon në localhost. <strong>Pas publikimit:</strong> Next.js punon në Vercel. Në të dy rastet, lista lexohet nga Neon dhe kopja ruhet në shfletues.</p></section><section class="card" id="ora-1"><h2>1. Përgatitu · 0–10 min</h2><ol><li>Hap të njëjtin repository në GitHub Desktop → Open in Visual Studio Code.</li><li>Hap dosjen që ka package.json: <code>aplikacioni/</code> nëse kodi është aty. Në terminal ekzekuto <code>npm run dev</code>.</li><li>Hap localhost dhe kontrollo tri udhëtimet që vijnë nga Neon. Nëse leximi nuk punon, <a href="../java-04/ushtrimet.html">rikthe pikën e nisjes së Javës 4</a>.</li><li>Në GitHub mbetet i njëjti repository personal. Nuk instalon paketë, nuk krijon OAuth App dhe nuk shton sekret.</li></ol><p><strong>Puno në çift për provat, por secili dorëzon kodin dhe raportin e vet.</strong> Nëse ngec mbi 3 minuta, kërko ndihmë.</p><p class="notice">Rrugët më poshtë janë brenda dosjes së aplikacionit. Nëse nuk ke src/, përdor app/ dhe components/ në rrënjë. public/ është pranë package.json, gjithmonë jashtë src/.</p><div class="step-transition"><p><strong>Para se të vazhdosh:</strong> lista publike punon dhe e di ku është package.json.</p><a class="button" href="#hapi-a">Vazhdo te A →</a></div></section><section class="card" id="hapi-a" data-example-file="src/app/manifest.ts"><p class="eyebrow">Hapi A</p><h2>A · Emri dhe ikonat · 10–18 min</h2><p><strong>Skedari:</strong> <code>src/app/manifest.ts</code></p><div class="code-explainer"><h3>Çfarë bën ky kod?</h3><p>Manifesti përshkruan emrin, pamjen standalone dhe adresën e nisjes. Nuk ruan udhëtimet dhe nuk hap databazën. Next.js e kthen këtë skedar në /manifest.webmanifest.</p></div><p>Krijo skedarin. Shkarko <a href="icon-192.png" download>icon-192.png</a> dhe <a href="icon-512.png" download>icon-512.png</a>; vendosi te <code>public/icons/</code>. Emrat dhe përmasat duhet të mbeten si në kod.</p><pre><code>import type { MetadataRoute } from &quot;next&quot;;
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: &quot;RideShare AAB&quot;, short_name: &quot;RideShare&quot;,
+    description: &quot;Udhëtime drejt AAB; listë publike për lexim offline.&quot;,
+    start_url: &quot;/&quot;, scope: &quot;/&quot;, display: &quot;standalone&quot;,
+    background_color: &quot;#0b101b&quot;, theme_color: &quot;#be3455&quot;,
+    icons: [
+      { src: &quot;/icons/icon-192.png&quot;, sizes: &quot;192x192&quot;, type: &quot;image/png&quot; },
+      { src: &quot;/icons/icon-512.png&quot;, sizes: &quot;512x512&quot;, type: &quot;image/png&quot; },
+    ],
+  };
+}
+</code></pre><div class="step-transition"><p><strong>Kontrollo:</strong> Hap /manifest.webmanifest dhe dy adresat /icons/icon-192.png e /icons/icon-512.png.</p><p><strong>A → B:</strong> Tani aplikacioni ka identitet. Te B i japim një adresë publike listës që do të ruajmë.</p><a class="button" href="#hapi-b">Vazhdo te B →</a></div><p><a href="#hapat">↑ Kthehu te plani i orës</a></p></section><section class="card" id="hapi-b" data-example-file="src/app/api/udhetimet/route.ts"><p class="eyebrow">Hapi B</p><h2>B · Lista në një adresë publike · 18–28 min</h2><p><strong>Skedari:</strong> <code>src/app/api/udhetimet/route.ts</code></p><div class="code-explainer"><h3>Çfarë bën ky kod?</h3><p>GET /api/udhetimet përdor lexoUdhetimet() të Javës 4 dhe kthen JSON (JavaScript Object Notation) me gjashtë fushat publike. Nuk dërgon profile, email ose sekrete. Në gabim kthen një mesazh të përgjithshëm.</p></div><p>Krijo dosjet api/udhetimet dhe skedarin route.ts. Ky është API (Application Programming Interface – ndërfaqe programimi e aplikacionit). Përdor të njëjtin Neon që ke; nuk krijon databazë tjetër.</p><pre><code>import { lexoUdhetimet } from &quot;@/lib/udhetimet&quot;;
+
+export const dynamic = &quot;force-dynamic&quot;;
+
+// Vetëm të dhënat publike të udhëtimit. Asnjë profil, email ose sesion.
+export async function GET() {
+  try {
+    const rows = await lexoUdhetimet();
+    const trips = rows.map(({ id, nisja, destinacioni, ora, vendtakimi, vende }) =&gt;
+      ({ id, nisja, destinacioni, ora, vendtakimi, vende }));
+    return Response.json({ trips }, { headers: { &quot;Cache-Control&quot;: &quot;no-store&quot; } });
+  } catch {
+    return Response.json({ error: &quot;Lista nuk mund të lexohet tani.&quot; }, { status: 503 });
+  }
+}
+</code></pre><div class="step-transition"><p><strong>Kontrollo:</strong> Hap /api/udhetimet. Duhet të shohësh trips me tri udhëtime, pa kredenciale.</p><p><strong>B → C:</strong> Tani kemi një përgjigje publike të vogël. Te C përcaktojmë si ruhet dhe si lexohet kur serveri nuk arrihet.</p><a class="button" href="#hapi-c">Vazhdo te C →</a></div><p><a href="#hapat">↑ Kthehu te plani i orës</a></p></section><section class="card" id="hapi-c" data-example-file="public/sw.js"><p class="eyebrow">Hapi C</p><h2>C · Service worker dhe kopja lokale · 28–40 min</h2><p><strong>Skedari:</strong> <code>public/sw.js</code></p><div class="code-explainer"><h3>Çfarë bën ky kod?</h3><p>Install ruan dokumentin offline dhe ikonat. Activate pastron vetëm cache-t e vjetra të këtij shembulli. GET i listës provon serverin dhe ruan përgjigjen e mirë me kohë. Në dështim lexon kopjen; POST, paneli dhe hyrja nuk ruhen.</p></div><p>Krijo sw.js në public/, jo në src/. SHELL është lista e skedarëve të lejuar. Pa offline.html, regjistrimi fillestar nuk përfundon: atë e krijon menjëherë te D.</p><pre><code>// Kjo cache përmban VETËM dokumentin offline, ikonat dhe listën publike.
+const CACHE = &quot;rideshare-public-v1&quot;;
+const API = &quot;/api/udhetimet&quot;;
+const SHELL = [&quot;/offline.html&quot;, &quot;/icons/icon-192.png&quot;, &quot;/icons/icon-512.png&quot;];
+
+self.addEventListener(&quot;install&quot;, event =&gt; {
+  event.waitUntil(caches.open(CACHE).then(cache =&gt; cache.addAll(SHELL))
+    .then(() =&gt; self.skipWaiting()));
+});
+self.addEventListener(&quot;activate&quot;, event =&gt; {
+  event.waitUntil(caches.keys().then(keys =&gt; Promise.all(keys
+    .filter(key =&gt; key.startsWith(&quot;rideshare-public-&quot;) &amp;&amp; key !== CACHE)
+    .map(key =&gt; caches.delete(key)))).then(() =&gt; self.clients.claim()));
+});
+
+async function readPublicList(request) {
+  const cache = await caches.open(CACHE);
+  try {
+    const response = await fetch(request);
+    if (!response.ok || !response.headers.get(&quot;content-type&quot;)?.includes(&quot;application/json&quot;)) {
+      throw new Error(&quot;Lista nuk erdhi nga serveri&quot;);
+    }
+    const headers = new Headers(response.headers);
+    headers.set(&quot;x-rideshare-source&quot;, &quot;network&quot;);
+    headers.set(&quot;x-rideshare-saved-at&quot;, new Date().toISOString());
+    const fresh = new Response(await response.text(), { status: 200, headers });
+    // Nëse hapësira lokale është plot, lista nga serveri prapë shfaqet.
+    try { await cache.put(API, fresh.clone()); } catch {
+      // Mos pretendo ruajtje kur pajisja nuk e pranoi kopjen.
+      fresh.headers.delete(&quot;x-rideshare-saved-at&quot;);
+    }
+    return fresh;
+  } catch {
+    const saved = await cache.match(API);
+    if (!saved) return new Response(JSON.stringify({ error: &quot;no_snapshot&quot; }), {
+      status: 503, headers: { &quot;content-type&quot;: &quot;application/json&quot; },
+    });
+    const headers = new Headers(saved.headers);
+    headers.set(&quot;x-rideshare-source&quot;, &quot;cache&quot;);
+    return new Response(await saved.text(), { status: 200, headers });
+  }
+}
+
+self.addEventListener(&quot;fetch&quot;, event =&gt; {
+  const request = event.request, url = new URL(request.url);
+  if (request.method !== &quot;GET&quot; || url.origin !== self.location.origin) return;
+  if (url.pathname === API &amp;&amp; !url.search) {
+    event.respondWith(readPublicList(request));
+  } else if (request.mode === &quot;navigate&quot; &amp;&amp; [&quot;/&quot;, &quot;/offline.html&quot;].includes(url.pathname)) {
+    event.respondWith(fetch(request).catch(async () =&gt; {
+      const saved = await caches.match(&quot;/offline.html&quot;);
+      return saved || new Response(&quot;Hape RideShare një herë me internet.&quot;, { status: 503 });
+    }));
+  }
+  // /panel, /api/auth, POST dhe faqet private nuk ruhen dhe nuk ridërgohen.
+});
+</code></pre><div class="step-transition"><p><strong>Kontrollo:</strong> Ruaje kodin pa gabime. Mos aktivizo Offline ende; fillimisht përfundo D–F.</p><p><strong>C → D:</strong> Worker-i di çfarë të ruajë, por duhet një faqe e gatshme për lexim. Te D e krijojmë pa varësi nga asetet e Next.js.</p><a class="button" href="#hapi-d">Vazhdo te D →</a></div><p><a href="#hapat">↑ Kthehu te plani i orës</a></p></section><section class="card" id="hapi-d" data-example-file="public/offline.html"><p class="eyebrow">Hapi D</p><h2>D · Lexuesi që hapet pa internet · 40–48 min</h2><p><strong>Skedari:</strong> <code>public/offline.html</code></p><div class="code-explainer"><h3>Çfarë bën ky kod?</h3><p>Një dokument i vetëm përmban pamjen dhe kodin e leximit. Krijon kartat me textContent, tregon burimin dhe kohën e kopjes. Butoni i kërkesës për vend është i çaktivizuar sepse kjo pamje është vetëm lexues.</p></div><p>Krijo offline.html te public/. Kopjo gjithë dokumentin, përfshirë style dhe script. Kjo faqe nuk kërkon hyrje dhe nuk shfaq të dhëna private.</p><pre><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;sq&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;
+&lt;title&gt;RideShare · Lista e ruajtur&lt;/title&gt;
+&lt;style&gt;
+body{margin:0;background:#0b101b;color:#edf2ff;font:18px/1.6 system-ui,sans-serif}main{max-width:720px;margin:auto;padding:24px}h1{font-size:clamp(28px,7vw,42px)}button,a{font:inherit;color:inherit}button{padding:12px 18px;border:2px solid #fda4af;border-radius:12px;background:#4b1e32;cursor:pointer}button:disabled{opacity:.7;cursor:not-allowed}a{color:#fda4af}.trip-card{padding:18px;margin:18px 0;border:1px solid #546078;border-radius:14px}.trip-card h2{font-size:22px}#source{padding:16px;border-left:4px solid #fda4af;background:#1c2438}time{overflow-wrap:anywhere}*:focus-visible{outline:3px solid #fda4af;outline-offset:4px}
+&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;main&gt;
+&lt;p&gt;RideShare AAB · Lexim publik&lt;/p&gt;&lt;h1&gt;Udhëtimet, edhe pa internet&lt;/h1&gt;
+&lt;p id=&quot;source&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;Po lexojmë listën…&lt;/p&gt;
+&lt;p&gt;Ruajtur për herë të fundit: &lt;time id=&quot;saved&quot;&gt;—&lt;/time&gt;&lt;/p&gt;
+&lt;button id=&quot;refresh&quot; type=&quot;button&quot;&gt;Rifresko listën&lt;/button&gt;
+&lt;div id=&quot;trips&quot;&gt;&lt;/div&gt;
+&lt;button id=&quot;book&quot; disabled&gt;Kërko vend · kërkon lidhje dhe server&lt;/button&gt;
+&lt;p&gt;Kjo pamje shërben vetëm për lexim. Vendet dhe orari mund të kenë ndryshuar; asnjë rezervim nuk është konfirmuar.&lt;/p&gt;
+&lt;a href=&quot;/&quot;&gt;Kthehu te aplikacioni&lt;/a&gt;
+&lt;/main&gt;&lt;script&gt;
+const source = document.querySelector(&quot;#source&quot;), list = document.querySelector(&quot;#trips&quot;);
+const refresh = document.querySelector(&quot;#refresh&quot;);
+async function load() {
+  refresh.disabled = true;
+  source.textContent = &quot;Po kërkojmë listën…&quot;;
+  try {
+    const response = await fetch(&quot;/api/udhetimet&quot;, { cache: &quot;no-store&quot; });
+    const data = await response.json();
+    if (!response.ok || !Array.isArray(data.trips)) throw new Error(&quot;no_snapshot&quot;);
+    list.replaceChildren();
+    for (const trip of data.trips) {
+      const card = document.createElement(&quot;article&quot;); card.className = &quot;trip-card&quot;;
+      const title = document.createElement(&quot;h2&quot;); title.textContent = trip.nisja + &quot; → &quot; + trip.destinacioni;
+      const details = document.createElement(&quot;p&quot;);
+      details.textContent = &quot;Ora: &quot; + trip.ora + &quot; · Vende në këtë kopje: &quot; + trip.vende;
+      card.append(title, details); list.append(card);
+    }
+    const saved = response.headers.get(&quot;x-rideshare-saved-at&quot;);
+    document.querySelector(&quot;#saved&quot;).textContent = saved ? new Date(saved).toLocaleString(&quot;sq-AL&quot;) : &quot;Lexuar drejtpërdrejt; kopja ende nuk u ruajt.&quot;;
+    source.textContent = response.headers.get(&quot;x-rideshare-source&quot;) === &quot;cache&quot;
+      ? &quot;Lista e fundit e ruajtur · Mund të jetë vjetruar. Serveri nuk u arrit.&quot;
+      : &quot;Lista erdhi nga serveri. Lexo sërish para çdo veprimi.&quot;;
+  } catch {
+    source.textContent = list.children.length
+      ? &quot;Lidhja dështoi. Lista në ekran është e mëparshme; nuk ka konfirmim të ri.&quot;
+      : &quot;Ende nuk ka listë të ruajtur. Hape aplikacionin me internet dhe provo përsëri.&quot;;
+  } finally { refresh.disabled = false; }
+}
+refresh.addEventListener(&quot;click&quot;, load);
+window.addEventListener(&quot;offline&quot;, () =&gt; { source.textContent = &quot;Lidhja duket e ndërprerë. Lista e shfaqur mund të jetë e vjetër.&quot;; });
+window.addEventListener(&quot;online&quot;, () =&gt; { source.textContent = &quot;Rrjeti duket i lidhur. Shtyp Rifresko listën për ta pyetur serverin.&quot;; });
+load();
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+</code></pre><div class="step-transition"><p><strong>Kontrollo:</strong> Hap /offline.html me internet. Duhet të shohësh tri karta dhe butonin Rifresko listën.</p><p><strong>D → E:</strong> Faqja mund të lexohet. Te E i kërkojmë shfletuesit të regjistrojë worker-in dhe të mbushë kopjen.</p><a class="button" href="#hapi-e">Vazhdo te E →</a></div><p><a href="#hapat">↑ Kthehu te plani i orës</a></p></section><section class="card" id="hapi-e" data-example-file="src/components/Pwa.tsx"><p class="eyebrow">Hapi E</p><h2>E · Regjistro worker-in · 48–52 min</h2><p><strong>Skedari:</strong> <code>src/components/Pwa.tsx</code></p><div class="code-explainer"><h3>Çfarë bën ky kod?</h3><p>Ky komponent punon në shfletues. Regjistron /sw.js dhe kërkon listën pasi worker-i kontrollon faqen. Kjo kërkesë mbush kopjen që në vizitën e parë: lista e renderuar në server nuk e bën vetë.</p></div><p>Krijo Pwa.tsx në components/. Përdor localhost në laborator ose HTTPS në Vercel. Një adresë HTTP me IP të rrjetit lokal zakonisht nuk lejon service worker.</p><pre><code>&quot;use client&quot;;
+import { useEffect } from &quot;react&quot;;
+
+export default function Pwa() {
+  useEffect(() =&gt; {
+    if (!(&quot;serviceWorker&quot; in navigator)) return;
+    let cancelled = false;
+    // Server rendering nuk mbush cache-n e JSON-it. E kërkojmë një herë këtu.
+    async function warmSnapshot() {
+      if (cancelled || !navigator.serviceWorker.controller) return;
+      try { await fetch(&quot;/api/udhetimet&quot;, { cache: &quot;no-store&quot; }); } catch { /* offline */ }
+    }
+    navigator.serviceWorker.addEventListener(&quot;controllerchange&quot;, warmSnapshot);
+    navigator.serviceWorker.register(&quot;/sw.js&quot;, { scope: &quot;/&quot; })
+      .then(() =&gt; navigator.serviceWorker.ready).then(warmSnapshot).catch(() =&gt; {});
+    return () =&gt; {
+      cancelled = true;
+      navigator.serviceWorker.removeEventListener(&quot;controllerchange&quot;, warmSnapshot);
+    };
+  }, []);
+  return &lt;aside style={{ padding: &quot;1rem&quot; }}&gt;
+    &lt;a href=&quot;/offline.html&quot;&gt;Lista për lexim pa internet&lt;/a&gt;
+    &lt;p&gt;Kopja e ruajtur mund të jetë e vjetër. Këtu nuk konfirmohen rezervime.&lt;/p&gt;
+  &lt;/aside&gt;;
+}
+</code></pre><div class="step-transition"><p><strong>Kontrollo:</strong> Skedari ruhet; importi do të përdoret te F. Mos krijo worker të dytë.</p><p><strong>E → F:</strong> Komponenti është gati. Te F e vendosim në layout që të jetë aktiv edhe kur faqja e listës ka gabim databaze.</p><a class="button" href="#hapi-f">Vazhdo te F →</a></div><p><a href="#hapat">↑ Kthehu te plani i orës</a></p></section><section class="card" id="hapi-f" data-example-file="src/app/layout.tsx"><p class="eyebrow">Hapi F</p><h2>F · Lidhe me strukturën ekzistuese · 52–55 min</h2><p><strong>Skedari:</strong> <code>src/app/layout.tsx</code></p><div class="code-explainer"><h3>Çfarë bën ky kod?</h3><p>Layout-i e përfshin Pwa para përmbajtjes së faqes. Lidhja për lexuesin offline mbetet e dukshme edhe nëse lista nga Neon dështon. Importi i globals.css ruan stilet.</p></div><p>Hap layout.tsx ekzistues. <strong>Mos fshi fontet, stilet ose metadata-n që ke përshtatur.</strong> Shto importin e Pwa dhe <code>&lt;Pwa /&gt;</code> brenda body, para children. Kodi poshtë tregon modelin minimal të plotë; në projektin tënd bashko vetëm këto dy shtesa.</p><pre><code>import &quot;./globals.css&quot;;
+import type { Metadata } from &quot;next&quot;;
+import Pwa from &quot;@/components/Pwa&quot;;
+
+export const metadata: Metadata = { title: &quot;RideShare AAB&quot; };
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return &lt;html lang=&quot;sq&quot;&gt;&lt;body&gt;&lt;Pwa /&gt;{children}&lt;/body&gt;&lt;/html&gt;;
+}
+</code></pre><div class="step-transition"><p><strong>Kontrollo:</strong> Rifresko faqen kryesore me internet. Application → Service Workers duhet të tregojë worker aktiv; Cache Storage → rideshare-public-v1 duhet të ketë /api/udhetimet.</p><p><strong>F → Provat:</strong> Tani lidhja u mbyll: faqja aktivizon worker-in, ai ruan listën. Kalo te provat e përdoruesit.</p><a class="button" href="#provat">Kalo te tri provat →</a></div><p><a href="#hapat">↑ Kthehu te plani i orës</a></p></section><section class="card" id="provat"><h2>2. Tri prova me një koleg · 55–63 min</h2><p>Njëri vepron, tjetri parashikon dhe lexon mesazhin. Ndërroni rolet. Në Chrome/Edge: Inspect → ikona telefon/tablet → 375 px. Përdor Network → Offline <strong>vetëm në tab-in RideShare</strong>, që tab-i i Neon të mbetet online.</p><h3>Prova 1 · Manifesti dhe vizita online</h3><ol><li>Hap /manifest.webmanifest dhe dy ikonat. Emri: RideShare AAB; përmasat 192×192 dhe 512×512.</li><li>Hap faqen kryesore me internet. Te Application → Service Workers kontrollo që /sw.js është aktiv.</li><li>Te Cache Storage → rideshare-public-v1 gjej /api/udhetimet; hap /offline.html dhe lexo listën dhe kohën.</li></ol><p>Instalimi në telefon është opsional nëse shfletuesi e ofron. Në iPhone zakonisht përdoret Share → Add to Home Screen; në Chrome/Edge menyja e instalimit. Nëse mungon, shënoje; vazhdo provën në shfletues.</p><h3>Prova 2 · Pa internet, edhe pas rifreskimit</h3><ol><li>Te tab-i RideShare aktivizo Network → Offline.</li><li>Hap / dhe rifresko faqen. Dokumenti offline duhet të shfaqë tri karta dhe kohën e kopjes.</li><li>Lexo mesazhin e të dhënave të ruajtura. Butoni Kërko vend është i çaktivizuar; nuk ka rezervim të konfirmuar.</li></ol><p><strong>Pse kjo provë?</strong> Pamja që mbetet në një tab të hapur nuk provon offline. Rifreskimi provon që dokumenti dhe lista mund të lexohen pa rrjet.</p><h3>Prova 3 · Rikthe lidhjen dhe kërko të dhënat e reja</h3><ol><li>Mbaje RideShare offline. Në tab-in online të Neon → SQL Editor ndrysho orën e ID 2:</li></ol><pre><code>UPDATE udhetimet SET ora = '08:25' WHERE id = '2';</code></pre><p>Ky SQL (Structured Query Language – gjuha e pyetjeve të strukturuara) ndryshon vetëm orën e udhëtimit 2 në databazën tënde. Kopja offline ende tregon 08:15.</p><ol start="2"><li>Te RideShare zgjidh Network → No throttling/Online. Kliko <strong>Rifresko listën</strong>.</li><li>ID 2 duhet të tregojë 08:25, burimin server dhe kohën e re. Vetëm rikthimi i ikonës së rrjetit nuk mjafton.</li><li>Në Neon rikthe <code>08:15</code> me të njëjtin UPDATE dhe rifresko sërish.</li></ol><p><strong>Kur ka dështim:</strong> shëno rezultatin real në raport dhe kërko ndihmë; mos shkruaj se prova kaloi nëse nuk e pe.</p><div class="step-transition"><p>Tani ke prova që mund t’i tregosh. Kalo te raporti para minutës 65.</p><a class="button" href="#raporti">Vazhdo te raporti →</a></div></section><section class="card" id="raporti"><h2>3. Raporti dhe Push · 63–65 min</h2><ol><li><a href="java-06-model.md" download="java-06.md">Shkarko modelin java-06.md</a>.</li><li>Ruaje pranë README të repository-t, jashtë aplikacioni/. Plotëso tri provat me hapat, pritjen dhe rezultatin; hiq [PLOTËSO].</li><li>GitHub Desktop → shkruaj <code>Java 6: PWA dhe lexim offline</code> → Commit → Push origin.</li><li>Hap GitHub dhe verifiko raportin plus kodin e ri. Mos ngarko .env, node_modules, .next ose ZIP.</li></ol><div class="step-transition"><p>Skedarët janë në GitHub, por kjo ende nuk është dorëzim. Te hapi 4 njofton lëndën ku gjendet puna jote.</p><a class="button" href="#dorezimi">Kalo te dorëzimi →</a></div></section><section class="card" id="dorezimi"><h2>4. Dorëzo dhe lexo përgjigjen · 65–90 min</h2><ol><li>Hap formularin dhe zgjidh <strong>Java 6</strong>.</li><li>Vendos linkun kryesor të repository-t personal, p.sh. <code>https://github.com/llogaria/rideshare-mobile</code>. Mos përdor linkun e profesorit ose të një skedari.</li><li>Kliko Create. Ruaje numrin e Issue-t; prit komentin e github-actions[bot].</li><li>Bot-i kontrollon pesë gjëra: raportin, projektin Next.js, tri prova të shkruara, skedarët PWA dhe emrat e skedarëve privatë.</li><li>Nëse mungon diçka, ndiq rrugën që tregon komenti: korrigjo në VS Code → Commit → Push → te <strong>i njëjti Issue</strong> komento <code>rikontrollo</code>.</li></ol><p><a class="button" href="https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-submission.yml&amp;week=Java%206">Dorëzo punën · Java 6</a> <a class="button secondary" href="../dorezimet.html">Si dorëzoj? · 3 hapa</a></p><p class="notice"><strong>5/5 është kontroll teknik, jo notë.</strong> Bot-i nuk ekzekuton kod, nuk hap Neon dhe nuk përdor AI. Java 6 ka deri në 3 pikë sipas rubrikës së lëndës. Nëse përgjigjja vonon, mos krijo Issue tjetër: ruaj numrin dhe njofto profesorin para se të largohesh.</p></section><details class="notice"><summary>Ndihmë kur diçka nuk punon</summary><ul><li><strong>Worker nuk aktivizohet:</strong> /offline.html dhe dy ikonat duhet të hapen; kontrollo që public/ është pranë package.json. Përdor localhost ose HTTPS.</li><li><strong>Worker i vjetër:</strong> Application → Service Workers → Update. Nëse duhet, Unregister vetëm në localhost të projektit tënd; fshi vetëm cache-n rideshare-public-v1 dhe hape sërish online.</li><li><strong>Lista nuk ruhet:</strong> hape fillimisht me internet dhe kontrollo /api/udhetimet. Pas kontrollit nga worker-i, Pwa.tsx e kërkon listën posaçërisht për kopjen.</li><li><strong>Vizitë e parë pa kopje:</strong> është normale të shfaqet “Ende nuk ka listë të ruajtur”. Cache mund të fshihet nga shfletuesi; nuk është backup i databazës.</li><li><strong>Serveri/Neon nuk përgjigjet:</strong> mund të lexohet kopja e fundit me paralajmërim. Mos shfaq sukses të rremë.</li></ul></details><details class="notice"><summary>Sfidë shtesë pas dorëzimit</summary><p>Në një profil të ri të shfletuesit, provo rastin pa kopje. Shpjego mesazhin. Pastaj përshtate emrin dhe ikonat për biznesin tënd, duke mbajtur të njëjtat kufij të privatësisë.</p></details><details class="notice"><summary>Burime zyrtare</summary><p><a href="https://nextjs.org/docs/app/guides/progressive-web-apps">Next.js · PWA</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers">MDN · Service workers</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine">MDN · kufijtë e treguesit online</a></p></details><p><a href="./">← Java 6</a> · <a href="prezantimi-ushtrimeve.html">Prezantimi për projektor</a></p></main><footer>Kolegji AAB · Programimi për Pajisje Mobile · Prof. Arben Lila</footer></body></html>
