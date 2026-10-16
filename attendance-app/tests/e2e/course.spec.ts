@@ -275,6 +275,18 @@ for(const width of [320,375,1280]){
    if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
    await expect(page.locator('#counter')).toHaveText(`1 / ${total}`);
    for(let n=1;n<=total;n++){
+    if(kind==='ligjerates'){
+     const visible=page.locator('.step:visible');
+     await expect.poll(()=>visible.locator('.visual-cue img').evaluateAll(images=>images.every(image=>(image as HTMLImageElement).complete&&(image as HTMLImageElement).naturalWidth>0))).toBe(true);
+     const quiz=visible.locator('.quiz');
+     if(await quiz.count()){
+      const answer=quiz.locator('.quiz-answer'),toggle=quiz.getByRole('button',{name:'Zbulo përgjigjen pas diskutimit',exact:true});
+      await expect(answer).toBeHidden();await expect(toggle).toBeDisabled();
+      await quiz.locator('[data-correct="true"]').click();await expect(answer).toBeHidden();
+      await toggle.click();await expect(answer).toContainText('Saktë');
+      await quiz.getByRole('button',{name:'Voto përsëri',exact:true}).click();await expect(answer).toBeHidden();await expect(toggle).toBeDisabled();
+     }
+    }
     const reveal=page.locator('.step:visible .reveal');
     if(await reveal.count()){
      await expect(page.locator('#'+await reveal.getAttribute('aria-describedby'))).toBeVisible();

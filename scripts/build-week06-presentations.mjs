@@ -8,10 +8,10 @@ if(!path.isAbsolute(work||''))throw Error('Use a fresh private WEEK06_BUILD_DIR.
 const {Presentation,PresentationFile,FileBlob}=await import(pathToFileURL(path.join(process.env.RUNTIME_NODE_MODULES,'@oai/artifact-tool/dist/artifact_tool.mjs')));
 const {finalizePresentation}=await import(pathToFileURL(path.join(skill,'container_tools/artifact_tool_utils.mjs')));
 await fs.mkdir(work+'/output',{recursive:true});
-const ref=await PresentationFile.importPptx(await FileBlob.load(root+'/lendet/2026-2027/mobile/lectures/ligjerata-05-hyrja-lejet-rideshare-2026.pptx'));
+const ref=await PresentationFile.importPptx(await FileBlob.load(root+'/lendet/2026-2027/mobile/lectures/ligjerata-06-pwa-offline-rideshare-2026.pptx'));
 for(const i of [0,2]){const png=await ref.export({slide:ref.slides.items[i],format:'png',scale:1});await fs.writeFile(work+'/reference-'+i+'.png',new Uint8Array(await png.arrayBuffer()));}
 const logo=await fs.readFile(root+'/img/aab_logo_white.png');
-for(const kind of ['lecture','lab']){
+for(const kind of (process.env.WEEK06_BUILD_KIND || 'lecture,lab').split(',')){
  const data=JSON.parse(await fs.readFile(root+'/materials/week-06/'+kind+'-slides.json','utf8'));validateSlideQuestions(data,kind);
  const p=Presentation.create({slideSize:{width:1280,height:720}});
  function text(s,value,x,y,w,h,size=27,color='#edf2ff',bold=false){const o=s.shapes.add({geometry:'textbox',position:{left:x,top:y,width:w,height:h},fill:'none',line:{fill:'none',width:0}});o.text=value;o.text.style={typeface:'Arial',fontSize:size,color,bold,autoFit:'none'};return o;}
@@ -28,7 +28,34 @@ for(const kind of ['lecture','lab']){
   const s=p.slides.add();s.background.fill='#0b101b';text(s,d.kicker,64,27,1060,32,17,'#fda4af',true);text(s,String(i+1).padStart(2,'0')+' / '+data.length,1135,27,100,32,17,'#bfcbdf');
   if(i===0)s.images.add({blob:logo,contentType:'image/png',fit:'contain',alt:'Kolegji AAB',position:{left:1085,top:77,width:130,height:60}});
   text(s,d.title,64,88,i===0?1000:1150,105,42,'#ffffff',true);
-  if(d.diagram||d.animation){map(s);text(s,d.body.join('\n'),64,612,1150,75,21);if(d.animation)text(s,'Animacioni live: https://arbenl.github.io/lendet/2026-2027/mobile/java-06/infrastructure.html',64,689,1150,22,14,'#fda4af');continue;}
+  if(d.diagram||(kind==='lab'&&d.animation)){map(s);text(s,d.body.join('\n'),64,612,1150,75,21);if(d.animation)text(s,'Animacioni live: https://arbenl.github.io/lendet/2026-2027/mobile/java-06/infrastructure.html',64,689,1150,22,14,'#fda4af');continue;}
+  if(kind==='lecture'&&(d.visual||d.animation)){
+   const cues=d.visual||[{icon:'cloud',label:'Me internet',note:'Serveri → lista → kopja'},{icon:'hard-drive',label:'Pa internet',note:'Kopja → koha e ruajtjes'},{icon:'refresh-cw',label:'Lidhja rikthehet',note:'Kërko përgjigje të re'}];
+   const hasValue=cues.some(c=>c.value),gap=38,w=(1150-gap*(cues.length-1))/cues.length;
+   const iy=205,iz=d.quiz?48:64;
+   for(const [j,c]of cues.entries()){
+    const x=64+j*(w+gap),png=await fs.readFile(root+'/assets/week06-icons/'+c.icon+'.png');
+    s.images.add({blob:png,contentType:'image/png',alt:c.label,position:{left:x,top:iy,width:iz,height:iz}});
+    if(c.value)text(s,c.value,x,265,w,54,44,'#fda4af',true);
+    text(s,c.label,x,hasValue?322:283,w,50,26,'#ffffff',true);
+    text(s,c.note,x,hasValue?367:340,w,65,22,'#c8d3e6');
+    if(d.visualPath&&j<cues.length-1)text(s,'→',x+w+4,230,gap-6,36,28,'#fda4af');
+   }
+   if(d.quiz){
+    const by=hasValue?410:412,qy=hasValue?505:505;
+    text(s,d.body.join('\n'),64,by,1150,85,23);
+    text(s,d.quiz.question,64,qy,1150,52,25,'#fda4af',true);
+    text(s,d.quiz.options.map((o,j)=>String.fromCharCode(65+j)+' · '+o).join('\n'),64,567,1150,105,24);
+    text(s,'Votoni A / B / C · Shpjegoni arsyen · Pastaj kaloni te slajdi tjetër',64,687,1150,25,17,'#c8d3e6');
+   }else{
+    text(s,d.body.join('\n\n'),64,hasValue?445:425,1150,130,26);
+    if(d.question){text(s,d.question,64,568,1150,48,24,'#fda4af',true);text(s,d.answer,64,623,1150,70,22,'#b8eddb');}
+    if(d.animation)text(s,'Animacioni live: https://arbenl.github.io/lendet/2026-2027/mobile/java-06/infrastructure.html',64,635,1150,50,20,'#fda4af');
+    else if(d.href&&!d.question)text(s,d.link+' · faqja e Javës 6',64,640,1150,40,21,'#fda4af');
+   }
+   if(d.sources)text(s,d.sources.join(' | '),64,701,1150,18,11,'#bfcbdf');
+   continue;
+  }
   text(s,d.body.join('\n\n'),64,220,1150,155,27);
   if(d.flow){const gap=36,w=(1150-gap*(d.flow.length-1))/d.flow.length;for(const [j,label]of d.flow.entries()){box(s,label,64+j*(w+gap),410,w,105,24);if(j<d.flow.length-1)s.shapes.add({geometry:'rightArrow',position:{left:64+j*(w+gap)+w+5,top:452,width:gap-10,height:15},fill:'#fda4af',line:{fill:'none',width:0}});}}
   if(d.comparison){const y=395,h=d.comparison.length===3?64:76;for(const [j,[a,b]]of d.comparison.entries()){text(s,a,64,y+j*h,310,h-5,24,'#fda4af',true);text(s,b,395,y+j*h,820,h-5,24);}}

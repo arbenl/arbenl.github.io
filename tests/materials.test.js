@@ -137,6 +137,12 @@ test('week 5 lecture and lab always show questions before answer reveals',async(
 
 test('week 6 delivers matching guided examples, valid student decks and animation links',async()=>{
  const base='lendet/2026-2027/mobile/java-06/';
+ const story=JSON.parse(await readFile('materials/week-06/lecture-slides.json','utf8'));
+ assert.equal(story.filter(slide=>slide.quiz).length,3);
+ assert.ok(story[0].body.join(' ').includes('Dritoni'));
+ assert.ok(!JSON.stringify(story).includes('autobus'));
+ for(const slide of story)for(const cue of slide.visual||[]){assert.ok(cue.label&&cue.note);assert.ok((await readFile('assets/week06-icons/'+cue.icon+'.svg','utf8')).includes('<svg'));}
+
  const manifest=JSON.parse(await readFile('materials/manifest.json','utf8'));
  const guide=await readFile(base+'ushtrimet.html','utf8');
  const examples=JSON.parse(await readFile('materials/week-06/example-files.json','utf8'));

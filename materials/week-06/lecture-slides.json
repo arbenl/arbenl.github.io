@@ -1,341 +1,503 @@
 [
   {
-    "title": "Arta humb internetin në autobus",
-    "kicker": "JAVA 6 · 22.10.2026 · 0–3 MIN",
+    "title": "Sinjali u zhduk. Po udhëtimi?",
+    "kicker": "JAVA 6 · 0–3 MIN",
     "body": [
-      "Ajo e ka hapur RideShare më parë dhe po kërkon udhëtimin drejt AAB.",
-      "Çfarë duhet të shohë tani, në vend të një ekrani bosh?"
+      "Dritoni ka publikuar udhëtimin drejt AAB-së dhe ofron 3 vende të lira në veturë. Telefoni i tij humb lidhjen me internetin.",
+      "Çfarë mund të lexojë Dritoni kur e hap përsëri listën publike të RideShare?"
+    ],
+    "visual": [
+      {
+        "icon": "car",
+        "label": "Dritoni · shofer",
+        "note": "3 vende drejt AAB-së"
+      },
+      {
+        "icon": "wifi-off",
+        "label": "Telefoni pa internet",
+        "note": "Dritoni nuk e arrin serverin"
+      }
     ],
     "quiz": {
-      "question": "Cili është premtimi i ndershëm pa internet?",
+      "question": "Zgjidhni para se të vazhdojmë: çfarë duhet të shfaqet?",
       "options": [
-        "Lista e fundit, me paralajmërim se mund të jetë e vjetër.",
-        "Rezervimi u konfirmua, sepse karta ende duket.",
-        "Vendet janë patjetër të njëjta si në databazë."
+        "Lista e fundit, me kohën kur u ruajt.",
+        "“Rezervimi u konfirmua”.",
+        "“Vendet janë ende të njëjta”."
       ],
       "correct": 0,
-      "explanation": "Mund të lexojmë një kopje të ruajtur. Vetëm serveri mund të konfirmojë gjendjen e tanishme dhe veprimin."
+      "explanation": "Lista e ruajtur ndihmon për lexim. Nuk dëshmon gjendjen aktuale dhe nuk konfirmon rezervim."
     }
   },
   {
-    "title": "RideShare që kemi ndërtuar",
-    "kicker": "VAZHDIMI · 3–5 MIN",
+    "title": "Interneti ndalet. Leximi vazhdon.",
+    "kicker": "JAVA 6 · 3–5 MIN",
     "body": [
-      "Java 3 solli listën dhe detajet. Java 4 i lidhi me Neon.",
-      "Java 5 shtoi hyrjen dhe kontrollin e pronarit. Java 6 shton leximin pa internet."
+      "Nëse lista u ruajt më parë, Dritoni mund ta lexojë kopjen publike në telefonin e tij.",
+      "Arta është studentja që kërkon vend. Ajo mund të vazhdojë online edhe kur telefoni i Dritonit është pa lidhje."
     ],
-    "flow": [
-      "J3 · Ekranet",
-      "J4 · Të dhënat",
-      "J5 · Lejet",
-      "J6 · Pa internet"
+    "visual": [
+      {
+        "icon": "hard-drive",
+        "label": "Lexo kopjen",
+        "note": "Lista e fundit + koha"
+      },
+      {
+        "icon": "lock-keyhole",
+        "label": "Mos shpik sukses",
+        "note": "Pa konfirmim rezervimi"
+      }
     ]
   },
   {
-    "title": "Çfarë do të kuptosh sot",
-    "kicker": "SYNIMET · 5–6 MIN",
+    "title": "RideShare po fiton një aftësi të re",
+    "kicker": "JAVA 6 · 5–6 MIN",
     "body": [
-      "Do të shpjegosh çfarë shtojnë manifesti, service worker dhe cache.",
-      "Do të dallosh kopjen nga databaza dhe API-në (Application Programming Interface – ndërfaqe programimi) që kthen listën."
+      "Nga ekrani, te të dhënat dhe lejet: sot shtojmë leximin pa internet.",
+      "Në fund do të shpjegosh ku ruhet lista dhe kur duhet pyetur sërish serveri."
     ],
-    "comparison": [
-      [
-        "Në lexim",
-        "Mund të shfaqet kopja e fundit."
-      ],
-      [
-        "Në veprim",
-        "Nuk shpikim sukses kur serveri nuk përgjigjet."
-      ]
+    "visual": [
+      {
+        "icon": "smartphone",
+        "label": "Java 3",
+        "note": "Ekranet"
+      },
+      {
+        "icon": "database",
+        "label": "Java 4",
+        "note": "Neon · të dhënat"
+      },
+      {
+        "icon": "lock-keyhole",
+        "label": "Java 5",
+        "note": "Hyrja dhe lejet"
+      },
+      {
+        "icon": "hard-drive",
+        "label": "Java 6",
+        "note": "Kopja në pajisje"
+      }
     ]
   },
   {
-    "title": "Harta e infrastrukturës së Javës 6",
-    "kicker": "ILUSTRIMI · 6–9 MIN",
+    "title": "Ku udhëton lista?",
+    "kicker": "JAVA 6 · 6–9 MIN",
     "body": [
-      "Sipër: kodi publikohet. Poshtë: përdoruesi kërkon listën.",
-      "Kopja ruhet në shfletuesin e kësaj pajisjeje; Neon mbetet burimi i të dhënave."
+      "Git dhe GitHub dërgojnë kodin në Vercel. Kjo është rruga e publikimit.",
+      "Gjatë përdorimit, telefoni kërkon listën përmes API-së (Application Programming Interface – ndërfaqe programimi). Kopja mbetet në këtë pajisje."
     ],
     "diagram": "infrastructure.svg",
-    "diagramAlt": "Git → GitHub → Vercel për publikim. Telefoni → service worker → Vercel/Next.js → Neon/PostgreSQL për lexim. Cache është në pajisje."
+    "diagramAlt": "Publikimi Git → GitHub → Vercel; leximi telefon → service worker → Next.js → Neon/PostgreSQL. Cache ruhet në pajisje."
   },
   {
-    "title": "Ndiqe listën, hap pas hapi",
-    "kicker": "ANIMACIONI · 9–13 MIN",
+    "title": "Ndaleni kërkesën te pika e duhur",
+    "kicker": "JAVA 6 · 9–13 MIN",
     "body": [
-      "Zgjidh “Me internet”, pastaj “Pa internet”. Ndale te cache.",
-      "Parashiko: cili komponent nuk mund të arrihet kur lidhja humbet?"
+      "Nis “Me internet”. Para hapit tjetër, tregoni me dorë ku do të shkojë kërkesa.",
+      "Kaloni te “Pa internet”: cila rrugë mbetet brenda telefonit?"
     ],
     "animation": true
   },
   {
-    "title": "Publikimi dhe leximi janë rrugë të ndryshme",
-    "kicker": "DY RRUGË · 13–15 MIN",
+    "title": "Ikona në telefon nuk është provë offline",
+    "kicker": "JAVA 6 · 13–16 MIN",
     "body": [
-      "Push dërgon kodin e ri në GitHub dhe nis publikimin në Vercel.",
-      "Hapja e listës dërgon një kërkesë te aplikacioni; nuk e bën Push kodin."
+      "PWA (Progressive Web App – aplikacion web progresiv) mund të ofrojë instalim dhe aftësi të aplikacionit.",
+      "Manifesti përcakton emrin, ikonat dhe mënyrën e hapjes. Ruajtja e listës është punë tjetër."
     ],
-    "comparison": [
-      [
-        "Publikimi",
-        "Git → GitHub → build/deploy në Vercel"
-      ],
-      [
-        "Leximi",
-        "Telefon → service worker → Next.js → Neon"
-      ]
-    ]
-  },
-  {
-    "title": "PWA: aplikacion web që mund të instalohet",
-    "kicker": "KONCEPTET · 15–18 MIN",
-    "body": [
-      "PWA (Progressive Web App – aplikacion web progresiv) përdor aftësi të shfletuesit për një përvojë aplikacioni.",
-      "Instalimi dhe puna offline janë aftësi të ndryshme; një ikonë në telefon nuk provon që lista është ruajtur."
+    "visual": [
+      {
+        "icon": "smartphone",
+        "label": "Manifesti",
+        "note": "Identiteti i aplikacionit"
+      },
+      {
+        "icon": "hard-drive",
+        "label": "Cache",
+        "note": "Kopja lokale e listës"
+      }
     ],
-    "comparison": [
-      [
-        "Manifesti",
-        "Emri, ikonat, adresa e nisjes dhe pamja standalone."
-      ],
-      [
-        "Service worker",
-        "Ndërmjetësi në shfletues që trajton kërkesa të caktuara."
-      ],
-      [
-        "Cache",
-        "Kopja lokale e përgjigjeve të lejuara."
-      ]
-    ],
+    "question": "Nëse e instaloj RideShare, a ruhet vetvetiu çdo udhëtim?",
+    "answer": "Jo. Instalimi nuk provon leximin offline. Duhet të përcaktojmë çfarë ruajmë dhe ta testojmë pa rrjet.",
     "sources": [
       "https://nextjs.org/docs/app/guides/progressive-web-apps"
     ]
   },
   {
-    "title": "Manifesti i jep identitet aplikacionit",
-    "kicker": "METADATA · 18–20 MIN",
+    "title": "Service worker: portieri i kërkesës",
+    "kicker": "JAVA 6 · 16–19 MIN",
     "body": [
-      "RideShare AAB ka emër, dy ikona PNG dhe mënyrën e hapjes standalone.",
-      "Mënyra e instalimit ndryshon sipas pajisjes dhe shfletuesit. Në laborator e verifikojmë manifestin; nuk presim patjetër një popup."
+      "Service worker është një skript që punon në shfletues dhe trajton kërkesa të caktuara.",
+      "Në laborator provon rrjetin për listën publike; në dështim kërkon kopjen lokale. Nuk ekzekuton pyetje në databazë dhe nuk mban sekretin e Neon."
     ],
-    "flow": [
-      "src/app/manifest.ts",
-      "Emri + ikonat",
-      "Shfletuesi ofron instalimin"
+    "visual": [
+      {
+        "icon": "smartphone",
+        "label": "Kërkesa",
+        "note": "GET /api/udhetimet"
+      },
+      {
+        "icon": "route",
+        "label": "Service worker",
+        "note": "Zgjedh rrjetin ose kopjen"
+      },
+      {
+        "icon": "cloud",
+        "label": "Next.js",
+        "note": "Serveri në Vercel"
+      }
     ],
-    "question": "A e ruan manifesti listën e udhëtimeve?",
-    "answer": "Jo. Manifesti përshkruan aplikacionin. Ruajtjen e listës e bën service worker me Cache API.",
-    "sources": [
-      "https://nextjs.org/docs/app/api-reference/file-conventions/metadata/manifest"
-    ]
-  },
-  {
-    "title": "Service worker jeton në shfletues",
-    "kicker": "NDËRMJETËSI · 20–22 MIN",
-    "body": [
-      "Service worker e kap kërkesën GET (lexim) para se ajo të kalojë në rrjet.",
-      "Në këtë laborator ruan një dokument offline dhe listën publike. Nuk ekzekuton SQL dhe nuk mban sekretin e Neon."
-    ],
-    "flow": [
-      "Telefoni kërkon",
-      "Service worker vendos",
-      "Rrjeti ose kopja"
-    ],
-    "question": "A është service worker një server shtesë në Vercel?",
-    "answer": "Jo. Është një skript i shfletuesit. Serveri Next.js mbetet në Vercel; në laborator punon në localhost.",
     "sources": [
       "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers"
-    ]
+    ],
+    "visualPath": true
   },
   {
-    "title": "Çfarë lejojmë të ruhet?",
-    "kicker": "KUFIJTË · 22–24 MIN",
+    "title": "Kopja është në telefonin tënd",
+    "kicker": "JAVA 6 · 19–21 MIN",
     "body": [
-      "Ruajmë vetëm listën publike dhe faqen e thjeshtë që e lexon.",
-      "Hyrja, paneli, profilet dhe kërkesat që ndryshojnë të dhëna kalojnë gjithmonë te serveri."
+      "Mendoje si një shënim që Arta e mori me vete. Neon është burimi i të dhënave; cache është kopja e leximit.",
+      "I njëjti link në telefonin e shokut nuk i transferon kopjen e Artës. Cache mund edhe të fshihet."
     ],
-    "comparison": [
-      [
-        "Ruajmë",
-        "GET /api/udhetimet, offline.html, dy ikona"
-      ],
-      [
-        "Nuk ruajmë",
-        "/panel, /api/auth, email, cookie, POST"
-      ]
+    "visual": [
+      {
+        "icon": "hard-drive",
+        "label": "Cache",
+        "note": "Në këtë shfletues"
+      },
+      {
+        "icon": "database",
+        "label": "Neon PostgreSQL",
+        "note": "Burimi në server"
+      }
     ],
-    "question": "A duhet të ruajmë gjithë faqen e panelit për lehtësi?",
-    "answer": "Jo. Mund të përmbajë të dhëna private. Ky ushtrim ka një listë të kufizuar skedarësh publikë që lejohen."
+    "question": "A është cache një backup i databazës?",
+    "answer": "Jo. Është një kopje lokale për përdorim të kufizuar, jo një kopje rezervë e garantuar e databazës."
   },
   {
-    "title": "Së pari serveri, pastaj kopja",
-    "kicker": "NETWORK-FIRST · 24–27 MIN",
+    "title": "Së pari pyet serverin",
+    "kicker": "JAVA 6 · 21–24 MIN",
     "body": [
-      "Provojmë rrjetin për të marrë listën e tanishme. Një përgjigje e mirë përditëson kopjen dhe kohën.",
-      "Në dështim lexojmë kopjen e fundit. Nëse kopja mungon, shpjegojmë se duhet një vizitë me internet."
+      "Strategjia network-first: kërko listën e tanishme. Në sukses shfaqe dhe ruaj kopjen me kohë të re.",
+      "Në dështim lexo kopjen. Kur as kopja nuk ekziston, shpjego çfarë mungon."
+    ],
+    "visual": [
+      {
+        "icon": "cloud",
+        "label": "1 · Provo rrjetin",
+        "note": "Të dhënat e tanishme"
+      },
+      {
+        "icon": "hard-drive",
+        "label": "2 · Në dështim",
+        "note": "Kopja e fundit"
+      },
+      {
+        "icon": "circle-question-mark",
+        "label": "3 · Pa kopje",
+        "note": "Kërko një vizitë online"
+      }
     ],
     "sources": [
       "https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Offline_and_background_operation"
     ],
-    "comparison": [
-      [
-        "Provo serverin",
-        "Kërko listën e tanishme."
-      ],
-      [
-        "Në sukses",
-        "Shfaq përgjigjen dhe përditëso kopjen."
-      ],
-      [
-        "Në dështim",
-        "Lexo kopjen e fundit; nëse mungon, shpjegoje."
-      ]
-    ]
+    "visualPath": true
   },
   {
-    "title": "Ora në kopje mund të jetë e vjetër",
-    "kicker": "SHEMBULL · 27–29 MIN",
+    "title": "08:15 apo 08:25? Votoni.",
+    "kicker": "JAVA 6 · 24–27 MIN",
     "body": [
-      "Në 13:00 Arta ruan listën: nisja 08:15. Në 13:05 shoferi e ndryshon në 08:25.",
-      "Në 13:10 Arta është offline. Në kopjen e saj ende lexohet 08:15."
+      "07:00: Arta ruan udhëtimin e Dritonit. 07:05: Dritoni ndryshon orën e nisjes në server.",
+      "07:10: Arta është pa internet. Ende nuk ka marrë përgjigje të re."
     ],
-    "comparison": [
-      [
-        "Telefoni offline",
-        "08:15 · ruajtur në 13:00"
-      ],
-      [
-        "Neon tani",
-        "08:25 · ndryshuar në 13:05"
-      ]
-    ],
-    "question": "Cila orë është gjendja e tanishme e udhëtimit?",
-    "answer": "08:25 në databazë. Pa e arritur serverin, Arta duhet ta trajtojë 08:15 si informacion që mund të jetë i vjetër."
-  },
-  {
-    "title": "Tri pamje që duhet t’i dallosh",
-    "kicker": "GJENDJET · 29–31 MIN",
-    "body": [
-      "Mesazhi në ekran shpjegon prej nga erdhën të dhënat.",
-      "Mungesa e një kopjeje nuk mbulohet me rreshta të shpikur ose konfirmim të rremë."
-    ],
-    "comparison": [
-      [
-        "Nga serveri",
-        "Lista u lexua tani; ruajmë kohën e re."
-      ],
-      [
-        "Nga cache",
-        "Lista e fundit; shfaqim kohën e vjetër."
-      ],
-      [
-        "Pa kopje",
-        "Hape një herë me internet."
-      ]
-    ]
-  },
-  {
-    "title": "Shikimi i një karte nuk rezervon vend",
-    "kicker": "LEXIMI DHE VEPRIMI · 31–33 MIN",
-    "body": [
-      "Cache mund të tregojë “1 vend”, edhe kur ai vend ndërkohë është zënë.",
-      "Në lexuesin offline, “Kërko vend” është i çaktivizuar. Nuk krijojmë radhë automatike rezervimesh në këtë javë."
-    ],
-    "question": "Pse nuk e shfaqim “Rezervimi u konfirmua” menjëherë?",
-    "answer": "Nuk kemi përgjigje të serverit dhe nuk dimë gjendjen aktuale. Hyrja dhe lejet e Javës 5 ende kërkohen kur bëhet veprimi real."
-  },
-  {
-    "title": "Vizita e parë kërkon internet",
-    "kicker": "PËRGATITJA · 33–35 MIN",
-    "body": [
-      "Shfletuesi duhet të marrë service worker, dokumentin offline dhe listën para se të humbet lidhjen.",
-      "Cache mund të fshihet nga përdoruesi ose shfletuesi. Nuk është kopje rezervë e databazës."
-    ],
-    "flow": [
-      "Hape me internet",
-      "Ruaj kopjen",
-      "Provoje pa internet"
-    ],
-    "question": "Pse shoku me të njëjtin link nuk e ka kopjen time?",
-    "answer": "Cache është në shfletuesin dhe pajisjen tënde. Nuk shpërndahet nga një telefon te tjetri."
-  },
-  {
-    "title": "Lidhja rikthehet: pyete sërish serverin",
-    "kicker": "RIKTHIMI · 35–37 MIN",
-    "body": [
-      "Treguesi “online” nuk garanton që Vercel ose Neon përgjigjen.",
-      "Shtyp “Rifresko listën”. Vetëm një përgjigje e suksesshme zëvendëson kopjen."
-    ],
-    "flow": [
-      "Lidhja duket aktive",
-      "GET te serveri",
-      "Përgjigjja e re",
-      "Ora e re në ekran"
-    ],
-    "sources": [
-      "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine"
-    ]
-  },
-  {
-    "title": "Parashikojeni në çift",
-    "kicker": "DISKUTIMI · 37–40 MIN",
-    "body": [
-      "Njëri është telefoni, tjetri serveri. Shpjegoni rrugën pa përmendur kodin.",
-      "Skenari: telefoni ka kopje 08:15, serveri ka 08:25, por serveri përkohësisht nuk përgjigjet."
+    "visual": [
+      {
+        "icon": "hard-drive",
+        "label": "Kopja në telefon",
+        "note": "Ruajtur në 07:00",
+        "value": "08:15"
+      },
+      {
+        "icon": "database",
+        "label": "Neon tani",
+        "note": "Ndryshuar në 07:05",
+        "value": "08:25"
+      }
     ],
     "quiz": {
-      "question": "Çfarë duhet të tregojë telefoni?",
+      "question": "Cilën orë mund të tregojë telefoni pa shpikur informacion?",
       "options": [
-        "08:25, sepse rrjeti shkruan online.",
-        "08:15 me kohën e ruajtjes dhe paralajmërim.",
-        "Rezervim të konfirmuar."
+        "08:25, sepse shoferi e ka ndryshuar.",
+        "08:15, me kohën dhe paralajmërimin e kopjes.",
+        "Asnjëherë nuk lejohet të shfaqet kopja."
       ],
       "correct": 1,
-      "explanation": "Pa përgjigje të re nuk dimë 08:25. Ruajmë të fundit të mirë dhe shpjegojmë kufizimin."
+      "explanation": "Telefoni ka vetëm 08:15. Pa server nuk mund të dijë 08:25; tregon kopjen si informacion që mund të jetë i vjetër."
     }
   },
   {
-    "title": "I njëjti vendim në biznesin tënd",
-    "kicker": "ZBATIMI · 40–42 MIN",
+    "title": "Kopja kujton. Serveri konfirmon.",
+    "kicker": "JAVA 6 · 27–29 MIN",
     "body": [
-      "Një restorant mund të shfaqë menunë e ruajtur, por çmimi ose disponueshmëria mund të ndryshojë.",
-      "Një shërbim mund të shfaqë orarin e fundit, por nuk duhet të konfirmojë një termin pa server."
+      "Arta sheh 08:15, por duhet të lexojë edhe “Kopje e ruajtur në 07:00”.",
+      "Vetëm kur serveri përgjigjet përsëri, aplikacioni mund të shfaqë orën e re 08:25."
     ],
-    "comparison": [
-      [
-        "Mund të lexosh",
-        "Menu, përshkrim shërbimi, listë publike"
+    "visual": [
+      {
+        "icon": "clock",
+        "label": "08:15 në kopje",
+        "note": "Mund të jetë e vjetër"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "08:25 pas rifreskimit",
+        "note": "U mor përgjigje e re"
+      }
+    ],
+    "question": "Cili mesazh e ndihmon Artën të vendosë drejt?",
+    "answer": "“Po shfaqet lista e fundit e ruajtur. Ora dhe vendet mund të kenë ndryshuar.” Koha e ruajtjes e bën kufizimin të dukshëm."
+  },
+  {
+    "title": "Tri gjendje, tri mesazhe të ndershme",
+    "kicker": "JAVA 6 · 29–31 MIN",
+    "body": [
+      "I njëjti ekran duhet ta tregojë burimin e listës, jo vetëm kartat.",
+      "Kur mungon kopja, nuk shtojmë udhëtime fiktive për ta mbushur ekranin."
+    ],
+    "visual": [
+      {
+        "icon": "cloud",
+        "label": "Nga serveri",
+        "note": "“Lista u lexua tani”"
+      },
+      {
+        "icon": "hard-drive",
+        "label": "Nga kopja",
+        "note": "“Ruajtur në 07:00”"
+      },
+      {
+        "icon": "circle-question-mark",
+        "label": "Pa kopje",
+        "note": "“Hape një herë me internet”"
+      }
+    ]
+  },
+  {
+    "title": "Në kopje: 1 vend. Në server: 0.",
+    "kicker": "JAVA 6 · 31–33 MIN",
+    "body": [
+      "Dikush e ka zënë vendin e fundit në veturën e Dritonit. Telefoni i Artës ende shfaq kopjen e vjetër.",
+      "Arta dëshiron të kërkojë vend. Çfarë duhet të lejojë aplikacioni?"
+    ],
+    "visual": [
+      {
+        "icon": "hard-drive",
+        "label": "Lista e vjetër",
+        "note": "Nuk është rezervim",
+        "value": "1 vend"
+      },
+      {
+        "icon": "lock-keyhole",
+        "label": "Serveri nuk arrihet",
+        "note": "Suksesi nuk dihet",
+        "value": "?"
+      }
+    ],
+    "quiz": {
+      "question": "Cili është vendimi i sigurt për këtë javë?",
+      "options": [
+        "Trego “U konfirmua” dhe rregulloje më vonë.",
+        "Mbaje veprimin të çaktivizuar pa internet.",
+        "Ndrysho numrin vetëm në ekran."
       ],
-      [
-        "Kërkon konfirmim",
-        "Porosi, termin, vend i lirë"
-      ]
+      "correct": 1,
+      "explanation": "Kopja lejohet për lexim. Pa përgjigje dhe verifikim nga serveri nuk konfirmojmë rezervim."
+    }
+  },
+  {
+    "title": "Lexo publikisht. Vepro me verifikim.",
+    "kicker": "JAVA 6 · 33–35 MIN",
+    "body": [
+      "Në Cache API ruajmë vetëm listën publike, dokumentin offline dhe ikonat e këtij ushtrimi.",
+      "Hyrja, paneli dhe veprimet që ndryshojnë të dhëna kalojnë te serveri. Lejet e Javës 5 vazhdojnë të vlejnë."
+    ],
+    "visual": [
+      {
+        "icon": "hard-drive",
+        "label": "Lejohet në kopje",
+        "note": "GET /api/udhetimet"
+      },
+      {
+        "icon": "lock-keyhole",
+        "label": "Kërkon serverin",
+        "note": "Hyrja · paneli · rezervimi"
+      }
+    ],
+    "question": "Pse nuk e ruajmë gjithë panelin për lehtësi?",
+    "answer": "Mund të përmbajë të dhëna private. Një kopje e panelit nuk zëvendëson hyrjen, lejet ose konfirmimin e serverit."
+  },
+  {
+    "title": "Prova e vërtetë: rifresko pa internet",
+    "kicker": "JAVA 6 · 35–37 MIN",
+    "body": [
+      "Një tab që mbetet hapur nuk provon se aplikacioni punon offline.",
+      "Hape listën fillimisht online, kalo Network → Offline dhe rifresko faqen e listës. Lexuesi offline duhet të shfaqë kopjen dhe kohën, ose të shpjegojë se kopja mungon."
+    ],
+    "visual": [
+      {
+        "icon": "wifi",
+        "label": "1 · Hape online",
+        "note": "Merr worker-in dhe listën"
+      },
+      {
+        "icon": "wifi-off",
+        "label": "2 · Ndalo rrjetin",
+        "note": "Vetëm tab-i RideShare"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "3 · Rifresko faqen",
+        "note": "Provo çfarë u ruajt"
+      }
+    ],
+    "visualPath": true
+  },
+  {
+    "title": "Sinjali u kthye. Po të dhënat?",
+    "kicker": "JAVA 6 · 37–39 MIN",
+    "body": [
+      "Ikona “online” nuk garanton që Vercel ose Neon përgjigjen.",
+      "Shtyp “Rifresko listën”. Vetëm një përgjigje e suksesshme e zëvendëson kopjen dhe kohën e saj."
+    ],
+    "visual": [
+      {
+        "icon": "wifi",
+        "label": "Lidhja duket aktive",
+        "note": "Nuk është konfirmim"
+      },
+      {
+        "icon": "cloud",
+        "label": "Kërko sërish listën",
+        "note": "API: ndërfaqja e aplikacionit"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "Përditëso pas suksesit",
+        "note": "Ora e re në ekran"
+      }
+    ],
+    "question": "Nëse serveri dështon, çfarë mbetet në ekran?",
+    "answer": "Kopja e fundit e mirë, me paralajmërim dhe kohën e saj. Nuk shfaqim sukses të rremë.",
+    "sources": [
+      "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine"
+    ],
+    "visualPath": true
+  },
+  {
+    "title": "Shpjegojeni vetëm me ikona",
+    "kicker": "JAVA 6 · 39–41 MIN",
+    "body": [
+      "Në çift: njëri luan telefonin, tjetri serverin. Tregoni rrugën me gisht dhe shpjegoni arsyen.",
+      "Skenari: ka kopje, por serveri nuk përgjigjet. Çfarë lexojmë? Çfarë nuk konfirmojmë?"
+    ],
+    "visual": [
+      {
+        "icon": "smartphone",
+        "label": "Telefoni",
+        "note": "Nis kërkesën"
+      },
+      {
+        "icon": "cloud",
+        "label": "Serveri",
+        "note": "Sot nuk përgjigjet"
+      },
+      {
+        "icon": "hard-drive",
+        "label": "Kopja",
+        "note": "Mbetet për lexim"
+      },
+      {
+        "icon": "lock-keyhole",
+        "label": "Veprimi",
+        "note": "Pa konfirmim"
+      }
+    ],
+    "question": "Çfarë ndryshon nëse nuk ka fare kopje?",
+    "answer": "Shfaqet një mesazh që kërkon vizitë online. Nuk shpikim listë dhe nuk premtojmë rezervim."
+  },
+  {
+    "title": "Kjo aftësi vlen edhe për biznesin tënd",
+    "kicker": "JAVA 6 · 41–42 MIN",
+    "body": [
+      "Në një restorant mund të lexosh menunë e ruajtur; por çmimi, stoku dhe pranimi i porosisë mund të ndryshojnë.",
+      "Te një shërbim mund të lexosh orarin e fundit; termini konfirmohet vetëm nga serveri."
+    ],
+    "visual": [
+      {
+        "icon": "utensils",
+        "label": "Menuja",
+        "note": "Mund të lexohet nga kopja"
+      },
+      {
+        "icon": "lock-keyhole",
+        "label": "Porosia ose termini",
+        "note": "Duhet konfirmim i ri"
+      }
     ]
   },
   {
-    "title": "Çfarë do të provosh në laborator",
-    "kicker": "URA TE USHTRIMET · 42–44 MIN",
+    "title": "Në laborator: provoje, pastaj dorëzoje",
+    "kicker": "JAVA 6 · 42–44 MIN",
     "body": [
-      "Nga i njëjti projekt shton manifestin, ikonat dhe lexuesin offline me kodin e dhënë.",
-      "E provon me DevTools në 375 px: vizitë online → offline → rifreskim → rikthim lidhjeje."
+      "Në të njëjtin RideShare shton manifestin, service worker dhe lexuesin offline me kodin e dhënë.",
+      "Provo vizitën online, rifreskimin pa rrjet dhe rikthimin e lidhjes. Dorëzo raportin në klasë ose gjatë javës."
     ],
-    "flow": [
-      "Ndërto",
-      "Provo tri gjendje",
-      "Ruaj raportin",
-      "Dorëzo në GitHub"
-    ]
+    "visual": [
+      {
+        "icon": "smartphone",
+        "label": "Ndërto",
+        "note": "Vazhdo projektin ekzistues"
+      },
+      {
+        "icon": "wifi-off",
+        "label": "Provo",
+        "note": "Tri rezultate reale"
+      },
+      {
+        "icon": "send",
+        "label": "Dorëzo",
+        "note": "java-06.md + kodi"
+      }
+    ],
+    "href": "ushtrimet.html",
+    "link": "Hap ushtrimet · 90 minuta",
+    "visualPath": true
   },
   {
-    "title": "Shpjegoje me një fjali",
-    "kicker": "MBYLLJA · 44–45 MIN",
+    "title": "Një app i mirë nuk shpik sukses",
+    "kicker": "JAVA 6 · 44–45 MIN",
     "body": [
-      "“Kur Arta humb internetin, RideShare shfaq …, sepse …”.",
-      "“Para se të besoj se një veprim u krye, duhet të marr …”."
+      "“Kur interneti ndalet, RideShare mund të lexojë …, nëse …”.",
+      "“Para se të besoj se rezervimi u krye, më duhet …”."
     ],
-    "question": "Cili është dallimi kryesor i kësaj jave?",
-    "answer": "Leximi i një kopjeje na ndihmon pa internet; suksesi i një veprimi kërkon përgjigje dhe verifikim në server.",
+    "visual": [
+      {
+        "icon": "hard-drive",
+        "label": "Kujtesë për lexim",
+        "note": "Kopja + koha"
+      },
+      {
+        "icon": "lock-keyhole",
+        "label": "Verifikim për veprim",
+        "note": "Përgjigjja e serverit"
+      }
+    ],
+    "question": "Çfarë fituam sot, përveç një ikone në telefon?",
+    "answer": "Një aplikacion që ndihmon edhe pa rrjet dhe i shpjegon përdoruesit çfarë di, çfarë është e vjetër dhe çfarë ende nuk mund ta konfirmojë.",
     "href": "infrastructure.html",
-    "link": "Hap animacionin dhe shpjego një skenar"
+    "link": "Hap animacionin dhe trego një skenar",
+    "sources": [
+      "https://lucide.dev/license"
+    ]
   }
 ]
