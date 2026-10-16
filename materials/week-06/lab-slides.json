@@ -1,0 +1,194 @@
+[
+  {
+    "title": "Sot RideShare hapet edhe pa internet",
+    "kicker": "USHTRIMET 6 · 90 MINUTA",
+    "body": [
+      "Vazhdo projektin që lexon tri udhëtime nga Neon.",
+      "Rezultati: listë e ruajtur, kohë ruajtjeje dhe asnjë konfirmim i rremë."
+    ],
+    "flow": [
+      "Online: ruaj",
+      "Offline: lexo",
+      "Lidhja rikthehet: rifresko"
+    ]
+  },
+  {
+    "title": "Harta e punës në laborator",
+    "kicker": "INFRASTRUKTURA",
+    "body": [
+      "Lokalisht serveri Next.js është në kompjuterin tënd. Pas publikimit e ekzekuton Vercel.",
+      "Neon dhe PostgreSQL mbeten të njëjtat; cache shtohet vetëm në shfletues."
+    ],
+    "diagram": "infrastructure.svg",
+    "diagramAlt": "Publikimi Git/GitHub/Vercel ndahet nga leximi telefon/service worker/server/Neon; kopja publike ruhet në pajisje."
+  },
+  {
+    "title": "Parashiko cilën rrugë do të marrë lista",
+    "kicker": "ANIMACIONI",
+    "body": [
+      "Zgjidh “Pa internet” dhe shtyp “Hapi tjetër”.",
+      "Thuaje me zë pse nuk arrijmë te databaza. Pastaj provo “Lidhja rikthehet”."
+    ],
+    "animation": true
+  },
+  {
+    "title": "Plani i 90 minutave",
+    "kicker": "RITMI I ORËS",
+    "body": [
+      "0–10 përgatitje; 10–48 manifesti, API, worker dhe lexuesi; 48–55 lidhja me aplikacionin.",
+      "55–63 prova; 63–65 raporti dhe Push; 65–90 dorëzimi, përgjigjja dhe korrigjimi."
+    ],
+    "flow": [
+      "55 · Funksionon",
+      "63 · Provat",
+      "65 · Dorëzimi",
+      "90 · Përgjigjja"
+    ]
+  },
+  {
+    "title": "1 · Hap pikën e nisjes",
+    "kicker": "0–10 MIN",
+    "body": [
+      "Hap të njëjtin repository dhe dosjen e aplikacionit. Ekzekuto npm run dev.",
+      "Lista dhe detajet duhet të lexojnë nga Neon. Nuk krijon repository, databazë ose OAuth App tjetër."
+    ],
+    "question": "Nëse Java 5 ka një gabim në hyrje, a mund ta provosh listën publike?",
+    "answer": "Po, nëse leximi i Javës 4 punon. Mos hiq lejet e Javës 5; kërko ndihmë për pjesën që të bllokon.",
+    "href": "ushtrimet.html#ora-1",
+    "link": "Hap përgatitjen"
+  },
+  {
+    "title": "A · Emri dhe ikonat e aplikacionit",
+    "kicker": "10–18 MIN",
+    "body": [
+      "Krijo src/app/manifest.ts dhe shkarko dy ikonat e gatshme te public/icons/.",
+      "Prova e vogël: /manifest.webmanifest hapet dhe tregon dy ikonat. Instalimi varet nga shfletuesi."
+    ],
+    "flow": [
+      "Manifesti",
+      "Ikonat 192 / 512",
+      "Identiteti i aplikacionit"
+    ],
+    "href": "ushtrimet.html#hapi-a",
+    "link": "Hap A · manifesti dhe ikonat"
+  },
+  {
+    "title": "B · Një adresë publike për listën",
+    "kicker": "18–28 MIN",
+    "body": [
+      "Krijo GET /api/udhetimet. API (Application Programming Interface) kthen vetëm fushat publike.",
+      "Rishfrytëzon lexoUdhetimet() të Javës 4; nuk kopjon DATABASE_URL në shfletues."
+    ],
+    "flow": [
+      "GET",
+      "Next.js",
+      "Neon / PostgreSQL",
+      "JSON publik"
+    ],
+    "href": "ushtrimet.html#hapi-b",
+    "link": "Hap B · endpoint-i i listës"
+  },
+  {
+    "title": "C · Rrjeti i pari, kopja e dyta",
+    "kicker": "28–40 MIN",
+    "body": [
+      "Krijo public/sw.js. Lexo komentet: çfarë ruhet dhe çfarë nuk ruhet.",
+      "GET i listës së suksesshme ruhet me kohë. /panel, hyrja dhe POST nuk kalojnë në këtë cache."
+    ],
+    "question": "A mund të ruajmë listën kur serveri kthen gabim?",
+    "answer": "Nuk e zëvendësojmë kopjen e mirë me gabimin. Lexojmë kopjen e fundit nëse ekziston.",
+    "href": "ushtrimet.html#hapi-c",
+    "link": "Hap C · service worker"
+  },
+  {
+    "title": "D · Faqja që nuk kërkon Next.js chunks",
+    "kicker": "40–48 MIN",
+    "body": [
+      "Krijo public/offline.html. Stilet dhe skripti janë brenda të njëjtit dokument.",
+      "Tregon tri karta, kohën e kopjes dhe butonin “Rifresko listën”. Këtu lejohet vetëm leximi."
+    ],
+    "href": "ushtrimet.html#hapi-d",
+    "link": "Hap D · lexuesi offline"
+  },
+  {
+    "title": "E → F · Aktivizoje nga aplikacioni",
+    "kicker": "48–55 MIN",
+    "body": [
+      "E: Pwa.tsx regjistron worker-in dhe kërkon JSON-in pasi ai kontrollon faqen.",
+      "F: shto Pwa në layout-in ekzistues; mbaj CSS-në, fontet dhe përmbajtjen që ke."
+    ],
+    "flow": [
+      "Regjistro worker-in",
+      "Mbush kopjen",
+      "Mbaje lidhjen e lexuesit"
+    ],
+    "href": "ushtrimet.html#hapi-e",
+    "link": "Hap E dhe F · lidhja me aplikacionin"
+  },
+  {
+    "title": "2 · Provoje si përdorues",
+    "kicker": "55–63 MIN",
+    "body": [
+      "Me internet: shiko manifestin, ikonat dhe listën. Pa internet: rifresko dhe kontrollo kopjen.",
+      "Me lidhje sërish: ndrysho orën në Neon, shtyp Rifresko listën dhe shiko përgjigjen e re."
+    ],
+    "comparison": [
+      [
+        "Prova 1",
+        "Manifesti dhe vizita online"
+      ],
+      [
+        "Prova 2",
+        "Offline + rifreskim + pa konfirmim"
+      ],
+      [
+        "Prova 3",
+        "Rikthim lidhjeje dhe ora e re"
+      ]
+    ],
+    "href": "ushtrimet.html#provat",
+    "link": "Hap tri provat"
+  },
+  {
+    "title": "3 · Shkruaj rezultatet dhe bëj Push",
+    "kicker": "63–65 MIN",
+    "body": [
+      "Ruaj java-06.md pranë README të repository-t, jashtë aplikacioni/.",
+      "Për secilën provë: çfarë bëre, çfarë prisje dhe çfarë ndodhi realisht. Në dështim, shkruaj dështimin."
+    ],
+    "flow": [
+      "Raporti",
+      "Commit",
+      "Push origin"
+    ],
+    "href": "java-06-model.md",
+    "link": "Shkarko modelin java-06.md"
+  },
+  {
+    "title": "4 · Dorëzo në të njëjtën mënyrë",
+    "kicker": "65–80 MIN",
+    "body": [
+      "Hap formularin, zgjidh Java 6 dhe vendos linkun kryesor të repository-t tënd.",
+      "Mos hap repository ose Issue tjetër për korrigjimin. Mbaje numrin e këtij dorëzimi."
+    ],
+    "flow": [
+      "Repository personal",
+      "Java 6 në formular",
+      "Një Issue dorëzimi"
+    ],
+    "href": "https://github.com/arbenl/arbenl-mobile-assignments-2025/issues/new?template=mobile-submission.yml&week=Java%206",
+    "link": "Dorëzo punën · Java 6"
+  },
+  {
+    "title": "5 · Lexo përgjigjen para se të largohesh",
+    "kicker": "80–90 MIN",
+    "body": [
+      "GitHub kontrollon raportin, projektin, tri provat, skedarët PWA dhe emrat e skedarëve privatë.",
+      "Nëse mungon diçka: korrigjo → Commit → Push → komento rikontrollo në të njëjtin Issue."
+    ],
+    "question": "A do të thotë 5/5 kontrolle teknike se aplikacioni mori automatikisht 3 pikë?",
+    "answer": "Jo. Bot-i lexon skedarët pa ekzekutuar kodin. Provat dhe cilësia vlerësohen sipas rubrikës; Java 6 ka deri në 3 pikë.",
+    "href": "ushtrimet.html#dorezimi",
+    "link": "Hap udhëzimet e përgjigjes"
+  }
+]

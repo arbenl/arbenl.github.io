@@ -235,3 +235,56 @@ for(const width of [320,375,1280])test(`week 5 guide, projector and permission m
  for(const [deck,count]of [['prezantimi-ligjerates.html',20],['prezantimi-ushtrimeve.html',14]]as const){await page.goto(origin+base+deck);if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();for(let n=1;n<=count;n++){if(n>1)await page.keyboard.press('ArrowRight');await expect(page.locator('#counter')).toHaveText(`${n} / ${count}`);const s=page.locator('.step:visible');await expect(s).toHaveCount(1);expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const reveal=s.locator('.reveal');if(await reveal.count()){await reveal.click();await expect(s.locator('.answer')).toBeVisible();await reveal.click();}const quiz=s.locator('.quiz');if(await quiz.count()){await quiz.locator('[data-correct="true"]').click();await expect(quiz.locator('.quiz-answer')).toBeHidden();await quiz.locator('.quiz-reveal').click();await expect(quiz.locator('.quiz-answer')).toContainText('Saktë');await quiz.locator('.quiz-reset').click();await expect(quiz.locator('.quiz-answer')).toBeHidden();}if(width===1280&&[1,3,5,8].includes(n))await page.screenshot({path:testInfo.outputPath(`week05-${deck}-${n}.png`)});}await page.keyboard.press('Escape');await expect(page.locator('.step:visible')).toHaveCount(count);}
  await page.goto(origin+base+'demo/');await expect(page.getByText('Model mësimor:',{exact:false})).toBeVisible();await page.getByRole('button',{name:'Provo ndryshimin e udhëtimit 2'}).click();await expect(page.locator('#result')).toContainText('duhet hyrje');await page.locator('#person').selectOption('arta');await page.locator('[data-trip="2"]').click();await expect(page.locator('#result')).toContainText('udhëtare');await page.locator('#person').selectOption('dritoni');await page.locator('[data-trip="2"]').click();await expect(page.locator('#result')).toContainText('LEJOHET');await page.locator('[data-trip="1"]').click();await expect(page.locator('#result')).toContainText('nuk është pronari');await page.locator('#person').selectOption('other');await page.locator('[data-trip="1"]').click();await expect(page.locator('#result')).toContainText('LEJOHET');expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);expect(errors).toEqual([]);
 });
+
+for(const width of [320,375,1280]){
+ test(`week 6 lab is navigable and infrastructure animation explains three scenarios at ${width}px`,async({page},testInfo)=>{
+  await page.setViewportSize({width,height:850});
+  const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+  const base='/lendet/2026-2027/mobile/java-06/';
+  await page.goto(origin+base);await page.getByRole('link',{name:'Fillo ushtrimet · 90 minuta',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'1. Përgatitu · 0–10 min',exact:true})).toBeVisible();
+  await expect(page.locator('[data-example-file]')).toHaveCount(6);
+  await page.context().grantPermissions(['clipboard-read','clipboard-write']);
+  await page.getByRole('button',{name:'Kopjo kodin · src/app/manifest.ts',exact:true}).click();
+  await expect(page.locator('#hapi-a [role="status"]')).toContainText('U kopjua');
+  expect(await page.evaluate(()=>navigator.clipboard.readText())).toEqual(await page.locator('#hapi-a pre code').textContent());
+  for(const [from,to]of [['a','b'],['b','c'],['c','d'],['d','e'],['e','f']]){
+   await page.locator('#hapi-'+from).getByRole('link',{name:'Vazhdo te '+to.toUpperCase()+' →',exact:true}).click();await expect(page).toHaveURL(new RegExp('#hapi-'+to+'$'));
+  }
+  await page.locator('#hapi-f').getByRole('link',{name:'Kalo te tri provat →'}).click();await expect(page).toHaveURL(/#provat$/);
+  await expect(page.getByRole('link',{name:'Dorëzo punën · Java 6',exact:true})).toHaveAttribute('href',/week=Java%206/);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  await page.goto(origin+base+'infrastructure.html');
+  for(const [scenario,total]of [['online',7],['offline',4],['reconnect',7]] as const){
+   await page.getByLabel('Skenari',{exact:true}).selectOption(scenario);
+   for(let n=1;n<=total;n++){
+    await page.getByRole('button',{name:'Hapi tjetër →',exact:true}).click();await expect(page.locator('#stage-count')).toHaveText(`Hapi ${n} / ${total}`);
+    await expect(page.locator('#stage-text')).not.toBeEmpty();
+   }
+   await expect(page.getByRole('button',{name:'Hapi tjetër →'})).toBeDisabled();
+   if(scenario==='offline')await expect(page.locator('#stage-text')).toContainText('çaktivizuar');
+   await page.getByRole('button',{name:'Nga fillimi'}).click();await expect(page.locator('#stage-count')).toHaveText('Gati për demonstrim');
+  }
+  await page.getByRole('button',{name:'Luaj animacionin',exact:true}).click();await expect(page.locator('#play')).toHaveAttribute('aria-pressed','true');
+  await page.getByRole('button',{name:'Ndalo animacionin',exact:true}).click();await expect(page.locator('#play')).toHaveAttribute('aria-pressed','false');
+  await page.emulateMedia({reducedMotion:'reduce'});await page.getByRole('button',{name:'Hapi tjetër →'}).click();await expect(page.locator('#stage-count')).toHaveText('Hapi 2 / 7');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  await page.screenshot({path:testInfo.outputPath(`week06-animation-${width}.png`)});
+  for(const [kind,total]of [['ligjerates',20],['ushtrimeve',14]] as const){
+   await page.goto(origin+base+`prezantimi-${kind}.html`);
+   if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
+   await expect(page.locator('#counter')).toHaveText(`1 / ${total}`);
+   for(let n=1;n<=total;n++){
+    const reveal=page.locator('.step:visible .reveal');
+    if(await reveal.count()){
+     await expect(page.locator('#'+await reveal.getAttribute('aria-describedby'))).toBeVisible();
+     await reveal.click();await expect(page.locator('#'+await reveal.getAttribute('aria-controls'))).toBeVisible();
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    if(n<total)await page.getByRole('button',{name:'Tjetri →',exact:true}).click();
+   }
+   await expect(page.locator('#counter')).toHaveText(`${total} / ${total}`);
+  }
+  expect(errors).toEqual([]);
+ });
+}

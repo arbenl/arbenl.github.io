@@ -134,3 +134,25 @@ test('week 5 lecture and lab always show questions before answer reveals',async(
   }
  }
 });
+
+test('week 6 delivers matching guided examples, valid student decks and animation links',async()=>{
+ const base='lendet/2026-2027/mobile/java-06/';
+ const manifest=JSON.parse(await readFile('materials/manifest.json','utf8'));
+ const guide=await readFile(base+'ushtrimet.html','utf8');
+ const examples=JSON.parse(await readFile('materials/week-06/example-files.json','utf8'));
+ const decode=s=>s.replaceAll('&lt;','<').replaceAll('&gt;','>').replaceAll('&quot;','"').replaceAll('&amp;','&');
+ const copied=[...guide.matchAll(/data-example-file="([^"]+)"[\s\S]*?<pre><code>([\s\S]*?)<\/code>/g)];
+ assert.equal(copied.length,6);
+ for(const [,file,code]of copied)assert.equal(decode(code),examples[file]);
+ for(const [key,count]of [['lecture6',20],['lab6',14]]){
+  const entry=manifest[key];assert.equal(sha256(await readFile(entry.file)),entry.sha256);
+  const {stdout}=await execFileAsync('unzip',['-Z1',entry.file]);const paths=stdout.split('\n');
+  assert.equal(paths.filter(p=>/^ppt\/slides\/slide\d+\.xml$/.test(p)).length,count);
+  assert.ok(!paths.some(p=>/^ppt\/notes(?:Slides|Masters)\//.test(p)));
+  const {stdout:rels}=await execFileAsync('unzip',['-p',entry.file,'ppt/slides/_rels/*.rels']);
+  assert.ok(rels.includes('java-06/infrastructure.html'));
+ }
+ for(const file of ['index.html','ushtrimet.html','prezantimi-ligjerates.html','prezantimi-ushtrimeve.html','infrastructure.html','infrastructure.js','infrastructure.svg','week-06.js','week-06.css','icon-192.png','icon-512.png','java-06-model.md']){
+  assert.deepEqual(await readFile(base+file),await readFile('materials/week-06/'+file));
+ }
+});
