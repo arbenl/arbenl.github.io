@@ -271,6 +271,7 @@ for(const width of [320,375,1280]){
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   await page.screenshot({path:testInfo.outputPath(`week06-animation-${width}.png`)});
   for(const [kind,total]of [['ligjerates',20],['ushtrimeve',14]] as const){
+   if(width===1280)await page.setViewportSize({width,height:kind==='ligjerates'?720:850});
    await page.goto(origin+base+`prezantimi-${kind}.html`);
    if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
    await expect(page.locator('#counter')).toHaveText(`1 / ${total}`);
@@ -282,6 +283,7 @@ for(const width of [320,375,1280]){
      if(await quiz.count()){
       const answer=quiz.locator('.quiz-answer'),toggle=quiz.getByRole('button',{name:'Zbulo përgjigjen pas diskutimit',exact:true});
       await expect(answer).toBeHidden();await expect(toggle).toBeDisabled();
+      if(width===1280){const controlBox=await page.locator('#controls').boundingBox(),voteBox=await quiz.getByRole('button',{name:'Voto përsëri',exact:true}).boundingBox();expect(controlBox).not.toBeNull();expect(voteBox).not.toBeNull();expect(voteBox!.y+voteBox!.height).toBeLessThanOrEqual(controlBox!.y);}
       await quiz.locator('[data-correct="true"]').click();await expect(answer).toBeHidden();
       await toggle.click();await expect(answer).toContainText('Saktë');
       await quiz.getByRole('button',{name:'Voto përsëri',exact:true}).click();await expect(answer).toBeHidden();await expect(toggle).toBeDisabled();
