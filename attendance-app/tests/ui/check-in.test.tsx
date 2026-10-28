@@ -39,6 +39,31 @@ afterEach(() => {
 });
 
 describe("student check-in", () => {
+  it("registers without GitHub and retries check-in with the original held QR", async () => {
+    window.history.replaceState({}, "", `/check-in#token=${TOKEN}`);
+    let checks = 0;
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      if (String(input) === "/api/classroom/status") return jsonResponse({ enabled: true });
+      checks += 1;
+      return checks === 1 ? checkInError("authentication_required", "Sign in", 401) : jsonResponse({ sessionTitle: "Ligjërata QR", duplicate: false });
+    });
+    auth.signIn.mockResolvedValue({ ok: true, error: null });
+    const view = render(<CheckInResult />);
+    const form = await view.findByRole("form", { name: "Regjistrohu me QR" });
+    fireEvent.change(view.getByLabelText(/^emri$/i), { target: { value: "Arta" } });
+    fireEvent.change(view.getByLabelText("Mbiemri"), { target: { value: "Kola" } });
+    fireEvent.change(view.getByLabelText("Student ID"), { target: { value: "A-100" } });
+    fireEvent.change(view.getByLabelText("Grupi i ushtrimeve"), { target: { value: "G1" } });
+    fireEvent.change(view.getByLabelText("Emaili i fakultetit ose emaili privat"), { target: { value: "arta@gmail.com" } });
+    fireEvent.submit(form);
+    await view.findByRole("heading", { name: "Vijueshmëria u konfirmua" });
+    expect(checks).toBe(2);
+    expect(fetchMock.mock.calls.filter(([url]) => url === "/api/check-in").map(([, init]) => init?.body)).toEqual([JSON.stringify({ token: TOKEN }), JSON.stringify({ token: TOKEN })]);
+    expect(window.sessionStorage.length).toBe(0);
+    expect(window.localStorage.length).toBe(0);
+    expect(window.location.hash).toBe("");
+  });
+
   it("captures a fragment token, removes it from browser history, and sends one POST", async () => {
     window.sessionStorage.setItem(
       "attendance-check-in",
@@ -184,7 +209,7 @@ describe("student check-in", () => {
     await act(async () => Promise.resolve());
 
     expect(window.sessionStorage.getItem("attendance-check-in")).toBeNull();
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock.mock.calls.filter(([url]) => url === "/api/check-in")).toHaveLength(1);
     expect(callback.getByRole("alert").textContent).toMatch(/skano qr-në/i);
   });
 

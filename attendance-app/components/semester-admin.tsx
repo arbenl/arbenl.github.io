@@ -179,7 +179,7 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
 
       <section className="admin-section" aria-labelledby="course-qr-title">
         <h2 id="course-qr-title">Hap QR-në e orës</h2>
-        <p>Programimi për Pajisje Mobile · 2026/27. Studentët përgatitin profilin nga “Vijueshmëria ime” para orës. Kliko QR vetëm kur klasa është gati: regjistrimi qëndron hapur {CHECKIN_WINDOW_SECONDS} sekonda dhe mbyllet automatikisht në server. Mbylle më herët nga regjistri kur të gjithë studentët në sallë konfirmohen. Studentët skanojnë QR-në nga projektori. Pranohen studentët e lëndës nga të dy grupet, edhe kur kanë ndërruar orarin.</p>
+        <p>Programimi për Pajisje Mobile · 2026/27. Studentët pa GitHub regjistrohen nga QR-ja aktive në klasë me emailin dhe të dhënat e tyre; në të njëjtin browser profili ruhet për orët e ardhshme. Kliko QR vetëm kur klasa është gati: regjistrimi qëndron hapur {CHECKIN_WINDOW_SECONDS} sekonda dhe mbyllet automatikisht në server. Mbylle më herët nga regjistri kur të gjithë studentët në sallë konfirmohen. Studentët skanojnë QR-në nga projektori. Pranohen studentët e lëndës nga të dy grupet, edhe kur kanë ndërruar orarin.</p>
         <div className="semester-list">
           {CURRENT_COURSE_SESSIONS.filter((item) => item.kind === "lecture" && (item.groupName === CURRENT_COURSE.groupName || item.groupName === "G1")).map((lecture) => {
             const historicalShared = lecture.weekNumber >= 3 ? sessions.find((item) =>

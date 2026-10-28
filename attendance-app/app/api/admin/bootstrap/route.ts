@@ -42,7 +42,7 @@ export async function bootstrapProfessor(
 
   const professorId = parseGitHubId(configuredProfessorId);
 
-  if (!professorId || identity.githubId !== professorId) {
+  if (identity.authMethod === "classroom" || !professorId || identity.githubId !== professorId) {
     return { status: "forbidden" };
   }
 
@@ -84,7 +84,7 @@ export const databaseBootstrapRepository: BootstrapRepository = {
             .where(eq(users.githubId, githubId))
             .limit(1);
 
-          return user ?? null;
+          return user?.githubId ? { id: user.id, githubId: user.githubId } : null;
         },
         async claimCompletion(userId) {
           const marker = await databaseTransaction

@@ -28,8 +28,8 @@ export const users = pgTable(
   "users",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    githubId: text("github_id").notNull(),
-    githubUsername: text("github_username").notNull(),
+    githubId: text("github_id"),
+    githubUsername: text("github_username"),
     name: text("name"),
     createdAt: databaseTimestamp("created_at").defaultNow().notNull(),
     updatedAt: databaseTimestamp("updated_at").defaultNow().notNull(),
@@ -245,6 +245,18 @@ export const attendanceRecords = pgTable(
       )
       .where(sql`${table.status} = 'present'`),
   ],
+);
+
+export const classroomRegistrations = pgTable(
+  "classroom_registrations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "restrict" }),
+    rosterId: uuid("roster_id").notNull().references(() => roster.id, { onDelete: "restrict" }),
+    sessionId: uuid("session_id").notNull().references(() => classSessions.id, { onDelete: "restrict" }),
+    createdAt: databaseTimestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [unique("classroom_registrations_roster_session_unique").on(table.rosterId, table.sessionId)],
 );
 
 export const requestLimits = pgTable(

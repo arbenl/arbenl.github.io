@@ -17,9 +17,9 @@ export default async function CourseReportPage({ searchParams }: {
     if (!(error instanceof AttendanceServiceError) || ![401, 403].includes(error.status)) throw error;
     return <main className="page-shell" id="permbajtja-kryesore"><section className="status-card">
       <h1>Raporti javor i klasës</h1>
-      <p>Raporti hapet nga studentët e regjistruar në lëndë dhe profesori. Hyr me llogarinë GitHub që përdor për vijueshmërinë.</p>
+      <p>Raporti hapet nga studentët e regjistruar në lëndë dhe profesori. Për hyrjen e parë pa GitHub, skano QR-në aktive të profesorit gjatë orës dhe regjistrohu me emailin e fakultetit ose privat. Nëse përdor tashmë GitHub, mund të hysh me të njëjtën llogari.</p>
       <Link className="admin-link" href="/api/auth/signin?callbackUrl=/report">Hyr me GitHub</Link>{" "}
-      <Link href="/student/activate">Përgatit profilin për lëndën</Link>
+      <Link href="/student/activate">Përgatit profilin me GitHub (opsionale)</Link>
     </section></main>;
   }
   const requested = Number((await searchParams).week);

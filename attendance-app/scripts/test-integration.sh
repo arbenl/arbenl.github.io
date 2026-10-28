@@ -79,4 +79,4 @@ printf '%s\n' \
   '});' > "$vitest_config"
 
 cd "$app_dir"
-npx vitest run --config "$vitest_config" tests/integration/attendance.test.ts
+npx vitest run --config "$vitest_config" "$@"

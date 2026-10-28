@@ -331,3 +331,75 @@ describe("ongoing staff authorization", () => {
     }
   });
 });
+
+const classroomUser = {
+  id: "00000000-0000-4000-8000-000000000020",
+  userId: "00000000-0000-4000-8000-000000000020",
+  rosterId: "00000000-0000-4000-8000-000000000021",
+  semesterId: "00000000-0000-4000-8000-000000000022",
+  email: "student@example.test", name: "Student Name", authMethod: "classroom" as const,
+};
+function classroomSession(): Session {
+  return { expires: "2099-01-01", user: { ...classroomUser } };
+}
+describe("classroom identities", () => {
+  it("accepts complete scoped identities and rejects mixed claims", () => {
+    expect(getSessionIdentity(classroomSession())).toMatchObject({ authMethod: "classroom", userId: classroomUser.id });
+    expect(getSessionIdentity({ ...classroomSession(), user: { ...classroomUser, githubId: "42", githubLogin: "professor" } })).toBeNull();
+    expect(getSessionIdentity({ ...classroomSession(), user: { ...classroomUser, rosterId: "invalid" } })).toBeNull();
+    expect(getSessionIdentity({ ...sessionFor("42"), user: { githubId: "42", githubLogin: "staff", semesterId: classroomUser.semesterId } })).toBeNull();
+  });
+  it("rejects classroom staff and bootstrap without database lookup", async () => {
+    const directory = { findByGitHubId: vi.fn() };
+    await expect(requireStaff(classroomSession(), directory)).rejects.toMatchObject({ status: 403 });
+    expect(directory.findByGitHubId).not.toHaveBeenCalled();
+    const repository = new MemoryBootstrapRepository();
+    expect(await bootstrapProfessor(classroomSession(), "42", repository)).toEqual({ status: "forbidden" });
+    expect(repository.transactionCount).toBe(0);
+  });
+  it("delegates credentials and first forwarded IP without client authority claims", async () => {
+    const registerClassroomStudent = vi.fn().mockResolvedValue(classroomUser);
+    const options = createAuthOptions(authEnvironment, { registerClassroomStudent });
+    const provider = options.providers.find(item => item.id === "classroom") as unknown as { options: { authorize: (credentials: unknown, request: unknown) => Promise<unknown> } };
+    expect(provider).toBeDefined();
+    const credentials = { token: "qr", email: "student@example.test", firstName: "Student", lastName: "Name", studentId: "123", groupName: "G1", githubId: "42", semesterId: "forged" };
+    expect(await provider.options.authorize(credentials, { headers: { "x-forwarded-for": "198.51.100.1, 10.0.0.1" } })).toMatchObject({ id: classroomUser.id, authMethod: "classroom" });
+    expect(registerClassroomStudent).toHaveBeenCalledWith({ token: "qr", email: "student@example.test", firstName: "Student", lastName: "Name", studentId: "123", groupName: "G1" }, "198.51.100.1");
+  });
+  it("clears claims on provider changes and ignores client session update fields", async () => {
+    const options = createAuthOptions(authEnvironment, { upsertUser: vi.fn() });
+    const jwt = options.callbacks!.jwt!;
+    const token = await jwt(callbackArguments(jwt, { token: { githubId: "42", githubLogin: "staff" }, user: classroomUser, account: { provider: "classroom", providerAccountId: classroomUser.id, type: "credentials" }, trigger: "signIn" }));
+    expect(token).toMatchObject({ userId: classroomUser.id, rosterId: classroomUser.rosterId, semesterId: classroomUser.semesterId, authMethod: "classroom" });
+    expect(token.githubId).toBeUndefined();
+    const updated = await jwt(callbackArguments(jwt, { token, trigger: "update", session: { githubId: "42" }, account: null, user: { id: "unused" } }));
+    expect(updated).toEqual(token);
+    const github = await jwt(callbackArguments(jwt, { token, profile: { id: 42, login: "staff" } as Profile, account: null, user: { id: "42" }, trigger: "signIn" }));
+    expect(github.githubId).toBe("42");
+    expect(github.rosterId).toBeUndefined();
+    expect(github.authMethod).toBeUndefined();
+    expect(github.email).toBeUndefined();
+  });
+});
+
+describe('classroom callback security', () => {
+  it('accepts trusted authorize users and exposes only scoped classroom claims in session', async () => {
+    const upsertUser = vi.fn();
+    const options = createAuthOptions(authEnvironment, { upsertUser });
+    const signIn = options.callbacks!.signIn!;
+    expect(await signIn(callbackArguments(signIn, { user:classroomUser, account:{provider:'classroom',type:'credentials',providerAccountId:classroomUser.id} }))).toBe(true);
+    expect(upsertUser).not.toHaveBeenCalled();
+    const callback = options.callbacks!.session!;
+    const result = await callback(callbackArguments(callback, {session:sessionFor('42'), token:{...classroomUser},user:{id:'unused',email:'',emailVerified:null},newSession:undefined,trigger:'update'}));
+    expect(result.user).toMatchObject({authMethod:'classroom',userId:classroomUser.id,email:classroomUser.email});
+    expect((result as Session).user.githubId).toBeUndefined();
+  });
+  it('never returns provider exception messages with private data', async () => {
+    const registerClassroomStudent = vi.fn().mockRejectedValue(Object.assign(new Error('private@example.test qr-secret'), {code:'invalid_qr'}));
+    const options = createAuthOptions(authEnvironment, {registerClassroomStudent});
+    const provider = options.providers.find(item => item.id === 'classroom') as unknown as {options:{authorize:(credentials:unknown,request:unknown)=>Promise<unknown>}};
+    await expect(provider.options.authorize({}, {headers:{}})).rejects.toThrow(/^invalid_qr$/);
+    registerClassroomStudent.mockRejectedValue(new Error('private@example.test qr-secret'));
+    await expect(provider.options.authorize({}, {headers:{}})).rejects.toThrow(/^registration_failed$/);
+  });
+});
