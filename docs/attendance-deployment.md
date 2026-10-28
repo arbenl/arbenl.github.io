@@ -250,3 +250,8 @@ Paneli i profesorit e aplikon vetëm pas autorizimit, nën bllokimin ekzistues t
 setup-it. Deri atëherë `/api/classroom/status` kthen `enabled:false` dhe hyrja
 GitHub vazhdon. Studentët nuk aplikojnë DDL. Mos krijo studentë sintetikë në
 Production për të provuar hyrjen; përdor harness-in me databazë të përkohshme.
+
+
+### Private course materials
+
+`/staff/materials/week-07` uses the same professor GitHub-ID and staff-directory checks as attendance. All material requests repeat that check and return `private, no-store` with cookie variance. The public repository contains an AES-256-GCM encrypted bundle only; its separate `MOBILE_MATERIALS_KEY` is a server-only Vercel production Secret. Do not commit the key or plaintext private materials. Missing keys and unauthorized requests fail closed. The scheduled student publication remains independent at 29 October 2026, 14:40 Europe/Berlin.
