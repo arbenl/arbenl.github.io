@@ -8,7 +8,7 @@
 **Spec:** docs/superpowers/specs/2026-10-28-mobile-colloquium-design.md
 
 ## Global Constraints
-Professor opens separately for G1/G2 and explicitly starts common600s clock. Student entry without GitHub/password/OTP/attendance expiry. Existing profiles direct; inline signup for others.10 questions x3answers x1correct x1point; random persisted options. Only weeks1–6. No answer keys sent to clients. One scored attempt/student/week across groups. Server auto-finalization regardless browser; no late changes or early scores. Alphabetic names+scores after deadline, no email/index. Additive DB, staff-only setup, preserve existing identities/attendance/private materials. Never start production test or add fake production students.
+Professor opens separately for G1/G2 and explicitly starts common600s clock. Student entry without GitHub/password/OTP/attendance expiry. Existing profiles direct; inline signup for others.10 questions x3answers x1correct x1point; random persisted options. Only weeks1–6. No answer keys sent to clients or published source: actualbank ciphertextonly, COLLOQUIUM_BANK_KEY secret, syntheticfixtures. Immutable bankversion pinned acrossG1/G2 and retained forhistory. Ordered answer revisions reject stalewrites; earlysubmit flushes and atomically finalizes expectedrevision. Start failsclosed if bankunavailable. One scored attempt/student/week across groups. Server auto-finalization regardless browser; no late changes or early scores. Alphabetic names+scores after deadline, no email/index. Additive DB, staff-only setup, preserve existing identities/attendance/private materials. Never start production test or add fake production students.
 
 ## Chunk 1: backend
 ### Task 1: Server assessment and registration
@@ -32,8 +32,8 @@ Professor opens separately for G1/G2 and explicitly starts common600s clock. Stu
 
 ## Chunk 3: syllabus and delivery
 ### Task 3: Course documents and published entry
-**Own:** scripts/build-syllabus.mjs, scripts/build-catalog.mjs, grading/course-plan.json, current syllabus.html, generated current coursepages; syllabus PDF/DOCX; document generation source script; tests covering grading and navigation.
-- [ ] Inspect actual current Word/PDF and source generators. Read document/PDF skills. Preserve official schedule/content/layout and replace only20-pointdemo with10+10colloquia, week7/14 plan and explanatory rules. Keep totals100 and other weights.
+**Own:** scripts/build-syllabus.mjs, scripts/build-catalog.mjs, grading/course-plan.json, current syllabus.html, src/portal.js translations, scripts/build-week07-web.mjs, generated current coursepages; syllabus PDF/DOCX; document generation source script; tests covering grading and navigation.
+- [ ] Inspect actual current Word/PDF and source generators. Current officialDOCX is3pages/tableformatted; grading prose in table1row10 and gradingnestedtable, weeks7/14rows require edits. Preserve layout using deterministicXML/python-docx edits. Bundled dependency bin/override/soffice is available even /Applications/LibreOffice absent. render_docx.py is at skillroot (not scripts/). Read document/PDF skills. Preserve official schedule/content/layout and replace only20-pointdemo with10+10colloquia, week7/14 plan and explanatory rules. Keep totals100 and other weights.
 - [ ] Add homepage studentcolloquium action in existing course area plus week7entry, preserve existing private week7lab controls. Change source generators and rebuild.
 - [ ] Rebuild PDF/DOCX reproducibly, inspect rendered pages for legibility and validate text weighs10+10.
 - [ ] Run portal checks/build and focused tests, commit ownfiles and report.
