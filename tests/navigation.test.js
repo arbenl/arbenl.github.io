@@ -39,6 +39,7 @@ test('each of fifteen weeks has a home and a consistent submission path',async()
   const page=await read(`lendet/2026-2027/mobile/java-${n}/index.html`);
   assert.ok(page.includes('Dorëzo edhe gjatë javës.'),`week ${week}: weekly submission policy missing`);
   assert.ok(page.includes('dorezimet.html'));
+  if(week===7 && !JSON.parse(await read('materials/week-07/publication.json')).labsPublished){assert.ok(page.includes('29.10.2026, ora 14:40'));continue;}
   if(week>=2){
    for(const heading of ['1. Ligjërata','2. Ushtrimet','3. Dorëzimi'])assert.ok(page.includes(heading),`week ${week}: missing ${heading}`);
    assert.ok(page.includes(week<=7 && week>=3?'href="ushtrimet.html"':'href="#hapat"'),`week ${week}: missing exercise entry`);

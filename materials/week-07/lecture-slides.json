@@ -1,21 +1,26 @@
 [
   {
-    "title": "A do t’ia besoje udhëtimin këtij app-i?",
+    "title": "Kontrolli i MVP-së së RideShare",
     "kicker": "JAVA 7 · 0–2 MIN",
     "body": [
-      "Dritoni ofron 2 vende në veturë drejt AAB-së. Arta hap RideShare për të kërkuar njërin.",
-      "Sot luajmë rolin e përdoruesit dhe provojmë produktin që kemi ndërtuar."
+      "MVP (Minimum Viable Product) do të thotë produkti minimal i përdorshëm.",
+      "Në fund do të shpjegosh rrjedhën e aplikacionit, të dallosh një problem dhe të provosh korrigjimin."
     ],
     "visual": [
       {
-        "icon": "car",
-        "label": "Dritoni",
-        "note": "Shoferi dhe pronari i udhëtimit"
+        "icon": "route",
+        "label": "Tema e sotme",
+        "note": "Ekranet, të dhënat dhe lejet"
       },
       {
-        "icon": "smartphone",
-        "label": "Arta",
-        "note": "Udhëtarja që kërkon vend"
+        "icon": "circle-question-mark",
+        "label": "Si do ta zbërthejmë",
+        "note": "Demonstrim, votime dhe prova"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "Në fund do të mundesh",
+        "note": "Të shpjegosh e të provosh një korrigjim"
       }
     ]
   },

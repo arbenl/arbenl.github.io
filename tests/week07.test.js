@@ -20,7 +20,9 @@ test('week 7 demo handles normal, no seats, missing id and a stale offline list 
 test('week 7 lecture votes have explanations and lab asks for genuine work rather than a full solution',async()=>{
  const lecture=JSON.parse(await readFile('materials/week-07/lecture-slides.json','utf8'));assert.equal(lecture.length,18);assert.equal(lecture.filter(s=>s.quiz).length,4);
  for(const s of lecture){if(s.quiz){assert.ok(s.quiz.options[s.quiz.correct]);assert.ok(s.quiz.explanation.length>30);assert.ok(s.quiz.question.endsWith('?'));}if(s.answer)assert.ok(s.question.endsWith('?'));}
+ const publication=JSON.parse(await readFile('materials/week-07/publication.json','utf8'));
  const guide=await readFile('lendet/2026-2027/mobile/java-07/ushtrimet.html','utf8');
+ if(!publication.labsPublished){assert.ok(guide.includes('29.10.2026, ora 14:40'));assert.ok(!guide.includes('case-form'));return;}
  for(const word of ['Parashiko','Skedari:','Para:','Pas:','Prova','rikontrollo','Ndryshimi i ri','pa pikë shtesë','gjatë javës'])assert.ok(guide.includes(word),word);
  assert.ok(!guide.includes('data-example-file'));assert.ok(!guide.includes('<pre><code>'));assert.ok(guide.includes('nuk provon autorësinë'));
  const report=await readFile('materials/week-07/java-07-model.md','utf8');
@@ -29,7 +31,10 @@ test('week 7 lecture votes have explanations and lab asks for genuine work rathe
 });
 test('week 7 student downloads match final slides, links and manifest without speaker notes',async()=>{
  const {createHash}=await import('node:crypto');const {execFileSync}=await import('node:child_process');const manifest=JSON.parse(await readFile('materials/manifest.json','utf8'));
- for(const[key,kind,count]of [['lecture7','ligjerates',18],['lab7','ushtrimeve',12]]){
+ const publication=JSON.parse(await readFile('materials/week-07/publication.json','utf8'));
+ const decks=[['lecture7','ligjerates',18],...(publication.labsPublished?[['lab7','ushtrimeve',12]]:[])];
+ if(!publication.labsPublished)assert.equal(manifest.lab7,undefined);
+ for(const[key,kind,count]of decks){
   const item=manifest[key];assert.equal(item.slides,count);assert.equal(createHash('sha256').update(await readFile(item.file)).digest('hex'),item.sha256);
   const names=execFileSync('unzip',['-Z1',item.file],{encoding:'utf8'}).split('\n');assert.equal(names.filter(n=>/^ppt\/slides\/slide\d+\.xml$/.test(n)).length,count);assert.ok(!names.some(n=>/^ppt\/notes(?:Slides|Masters)\//.test(n)));
   const html=await readFile(`lendet/2026-2027/mobile/java-07/prezantimi-${kind}.html`,'utf8');assert.equal((html.match(/<section class="step/g)||[]).length,count);

@@ -11,7 +11,7 @@ await fs.mkdir(work+'/output',{recursive:true});
 const ref=await PresentationFile.importPptx(await FileBlob.load(root+'/lendet/2026-2027/mobile/lectures/ligjerata-06-pwa-offline-rideshare-2026.pptx'));
 for(const i of [0,2,9]){const png=await ref.export({slide:ref.slides.items[i],format:'png',scale:1});await fs.writeFile(work+'/reference-'+i+'.png',new Uint8Array(await png.arrayBuffer()));}
 const logo=await fs.readFile(root+'/img/aab_logo_white.png');
-for(const kind of ['lecture','lab']){
+for(const kind of (process.env.WEEK07_BUILD_KIND || 'lecture,lab').split(',')){
  const data=JSON.parse(await fs.readFile(root+'/materials/week-07/'+kind+'-slides.json','utf8'));validateSlideQuestions(data,kind);
  const p=Presentation.create({slideSize:{width:1280,height:720}});
  function text(s,value,x,y,w,h,size=26,color='#edf2ff',bold=false){const o=s.shapes.add({geometry:'textbox',position:{left:x,top:y,width:w,height:h},fill:'none',line:{fill:'none',width:0}});o.text=value;o.text.style={typeface:'Arial',fontSize:size,color,bold,autoFit:'none'};return o;}

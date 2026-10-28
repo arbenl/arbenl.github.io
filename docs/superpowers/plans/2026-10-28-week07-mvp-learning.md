@@ -16,5 +16,9 @@
 
 ## Chunk 2: Feedback and delivery
 - [x] Add Week 7 evidence checks and tests in scripts/check-mobile-submission.cjs and tests/mobile-submission.test.cjs. Keep other weeks and workflow settings intact.
-- [ ] Exercise a synthetic valid submission and recheck. No real student submissions touched.
+- [x] Exercise synthetic invalid-feedback and recheck online; valid cases covered by 33 checker tests. No real student submissions touched.
 - [ ] Publish both repositories after review, confirm CI and live links/download hashes.
+
+## Publication timing update
+
+Owner requested student lab publication on 29 October 2026 at 14:40 Europe/Berlin. The lecture remains public. The lab guide, report template, projector deck and lab PPTX are withheld from the current site, with a private checksum-verified copy prepared for the scheduled release. The release guard rejects earlier publication. Isolated restoration passes the material tests; full learning-flow tests remain active when the publication flag is true.

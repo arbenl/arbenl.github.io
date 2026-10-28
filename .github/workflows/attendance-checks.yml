@@ -2,10 +2,10 @@ name: Attendance classroom checks
 on:
   workflow_dispatch:
   pull_request:
-    paths: ['attendance-app/**', 'materials/week-03/ushtrimet.html', 'materials/week-04/**', 'materials/week-05/**', 'materials/week-06/**', 'assets/week-colors.css', '.github/workflows/attendance-checks.yml']
+    paths: ['attendance-app/**', 'materials/week-03/ushtrimet.html', 'materials/week-04/**', 'materials/week-05/**', 'materials/week-06/**', 'materials/week-07/**', 'scripts/build-week07-web.mjs', 'assets/week-colors.css', '.github/workflows/attendance-checks.yml']
   push:
     branches: [main]
-    paths: ['attendance-app/**', 'materials/week-03/ushtrimet.html', 'materials/week-04/**', 'materials/week-05/**', 'materials/week-06/**', 'assets/week-colors.css', '.github/workflows/attendance-checks.yml']
+    paths: ['attendance-app/**', 'materials/week-03/ushtrimet.html', 'materials/week-04/**', 'materials/week-05/**', 'materials/week-06/**', 'materials/week-07/**', 'scripts/build-week07-web.mjs', 'assets/week-colors.css', '.github/workflows/attendance-checks.yml']
 permissions:
   contents: read
 jobs:
