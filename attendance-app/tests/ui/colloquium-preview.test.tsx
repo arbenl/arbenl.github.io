@@ -75,3 +75,32 @@ it('clears old proof and result before a restart failure and exposes an explicit
  await view.findAllByRole('radio');
  expect(fetchMock).toHaveBeenCalledTimes(3);
 });
+
+it.each(['before expiry', 'across expiry'])('keeps one automatic deadline attempt after an early manual grade fails %s', async timing => {
+ vi.useFakeTimers();
+ let rejectEarly!: (error: Error) => void;
+ const fetchMock = vi.spyOn(globalThis, 'fetch')
+  .mockResolvedValueOnce(json(makeRun('early-failure', Date.now() + 1000)))
+  .mockImplementationOnce(() => new Promise((_resolve, reject) => { rejectEarly = reject; }))
+  .mockRejectedValueOnce(new Error('deadline offline'))
+  .mockResolvedValueOnce(json({ private: true, studentId: 'GABIM', score: 0, maxScore: 10 }));
+ const view = render(<ColloquiumPreview />);
+ await act(async () => { fireEvent.click(view.getByRole('button', { name: 'Fillo provën private' })); });
+ fireEvent.click(view.getByRole('button', { name: 'Përfundo provën' }));
+ expect(fetchMock).toHaveBeenCalledTimes(2);
+ if (timing === 'across expiry') {
+  await act(async () => { await vi.advanceTimersByTimeAsync(2000); });
+  expect(fetchMock).toHaveBeenCalledTimes(2);
+ }
+ await act(async () => { rejectEarly(new Error('early offline')); });
+ await act(async () => { await vi.advanceTimersByTimeAsync(2000); });
+ expect(fetchMock).toHaveBeenCalledTimes(3);
+ expect(fetchMock.mock.calls.slice(1).map(([, init]) => JSON.parse(init!.body as string).action)).toEqual(['grade', 'grade']);
+ expect(view.getAllByRole('radio').every(radio => (radio.closest('fieldset') as HTMLFieldSetElement).disabled)).toBe(true);
+ expect(view.getByRole('alert')).toBeTruthy();
+ await act(async () => { await vi.advanceTimersByTimeAsync(10000); });
+ expect(fetchMock).toHaveBeenCalledTimes(3);
+ await act(async () => { fireEvent.click(view.getByRole('button', { name: 'Provo vlerësimin përsëri' })); });
+ expect(fetchMock).toHaveBeenCalledTimes(4);
+ expect(view.getByText('0/10')).toBeTruthy();
+});

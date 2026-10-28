@@ -37,7 +37,7 @@ export function ColloquiumPreview() {
   const finish = useCallback(async () => {
     const active = currentRun.current;
     if (!active || locked.current) return;
-    locked.current = true; autoAttempted.current = true;
+    locked.current = true;
     const requestGeneration = generation.current;
     setBusy(true); setMessage(null);
     try {
@@ -51,7 +51,7 @@ export function ColloquiumPreview() {
     const tick = () => {
       if (Date.now() + offset < Date.parse(run.deadline)) return;
       setExpired(true);
-      if (!autoAttempted.current) { autoAttempted.current = true; void finish(); }
+      if (!autoAttempted.current && !locked.current) { autoAttempted.current = true; void finish(); }
     };
     tick();
     const timer = setInterval(tick, 250);
