@@ -61,12 +61,15 @@ for (const width of [320, 375, 430]) {
    expect(Date.parse(state.room.deadline) - Date.parse(state.room.startedAt)).toBe(600000);
    const staff = (await api(professor, '/api/staff/colloquium')).body;
    expect(staff.rooms.find((room: { groupName: string }) => room.groupName === 'G2').state).toBe('lobby');
+   const displayedChoices = await student.locator('.cq-option').allTextContents();
+   expect(displayedChoices.every((text, index) => text.startsWith(`${['A', 'B', 'C'][index % 3]}. `))).toBe(true);
    const choice = student.getByRole('radio').first();
    const optionId = await choice.getAttribute('value');
    await choice.check();
    await expect(student.getByText('Të gjitha përgjigjet u ruajtën')).toBeVisible();
    await student.reload();
    await expect(student.locator(`input[value="${optionId}"]`)).toBeChecked();
+   expect(await student.locator(".cq-option").allTextContents()).toEqual(displayedChoices);
    await noOverflow(student);
    await student.screenshot({ path: info.outputPath(`colloquium-${width}-live.png`), fullPage: true });
    // Explicit failure and retry exercise real server recovery without losing the local click.

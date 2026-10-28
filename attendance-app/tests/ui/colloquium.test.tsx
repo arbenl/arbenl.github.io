@@ -76,9 +76,9 @@ it('retains a failed visible answer through polling and flushes its retry before
   return json(live);
  });
  const view = render(<ColloquiumStudent />);
- fireEvent.click(await view.findByRole('radio', { name: 'Dy' }));
+ fireEvent.click(await view.findByRole('radio', { name: 'B. Dy' }));
  await view.findByText(/Ruajtja dështoi/);
- expect((view.getByRole('radio', { name: 'Dy' }) as HTMLInputElement).checked).toBe(true);
+ expect((view.getByRole('radio', { name: 'B. Dy' }) as HTMLInputElement).checked).toBe(true);
  offline = false;
  fireEvent.click(view.getByRole('button', { name: 'Provo ruajtjen përsëri' }));
  await view.findByText('Të gjitha përgjigjet u ruajtën');
@@ -101,4 +101,19 @@ it('recovers the existing attempt when a remembered student opens the other grou
  await view.findByRole('heading', { name: 'Je në pritje të profesorit' });
  expect(view.getByText('Grupi G2 · Je regjistruar')).toBeTruthy();
  expect(sessionStorage.getItem('colloquium-room')).toBeNull();
+});
+it('labels shuffled choices A/B/C by display position and retains text and opaque values after remount', async () => {
+ const questions = [{ id: 'q', prompt: 'Pyetja me renditje të ruajtur', options: [{ id: 'opaque-z', text: 'Alternativa C' }, { id: 'opaque-x', text: 'Alternativa A' }, { id: 'opaque-y', text: 'Alternativa B' }] }];
+ const attempt = { id: 'a', submitted: false, answers: {}, revisions: {}, revision: 0 };
+ vi.spyOn(globalThis, 'fetch').mockImplementation(async () => json({ ...state, room: { ...room, state: 'live', deadline: new Date(Date.now() + 600000).toISOString() }, authenticated: true, registered: true, attempt, questions }));
+ const expectedLabels = ['A. Alternativa C', 'B. Alternativa A', 'C. Alternativa B'];
+ let view = render(<ColloquiumStudent />);
+ await view.findByRole('radio', { name: 'A. Alternativa C' });
+ expect(view.getAllByRole('radio').map(radio => radio.closest('label')?.textContent)).toEqual(expectedLabels);
+ expect(view.getAllByRole('radio').map(radio => (radio as HTMLInputElement).value)).toEqual(['opaque-z', 'opaque-x', 'opaque-y']);
+ view.unmount();
+ view = render(<ColloquiumStudent />);
+ await view.findByRole('radio', { name: 'A. Alternativa C' });
+ expect(view.getAllByRole('radio').map(radio => radio.closest('label')?.textContent)).toEqual(expectedLabels);
+ expect(view.getAllByRole('radio').map(radio => (radio as HTMLInputElement).value)).toEqual(['opaque-z', 'opaque-x', 'opaque-y']);
 });
