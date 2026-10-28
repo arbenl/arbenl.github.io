@@ -11,7 +11,7 @@
 Actualquestionsonlyteacher-authorized. Anystudentindexisprivate-testlabel.10questions3A/B/C1correct1point;600s;earlyfinishandautomaticfinish. Restartprivateonly. NoofficialDBwrites,authbypass,newsecretorplaintextbank/keyinpublicsource. Proofencryptedandteacherbound,namespace-separatedfromauth. Everyendpointstaff+originchecks. No productionexamstart/reset.
 
 ## Chunk1 private trial
-### Task1: Implementprotectedtrialandregressions
+### Task 1: Implementprotectedtrialandregressions
 **Own:** lib/colloquium/preview.ts; app/api/staff/colloquium/preview/route.ts; app/staff/colloquium/preview/page.tsx; components/colloquium/preview.tsx; staff.tsx smallentrylink; types.ts newpreviewDTOsonlyifneeded; tests/colloquium/preview.test.ts;tests/ui/colloquium-preview.test.tsx;tests/e2e/colloquium-preview.spec.ts. Noofficialservice/schema/bank/authchanges.
 - [ ] Writeandobservefailingcrypto/service/UItests. Reuseexistingserverhelpers;newmodule mustnotimportDBclient/schema/officialserviceexceptcanonicalOriginroutewrapper(Errorclassimportunavoidablereadonly)).
 - [ ] Implementstart/gradeencryptedproof,nodecryptoAESGCM,keyHMACnamespace,realopaqueorders,no semanticIDsorcorrectness inresponse. Boundproof/answers input andcheckstaff/purpose/time/version. Missingbank=>safe503.
