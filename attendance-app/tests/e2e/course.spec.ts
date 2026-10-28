@@ -307,6 +307,8 @@ for(const width of [320,375,1280]){
  test(`week 7 individual lab, MVP cases and lecture voting work at ${width}px`,async({page},testInfo)=>{
   await page.setViewportSize({width,height:width===1280?720:850});
   const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));const base='/lendet/2026-2027/mobile/java-07/';
+  const published=JSON.parse(await readFile(path.join(root,'materials/week-07/publication.json'),'utf8')).labsPublished;
+  if(published){
   await page.goto(origin+base);await page.getByRole('link',{name:'Fillo ushtrimet · 90 minuta',exact:true}).click();
   await page.getByLabel('Emri publik në GitHub',{exact:true}).fill('arta');await page.getByRole('button',{name:'Gjenero rastin tim',exact:true}).click();
   await expect(page.locator('[data-case="code"]')).toHaveText('P7-974');await expect(page.locator('[data-case="login"]')).toHaveText('arta');
@@ -322,7 +324,9 @@ for(const width of [320,375,1280]){
   }
   await page.emulateMedia({reducedMotion:'reduce'});await page.getByRole('button',{name:'Luaj animacionin',exact:true}).click();await expect(page.locator('#flow-text')).toContainText('reduktuar');await page.emulateMedia({reducedMotion:'no-preference'});await page.getByRole('button',{name:'Luaj animacionin',exact:true}).click();await expect(page.getByRole('button',{name:'Ndalo animacionin',exact:true})).toHaveAttribute('aria-pressed','true');await page.getByRole('button',{name:'Ndalo animacionin',exact:true}).click();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);await page.screenshot({path:testInfo.outputPath(`week07-demo-${width}.png`)});
+  }else{await page.goto(origin+base+'ushtrimet.html');await expect(page.getByRole('heading',{name:'Ushtrimet hapen nesër',exact:true})).toBeVisible();await expect(page.locator('#case-form')).toHaveCount(0);expect((await page.request.get(origin+'/lendet/2026-2027/mobile/lectures/ushtrimet-07-kontrolli-mvp-rideshare-2026.pptx')).status()).toBe(404);}
   for(const [kind,total]of [['ligjerates',18],['ushtrimeve',12]] as const){
+   if(!published&&kind==='ushtrimeve')continue;
    await page.goto(origin+base+`prezantimi-${kind}.html`);if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
    for(let n=1;n<=total;n++){
     await expect(page.locator('#counter')).toHaveText(`${n} / ${total}`);const visible=page.locator('.step:visible');await expect(visible).toHaveCount(1);await expect.poll(()=>visible.locator('.visual-cue img').evaluateAll(images=>images.every(i=>(i as HTMLImageElement).complete&&(i as HTMLImageElement).naturalWidth>0))).toBe(true);
