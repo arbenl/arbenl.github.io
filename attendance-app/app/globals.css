@@ -937,3 +937,58 @@ body:has(.projector-shell) .app-header {
 
 .attendance-report .admin-page-header h1 { font-size: clamp(1.8rem, 4vw, 3rem); }
 .attendance-report summary { cursor: pointer; padding: .5rem 0; color: var(--portal-muted); }
+
+/* Colloquium: scoped phone-first assessment and instructor lobby. */
+.cq-shell { --cq-ink: #142d36; --cq-muted: #49616a; --cq-accent: #087568; max-width: 860px; margin: 0 auto; padding: 28px 18px 48px; color: var(--cq-ink); }
+.cq-shell *, .cq-shell *::before, .cq-shell *::after { box-sizing: border-box; min-width: 0; }
+.cq-shell a { color: #086357; text-underline-offset: 4px; overflow-wrap: anywhere; }
+.cq-header { padding: 8px 0 22px; }
+.cq-header h1 { margin: 10px 0; font-size: clamp(2rem, 7vw, 3rem); letter-spacing: -.04em; }
+.cq-header p { color: var(--cq-muted); line-height: 1.6; }
+.cq-header .eyebrow { margin-top: 24px; }
+.cq-panel, .cq-question { padding: 24px; margin: 0 0 20px; background: #fff; border: 1px solid #d3e1df; border-radius: 18px; box-shadow: 0 4px 18px #10322a06; }
+.cq-panel h2 { margin-top: 0; font-size: 1.4rem; }
+.cq-panel p, .cq-guidance { line-height: 1.65; }
+.cq-shell button { min-height: 48px; padding: 12px 18px; border: 1px solid #aac9c1; border-radius: 10px; background: #f2f8f6; color: #13564c; font: inherit; font-weight: 650; cursor: pointer; white-space: normal; }
+.cq-shell button:disabled { opacity: .65; cursor: wait; }
+.cq-shell button.cq-primary { background: #087568; border-color: #087568; color: white; }
+.cq-shell button:focus-visible, .cq-shell a:focus-visible, .cq-shell input:focus-visible { outline: 3px solid #c88a16; outline-offset: 3px; }
+.cq-shell input:not([type=radio]) { width: 100%; min-height: 48px; padding: 11px 12px; border-radius: 8px; border: 1px solid #9ab4b0; font: inherit; background: #fff; color: #142d36; }
+.cq-shell .student-form { display: grid; gap: 10px; }
+.cq-shell .student-form label { margin-top: 6px; font-weight: 650; }
+.cq-badge { display: inline-block; margin: 0 0 16px; border-radius: 20px; padding: 6px 12px; background: #e6f3ec; color: #1a624b; font-size: .9rem; font-weight: 700; }
+.cq-wait { padding-top: 30px; }
+.cq-pulse { display: block; width: 12px; height: 12px; margin: 24px 0 8px; border-radius: 100%; background: #087568; box-shadow: 0 0 0 7px #e0f0eb; }
+.cq-quizbar { position: sticky; top: 0; z-index: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 18px; background: #f1f8f6fa; border: 1px solid #accac3; border-radius: 14px; box-shadow: 0 4px 12px #142d3610; }
+.cq-quizbar > div { display: grid; gap: 4px; flex: 1; }
+.cq-quizbar p { width: 100%; margin: 0; font-size: .85rem; line-height: 1.5; }
+.cq-time { font-size: 1.85rem; font-weight: 750; font-variant-numeric: tabular-nums; color: #07594f; }
+.cq-guidance { color: var(--cq-muted); margin: 20px 2px; }
+.cq-question { width: 100%; padding: 0 20px 20px; margin-top: 38px; }
+.cq-question legend { padding: 0 4px; font-size: 1.12rem; line-height: 1.5; font-weight: 650; overflow-wrap: anywhere; }
+.cq-question legend > span { display: block; margin-bottom: 8px; color: #52726b; font-size: .8rem; letter-spacing: .05em; text-transform: uppercase; }
+.cq-option { display: flex; align-items: flex-start; gap: 12px; min-height: 54px; padding: 15px 13px; margin-top: 12px; border: 1px solid #c9d9d5; border-radius: 10px; cursor: pointer; line-height: 1.5; }
+.cq-option input { flex-shrink: 0; width: 20px; height: 20px; margin: 2px 0 0; accent-color: #087568; }
+.cq-selected { background: #e9f5ef; border: 2px solid #087568; padding: 14px 12px; }
+.cq-notice { border: 1px solid #d8a35f; background: #fff7e8; padding: 16px; margin-bottom: 18px; border-radius: 12px; line-height: 1.6; }
+.cq-notice button { margin-top: 8px; }
+.cq-panel [role=group] button { margin: 4px 8px 4px 0; }
+.cq-results { width: 100%; border-collapse: collapse; font-size: .94rem; }
+.cq-results th, .cq-results td { text-align: left; padding: 13px 6px; border-bottom: 1px solid #dce7e3; overflow-wrap: anywhere; }
+.cq-results th:first-child { width: 60%; }
+.cq-results tbody th { font-weight: 500; }
+.cq-footer { padding: 14px 4px; color: var(--cq-muted); font-size: .9rem; }
+.cq-share { display: grid; gap: 12px; margin: 8px 0 24px; }
+.cq-share canvas { display: block; max-width: 100%; height: auto !important; margin: 0 auto; }
+.cq-share label { display: grid; gap: 8px; font-weight: 650; }
+.cq-share input { font-weight: 400; }
+.cq-participants { list-style: none; padding: 0; max-height: 300px; overflow: auto; }
+.cq-participants li { padding: 12px 0; border-bottom: 1px solid #e0eae6; overflow-wrap: anywhere; }
+.cq-participants li span { display: block; color: #27684d; font-size: .8rem; }
+@media (min-width: 720px) { .cq-staff { max-width: 1100px; } .cq-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; } }
+@media (max-width: 360px) { .cq-shell { padding: 20px 12px; } .cq-panel { padding: 20px 16px; } .cq-question { padding-left: 12px; padding-right: 12px; } .cq-results { font-size: .85rem; } }
+body:has(.cq-shell) { background: #f3f8f5; }
+body:has(.cq-shell) .app-header { position: static; }
+.cq-shell { color-scheme: light; }
+.cq-shell .eyebrow { color: #416e64; }
+.cq-shell .form-guidance { color: #49616a; }
