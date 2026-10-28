@@ -39,6 +39,16 @@ RATE_LIMIT_SECRET
 
 Në një instalim të ri, profesori hyn fillimisht me llogarinë GitHub që përputhet me `PROFESSOR_GITHUB_ID`, pastaj thërret një herë `POST /api/admin/bootstrap` nga sesioni i autentikuar. Ky veprim krijon anëtarësinë e parë të stafit dhe një shenjë të përhershme se bootstrap-i është kryer. Përsëritja nuk krijon staf të ri. Pas bootstrap-it, autorizimi lexohet nga tabela `staff`; ndryshimi i username-it ose i një fushe në browser nuk jep rol stafi.
 
+## Kolokviumet Mobile 2026/2027
+
+Kolokviumi I jep 10 pikë në javën 7; Kolokviumi II jep 10 pikë në javën 14 dhe mbetet vetëm i njoftuar. Vijueshmëria 10, ushtrimet 30 dhe projekti 40 pikë mbeten të pandryshuara.
+
+Për Kolokviumin I, Production kërkon `COLLOQUIUM_BANK_KEY`: sekret vetëm në server, me saktësisht 64 karaktere heksadecimale që përputhen me bankën e enkriptuar dhe versionin e ngrirë të saj. Në repository-n publik ruhet vetëm ciphertext AES-GCM; pyetjet dhe përgjigjet reale në tekst të hapur dhe çelësi real nuk commit-ohen. Pa konfigurim të vlefshëm, nisja refuzohet qartë. Çelësi i ri i gjeneruar ruhet lokalisht në skedar të injoruar dhe konfigurohet në Vercel përmes stdin; mos eksporto ose printo sekrete ekzistuese. `COLLOQUIUM_BANK_KEY` mbetet opsional për përdorimin e zakonshëm të vijueshmërisë.
+
+Profesori hyn në `/staff/colloquium`, përgatit skemën me veprimin vetëm për staf dhe hap regjistrimin veçmas për G1/G2. Skanimi i QR-së ose lidhja direkte në `/colloquium` hap pritjen; hapja e regjistrimit nuk nis kohën. Vetëm **Start** nis afatin e përbashkët 600-sekondësh të grupit. Gjatë verifikimit të prodhimit mund të kontrollohet paneli ose regjistrimi; mos nis provim dhe mos krijo studentë apo tentativa sintetike në prodhim.
+
+Studenti hyn me profilin e ruajtur ose regjistrohet aty me emër, mbiemër, indeks dhe email fakulteti ose privat. Nuk kërkohen GitHub, fjalëkalim, OTP, QR e vijueshmërisë apo prani e mëparshme. Një student ka një tentim të vlerësuar për kolokvium, edhe nëse ndërron grup. Hyrja gjatë testit jep vetëm kohën e mbetur; përgjigjet ruhen në server dhe rifreskimi nuk rinis kohën. Pas afatit, rezultatet në sistem shfaqin emrat sipas alfabetit, grupin dhe pikët nga 10, pa email apo indeks. Historiku i vijueshmërisë dhe pikët e tjera ruajnë privatësinë ekzistuese.
+
 ## Përgatitja e semestrit
 
 Kur profesori hap `/staff`, sistemi sinkronizon automatikisht semestrin **Programimi për Pajisje Mobile · Semestri Dimëror 2026/27** dhe orët e të dy grupeve sipas kalendarit te `attendance-app/lib/attendance/current-course.ts`. Java 1 ka vetëm ligjëratë. Nga java 3 ligjëratat ndahen në G1 (16:30) dhe G2 (17:15); ushtrimet mbahen në G1 (14:45) dhe G2 (18:15). Sinkronizimi është idempotent: hapja e përsëritur e panelit nuk krijon dublikatë. Semestrat e arkivuar me prefiksin e rezervuar `[PILOT SYNTHETIC]` pastrohen nga databaza gjatë këtij sinkronizimi.

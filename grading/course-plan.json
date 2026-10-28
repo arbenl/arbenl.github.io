@@ -62,7 +62,7 @@
     },
     {
       "week": 7,
-      "title": "Kollokviumi I dhe kontrolli i MVP-së",
+      "title": "Kolokviumi I dhe kontrolli i MVP-së",
       "lab": "RideShare: demonstrimi i kërkesës për vend dhe korrigjimet",
       "graded": false,
       "date": "2026-10-29",
@@ -125,7 +125,7 @@
     },
     {
       "week": 14,
-      "title": "Testimi dhe CI/CD",
+      "title": "Kolokviumi II, testimi dhe CI/CD",
       "lab": "RideShare: publikimi dhe kontrolli përfundimtar",
       "graded": true,
       "date": "2026-12-17",
@@ -150,5 +150,37 @@
   "database": {
     "primary": "Neon PostgreSQL përmes Vercel Marketplace",
     "secondary": "Supabase (alternativë)"
+  },
+  "assessment": {
+    "totalPoints": 100,
+    "components": [
+      {
+        "id": "attendance",
+        "title": "Vijueshmëria dhe angazhimi",
+        "points": 10
+      },
+      {
+        "id": "labs",
+        "title": "Ushtrimet RideShare",
+        "points": 30
+      },
+      {
+        "id": "project",
+        "title": "Aplikacioni individual",
+        "points": 40
+      },
+      {
+        "id": "colloquium1",
+        "title": "Kolokviumi I",
+        "points": 10,
+        "week": 7
+      },
+      {
+        "id": "colloquium2",
+        "title": "Kolokviumi II",
+        "points": 10,
+        "week": 14
+      }
+    ]
   }
 }
