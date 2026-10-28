@@ -127,3 +127,21 @@ test('remembered canonical profile enters directly and results sort names after 
   expect((await api(arta, '/api/colloquium/results')).body.every((row: object) => Object.keys(row).sort().join(',') === 'fullName,groupName,score')).toBe(true);
  } finally { await first.close(); await second.close(); }
 });
+test('professor entry routes to group controls while anonymous entry remains available', async ({ browser, page: professor }) => {
+ await setup(professor);
+ await professor.goto('/colloquium');
+ await expect(professor).toHaveURL(/\/staff\/colloquium$/, { timeout: 5000 });
+ await expect(professor.getByRole('button', { name: 'Fillo G1 · 10 minuta' })).toBeVisible();
+ await expect(professor.locator('main').getByRole('alert')).toHaveCount(0);
+ const staff = (await api(professor, '/api/staff/colloquium')).body;
+ expect(staff.rooms.every((room: { state: string }) => room.state === 'lobby')).toBe(true);
+ const anonymous = await browser.newContext({ viewport: { width: 375, height: 812 } });
+ try {
+  const entry = await anonymous.newPage();
+  await entry.goto('/colloquium');
+  await expect(entry).toHaveURL(/\/colloquium$/);
+  await expect(entry.getByRole('heading', { name: 'Hyr nga lidhja e grupit' })).toBeVisible();
+  await expect(entry.locator('main').getByRole('alert')).toHaveCount(0);
+  await expect(entry.locator('main').getByRole('status')).toHaveCount(0);
+ } finally { await anonymous.close(); }
+});

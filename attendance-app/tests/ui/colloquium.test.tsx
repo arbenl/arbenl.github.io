@@ -117,3 +117,14 @@ it('labels shuffled choices A/B/C by display position and retains text and opaqu
  expect(view.getAllByRole('radio').map(radio => radio.closest('label')?.textContent)).toEqual(expectedLabels);
  expect(view.getAllByRole('radio').map(radio => (radio as HTMLInputElement).value)).toEqual(['opaque-z', 'opaque-x', 'opaque-y']);
 });
+it('ends initial loading after a failed request and recovers when retry succeeds', async () => {
+ vi.spyOn(globalThis, 'fetch')
+  .mockResolvedValueOnce(new Response(JSON.stringify({ error: { code: 'internal_error' } }), { status: 500 }))
+  .mockImplementation(async () => json({ ...state, room: null }));
+ const view = render(<ColloquiumStudent />);
+ await view.findByRole('alert');
+ expect(view.queryByRole('status')).toBeNull();
+ fireEvent.click(view.getByRole('button', { name: 'Provo përsëri' }));
+ await view.findByRole('heading', { name: 'Hyr nga lidhja e grupit' });
+ expect(view.queryByRole('alert')).toBeNull();
+});
