@@ -55,3 +55,17 @@ export interface ColloquiumRegistrationInput {
   lastName: string;
   studentId: string;
 }
+export interface ColloquiumPreviewRun {
+  private: true;
+  studentId: string;
+  serverTime: string;
+  deadline: string;
+  proof: string;
+  questions: ColloquiumQuestion[];
+}
+export interface ColloquiumPreviewResult {
+  private: true;
+  studentId: string;
+  score: number;
+  maxScore: 10;
+}
