@@ -50,5 +50,6 @@ await import("./build-syllabus.mjs");
 await import("./build-week04-web.mjs");
 await import("./build-week05-web.mjs");
 await import("./build-week06-web.mjs");
+await import("./build-week07-web.mjs");
 await import("./build-weekly-guides.mjs");
 await import("./build-week-colors.mjs");

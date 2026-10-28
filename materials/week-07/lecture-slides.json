@@ -1,0 +1,445 @@
+[
+  {
+    "title": "A do t’ia besoje udhëtimin këtij app-i?",
+    "kicker": "JAVA 7 · 0–2 MIN",
+    "body": [
+      "Dritoni ofron 2 vende në veturë drejt AAB-së. Arta hap RideShare për të kërkuar njërin.",
+      "Sot luajmë rolin e përdoruesit dhe provojmë produktin që kemi ndërtuar."
+    ],
+    "visual": [
+      {
+        "icon": "car",
+        "label": "Dritoni",
+        "note": "Shoferi dhe pronari i udhëtimit"
+      },
+      {
+        "icon": "smartphone",
+        "label": "Arta",
+        "note": "Udhëtarja që kërkon vend"
+      }
+    ]
+  },
+  {
+    "title": "Çfarë kemi ndërtuar deri tani",
+    "kicker": "JAVA 7 · 2–4 MIN",
+    "body": [
+      "Java 3 lidhi listën me detajet. Java 4 solli të dhënat nga Neon.",
+      "Java 5 shtoi hyrjen dhe lejet. Java 6 na mësoi të lexojmë një kopje pa internet."
+    ],
+    "visual": [
+      {
+        "icon": "route",
+        "label": "Ekranet",
+        "note": "Lista, detajet dhe kërkesa"
+      },
+      {
+        "icon": "database",
+        "label": "Të dhënat",
+        "note": "Neon PostgreSQL"
+      },
+      {
+        "icon": "lock-keyhole",
+        "label": "Besimi",
+        "note": "Lejet dhe kufijtë offline"
+      }
+    ]
+  },
+  {
+    "title": "Ora në dy ekrane",
+    "kicker": "JAVA 7 · 4–7 MIN",
+    "body": [
+      "Lista thotë 08:15. Arta hap udhëtimin e Dritonit dhe detajet thonë 08:40.",
+      "Në çift: cili informacion ju duhet para se të ndryshoni kodin?"
+    ],
+    "visual": [
+      {
+        "icon": "clock",
+        "label": "Lista: 08:15",
+        "note": "Udhëtimi 2"
+      },
+      {
+        "icon": "clock",
+        "label": "Detajet: 08:40",
+        "note": "Po i njëjti udhëtim?"
+      }
+    ],
+    "quiz": {
+      "question": "Çfarë kontrollojmë së pari?",
+      "options": [
+        "Vetëm ngjyrën e kartës.",
+        "ID-në, burimin dhe kohën e leximit.",
+        "I shkruajmë të dyja orët 08:15."
+      ],
+      "correct": 1,
+      "explanation": "I njëjti ID mund të vijë nga lexime ose kopje të ndryshme. Gjej burimin para se të mbulosh ndryshimin me tekst."
+    }
+  },
+  {
+    "title": "I njëjti udhëtim, një burim i qartë",
+    "kicker": "JAVA 7 · 7–9 MIN",
+    "body": [
+      "Kontrollojmë ID-në në link dhe në të dhëna. Pastaj kontrollojmë nëse pamja vjen nga serveri ose nga kopja.",
+      "Nëse të dhënat kanë ndryshuar mes leximeve, e shpjegojmë dhe rifreskojmë. Nuk premtojmë që dy lexime janë gjithmonë identike."
+    ],
+    "visual": [
+      {
+        "icon": "route",
+        "label": "ID-ja",
+        "note": "Cilin udhëtim lexova?"
+      },
+      {
+        "icon": "database",
+        "label": "Burimi",
+        "note": "Server apo kopje?"
+      }
+    ],
+    "question": "Pse ndryshimi i tekstit në kartë mund ta fshehë gabimin?",
+    "answer": "Detajet mund të lexojnë udhëtimin e gabuar ose një version tjetër. Ndryshimi i tekstit nuk korrigjon shkakun."
+  },
+  {
+    "title": "Ku kalon veprimi i Artës",
+    "kicker": "JAVA 7 · 9–12 MIN",
+    "body": [
+      "Git dhe GitHub ruajnë e publikojnë kodin. Vercel e ndërton dhe e shërben aplikacionin.",
+      "Gjatë përdorimit, shfletuesi kërkon të dhëna nga serveri Next.js në Vercel. Serveri lexon Neon PostgreSQL."
+    ],
+    "visual": [
+      {
+        "icon": "smartphone",
+        "label": "Telefoni",
+        "note": "Ndërfaqja dhe kopja lokale"
+      },
+      {
+        "icon": "cloud",
+        "label": "Vercel",
+        "note": "Serveri kontrollon kërkesën"
+      },
+      {
+        "icon": "database",
+        "label": "Neon PostgreSQL",
+        "note": "Të dhënat e ruajtura"
+      }
+    ],
+    "simulation": true,
+    "sources": [
+      "https://nextjs.org/docs/app/guides/data-security"
+    ]
+  },
+  {
+    "title": "Demo: vendoseni aplikacionin në vështirësi",
+    "kicker": "JAVA 7 · 12–15 MIN",
+    "body": [
+      "Klasa zgjedh një rast: funksionim normal, pa vende, ID i gabuar ose kopje offline.",
+      "Parashikoni mesazhin. Pastaj hapni demonstrimin dhe ndiqni hapat e infrastrukturës."
+    ],
+    "visual": [
+      {
+        "icon": "circle-question-mark",
+        "label": "Parashiko",
+        "note": "Para klikimit"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "Provo",
+        "note": "Ndrysho vetëm një kusht"
+      }
+    ],
+    "demo": true
+  },
+  {
+    "title": "Butoni u shtyp. A u rezervua vendi?",
+    "kicker": "JAVA 7 · 15–18 MIN",
+    "body": [
+      "Faqja e Javës 3 shfaq “Në pritje” në një simulim. Nuk ka ende kërkesë të ruajtur në server."
+    ],
+    "visual": [
+      {
+        "icon": "send",
+        "label": "Klikimi",
+        "note": "Veprim në ndërfaqe"
+      },
+      {
+        "icon": "database",
+        "label": "Ruajtja",
+        "note": "Duhet provuar veçmas"
+      }
+    ],
+    "quiz": {
+      "question": "Cila fjali përshkruan saktë këtë rezultat?",
+      "options": [
+        "Vendi është rezervuar përfundimisht.",
+        "Shoferi e ka pranuar Artën.",
+        "Simulimi shfaq Në pritje, pa rezervim real."
+      ],
+      "correct": 2,
+      "explanation": "Mesazhi në ekran tregon simulimin. Pranimi i shoferit dhe ruajtja reale kërkojnë funksione të tjera."
+    }
+  },
+  {
+    "title": "Gjendjet e një kërkese",
+    "kicker": "JAVA 7 · 18–20 MIN",
+    "body": [
+      "“E padërguar”, “Në pritje” dhe “E pranuar” përfaqësojnë ngjarje të ndryshme.",
+      "Në MVP-në (Minimum Viable Product – produkti minimal i përdorshëm) të sotme e emërtojmë qartë çfarë kemi provuar realisht."
+    ],
+    "visual": [
+      {
+        "icon": "send",
+        "label": "Në pritje",
+        "note": "Në simulim: shënohet qartë"
+      },
+      {
+        "icon": "lock-keyhole",
+        "label": "E pranuar",
+        "note": "Kërkon proces real konfirmimi"
+      }
+    ],
+    "question": "Çfarë duhet të shkruajë një buton demonstrues?",
+    "answer": "“Provo kërkesën · simulim”. Pas klikimit: “Në pritje · simulim, pa rezervim real”."
+  },
+  {
+    "title": "Një provë që mund ta përsërisë kolegu",
+    "kicker": "JAVA 7 · 20–23 MIN",
+    "body": [
+      "Përgatit të dhënat. Shkruaj çfarë pret. Kryej vetëm veprimin që po provon.",
+      "Krahaso atë që pe me pritshmërinë. Ruaj rezultatin edhe nëse prova dështoi."
+    ],
+    "visual": [
+      {
+        "icon": "circle-question-mark",
+        "label": "Pritshmëria",
+        "note": "Çfarë duhet të ndodhë?"
+      },
+      {
+        "icon": "smartphone",
+        "label": "Vëzhgimi",
+        "note": "Çfarë ndodhi realisht?"
+      },
+      {
+        "icon": "route",
+        "label": "Përsëritja",
+        "note": "Cilët hapa e prodhojnë?"
+      }
+    ]
+  },
+  {
+    "title": "Ikona online është ndezur",
+    "kicker": "JAVA 7 · 23–26 MIN",
+    "body": [
+      "Arta ka kopjen e fundit me 1 vend. Telefoni shfaq lidhje aktive, por serveri nuk përgjigjet."
+    ],
+    "visual": [
+      {
+        "icon": "wifi",
+        "label": "Lidhja",
+        "note": "Duket aktive"
+      },
+      {
+        "icon": "cloud",
+        "label": "Serveri",
+        "note": "Nuk kthen përgjigje"
+      }
+    ],
+    "quiz": {
+      "question": "Çfarë mund të premtojë aplikacioni?",
+      "options": [
+        "Rezervim të konfirmuar nga kopja.",
+        "Listën e ruajtur, me paralajmërim.",
+        "Që vendi i fundit është ende i lirë."
+      ],
+      "correct": 1,
+      "explanation": "navigator.onLine nuk provon që serveri përgjigjet. Kopja shërben për lexim dhe nuk konfirmon vendet aktuale."
+    }
+  },
+  {
+    "title": "Kopja është ndihmë për lexim",
+    "kicker": "JAVA 7 · 26–28 MIN",
+    "body": [
+      "Shfaq kohën e ruajtjes dhe paralajmërimin për të dhënat e vjetra.",
+      "Rikthimi i lidhjes lejon një kërkesë të re. Vetëm përgjigjja e suksesshme sjell të dhëna të reja."
+    ],
+    "visual": [
+      {
+        "icon": "hard-drive",
+        "label": "Kopja",
+        "note": "Mund të jetë e vjetër"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "Përditësimi",
+        "note": "Pasi përgjigjet serveri"
+      }
+    ],
+    "question": "A mjafton që një faqe e hapur të mbetet në ekran për të provuar offline?",
+    "answer": "Jo. Hape online, ndalo rrjetin e atij tab-i dhe rifresko faqen e listës. Vëzhgo çfarë ngarkohet sërish.",
+    "sources": [
+      "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine"
+    ]
+  },
+  {
+    "title": "Dy probleme, një korrigjim i vogël",
+    "kicker": "JAVA 7 · 28–31 MIN",
+    "body": [
+      "Shembull vëzhgimi: ID i panjohur hap të njëjtat detaje. Pasoja: Arta mund të zgjedhë udhëtimin e gabuar.",
+      "Zgjidh një problem të riprodhueshëm në projektin tënd. Ndrysho pjesën më të vogël që e korrigjon."
+    ],
+    "visual": [
+      {
+        "icon": "route",
+        "label": "Shkaku",
+        "note": "Rruga ose kushti"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "Korrigjimi",
+        "note": "Një ndryshim i kuptueshëm"
+      }
+    ],
+    "question": "Nëse aplikacioni yt nuk ka këtë gabim, çfarë bën?",
+    "answer": "Zgjedh një problem tjetër real ose përmirëson një kufi të vogël, p.sh. mesazhin e listës bosh. Mos e prish qëllimisht projektin."
+  },
+  {
+    "title": "Prova para dhe pas ndryshimit",
+    "kicker": "JAVA 7 · 31–34 MIN",
+    "body": [
+      "Commit-i i parë ruan parashikimin dhe gjendjen fillestare. Commit-i pas korrigjimit ruan ndryshimin e kodit.",
+      "Raporti lidh të dy versionet me rezultatet. Lidhjet na ndihmojnë të diskutojmë punën konkrete."
+    ],
+    "visual": [
+      {
+        "icon": "hard-drive",
+        "label": "Para",
+        "note": "Gjendja fillestare"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "Pas",
+        "note": "Kodi i korrigjuar"
+      }
+    ],
+    "question": "A provon një histori commit-esh se studenti e kupton kodin?",
+    "answer": "Jo. Historia tregon versione. Studenti e demonstron kuptimin duke shpjeguar dhe ndryshuar sjelljen në projektin e vet."
+  },
+  {
+    "title": "Butoni i fshehur dhe leja në server",
+    "kicker": "JAVA 7 · 34–37 MIN",
+    "body": [
+      "Arta nuk është pronarja e udhëtimit të Dritonit. Ndërfaqja fsheh ndryshimin e orës."
+    ],
+    "visual": [
+      {
+        "icon": "smartphone",
+        "label": "Ndërfaqja",
+        "note": "Ndihmon përdoruesin"
+      },
+      {
+        "icon": "lock-keyhole",
+        "label": "Serveri",
+        "note": "Verifikon sesionin dhe pronarin"
+      }
+    ],
+    "quiz": {
+      "question": "Ku duhet të kontrollohet leja për ruajtje?",
+      "options": [
+        "Vetëm te butoni i fshehur.",
+        "Te mesazhi në raport.",
+        "Në server, për çdo veprim ndryshimi."
+      ],
+      "correct": 2,
+      "explanation": "Fshehja e butonit nuk e mbron veprimin. Serveri verifikon sesionin dhe pronësinë përpara ndryshimit."
+    }
+  },
+  {
+    "title": "Kufijtë e MVP-së që ruajmë",
+    "kicker": "JAVA 7 · 37–39 MIN",
+    "body": [
+      "Lista publike mund të lexohet pa hyrje. Veprimi i pronarit kërkon verifikimin e serverit të Javës 5.",
+      "Sot nuk ndërtojmë pagesa, rezervime reale ose sinkronizim të ri. Provojmë pjesët që kemi dhe shpjegojmë kufijtë."
+    ],
+    "visual": [
+      {
+        "icon": "lock-keyhole",
+        "label": "Lejet",
+        "note": "Mbeten në server"
+      },
+      {
+        "icon": "car",
+        "label": "MVP-ja",
+        "note": "Një rrjedhë e demonstrueshme"
+      }
+    ],
+    "question": "Çfarë bën nëse hyrja reale nuk të funksionon ende?",
+    "answer": "Shënoje si pengesë dhe kërko ndihmë. Mund të punosh te lista dhe detajet, por nuk raporton që prova e lejeve kaloi.",
+    "sources": [
+      "https://nextjs.org/docs/app/guides/authentication"
+    ]
+  },
+  {
+    "title": "Rasti yt, në projektin tënd",
+    "kicker": "JAVA 7 · 39–41 MIN",
+    "body": [
+      "Gjenero rastin nga emri yt GitHub. Përdor të dhëna fiktive dhe një udhëtim që ekziston në projekt.",
+      "Kodi i rastit organizon variantin e provës. Ai është publik dhe nuk provon autorësinë."
+    ],
+    "visual": [
+      {
+        "icon": "car",
+        "label": "Të dhëna fiktive",
+        "note": "Ora dhe vendet e provës"
+      },
+      {
+        "icon": "route",
+        "label": "I njëjti ID",
+        "note": "Ndiqe në të gjitha ekranet"
+      }
+    ],
+    "href": "ushtrimet.html#rasti",
+    "link": "Gjenero rastin e ushtrimit"
+  },
+  {
+    "title": "Shpjegimi që tregon kuptim",
+    "kicker": "JAVA 7 · 41–43 MIN",
+    "body": [
+      "Në çift: studenti tregon skedarin, shpjegon një kusht dhe parashikon rezultatin kur ndryshon hyrja.",
+      "Kolegu ndryshon vetëm një vlerë. Studenti e provon dhe shpjegon ndryshimin pa përdorur AI në këtë kontroll."
+    ],
+    "visual": [
+      {
+        "icon": "circle-question-mark",
+        "label": "Pse?",
+        "note": "Shpjego arsyen"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "Po sikur?",
+        "note": "Një hyrje e re"
+      }
+    ],
+    "question": "Çfarë bën profesori kur shpjegimi mbetet i paqartë?",
+    "answer": "Kërkon një demonstrim të shkurtër me hyrje tjetër. Fotografia, raporti dhe kontrolli automatik nuk mjaftojnë për të vërtetuar kuptimin."
+  },
+  {
+    "title": "A do t’ia tregoje një klienti?",
+    "kicker": "JAVA 7 · 43–45 MIN",
+    "body": [
+      "Trego rrjedhën e Artës në 60 sekonda. Emërto një gjë që punon dhe një kufi që duhet ta dijë përdoruesi.",
+      "Te një biznes shërbimesh, e njëjta provë vlen për zgjedhjen e një termini ose dërgimin e një porosie."
+    ],
+    "visual": [
+      {
+        "icon": "smartphone",
+        "label": "Demonstrimi",
+        "note": "Veprim dhe rezultat"
+      },
+      {
+        "icon": "utensils",
+        "label": "Biznesi yt",
+        "note": "I njëjti mendim, problem tjetër"
+      }
+    ],
+    "question": "Cilën provë do ta përsërisje para se t’ia jepje aplikacionin një përdoruesi?",
+    "answer": "Zgjidh një rast që mund ta mashtrojë përdoruesin dhe shpjego rezultatin e pritur. Në laborator do ta provosh në projektin tënd.",
+    "href": "ushtrimet.html",
+    "link": "Vazhdo te ushtrimet · 90 minuta"
+  }
+]

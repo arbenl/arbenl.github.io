@@ -1,23 +1,44 @@
-# RideShare — Java 7
+# RideShare · Java 7
 
-## Çfarë ndërtova
-[PLOTËSO] Përshkruaj ndryshimin e kësaj jave me fjalët e tua.
+## Rasti im
+GitHub: [PLOTËSO]
+Kodi: [PLOTËSO]
+ID i udhëtimit në projektin tim: [PLOTËSO]
+Të dhënat fiktive të rastit: [PLOTËSO]
+
+## Parashikimi
+[PLOTËSO] Para kodimit: çfarë pret në listë, detaje dhe kur nuk ka vende? Shkruaj me fjalët e tua.
+
+## Dy probleme
+1. [PLOTËSO] Çfarë pe dhe me cilët hapa e përsërite?
+2. [PLOTËSO] Një problem ose paqartësi tjetër.
+
+## Korrigjimi
+Skedari: [PLOTËSO]
+[PLOTËSO] Çfarë bën ky skedar, çfarë ndryshove dhe pse?
+
+## Versionet
+Para: [PLOTËSO]
+Pas: [PLOTËSO]
 
 ## Provat që bëra
-### Prova 1: Rrjedha kryesore mund të demonstrohet nga fillimi në fund.
-[PLOTËSO] Hapat, rezultati i pritur dhe çfarë ndodhi.
+### Prova 1
+Hapat: [PLOTËSO]
+Pritshmëria: [PLOTËSO]
+Vëzhgimi: [PLOTËSO]
 
-### Prova 2: Raporti përshkruan një gabim dhe korrigjimin e tij.
-[PLOTËSO] Hapat, rezultati i pritur dhe çfarë ndodhi.
+### Prova 2
+Hapat: [PLOTËSO]
+Pritshmëria: [PLOTËSO]
+Vëzhgimi: [PLOTËSO]
 
-### Prova 3: Mund të shpjegoj ku ruhen të dhënat dhe kush lejohet t’i ndryshojë.
-[PLOTËSO] Hapat, rezultati i pritur dhe çfarë ndodhi.
+### Prova 3
+Hapat: [PLOTËSO]
+Pritshmëria: [PLOTËSO]
+Vëzhgimi: [PLOTËSO]
 
-## Ku gjendet puna
-[PLOTËSO] Shëno skedarët kryesorë dhe linkun e demonstrimit nëse është publikuar.
+## Ndryshimi i ri
+[PLOTËSO] Hyrja që ndryshoi kolegu, çfarë parashikove dhe pse doli ai rezultat. Nëse nuk e ke demonstruar ende, shkruaje qartë.
 
-## Çfarë mbetet për përmirësim
-[PLOTËSO] Një kufizim ose gabim që vure re dhe hapi i ardhshëm.
-
-## Ndihma nga AI (Artificial Intelligence – inteligjencë artificiale)
-[PLOTËSO] Çfarë ndihme more dhe çfarë verifikove vetë, ose: Nuk përdora AI.
+## Ndihma nga AI
+[PLOTËSO] Shëno ndihmën dhe çfarë verifikove vetë, ose: Nuk përdora AI.
