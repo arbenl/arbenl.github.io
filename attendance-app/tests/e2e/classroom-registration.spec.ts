@@ -91,6 +91,9 @@ for (const width of [320, 375, 430]) {
         expect(identity).toMatchObject({ authMethod: "classroom", email, semesterId });
         expect(identity.githubId).toBeUndefined();
         expect(identity.githubLogin).toBeUndefined();
+        const privateMaterial = await api(student, "/api/staff/materials/week-07/ushtrimet.html");
+        expect(privateMaterial.status).toBe(403);
+        expect(privateMaterial.body).toEqual({ error: "Hyrja lejohet vetëm për profesorin e autorizuar" });
         expect((await context.cookies()).find(c => c.name === "__Secure-next-auth.session-token")).toMatchObject({ httpOnly: true, secure: true, sameSite: "Lax" });
         expect(await student.evaluate(() => ({ local: localStorage.length, handoff: sessionStorage.getItem("attendance-check-in"), hash: location.hash }))).toEqual({ local: 0, handoff: null, hash: "" });
         await student.goto("/student");
