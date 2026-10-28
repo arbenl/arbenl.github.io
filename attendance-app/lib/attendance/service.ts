@@ -32,6 +32,7 @@ import { CURRENT_COURSE, CURRENT_COURSE_SESSIONS } from "./current-course";
 import {
   normalizeAlbanianName,
   normalizeStudentId,
+  registrationNamesMatch,
 } from "./normalize";
 
 type Database = (typeof import("../db/client"))["db"];
@@ -315,7 +316,7 @@ function genericRosterMismatch(): AttendanceServiceError {
   return new AttendanceServiceError(
     409,
     "roster_mismatch",
-    "The supplied details do not match an available roster entry",
+    "Kontrollo emrin, mbiemrin dhe indeksin sipas listës së fakultetit. Nëse je regjistruar më parë, përdor të njëjtën llogari GitHub. Nëse nuk zgjidhet, kontakto profesorin.",
   );
 }
 
@@ -765,7 +766,7 @@ async function activateRoster(
         return created;
       }
       if (
-        normalizeAlbanianName(entry.fullName) !== suppliedName ||
+        !registrationNamesMatch(entry.fullName, suppliedName) ||
         (entry.userId !== null && entry.userId !== actor.userId)
       ) {
         throw genericRosterMismatch();
@@ -795,7 +796,8 @@ async function activateRoster(
     ) {
       throw error;
     }
-    throw genericRosterMismatch();
+    throw new AttendanceServiceError(409, "roster_mismatch",
+      "Ky indeks ose emaili është përdorur më parë. Nëse ke profil, hyr me të njëjtën llogari GitHub. Përndryshe përdor emailin tënd tjetër ose kontakto profesorin.");
   }
 }
 

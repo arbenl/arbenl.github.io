@@ -37,6 +37,7 @@ export function ProfileForm({
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [completed, setCompleted] = useState(false);
+  const [existingProfile, setExistingProfile] = useState<{ fullName: string; groupName: string; email: string } | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -52,6 +53,18 @@ export function ProfileForm({
         }
         const body = (await response.json()) as SemesterOption[];
         setSemesters(body);
+        if (beforeClass) {
+          // Failure to read an existing profile must not block first registration.
+          try {
+            const historyResponse = await fetch("/api/student/history", { cache: "no-store", signal: AbortSignal.any([controller.signal, AbortSignal.timeout(5_000)]) });
+            if (historyResponse.ok) {
+              const history = await historyResponse.json() as { profile?: { fullName: string; groupName: string; email: string | null } | null };
+              if (history.profile?.email) setExistingProfile({ ...history.profile, email: history.profile.email });
+            }
+          } catch {
+            if (controller.signal.aborted) return;
+          }
+        }
         setLoadState("ready");
       })
       .catch((error: unknown) => {
@@ -63,7 +76,7 @@ export function ProfileForm({
       });
 
     return () => controller.abort();
-  }, []);
+  }, [beforeClass]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -71,11 +84,6 @@ export function ProfileForm({
     setMessage(null);
     const form = new FormData(event.currentTarget);
 
-    if (form.get("email")?.toString().trim().toLowerCase() !== form.get("emailConfirm")?.toString().trim().toLowerCase()) {
-      setMessage("Dy adresat e emailit duhet të jenë të njëjta.");
-      setSubmitting(false);
-      return;
-    }
     try {
       const response = await fetch("/api/roster/activate", {
         method: "POST",
@@ -114,7 +122,7 @@ export function ProfileForm({
   if (loadState === "auth") {
     return (
       <div className="student-stack">
-        <p>Hyr me GitHub për ta lidhur profilin me regjistrin.</p>
+        <p>Hyr me GitHub, pastaj plotëso profilin. Emailin e fakultetit ose privat e shkruan në hapin tjetër. Nëse je regjistruar më parë, përdor të njëjtën llogari GitHub.</p>
         {onAuthenticationRequired ? (
           <button
             className="student-control primary-action"
@@ -130,8 +138,16 @@ export function ProfileForm({
     );
   }
 
+  if (existingProfile) {
+    return <div className="student-stack">
+      <p role="status">Profili yt është regjistruar. Nuk ke nevojë ta plotësosh përsëri.</p>
+      <p><strong>{existingProfile.fullName}</strong> · {existingProfile.groupName}</p>
+      <a className="admin-link" href="/student">Hap vijueshmërinë time</a>
+      <p>Në klasë skano QR-në me të njëjtën llogari GitHub.</p>
+    </div>;
+  }
   if (completed && !onActivated) {
-    return <p role="status">Profili u aktivizua. Tani mund ta skanosh QR-në.</p>;
+    return <div className="student-stack"><p role="status">Profili u aktivizua. Tani mund ta skanosh QR-në.</p><a className="admin-link" href="/student">Hap vijueshmërinë time</a></div>;
   }
 
   return (
@@ -196,11 +212,9 @@ export function ProfileForm({
         <option value="G2">Grupi 2 · 18:15</option>
       </select>
       <p className="form-guidance">Zgjidh grupin tënd të zakonshëm. Nëse ndërron orarin, mund të skanosh edhe QR-në e grupit tjetër; profili yt mbetet i njëjtë.</p>
-      <label htmlFor="email">Emaili që përdor për Google Drive</label>
-      <input id="email" name="email" type="email" autoComplete="email" maxLength={254} className="student-control" required disabled={submitting} />
-      <label htmlFor="emailConfirm">Shkruaje emailin përsëri</label>
-      <input id="emailConfirm" name="emailConfirm" type="email" autoComplete="off" maxLength={254} className="student-control" required disabled={submitting} />
-      <p className="form-guidance">Emaili ruhet privatisht për materialet e lëndës. Regjistrimi i tij nuk aktivizon vetvetiu qasjen në Drive.</p>
+      <label htmlFor="email">Emaili i fakultetit ose emaili privat</label>
+      <input id="email" name="email" type="email" autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck={false} aria-describedby="email-help" maxLength={254} className="student-control" required disabled={submitting} />
+      <p id="email-help" className="form-guidance">Pranohet emaili yt i fakultetit, Gmail, Outlook ose një adresë tjetër private. Emaili mund të ndryshojë nga ai i llogarisë GitHub. Kontrolloje para ruajtjes; emaili ruhet privatisht.</p>
       {message ? <p role="alert">{message}</p> : null}
       {loadState === "error" ? <button className="student-control" type="button" onClick={() => window.location.reload()}>Provo përsëri</button> : (
         <button className="student-control primary-action" disabled={submitting || loadState !== "ready" || !semesters.length} type="submit">

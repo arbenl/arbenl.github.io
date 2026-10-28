@@ -254,8 +254,7 @@ describe("student check-in", () => {
     const first = render(<CheckInResult />);
     await waitFor(() => first.getByRole("form", { name: /aktivizo profilin/i }));
     await waitFor(() => expect(first.queryByLabelText(/semestri/i)).toBeNull());
-    fireEvent.change(first.getByLabelText(/emaili që/i), { target: { value: "arta@example.com" } });
-    fireEvent.change(first.getByLabelText(/emailin përsëri/i), { target: { value: "arta@example.com" } });
+    fireEvent.change(first.getByLabelText(/emaili i fakultetit/i), { target: { value: "arta@example.com" } });
     fireEvent.change(first.getByLabelText(/grupi i ushtrimeve/i), { target: { value: "G1" } });
     fireEvent.change(first.getByLabelText(/^emri$/i), { target: { value: "Arta" } });
     fireEvent.change(first.getByLabelText(/mbiemri/i), { target: { value: "Kola" } });
@@ -309,8 +308,7 @@ describe("student check-in", () => {
     const view = render(<CheckInResult />);
     await waitFor(() => view.getByRole("form", { name: /aktivizo profilin/i }));
     await waitFor(() => expect(view.queryByLabelText(/semestri/i)).toBeNull());
-    fireEvent.change(view.getByLabelText(/emaili që/i), { target: { value: "arta@example.com" } });
-    fireEvent.change(view.getByLabelText(/emailin përsëri/i), { target: { value: "arta@example.com" } });
+    fireEvent.change(view.getByLabelText(/emaili i fakultetit/i), { target: { value: "arta@example.com" } });
     fireEvent.change(view.getByLabelText(/grupi i ushtrimeve/i), { target: { value: "G1" } });
     fireEvent.change(view.getByLabelText(/^emri$/i), { target: { value: "Arta" } });
     fireEvent.change(view.getByLabelText(/mbiemri/i), { target: { value: "Kola" } });
@@ -350,8 +348,7 @@ describe("student check-in", () => {
     await act(async () => Promise.resolve());
     vi.setSystemTime(new Date("2026-09-17T10:05:00.001Z"));
     expect(view.queryByLabelText(/semestri/i)).toBeNull();
-    fireEvent.change(view.getByLabelText(/emaili që/i), { target: { value: "arta@example.com" } });
-    fireEvent.change(view.getByLabelText(/emailin përsëri/i), { target: { value: "arta@example.com" } });
+    fireEvent.change(view.getByLabelText(/emaili i fakultetit/i), { target: { value: "arta@example.com" } });
     fireEvent.change(view.getByLabelText(/grupi i ushtrimeve/i), { target: { value: "G1" } });
     fireEvent.change(view.getByLabelText(/^emri$/i), { target: { value: "Arta" } });
     fireEvent.change(view.getByLabelText(/mbiemri/i), { target: { value: "Kola" } });
