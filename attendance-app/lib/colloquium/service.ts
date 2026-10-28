@@ -309,11 +309,13 @@ export async function saveAnswer(session: Session | null, input: unknown) {
   await ready(db);
   return db.transaction(async (tx) => {
     const who = await actor(tx, session);
-    const rows = await tx.execute(sql`select * from colloquium_attempts where room_id=${data.roomId} and user_id=${who.userId ?? null} for update`);
+    const rows = await tx.execute(sql`select * from colloquium_attempts where room_id=${data.roomId} and user_id=${who.userId ?? null} and roster_id=${who.rosterId ?? null} and semester_id=${who.semesterId ?? null} for update`);
     const a = rows[0] as unknown as Attempt | undefined;
     if (!a)
       fail(403, 'join_required');
     const r = await loadRoom(tx, data.roomId);
+    if (r.semester_id !== await currentSemester(tx) || r.semester_id !== who.semesterId)
+      fail(403, 'wrong_semester');
     const now = await clock(tx);
     if (!r.started_at)
       fail(409, 'room_not_started');
@@ -341,13 +343,15 @@ export async function submitAttempt(session: Session | null, input: unknown) {
   await ready(db);
   await db.transaction(async (tx) => {
     const who = await actor(tx, session);
-    const rows = await tx.execute(sql`select * from colloquium_attempts where room_id=${parsed.data.roomId} and user_id=${who.userId ?? null} for update`);
+    const rows = await tx.execute(sql`select * from colloquium_attempts where room_id=${parsed.data.roomId} and user_id=${who.userId ?? null} and roster_id=${who.rosterId ?? null} and semester_id=${who.semesterId ?? null} for update`);
     const a = rows[0] as unknown as Attempt | undefined;
     if (!a)
       fail(403, 'join_required');
+    const r = await loadRoom(tx, parsed.data.roomId);
+    if (r.semester_id !== await currentSemester(tx) || r.semester_id !== who.semesterId)
+      fail(403, 'wrong_semester');
     if (a.submitted_at)
       return;
-    const r = await loadRoom(tx, parsed.data.roomId);
     if (!r.started_at)
       fail(409, 'room_not_started');
     if (a.revision !== parsed.data.revision)

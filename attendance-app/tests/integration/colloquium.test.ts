@@ -198,3 +198,27 @@ it('publishes both groups under concurrent state and late-submit reads without l
  await startRoom(professor,one.id);await startRoom(professor,two.id);await expire(one.id);await expire(two.id);
  const responses=await Promise.all(people.map(({session,room},i)=>i%2?submitAttempt(session,{roomId:room.id,revision:0}):studentState(session,{roomId:room.id})));expect(responses.every(r=>r.results.length===8)).toBe(true);expect(await results(people[0].session)).toHaveLength(8);
 },30000);
+it.each(['answer', 'submit'] as const)('denies %s mutation from another-semester classroom session for the same canonical user', async action => {
+  const room = await lobby();
+  const { session, person } = await enroll(room.token);
+  const [otherSemester] = await sql`insert into semesters(title,week_count,status) values ('Earlier semester',15,'archived') returning id`;
+  const [otherRoster] = await sql`insert into roster(semester_id,student_id,full_name,email,group_name,user_id,activated_at) values (${otherSemester.id},'S-1','Arta Test 1','student1@example.test','G1',${person.id},clock_timestamp()) returning id`;
+  const oldSession: Session = { expires: '2099-01-01', user: { authMethod: 'classroom', userId: person.id, rosterId: otherRoster.id, semesterId: otherSemester.id, email: person.email } };
+  await joinRoom(session, { roomId: room.id, token: room.token });
+  await startRoom(professor, room.id);
+  const state = await studentState(session, { roomId: room.id });
+  const question = state.questions[0];
+  await saveAnswer(session, { roomId: room.id, questionId: question.id, optionId: question.options[0].id, revision: 0 });
+  const before = await sql`select answers,revisions,revision,submitted_at,score from colloquium_attempts where room_id=${room.id}`;
+  const mutation = action === 'answer'
+    ? saveAnswer(oldSession, { roomId: room.id, questionId: question.id, optionId: question.options[1].id, revision: 1 })
+    : submitAttempt(oldSession, { roomId: room.id, revision: 1 });
+  await expect(mutation).rejects.toMatchObject({ status: 403 });
+  expect(await sql`select answers,revisions,revision,submitted_at,score from colloquium_attempts where room_id=${room.id}`).toEqual(before);
+  // The linked current-course GitHub identity retains mutation access.
+  await sql`update users set github_id='200',github_username='linked' where id=${person.id}`;
+  const github: Session = { expires: '2099-01-01', user: { githubId: '200', githubLogin: 'linked' } };
+  await saveAnswer(github, { roomId: room.id, questionId: question.id, optionId: question.options[2].id, revision: 1 });
+  await submitAttempt(session, { roomId: room.id, revision: 2 });
+  expect((await studentState(github, { roomId: room.id })).attempt?.submitted).toBe(true);
+});
