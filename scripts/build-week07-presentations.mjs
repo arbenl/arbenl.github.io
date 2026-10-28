@@ -19,7 +19,21 @@ for(const kind of (process.env.WEEK07_BUILD_KIND || 'lecture,lab').split(',')){
   const s=p.slides.add();s.background.fill='#0b101b';text(s,d.kicker,64,27,1060,32,17,'#fdba74',true);text(s,`${i+1} / ${data.length}`,1135,27,100,32,17,'#bfcbdf');
   if(i===0)s.images.add({blob:logo,contentType:'image/png',fit:'contain',alt:'Kolegji AAB',position:{left:1090,top:80,width:125,height:55}});
   text(s,d.title,64,88,i===0?1000:1150,105,42,'#ffffff',true);
-  if(d.simulation){
+  if(d.screens){
+   function rect(x,y,w,h,fill){return s.shapes.add({geometry:'rect',position:{left:x,top:y,width:w,height:h},fill,line:{fill:'#65748f',width:1}});}
+   text(s,d.body.join('\n'),64,195,1150,90,24);
+   for(const[j,role]of ['driver','passenger'].entries()){
+    const x=64+j*596,card=d.screens[role];rect(x,303,554,236,'#152238');
+    s.images.add({blob:await fs.readFile(root+'/assets/week06-icons/'+(j?'smartphone':'car')+'.png'),contentType:'image/png',alt:j?'Udhëtari':'Shoferi',position:{left:x+18,top:318,width:34,height:34}});
+    text(s,j?'UDHËTARI · ARTA':'SHOFERI · DRITONI',x+66,320,460,34,22,'#fdba74',true);
+    text(s,card.view,x+20,367,514,32,21,'#c8d3e6');
+    text(s,card.title,x+20,405,514,45,29,'#fff',true);
+    text(s,card.detail,x+20,458,514,32,22);
+    text(s,card.status,x+20,500,514,30,20,'#b8eddb');
+   }
+   if(d.question){text(s,d.question,64,557,1150,36,23,'#fdba74',true);text(s,d.answer,64,600,1150,66,22,'#b8eddb');}
+   else {text(s,d.screens.rule,64,565,1150,60,21,'#c8d3e6');if(d.href)text(s,'Hapat e plotë: java-07/ushtrimet.html',64,645,1150,34,22,'#fdba74');}
+  }else if(d.simulation){
    text(s,'PUBLIKIMI I KODIT',64,205,1150,30,18,'#fdba74',true);
    text(s,'Git në kompjuter   →   GitHub   →   Vercel',64,246,1150,60,32);
    text(s,'TË DHËNAT GJATË PËRDORIMIT',64,340,1150,30,18,'#fdba74',true);

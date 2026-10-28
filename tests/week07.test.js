@@ -24,6 +24,7 @@ test('week 7 lecture votes have explanations and lab asks for genuine work rathe
  const guide=await readFile('lendet/2026-2027/mobile/java-07/ushtrimet.html','utf8');
  if(!publication.labsPublished){assert.ok(guide.includes('29.10.2026, ora 14:40'));assert.ok(!guide.includes('case-form'));return;}
  for(const word of ['Parashiko','Skedari:','Para:','Pas:','Prova','rikontrollo','Ndryshimi i ri','pa pikë shtesë','gjatë javës'])assert.ok(guide.includes(word),word);
+ for(const id of ['pergatitja','parashikimi','korrigjimi','provat','versionet','dorezimi']){const section=guide.split('id="'+id+'"')[1].split('</section><section class="card"')[0];assert.ok(section.includes('class="screen-checkpoint'),'role illustration after '+id);assert.ok(section.includes('Ekrani i shoferit'));assert.ok(section.includes('Ekrani i udhëtarit'));}
  assert.ok(!guide.includes('data-example-file'));assert.ok(!guide.includes('<pre><code>'));assert.ok(guide.includes('nuk provon autorësinë'));
  const report=await readFile('materials/week-07/java-07-model.md','utf8');
  for(const title of ['Rasti im','Parashikimi','Dy probleme','Korrigjimi','Versionet','Ndryshimi i ri','Ndihma nga AI'])assert.ok(report.includes('## '+title));
