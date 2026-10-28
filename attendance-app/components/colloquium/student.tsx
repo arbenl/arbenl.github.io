@@ -114,7 +114,7 @@ export function ColloquiumStudent() {
   const saveStatus = queueView.status;
   return <main className="cq-shell" id="permbajtja-kryesore"><header className="cq-header"><a href="/student">← Profili i studentit</a><p className="eyebrow">Programimi për Pajisje Mobile · Java 7</p><h1>Kolokviumi I</h1><p>10 pyetje · 10 minuta · 10 pikë</p></header>
     {(message || pollMessage) && <div className="cq-notice" role="alert">{message || pollMessage} <button type="button" onClick={() => { void refresh().then(() => { setMessage(null); setPollMessage(null); }).catch(error => setMessage(quizMessage(error))); }}>Provo përsëri</button></div>}
-    {!state && <p role="status">Duke ngarkuar kolokviumin…</p>}
+    {!state && !pollMessage && !message && <p role="status">Duke ngarkuar kolokviumin…</p>}
     {state && room && !state.attempt && !state.registered && room.state !== 'finished' && <section className="cq-panel"><p className="cq-badge">Grupi {room.groupName}</p><h2>Hyr në kolokvium</h2><p>Plotëso profilin një herë. Pranohet emaili i fakultetit ose privat. Grupi caktohet nga lidhja e profesorit.</p><form className="student-form" aria-label="Hyr në kolokvium" onSubmit={register}>
       <label htmlFor="cq-first">Emri</label><input id="cq-first" name="firstName" autoComplete="given-name" maxLength={100} required disabled={busy} />
       <label htmlFor="cq-last">Mbiemri</label><input id="cq-last" name="lastName" autoComplete="family-name" maxLength={100} required disabled={busy} />
