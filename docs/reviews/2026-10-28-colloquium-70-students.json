@@ -1,0 +1,386 @@
+{
+  "passed": true,
+  "assessment": "Colloquium I, week 7",
+  "sourceCommit": "d2d7c50",
+  "actualEncryptedBank": true,
+  "clientType": "70 independent HTTP clients using real NextAuth Credentials, separate mobile-browser coverage",
+  "count": 70,
+  "answersSaved": 700,
+  "durationSeconds": 600,
+  "entryMs": 805,
+  "startedAt": "2026-10-28T14:47:35.309Z",
+  "deadline": "2026-10-28T14:57:35.309Z",
+  "publishedAt": "2026-10-28T14:57:35.497Z",
+  "observedElapsedMs": 600188,
+  "scoresHiddenBeforeDeadline": true,
+  "stableOptionsAfterRefresh": true,
+  "exactScores": true,
+  "earlySubmissions": 35,
+  "automaticSubmissions": 35,
+  "correctPositions": [
+    253,
+    229,
+    218
+  ],
+  "group2RemainedWaiting": true,
+  "attendanceCreated": 0,
+  "requests": 1256,
+  "unexpectedStatusCount": 0,
+  "latencyMs": {
+    "p50": 126,
+    "p95": 411,
+    "max": 603
+  },
+  "results": [
+    {
+      "fullName": "Arta Test 001",
+      "groupName": "G1",
+      "score": 0
+    },
+    {
+      "fullName": "Arta Test 008",
+      "groupName": "G1",
+      "score": 7
+    },
+    {
+      "fullName": "Arta Test 015",
+      "groupName": "G1",
+      "score": 3
+    },
+    {
+      "fullName": "Arta Test 022",
+      "groupName": "G1",
+      "score": 10
+    },
+    {
+      "fullName": "Arta Test 029",
+      "groupName": "G1",
+      "score": 6
+    },
+    {
+      "fullName": "Arta Test 036",
+      "groupName": "G1",
+      "score": 2
+    },
+    {
+      "fullName": "Arta Test 043",
+      "groupName": "G1",
+      "score": 9
+    },
+    {
+      "fullName": "Arta Test 050",
+      "groupName": "G1",
+      "score": 5
+    },
+    {
+      "fullName": "Arta Test 057",
+      "groupName": "G1",
+      "score": 1
+    },
+    {
+      "fullName": "Arta Test 064",
+      "groupName": "G1",
+      "score": 8
+    },
+    {
+      "fullName": "Besa Test 002",
+      "groupName": "G1",
+      "score": 1
+    },
+    {
+      "fullName": "Besa Test 009",
+      "groupName": "G1",
+      "score": 8
+    },
+    {
+      "fullName": "Besa Test 016",
+      "groupName": "G1",
+      "score": 4
+    },
+    {
+      "fullName": "Besa Test 023",
+      "groupName": "G1",
+      "score": 0
+    },
+    {
+      "fullName": "Besa Test 030",
+      "groupName": "G1",
+      "score": 7
+    },
+    {
+      "fullName": "Besa Test 037",
+      "groupName": "G1",
+      "score": 3
+    },
+    {
+      "fullName": "Besa Test 044",
+      "groupName": "G1",
+      "score": 10
+    },
+    {
+      "fullName": "Besa Test 051",
+      "groupName": "G1",
+      "score": 6
+    },
+    {
+      "fullName": "Besa Test 058",
+      "groupName": "G1",
+      "score": 2
+    },
+    {
+      "fullName": "Besa Test 065",
+      "groupName": "G1",
+      "score": 9
+    },
+    {
+      "fullName": "Çlirim Test 003",
+      "groupName": "G1",
+      "score": 2
+    },
+    {
+      "fullName": "Çlirim Test 010",
+      "groupName": "G1",
+      "score": 9
+    },
+    {
+      "fullName": "Çlirim Test 017",
+      "groupName": "G1",
+      "score": 5
+    },
+    {
+      "fullName": "Çlirim Test 024",
+      "groupName": "G1",
+      "score": 1
+    },
+    {
+      "fullName": "Çlirim Test 031",
+      "groupName": "G1",
+      "score": 8
+    },
+    {
+      "fullName": "Çlirim Test 038",
+      "groupName": "G1",
+      "score": 4
+    },
+    {
+      "fullName": "Çlirim Test 045",
+      "groupName": "G1",
+      "score": 0
+    },
+    {
+      "fullName": "Çlirim Test 052",
+      "groupName": "G1",
+      "score": 7
+    },
+    {
+      "fullName": "Çlirim Test 059",
+      "groupName": "G1",
+      "score": 3
+    },
+    {
+      "fullName": "Çlirim Test 066",
+      "groupName": "G1",
+      "score": 10
+    },
+    {
+      "fullName": "Drita Test 004",
+      "groupName": "G1",
+      "score": 3
+    },
+    {
+      "fullName": "Drita Test 011",
+      "groupName": "G1",
+      "score": 10
+    },
+    {
+      "fullName": "Drita Test 018",
+      "groupName": "G1",
+      "score": 6
+    },
+    {
+      "fullName": "Drita Test 025",
+      "groupName": "G1",
+      "score": 2
+    },
+    {
+      "fullName": "Drita Test 032",
+      "groupName": "G1",
+      "score": 9
+    },
+    {
+      "fullName": "Drita Test 039",
+      "groupName": "G1",
+      "score": 5
+    },
+    {
+      "fullName": "Drita Test 046",
+      "groupName": "G1",
+      "score": 1
+    },
+    {
+      "fullName": "Drita Test 053",
+      "groupName": "G1",
+      "score": 8
+    },
+    {
+      "fullName": "Drita Test 060",
+      "groupName": "G1",
+      "score": 4
+    },
+    {
+      "fullName": "Drita Test 067",
+      "groupName": "G1",
+      "score": 0
+    },
+    {
+      "fullName": "Ëndrra Test 005",
+      "groupName": "G1",
+      "score": 4
+    },
+    {
+      "fullName": "Ëndrra Test 012",
+      "groupName": "G1",
+      "score": 0
+    },
+    {
+      "fullName": "Ëndrra Test 019",
+      "groupName": "G1",
+      "score": 7
+    },
+    {
+      "fullName": "Ëndrra Test 026",
+      "groupName": "G1",
+      "score": 3
+    },
+    {
+      "fullName": "Ëndrra Test 033",
+      "groupName": "G1",
+      "score": 10
+    },
+    {
+      "fullName": "Ëndrra Test 040",
+      "groupName": "G1",
+      "score": 6
+    },
+    {
+      "fullName": "Ëndrra Test 047",
+      "groupName": "G1",
+      "score": 2
+    },
+    {
+      "fullName": "Ëndrra Test 054",
+      "groupName": "G1",
+      "score": 9
+    },
+    {
+      "fullName": "Ëndrra Test 061",
+      "groupName": "G1",
+      "score": 5
+    },
+    {
+      "fullName": "Ëndrra Test 068",
+      "groupName": "G1",
+      "score": 1
+    },
+    {
+      "fullName": "Genti Test 006",
+      "groupName": "G1",
+      "score": 5
+    },
+    {
+      "fullName": "Genti Test 013",
+      "groupName": "G1",
+      "score": 1
+    },
+    {
+      "fullName": "Genti Test 020",
+      "groupName": "G1",
+      "score": 8
+    },
+    {
+      "fullName": "Genti Test 027",
+      "groupName": "G1",
+      "score": 4
+    },
+    {
+      "fullName": "Genti Test 034",
+      "groupName": "G1",
+      "score": 0
+    },
+    {
+      "fullName": "Genti Test 041",
+      "groupName": "G1",
+      "score": 7
+    },
+    {
+      "fullName": "Genti Test 048",
+      "groupName": "G1",
+      "score": 3
+    },
+    {
+      "fullName": "Genti Test 055",
+      "groupName": "G1",
+      "score": 10
+    },
+    {
+      "fullName": "Genti Test 062",
+      "groupName": "G1",
+      "score": 6
+    },
+    {
+      "fullName": "Genti Test 069",
+      "groupName": "G1",
+      "score": 2
+    },
+    {
+      "fullName": "Lira Test 007",
+      "groupName": "G1",
+      "score": 6
+    },
+    {
+      "fullName": "Lira Test 014",
+      "groupName": "G1",
+      "score": 2
+    },
+    {
+      "fullName": "Lira Test 021",
+      "groupName": "G1",
+      "score": 9
+    },
+    {
+      "fullName": "Lira Test 028",
+      "groupName": "G1",
+      "score": 5
+    },
+    {
+      "fullName": "Lira Test 035",
+      "groupName": "G1",
+      "score": 1
+    },
+    {
+      "fullName": "Lira Test 042",
+      "groupName": "G1",
+      "score": 8
+    },
+    {
+      "fullName": "Lira Test 049",
+      "groupName": "G1",
+      "score": 4
+    },
+    {
+      "fullName": "Lira Test 056",
+      "groupName": "G1",
+      "score": 0
+    },
+    {
+      "fullName": "Lira Test 063",
+      "groupName": "G1",
+      "score": 7
+    },
+    {
+      "fullName": "Lira Test 070",
+      "groupName": "G1",
+      "score": 3
+    }
+  ]
+}
