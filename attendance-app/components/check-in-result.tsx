@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
+import { ClassroomLogin } from "./classroom-login";
 import { ProfileForm } from "./profile-form";
 
 const TOKEN_PATTERN = /^[0-9a-f]{64}$/u;
@@ -29,7 +30,7 @@ type ViewState =
   | { phase: "capturing" }
   | { phase: "pending" }
   | { phase: "missing" }
-  | { phase: "auth" }
+  | { phase: "auth"; token: string }
   | { phase: "activation"; token: string; registrationPermit?: string }
   | { phase: "success"; result: CheckInSuccess }
   | { phase: "error"; message: string; retryable?: boolean };
@@ -117,7 +118,7 @@ export function CheckInResult() {
         }
         const error = body as ApiError;
         if (response.status === 401) {
-          setView({ phase: "auth" });
+          setView({ phase: "auth", token: currentToken });
           return;
         }
         if (error.error?.code === "roster_not_activated") {
@@ -173,7 +174,8 @@ export function CheckInResult() {
   if (view.phase === "auth") {
     return (
       <div className="student-stack">
-        <p>Hyr me GitHub për ta përfunduar check-in-in.</p>
+        <ClassroomLogin token={view.token} onAuthenticated={() => setAttempt((current) => current + 1)} />
+        <p>Nëse përdor tashmë GitHub për vijueshmërinë, mund të hysh me të njëjtën llogari.</p>
         <button className="student-control primary-action" onClick={beginLogin} type="button">
           Hyr me GitHub
         </button>

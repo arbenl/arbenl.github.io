@@ -12,7 +12,7 @@ import {
 } from "drizzle-orm";
 import type { Session } from "next-auth";
 
-import { requireSessionIdentity } from "../auth/session";
+import { requireSessionIdentity, type SessionIdentity, type GitHubSessionIdentity } from "../auth/session";
 import {
   attendanceRecords,
   auditLog,
@@ -45,13 +45,11 @@ type SemesterState = "draft" | "active" | "archived";
 type SessionState = "draft" | "open" | "closed" | "cancelled";
 type AttendanceStatus = "present" | "rejected" | "excused";
 
-interface Actor {
-  userId: string;
-  githubId: string;
-  githubLogin: string;
-}
+type Actor = SessionIdentity & { userId: string; subject: string };
 
-interface StaffActor extends Actor {
+interface StaffActor extends GitHubSessionIdentity {
+  userId: string;
+  subject: string;
   role: "professor" | "administrator";
 }
 
@@ -96,11 +94,27 @@ function identityFromSession(session: Session | null) {
   }
 }
 
+function actorSubject(identity: SessionIdentity): string {
+  return identity.authMethod === "classroom" ? `classroom:${identity.userId}:${identity.rosterId}` : identity.githubId;
+}
+
 async function requireActor(
   executor: Executor,
   session: Session | null,
 ): Promise<Actor> {
   const identity = identityFromSession(session);
+  if (identity.authMethod === "classroom") {
+    const [entry] = await executor.select({ githubId: users.githubId, staffUserId: staff.userId })
+      .from(roster).innerJoin(users, eq(users.id, roster.userId))
+      .leftJoin(staff, eq(staff.userId, users.id))
+      .where(and(eq(roster.id, identity.rosterId), eq(roster.semesterId, identity.semesterId),
+        eq(roster.userId, identity.userId), sql`lower(trim(${roster.email})) = ${identity.email}`)).limit(1);
+    if (!entry) throw new AttendanceServiceError(401, "authentication_required", "Authentication required");
+    if (entry.staffUserId || entry.githubId === getEnv().PROFESSOR_GITHUB_ID) {
+      throw new AttendanceServiceError(403, "staff_required", "Classroom student access required");
+    }
+    return { ...identity, subject: actorSubject(identity) };
+  }
   const [actor] = await executor
     .select({ userId: users.id })
     .from(users)
@@ -115,7 +129,7 @@ async function requireActor(
     );
   }
 
-  return { ...identity, userId: actor.userId };
+  return { ...identity, userId: actor.userId, subject: actorSubject(identity) };
 }
 
 async function requireStaffActor(
@@ -123,7 +137,7 @@ async function requireStaffActor(
   session: Session | null,
 ): Promise<StaffActor> {
   const identity = identityFromSession(session);
-  if (identity.githubId !== getEnv().PROFESSOR_GITHUB_ID) {
+  if (identity.authMethod === "classroom" || identity.githubId !== getEnv().PROFESSOR_GITHUB_ID) {
     throw new AttendanceServiceError(403, "staff_required", "Staff access required");
   }
   const [actor] = await executor
@@ -151,6 +165,7 @@ async function requireStaffActor(
     ...identity,
     userId: actor.userId,
     role: actor.role,
+    subject: actorSubject(identity),
   };
 }
 
@@ -368,12 +383,13 @@ async function createSemester(
 async function listSemesters(session: Session | null) {
   const identity = identityFromSession(session);
   const db = await database();
-  const [membership] = await db
-    .select({ role: staff.role })
-    .from(users)
-    .innerJoin(staff, eq(staff.userId, users.id))
-    .where(eq(users.githubId, identity.githubId))
-    .limit(1);
+  let hasStaffAccess = false;
+  if (identity.authMethod === "classroom") await requireActor(db, session);
+  else if (identity.githubId === getEnv().PROFESSOR_GITHUB_ID) {
+    const [membership] = await db.select({ role: staff.role }).from(users)
+      .innerJoin(staff, eq(staff.userId, users.id)).where(eq(users.githubId, identity.githubId)).limit(1);
+    hasStaffAccess = membership?.role === "professor" || membership?.role === "administrator";
+  }
 
   const query = db
     .select({
@@ -385,16 +401,23 @@ async function listSemesters(session: Session | null) {
     .from(semesters)
     .orderBy(asc(semesters.createdAt), asc(semesters.id));
 
-  return membership ? query : query.where(eq(semesters.status, "active"));
+  return hasStaffAccess ? query : query.where(and(eq(semesters.status, "active"), identity.authMethod === "classroom" ? eq(semesters.id, identity.semesterId) : undefined));
 }
 
 async function ensureCurrentCourseSetup(session: Session | null) {
+  const identity = identityFromSession(session);
+  if (identity.authMethod === "classroom" || identity.githubId !== getEnv().PROFESSOR_GITHUB_ID) {
+    throw new AttendanceServiceError(403, "staff_required", "Staff access required");
+  }
   const db = await database();
   return db.transaction(async (transaction) => {
-    const actor = await requireStaffActor(transaction, session);
+    // Serialize before reading users: migration may need an exclusive table lock.
     await transaction.execute(
       sql`select pg_advisory_xact_lock(hashtextextended('aab-current-course-setup', 0))`,
     );
+    const actor = await requireStaffActor(transaction, session);
+    const { ensureClassroomRegistrationSchema } = await import("./classroom-registration");
+    await ensureClassroomRegistrationSchema(transaction);
     // Additive release migration, staff-only and serialized with course setup.
     const column = await transaction.execute(sql`select 1 from information_schema.columns where table_schema = current_schema() and table_name = 'roster' and column_name = 'email'`);
     if (!column.length) await transaction.execute(sql`alter table roster add column email text`);
@@ -546,6 +569,7 @@ async function getStudentHistory(session: Session | null) {
     .where(
       and(
         eq(roster.userId, actor.userId),
+        actor.authMethod === "classroom" ? and(eq(roster.id, actor.rosterId), eq(roster.semesterId, actor.semesterId)) : undefined,
         inArray(classSessions.state, ["open", "closed"]),
         // Include the session actually attended, even when the student visits another group.
         or(isNotNull(attendanceRecords.id), eq(classSessions.groupName, roster.groupName), and(
@@ -587,7 +611,7 @@ async function getStudentHistory(session: Session | null) {
 
   const [profile] = await db.select({ fullName: roster.fullName, studentId: roster.studentId, email: roster.email, groupName: roster.groupName })
     .from(roster).innerJoin(semesters, eq(semesters.id, roster.semesterId))
-    .where(and(eq(roster.userId, actor.userId), eq(semesters.title, CURRENT_COURSE.title), eq(semesters.status, "active"))).limit(1);
+    .where(and(eq(roster.userId, actor.userId), actor.authMethod === "classroom" ? and(eq(roster.id, actor.rosterId), eq(roster.semesterId, actor.semesterId)) : eq(semesters.title, CURRENT_COURSE.title), eq(semesters.status, "active"))).limit(1);
   return { sessions, totals, profile: profile ?? null };
 }
 
@@ -704,7 +728,8 @@ async function activateRoster(
   ipAddress: string,
 ) {
   const identity = identityFromSession(session);
-  await consumeRateLimit("activation", identity.githubId, ipAddress);
+  if (identity.authMethod === "classroom") throw new AttendanceServiceError(403, "classroom_activation_forbidden", "Use the classroom registration form");
+  await consumeRateLimit("activation", actorSubject(identity), ipAddress);
   const suppliedName = normalizeAlbanianName(
     `${input.firstName} ${input.lastName}`,
   );
@@ -743,7 +768,7 @@ async function activateRoster(
         if (!email || !input.groupName) throw genericRosterMismatch();
         const permit = input.registrationPermit ? readRegistrationPermit(input.registrationPermit, getEnv().NEXTAUTH_SECRET) : null;
         const beforeClass = input.beforeClass === true && (await transaction.select({id:semesters.id}).from(semesters).where(and(eq(semesters.id,input.semesterId),eq(semesters.title,CURRENT_COURSE.title),eq(semesters.status,"active"))).limit(1)).length === 1;
-        const allowed = beforeClass || permit && permit.githubId === actor.githubId && permit.semesterId === input.semesterId;
+        const allowed = beforeClass || permit && permit.githubId === actor.subject && permit.semesterId === input.semesterId;
         if (!allowed && !input.token) throw genericRosterMismatch();
         const tokenHash = hashChallengeToken(input.token ?? "");
         const valid = await transaction.execute(sql`
@@ -1060,7 +1085,7 @@ async function checkIn(
 ) {
   const tokenHash = hashChallengeToken(input.token);
   const identity = identityFromSession(session);
-  await consumeRateLimit("scan", identity.githubId, ipAddress);
+  await consumeRateLimit("scan", actorSubject(identity), ipAddress);
   const db = await database();
 
   await requireActor(db, session);
@@ -1122,6 +1147,9 @@ async function checkIn(
           "This QR code is no longer valid",
         );
       }
+      if (actor.authMethod === "classroom" && challenge.semesterId !== actor.semesterId) {
+        throw new AttendanceServiceError(403, "semester_scope", "Classroom session belongs to another semester");
+      }
       if (
         challenge.state !== "open" ||
         !challenge.checkinEndsAt ||
@@ -1148,6 +1176,7 @@ async function checkIn(
           and(
             eq(roster.semesterId, challenge.semesterId),
             eq(roster.userId, actor.userId),
+            actor.authMethod === "classroom" ? eq(roster.id, actor.rosterId) : undefined,
           ),
         )
         .limit(1);
@@ -1157,7 +1186,7 @@ async function checkIn(
           "roster_not_activated",
           "Plotëso profilin një herë për këtë lëndë.",
           undefined,
-          issueRegistrationPermit({ githubId: actor.githubId, semesterId: challenge.semesterId, groupName: challenge.groupName, kind: challenge.kind }, getEnv().NEXTAUTH_SECRET),
+          issueRegistrationPermit({ githubId: actor.subject, semesterId: challenge.semesterId, groupName: challenge.groupName, kind: challenge.kind }, getEnv().NEXTAUTH_SECRET),
         );
       }
       // The QR identifies the hour attended; the profile group is a schedule preference,
@@ -1545,6 +1574,7 @@ async function getCourseActivityReport(session: Session | null) {
   const [semester] = await db.select({ id: semesters.id }).from(semesters)
     .where(and(eq(semesters.title, CURRENT_COURSE.title), eq(semesters.status, "active"))).limit(1);
   if (!semester) throw new AttendanceServiceError(404, "semester_not_found", "Semestri aktual nuk u gjet.");
+  if (actor.authMethod === "classroom" && actor.semesterId !== semester.id) throw new AttendanceServiceError(403, "semester_scope", "Classroom session belongs to another semester");
   const [membership] = await db.select({ id: roster.id }).from(roster)
     .where(and(eq(roster.semesterId, semester.id), eq(roster.userId, actor.userId))).limit(1);
   if (!membership) await requireStaffActor(db, session);

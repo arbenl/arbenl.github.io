@@ -7,7 +7,7 @@ Vijueshmëria është një aplikacion Next.js i publikuar në Vercel:
 - aplikacioni: [https://aab-mobile-attendance.vercel.app](https://aab-mobile-attendance.vercel.app);
 - hyrja nga Student Zone: [https://arbenl.github.io/attendance.html](https://arbenl.github.io/attendance.html);
 - databaza: PostgreSQL i dedikuar në Neon;
-- identifikimi: GitHub OAuth për profesorin dhe studentët;
+- identifikimi: QR aktive + të dhënat e profilit për studentët; GitHub OAuth mbetet për profesorin dhe si alternativë ekzistuese;
 - kodi: `attendance-app/` në këtë repository.
 
 GitHub Pages shërben vetëm si hyrje nga Student Zone. Formularët, autorizimi, QR-ja dhe evidenca ekzekutohen në Vercel dhe ruhen në Neon. Migrimet historike në `supabase/` nuk përdoren nga sistemi aktiv. Nuk ka OTP me email, SMTP, konfigurim `attendance-config.js` ose ruajtje zyrtare në browser.
@@ -221,6 +221,36 @@ udhëzim në shqip, pa zbuluar emrin ose adresën e një studenti tjetër.
 U riprodhuan bllokimi i ë/ç dhe gabimet e përgjithshme të validimit/konfliktit.
 Nuk u identifikua secili rast individual i raportuar; nëse mbetet problem,
 studenti duhet të dërgojë tekstin e saktë të gabimit te profesori.
+
+
+## Hyrja në klasë pa GitHub ose kod emaili · 28 tetor 2026
+
+Me kërkesë të profesorit, hyrja e re e studentit është **QR aktive → emër,
+mbiemër, indeks, grup dhe email → konfirmim pjesëmarrjeje**. Emaili mund të jetë
+i fakultetit ose privat; ruhet si kontakt, jo si adresë e verifikuar. Nuk
+nevojitet shërbim SMTP. Vetëm emaili, jashtë një QR-je aktive, nuk hap profil.
+
+NextAuth classroom Credentials krijon sesion të nënshkruar për ID-në e brendshme,
+roster ID dhe semestrin e derivuar nga QR-ja. Sesioni lejon historinë e atij
+profili/semestri dhe skanime të ardhshme, pa kërkuar të dhënat çdo herë në të
+njëjtin browser. GitHub IDs nuk sajohen për studentët e rinj. Profilet e vjetra
+GitHub dhe pjesëmarrjet ruhen; një përputhje vetëm në email nuk mjafton për
+lidhje. Ndryshimi i emailit ekzistues ose konfliktet kërkojnë profesorin.
+
+Regjistrimi në vetvete nuk jep pjesëmarrje: pas hyrjes, serveri verifikon sërish
+QR-në dhe afatin. QR e skaduar ose orë e mbyllur refuzohet. Qasja administrative
+dhe bootstrap-i mbeten vetëm për GitHub-in e profesorit dhe rolin e stafit.
+Një QR e shpërndarë mund të përdoret nga dikush që di të dhënat e studentit;
+ky është modeli i pranimit në klasë i zgjedhur nga profesori, jo verifikim i
+pronësisë së emailit.
+
+Migrimi `0002_classroom_registration.sql` është shtues: lejon GitHub fields
+NULL për përdoruesit e rinj dhe krijon shenjën/auditimin e regjistrimit në klasë.
+Paneli i profesorit e aplikon vetëm pas autorizimit, nën bllokimin ekzistues të
+setup-it. Deri atëherë `/api/classroom/status` kthen `enabled:false` dhe hyrja
+GitHub vazhdon. Studentët nuk aplikojnë DDL. Mos krijo studentë sintetikë në
+Production për të provuar hyrjen; përdor harness-in me databazë të përkohshme.
+
 
 ### Private course materials
 

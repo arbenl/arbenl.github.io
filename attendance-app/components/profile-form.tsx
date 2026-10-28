@@ -122,7 +122,7 @@ export function ProfileForm({
   if (loadState === "auth") {
     return (
       <div className="student-stack">
-        <p>Hyr me GitHub, pastaj plotëso profilin. Emailin e fakultetit ose privat e shkruan në hapin tjetër. Nëse je regjistruar më parë, përdor të njëjtën llogari GitHub.</p>
+        <p>Për regjistrimin e parë pa GitHub, skano QR-në aktive të profesorit gjatë orës dhe plotëso të dhënat me emailin e fakultetit ose privat. Nëse përdor tashmë GitHub, mund të hysh këtu me të njëjtën llogari.</p>
         {onAuthenticationRequired ? (
           <button
             className="student-control primary-action"
@@ -143,7 +143,7 @@ export function ProfileForm({
       <p role="status">Profili yt është regjistruar. Nuk ke nevojë ta plotësosh përsëri.</p>
       <p><strong>{existingProfile.fullName}</strong> · {existingProfile.groupName}</p>
       <a className="admin-link" href="/student">Hap vijueshmërinë time</a>
-      <p>Në klasë skano QR-në me të njëjtën llogari GitHub.</p>
+      <p>Në klasë skano QR-në në këtë shfletues.</p>
     </div>;
   }
   if (completed && !onActivated) {
@@ -153,7 +153,7 @@ export function ProfileForm({
   return (
     <form aria-label="Aktivizo profilin" className="student-form" onSubmit={submit}>
       <p className="form-guidance">
-        Regjistrohu vetëm një herë me emrin, mbiemrin dhe indeksin e saktë. Në orët e tjera mjafton të skanosh QR-në me të njëjtën llogari GitHub.
+        Regjistrohu vetëm një herë me emrin, mbiemrin dhe indeksin e saktë. Në orët e tjera mjafton të skanosh QR-në në shfletuesin ku ke hyrë.
       </p>
       {semesters.length === 1 ? <input type="hidden" name="semesterId" value={semesters[0].id} /> : <>
       <label htmlFor="semesterId">Semestri</label>

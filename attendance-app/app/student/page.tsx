@@ -78,8 +78,8 @@ export default function StudentPage() {
         {state === "loading" ? <p role="status">Duke ngarkuar…</p> : null}
         {state === "auth" ? (
           <div className="student-stack">
-            <p>Hyr me GitHub. Përdor të njëjtën llogari gjatë gjithë semestrit.</p>
-            <a className="admin-link" href="/student/activate">Regjistrohu për herë të parë</a>
+            <p>Për hyrjen e parë pa GitHub, skano QR-në aktive të profesorit gjatë orës dhe regjistrohu me emailin e fakultetit ose privat. Nëse përdor tashmë GitHub, mund të hysh me të njëjtën llogari.</p>
+            <a className="admin-link" href="/student/activate">Përgatit profilin me GitHub (opsionale)</a>
             <SignIn callbackUrl="/student" />
           </div>
         ) : null}

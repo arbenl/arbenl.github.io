@@ -2,12 +2,22 @@ import type { Session } from "next-auth";
 
 import { parseGitHubId } from "./options";
 
-export interface SessionIdentity {
+export interface GitHubSessionIdentity {
+  authMethod?: undefined;
   githubId: string;
   githubLogin: string;
 }
 
-export interface StaffIdentity extends SessionIdentity {
+export interface ClassroomSessionIdentity {
+  authMethod: "classroom";
+  userId: string;
+  rosterId: string;
+  semesterId: string;
+  email: string;
+}
+export type SessionIdentity = GitHubSessionIdentity | ClassroomSessionIdentity;
+
+export interface StaffIdentity extends GitHubSessionIdentity {
   userId: string;
   role: "professor" | "administrator";
 }
@@ -34,7 +44,16 @@ export class AuthorizationError extends Error {
 }
 
 export function getSessionIdentity(session: Session | null): SessionIdentity | null {
-  const githubId = parseGitHubId(session?.user?.githubId);
+  const user = session?.user;
+  if (user?.authMethod === "classroom") {
+    const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (user.githubId !== undefined || user.githubLogin !== undefined ||
+      ![user.userId, user.rosterId, user.semesterId].every(value => typeof value === "string" && uuid.test(value)) ||
+      typeof user.email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email) || user.email !== user.email.trim().toLowerCase()) return null;
+    return { authMethod: "classroom", userId: user.userId!, rosterId: user.rosterId!, semesterId: user.semesterId!, email: user.email };
+  }
+  if (user?.authMethod !== undefined || user?.userId !== undefined || user?.rosterId !== undefined || user?.semesterId !== undefined) return null;
+  const githubId = parseGitHubId(user?.githubId);
   const githubLogin = session?.user?.githubLogin;
 
   if (
@@ -77,7 +96,7 @@ export const databaseStaffDirectory: StaffDirectory = {
       .where(eq(users.githubId, githubId))
       .limit(1);
 
-    return row ?? null;
+    return row?.githubId && row.githubLogin ? { ...row, githubId: row.githubId, githubLogin: row.githubLogin } : null;
   },
 };
 
@@ -87,7 +106,7 @@ export async function requireStaff(
 ): Promise<StaffIdentity> {
   const identity = requireSessionIdentity(session);
   const permittedId = process.env.PROFESSOR_GITHUB_ID;
-  if (!permittedId || identity.githubId !== permittedId) {
+  if (identity.authMethod === "classroom" || !permittedId || identity.githubId !== permittedId) {
     throw new AuthorizationError("Staff access required", 403);
   }
   const staffMember = await directory.findByGitHubId(identity.githubId);

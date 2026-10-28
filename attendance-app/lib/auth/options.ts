@@ -1,9 +1,11 @@
 import type { AuthOptions, Profile, User } from "next-auth";
 import type { JWT } from "next-auth/jwt";
+import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 
 import type { ServerEnv } from "../env";
 import { getEnv } from "../env";
+import { getSessionIdentity } from "./session";
 
 export type AuthEnvironment = Pick<
   ServerEnv,
@@ -16,7 +18,22 @@ export interface GitHubUserRecord {
   name: string | null;
 }
 
+interface ClassroomRegistrationInput {
+  token: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  studentId: string;
+  groupName: string;
+}
+interface ClassroomUser extends User {
+  authMethod: "classroom";
+  semesterId: string;
+  rosterId: string;
+  email: string;
+}
 interface AuthDependencies {
+  registerClassroomStudent?: (input: ClassroomRegistrationInput, ip: string) => Promise<ClassroomUser>;
   production?: boolean;
   upsertUser?: (record: GitHubUserRecord) => Promise<void>;
 }
@@ -119,6 +136,24 @@ export function createAuthOptions(
   return {
     secret: environment.NEXTAUTH_SECRET,
     providers: [
+      {
+        ...CredentialsProvider({
+        id: "classroom", name: "Classroom registration",
+        credentials: { token: {}, email: {}, firstName: {}, lastName: {}, studentId: {}, groupName: {} },
+        async authorize(credentials, request) {
+          if (!credentials) return null;
+          try {
+            const register = dependencies.registerClassroomStudent ?? (await import("../attendance/classroom-registration")).registerClassroomStudent;
+            const result = await register({ token: credentials.token, email: credentials.email, firstName: credentials.firstName, lastName: credentials.lastName, studentId: credentials.studentId, groupName: credentials.groupName }, request.headers?.["x-forwarded-for"]?.split(",")[0]?.trim() || "unknown");
+            return { id: result.id, name: result.name, email: result.email, userId: result.id, authMethod: "classroom", rosterId: result.rosterId, semesterId: result.semesterId };
+          } catch (error) {
+            const code = error instanceof Error && "code" in error && typeof error.code === "string" && ["invalid_registration", "invalid_qr", "profile_conflict", "staff_forbidden", "rate_limited", "classroom_unavailable"].includes(error.code) ? error.code : "registration_failed";
+            throw new Error(code);
+          }
+        },
+        }),
+        id: "classroom",
+      },
       GitHubProvider({
         clientId: environment.GITHUB_ID,
         clientSecret: environment.GITHUB_SECRET,
@@ -140,7 +175,8 @@ export function createAuthOptions(
       },
     },
     callbacks: {
-      async signIn({ user, profile }) {
+      async signIn({ user, profile, account }) {
+        if (account?.provider === "classroom") return getSessionIdentity({ expires: "", user })?.authMethod === "classroom";
         const identity = readGitHubIdentity(profile);
 
         if (!identity) {
@@ -153,10 +189,43 @@ export function createAuthOptions(
         });
         return true;
       },
-      async jwt({ token, profile }) {
+      async jwt({ token, profile, user, account }) {
+        if (account?.provider === "classroom") {
+          const identity = getSessionIdentity({ expires: "", user });
+          delete token.githubId;
+          delete token.githubLogin;
+          delete token.authMethod;
+          delete token.userId;
+          delete token.rosterId;
+          delete token.semesterId;
+          delete token.email;
+          if (identity?.authMethod === "classroom") Object.assign(token, identity);
+          return token;
+        }
+        if (profile || account?.provider === "github") {
+          if (token.authMethod === "classroom") delete token.email;
+          delete token.authMethod;
+          delete token.userId;
+          delete token.rosterId;
+          delete token.semesterId;
+        }
         return copyProfileToToken(token, profile);
       },
       async session({ session, token }) {
+        if (session.user) {
+          delete session.user.githubId;
+          delete session.user.githubLogin;
+          delete session.user.authMethod;
+          delete session.user.userId;
+          delete session.user.rosterId;
+          delete session.user.semesterId;
+        }
+        const identity = getSessionIdentity({ expires: "", user: { ...token, email: token.email } });
+        if (identity?.authMethod === "classroom" && session.user) {
+          Object.assign(session.user, identity);
+          return session;
+        }
+        if (!identity) return session;
         const githubId = parseGitHubId(token.githubId);
         const githubLogin =
           typeof token.githubLogin === "string" && token.githubLogin.length > 0
