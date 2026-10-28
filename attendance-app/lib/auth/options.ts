@@ -33,6 +33,7 @@ interface ClassroomUser extends User {
   email: string;
 }
 interface AuthDependencies {
+  registerColloquiumStudent?: (input: Omit<ClassroomRegistrationInput, "groupName">, ip: string) => Promise<ClassroomUser>;
   registerClassroomStudent?: (input: ClassroomRegistrationInput, ip: string) => Promise<ClassroomUser>;
   production?: boolean;
   upsertUser?: (record: GitHubUserRecord) => Promise<void>;
@@ -154,6 +155,24 @@ export function createAuthOptions(
         }),
         id: "classroom",
       },
+      {
+        ...CredentialsProvider({
+          id: "colloquium", name: "Colloquium registration",
+          credentials: { token: {}, email: {}, firstName: {}, lastName: {}, studentId: {} },
+          async authorize(credentials, request) {
+            if (!credentials) return null;
+            try {
+              const register = dependencies.registerColloquiumStudent ?? (await import("../colloquium/service")).registerColloquiumStudent;
+              const result = await register({token:credentials.token,email:credentials.email,firstName:credentials.firstName,lastName:credentials.lastName,studentId:credentials.studentId}, request.headers?.["x-forwarded-for"]?.split(",")[0]?.trim() || "unknown");
+              return {id:result.id,name:result.name,email:result.email,userId:result.id,authMethod:"classroom",rosterId:result.rosterId,semesterId:result.semesterId};
+            } catch(error) {
+              const code=error instanceof Error && "code" in error && typeof error.code === "string" && ["invalid_registration","invalid_room","profile_conflict","staff_forbidden","rate_limited","colloquium_unavailable","room_finished"].includes(error.code)?error.code:"registration_failed";
+              throw new Error(code);
+            }
+          },
+        }),
+        id: "colloquium",
+      },
       GitHubProvider({
         clientId: environment.GITHUB_ID,
         clientSecret: environment.GITHUB_SECRET,
@@ -176,7 +195,7 @@ export function createAuthOptions(
     },
     callbacks: {
       async signIn({ user, profile, account }) {
-        if (account?.provider === "classroom") return getSessionIdentity({ expires: "", user })?.authMethod === "classroom";
+        if ((account?.provider === "classroom" || account?.provider === "colloquium")) return getSessionIdentity({ expires: "", user })?.authMethod === "classroom";
         const identity = readGitHubIdentity(profile);
 
         if (!identity) {
@@ -190,7 +209,7 @@ export function createAuthOptions(
         return true;
       },
       async jwt({ token, profile, user, account }) {
-        if (account?.provider === "classroom") {
+        if ((account?.provider === "classroom" || account?.provider === "colloquium")) {
           const identity = getSessionIdentity({ expires: "", user });
           delete token.githubId;
           delete token.githubLogin;

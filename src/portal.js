@@ -97,9 +97,8 @@ const translations = {
     "w6.sub":
       "Shndërrimi i uebsajtit në aplikacion që instalohet në Homescreen pa App Store.",
     "w7.badge": "Javë 7",
-    "w7.title": "Kollokviumi I / Vlerësimi i MVP-së Fillestare",
-    "w7.sub":
-      "Prezantimi i prototipit të parë funksional live në Vercel nga çdo student.",
+    "w7.title": "Kolokviumi I dhe kontrolli i MVP-së",
+    "w7.sub": "10 pikë · 10 pyetje nga javët 1–6, 10 minuta për grup. Demonstrimi mbetet aktivitet mësimor.",
     "w8.badge": "Javë 8",
     "w8.title": "Sensorët dhe API-të Vendase të Pajisjes (Device APIs)",
     "w8.sub":
@@ -125,9 +124,8 @@ const translations = {
     "w13.sub":
       "Core Web Vitals (LCP, INP, CLS), kompresimi i imazheve dhe shpejtësia ekstreme.",
     "w14.badge": "Javë 14",
-    "w14.title": "CI/CD, Testimi në Pajisje Reale & Përgatitja Finale",
-    "w14.sub":
-      "GitHub Actions, Vercel Production Environment dhe përgatitja e demo-s.",
+    "w14.title": "Kolokviumi II, testimi dhe CI/CD",
+    "w14.sub": "10 pikë · Java 14. Organizimi njoftohet para zhvillimit; testimi dhe përgatitja e demo-s vazhdojnë.",
     "w15.badge": "Javë 15",
     "w15.title": "Demo Day & Mbrojtja e Projekteve (The Founder's Showcase)",
     "w15.sub":
@@ -149,9 +147,12 @@ const translations = {
     "rubric.r2Title": "Projekti Final PWA i Biznesit",
     "rubric.r2Desc":
       "Aplikacion Next.js/PWA për një biznes real shërbimesh, i përdorshëm në telefon, i testuar dhe i publikuar.",
-    "rubric.r3Title": "Demo Day & Mbrojtja Individuale",
-    "rubric.r3Desc":
-      "Prezantimi live 5-minutësh nga celulari para auditorit, arsyetimi i vendimeve arkitekturore dhe pyetjet individuale teknike të kodit.",
+    "rubric.r3Title": "Kolokviumi I · Java 7",
+    "rubric.r3Desc": "10 pyetje nga javët 1–6; 3 alternativa dhe vetëm një përgjigje e saktë. E saktë = 1 pikë; e gabuar ose bosh = 0.",
+    "rubric.r4Title": "Kolokviumi II · Java 14",
+    "rubric.r4Desc": "10 pikë. Përmbajtja dhe organizimi njoftohen para zhvillimit. Demonstrimi dhe mbrojtja mbeten pjesë mësimore të projektit.",
+    "rubric.rules": "Profesori hap regjistrimin dhe nis 10 minutat veçmas për G1/G2. Një tentim për student; hyrja më vonë ka kohën e mbetur. Përgjigjet ruhen dhe rifreskimi nuk rinis kohën. Rezultatet shfaqin emrin, grupin dhe pikët pas afatit, pa email apo indeks. Hyrja nuk kërkon GitHub ose vijueshmëri të mëparshme.",
+
     "autograding.title":
       "Kontrolli teknik i dorëzimeve javore",
     "autograding.desc":
@@ -308,8 +309,8 @@ const translations = {
     "w6.sub":
       "Transforming web apps into installable Homescreen apps without the App Store.",
     "w7.badge": "Week 7",
-    "w7.title": "Midterm Exam I / Initial MVP Evaluation",
-    "w7.sub": "Live demo of the functional MVP on Vercel by each student.",
+    "w7.title": "Colloquium I and MVP review",
+    "w7.sub": "10 points · 10 questions from weeks 1–6, 10 minutes per group. The demo remains a learning activity.",
     "w8.badge": "Week 8",
     "w8.title": "Sensors and Native Device APIs",
     "w8.sub": "Camera upload, GPS Geolocation, Vibration, and Web Share API.",
@@ -334,9 +335,8 @@ const translations = {
     "w13.sub":
       "Core Web Vitals (LCP, INP, CLS), image compression, and extreme speed.",
     "w14.badge": "Week 14",
-    "w14.title": "CI/CD, Real Device Testing & Final Preparation",
-    "w14.sub":
-      "GitHub Actions, Vercel Production Environment, and demo preparation.",
+    "w14.title": "Colloquium II, testing and CI/CD",
+    "w14.sub": "10 points · Week 14. Details will be announced before the assessment; testing and demo preparation continue.",
     "w15.badge": "Week 15",
     "w15.title": "Demo Day & Project Defense (The Founder's Showcase)",
     "w15.sub":
@@ -358,9 +358,12 @@ const translations = {
     "rubric.r2Title": "Final PWA Business Project",
     "rubric.r2Desc":
       "A tested, published Next.js/PWA application for a real service business, usable on a phone.",
-    "rubric.r3Title": "Demo Day & Individual Defense",
-    "rubric.r3Desc":
-      "5-minute live smartphone showcase in the auditorium, architectural rationale defense, and individual code examination.",
+    "rubric.r3Title": "Colloquium I · Week 7",
+    "rubric.r3Desc": "10 questions from weeks 1–6; 3 choices and exactly one correct answer. Correct = 1 point; wrong or blank = 0.",
+    "rubric.r4Title": "Colloquium II · Week 14",
+    "rubric.r4Desc": "10 points. Content and details will be announced before the assessment. Demo and defense remain project learning activities.",
+    "rubric.rules": "The professor opens registration and starts 10 minutes separately for G1/G2. One attempt per student; late joins get remaining time. Answers save and refresh does not restart time. Names, groups and scores appear after the deadline, without email or student index. Entry requires no GitHub or previous attendance.",
+
     "autograding.title":
       "Technical checks for weekly submissions",
     "autograding.desc":

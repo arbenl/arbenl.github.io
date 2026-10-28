@@ -407,3 +407,17 @@ export const auditLogRelations = relations(auditLog, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const colloquiumRooms = pgTable('colloquium_rooms', {
+ id:uuid('id').defaultRandom().primaryKey(), semesterId:uuid('semester_id').notNull().references(()=>semesters.id,{onDelete:'restrict'}),
+ weekNumber:integer('week_number').default(7).notNull(),groupName:text('group_name').notNull(),tokenHash:bytea('token_hash').notNull(),
+ bankVersion:text('bank_version').default('mobile-01-v1').notNull(),createdBy:uuid('created_by').notNull().references(()=>users.id,{onDelete:'restrict'}),
+ createdAt:databaseTimestamp('created_at').defaultNow().notNull(),startedAt:databaseTimestamp('started_at'),deadline:databaseTimestamp('deadline'),
+},t=>[unique('colloquium_rooms_scope_unique').on(t.semesterId,t.weekNumber,t.groupName)]);
+export const colloquiumAttempts = pgTable('colloquium_attempts', {
+ id:uuid('id').defaultRandom().primaryKey(),roomId:uuid('room_id').notNull().references(()=>colloquiumRooms.id,{onDelete:'restrict'}),
+ semesterId:uuid('semester_id').notNull().references(()=>semesters.id,{onDelete:'restrict'}),weekNumber:integer('week_number').default(7).notNull(),
+ userId:uuid('user_id').notNull().references(()=>users.id,{onDelete:'restrict'}),rosterId:uuid('roster_id').notNull().references(()=>roster.id,{onDelete:'restrict'}),
+ questionOrder:jsonb('question_order').notNull(),answers:jsonb('answers').default({}).notNull(),revisions:jsonb('revisions').default({}).notNull(),revision:integer('revision').default(0).notNull(),
+ joinedAt:databaseTimestamp('joined_at').defaultNow().notNull(),submittedAt:databaseTimestamp('submitted_at'),score:integer('score'),
+},t=>[unique('colloquium_attempts_user_unique').on(t.semesterId,t.weekNumber,t.userId),unique('colloquium_attempts_roster_unique').on(t.semesterId,t.weekNumber,t.rosterId),index('colloquium_attempts_room_idx').on(t.roomId)]);
