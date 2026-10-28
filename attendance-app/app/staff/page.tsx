@@ -35,6 +35,7 @@ export default async function StaffPage({ searchParams }: {
         <p><strong>Vijueshmëria · Semestri dimëror 2026/2027 · Kolegji AAB</strong></p>
         <a className="admin-link" href="https://arbenl.github.io/lendet/2026-2027/mobile/">← Materialet e lëndës</a>
         <p><Link className="admin-link" href="/staff/report">Hap raportin e vijueshmërisë sipas javëve →</Link></p>
+        <p><Link className="admin-link" href="/staff/materials/week-07">Java 7 · Materialet e ushtrimeve për profesorin →</Link></p>
         <p>Hap lidhjen e ligjëratës ose të ushtrimeve: QR-ja shfaqet automatikisht, pa zgjedhur semestër ose program.</p>
       </header>
       <SemesterAdmin key={sessionId} initialSessionId={sessionId} />

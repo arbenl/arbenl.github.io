@@ -221,3 +221,7 @@ udhëzim në shqip, pa zbuluar emrin ose adresën e një studenti tjetër.
 U riprodhuan bllokimi i ë/ç dhe gabimet e përgjithshme të validimit/konfliktit.
 Nuk u identifikua secili rast individual i raportuar; nëse mbetet problem,
 studenti duhet të dërgojë tekstin e saktë të gabimit te profesori.
+
+### Private course materials
+
+`/staff/materials/week-07` uses the same professor GitHub-ID and staff-directory checks as attendance. All material requests repeat that check and return `private, no-store` with cookie variance. The public repository contains an AES-256-GCM encrypted bundle only; its separate `MOBILE_MATERIALS_KEY` is a server-only Vercel production Secret. Do not commit the key or plaintext private materials. Missing keys and unauthorized requests fail closed. The scheduled student publication remains independent at 29 October 2026, 14:40 Europe/Berlin.
