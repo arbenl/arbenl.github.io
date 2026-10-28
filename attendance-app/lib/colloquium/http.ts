@@ -4,8 +4,9 @@ import { getEnv } from '../env';
 import { ColloquiumError } from './service';
 export function requireColloquiumOrigin(request: Request) {
   const expected = new URL(getEnv().NEXTAUTH_URL);
-  const actual = new URL(request.url);
-  if (request.headers.get('origin') !== expected.origin || actual.host !== expected.host || request.headers.get('host') !== expected.host)
+  // Next.js can reconstruct request.url with an internal localhost host.
+  // Validate the external browser origin and Host against configured authority.
+  if (request.headers.get('origin') !== expected.origin || request.headers.get('host') !== expected.host)
     throw new ColloquiumError(403, 'invalid_origin');
 }
 export async function colloquiumRoute(request: Request, mutating: boolean, action: (session: Awaited<ReturnType<typeof getCurrentSession>>) => Promise<unknown>) {

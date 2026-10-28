@@ -131,10 +131,14 @@ it('denies staff action without instructor identity and validates origin+host', 
   const r = await lobby(), { session } = await enroll(r.token);
   await expect(startRoom(session, r.id)).rejects.toMatchObject({ status: 403 });
   await expect(results(null)).rejects.toMatchObject({ status: 401 });
-  const make = (origin: string, host: string) => new Request('http://127.0.0.1:3000/api/colloquium/join', { headers: { origin, host } });
+  const make = (origin: string, host: string, url = 'http://127.0.0.1:3000/api/colloquium/join') => new Request(url, { headers: { origin, host } });
   expect(() => requireColloquiumOrigin(make('https://evil.example', '127.0.0.1:3000'))).toThrow();
   expect(() => requireColloquiumOrigin(make('http://127.0.0.1:3000', 'evil.example'))).toThrow();
   expect(() => requireColloquiumOrigin(make('http://127.0.0.1:3000', '127.0.0.1:3000'))).not.toThrow();
+  // Next.js may reconstruct an internal localhost URL behind the canonical host.
+  expect(() => requireColloquiumOrigin(make('http://127.0.0.1:3000', '127.0.0.1:3000', 'http://localhost:3000/api/staff/colloquium'))).not.toThrow();
+  expect(() => requireColloquiumOrigin(make('https://evil.example', '127.0.0.1:3000', 'http://localhost:3000/api/staff/colloquium'))).toThrow();
+  expect(() => requireColloquiumOrigin(make('http://127.0.0.1:3000', 'evil.example', 'http://localhost:3000/api/staff/colloquium'))).toThrow();
 });
 it('schema helper is idempotent and avoids access-exclusive tablelocks after migration', async () => {
   await db.transaction(async (tx) => {
