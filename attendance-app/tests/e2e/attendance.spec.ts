@@ -272,12 +272,12 @@ test("private week 7 teacher materials enforce access on every resource",async({
  await signIn(page,"studentOne");
  for(const file of resources)expect((await api(page,base+file)).status).toBe(403);
  await signIn(page,"professor");expect((await api(page,"/api/admin/bootstrap","POST")).status).toBe(201);
- await page.goto("/staff/materials/week-07");await expect(page.getByRole("heading",{name:"Java 7 · Ushtrimet",exact:true})).toBeVisible();
+ await page.goto("/staff/materials/week-07");await expect(page.getByRole("heading",{name:"Java 7 · Ushtrimet",exact:true})).toBeVisible();await expect(page.locator("#permbajtja-kryesore")).toHaveCount(1);
  if(!process.env.MOBILE_MATERIALS_KEY){expect((await api(page,base+resources[0])).status).toBe(503);return;}
  const response=await page.evaluate(async path=>{const r=await fetch(path);const digest=await crypto.subtle.digest("SHA-256",await r.arrayBuffer());return {status:r.status,cache:r.headers.get("cache-control"),sha:[...new Uint8Array(digest)].map(n=>n.toString(16).padStart(2,"0")).join("")}},base+"ushtrimet-07-kontrolli-mvp-rideshare-2026.pptx");expect(response.status).toBe(200);expect(response.cache).toContain("private");expect(response.sha).toBe("0835315db80f9b6333e505c575c1ca51843d98308053caacae462627a1b1966d");
  const errors:string[]=[];page.on("pageerror",e=>errors.push(e.message));
  await page.getByRole("link",{name:"Hap udhëzimin e plotë · 90 minuta →",exact:true}).click();
- await expect(page.getByRole("heading",{name:"Provo, korrigjo dhe shpjego RideShare-in tënd",exact:true})).toBeVisible();
+ await expect(page.getByRole("heading",{name:"Provo, korrigjo dhe shpjego RideShare-in tënd",exact:true})).toBeVisible();await expect(page.getByRole("link",{name:"Shiko demonstrimin mësimor",exact:true})).toHaveAttribute("href","https://arbenl.github.io/lendet/2026-2027/mobile/java-07/demonstrimi.html");
  await page.getByLabel("Emri publik në GitHub",{exact:true}).fill("arta");await page.getByRole("button",{name:"Gjenero rastin tim",exact:true}).click();await expect(page.locator('[data-case="code"]')).toHaveText("P7-974");
  await page.goto(base+"prezantimi-ushtrimeve.html");await expect(page.locator("#counter")).toHaveText("1 / 12");await page.getByRole("button",{name:"Tjetri →",exact:true}).click();await expect(page.locator("#counter")).toHaveText("2 / 12");
  expect(errors).toEqual([]);

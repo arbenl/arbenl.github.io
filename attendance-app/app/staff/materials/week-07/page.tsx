@@ -6,7 +6,7 @@ export const metadata = { title: "Java 7 · Materialet e profesorit", robots: { 
 
 export default async function WeekSevenMaterials() {
   try { await requireCurrentStaff(); } catch {
-    return <main className="page-shell"><section className="status-card">
+    return <main className="page-shell" id="permbajtja-kryesore"><section className="status-card">
       <p className="eyebrow">Programimi për Pajisje Mobile · 2026/2027</p>
       <h1>Materialet hapen vetëm nga profesori</h1>
       <p>Hyr me llogarinë GitHub të autorizuar të Arben Lila.</p>
@@ -14,7 +14,7 @@ export default async function WeekSevenMaterials() {
     </section></main>;
   }
   const base = "/api/staff/materials/week-07/";
-  return <main className="page-shell"><section className="status-card">
+  return <main className="page-shell" id="permbajtja-kryesore"><section className="status-card">
     <p className="eyebrow">Vetëm për profesorin · Mobile 2026/2027</p>
     <h1>Java 7 · Ushtrimet</h1>
     <p>Materialet janë të hapura për ty sot. Studentët i hapin nga faqja e lëndës më 29.10.2026, nga ora 14:40.</p>
