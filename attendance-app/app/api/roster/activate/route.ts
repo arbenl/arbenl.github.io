@@ -23,7 +23,16 @@ export async function POST(request: Request): Promise<Response> {
   try {
     const parsed = activationSchema.safeParse(await request.json());
     if (!parsed.success) {
-      return invalidRequest();
+      const messages: Record<string, string> = {
+        email: "Shkruaj një email të vlefshëm të fakultetit ose privat.",
+        firstName: "Shkruaj emrin tënd.",
+        lastName: "Shkruaj mbiemrin tënd.",
+        studentId: "Shkruaj numrin e indeksit (Student ID).",
+        groupName: "Zgjidh grupin G1 ose G2.",
+        semesterId: "Semestri nuk u zgjodh. Rifresko faqen dhe provo përsëri.",
+      };
+      const field = String(parsed.error.issues[0]?.path[0] ?? "");
+      return invalidRequest(messages[field] ?? "Kontrollo fushat e formularit dhe provo përsëri.");
     }
     const result = await attendanceService.activateRoster(
       await getCurrentSession(),
@@ -36,9 +45,9 @@ export async function POST(request: Request): Promise<Response> {
   }
 }
 
-function invalidRequest(): Response {
+function invalidRequest(message = "Invalid request"): Response {
   return Response.json(
-    { error: { code: "invalid_request", message: "Invalid request" } },
+    { error: { code: "invalid_request", message } },
     { status: 400 },
   );
 }

@@ -41,8 +41,7 @@ async function activate(page: Page, firstName: string, lastName: string, student
   await page.getByRole("button", { name: "Aktivizo profilin", exact: true }).waitFor();
   await expect(page.locator('input[name="semesterId"]')).toHaveValue(/.+/);
   await page.getByLabel("Grupi i ushtrimeve", { exact: true }).selectOption(group);
-  await page.getByLabel("Emaili që përdor për Google Drive", { exact: true }).fill(`${studentId.toLowerCase()}@example.com`);
-  await page.getByLabel("Shkruaje emailin përsëri", { exact: true }).fill(`${studentId.toLowerCase()}@example.com`);
+  await page.getByLabel("Emaili i fakultetit ose emaili privat", { exact: true }).fill(`${studentId.toLowerCase()}@${studentId === "E2E-001" ? "universitetiaab.com" : "gmail.com"}`);
   await page.getByLabel("Emri", { exact: true }).fill(firstName);
   await page.getByLabel("Mbiemri", { exact: true }).fill(lastName);
   await page.getByLabel("Student ID", { exact: true }).fill(studentId);
@@ -165,6 +164,11 @@ for (const viewport of [
         await second.goto("/student/activate");
         await activate(second, "Besa", "Duka", "E2E-002");
         await expect(second.getByRole("status")).toHaveText("Profili u aktivizua. Tani mund ta skanosh QR-në.");
+        await noOverflow(second);
+        await second.goto("/student/activate");
+        await expect(second.getByRole("status")).toContainText("Profili yt është regjistruar");
+        await expect(second.getByRole("form")).toHaveCount(0);
+        await expect(second.getByRole("link", {name:"Hap vijueshmërinë time"})).toBeVisible();
         await noOverflow(second);
         // Change only this real token's expiry against the database clock, without sleeping.
         const hash = createHash("sha256").update(token).digest();

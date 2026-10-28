@@ -20,3 +20,9 @@ export function maskDisplayName(value: string): string {
   const surnameInitial = Array.from(parts.at(-1) ?? "")[0];
   return `${parts[0]} ${surnameInitial}.`;
 }
+
+// A phone keyboard may omit ë/ç; retain the official spelling in the roster.
+export function registrationNamesMatch(official: string, supplied: string): boolean {
+  const key = (name: string) => normalizeAlbanianName(name).replace(/ë/gu, "e").replace(/ç/gu, "c");
+  return key(official) === key(supplied);
+}

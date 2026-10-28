@@ -202,3 +202,22 @@ studenti duhet të përfundojë GitHub/profilin dhe të shohë konfirmimin para
 mbylljes së afatit. Nuk u vërtetua shkaku i çdo rasti të munguar historik;
 nevojitet mesazhi që shfaq telefoni dhe sesioni konkret. Korrigjimet e
 verifikuara bëhen me arsye në panel.
+
+
+## Regjistrimi i thjeshtuar · 28 tetor 2026
+
+Formulari `/student/activate` pranon një adresë emaili të fakultetit ose private
+(Gmail, Outlook etj.); nuk ka filtër sipas domain-it dhe adresa mund të
+dryshojë nga ai i GitHub. Emaili shkruhet vetëm një herë. Identifikimi vazhdon
+me GitHub; ruajtja e profilit nuk shënon pjesëmarrje pa QR.
+
+Kur studenti ka profil të plotë, faqja e njeh përmes historisë së tij të
+autentikuar dhe e drejton te vijueshmëria. Emrat e importuar përputhen edhe kur
+studenti shkruan e/c në vend të ë/ç, duke ruajtur drejtshkrimin zyrtar në listë.
+Indeksi dhe lidhja me llogarinë mbeten të kontrolluara; një llogari tjetër nuk
+mund ta marrë profilin. Emaili i pavlefshëm dhe konfliktet e regjistrimit japin
+udhëzim në shqip, pa zbuluar emrin ose adresën e një studenti tjetër.
+
+U riprodhuan bllokimi i ë/ç dhe gabimet e përgjithshme të validimit/konfliktit.
+Nuk u identifikua secili rast individual i raportuar; nëse mbetet problem,
+studenti duhet të dërgojë tekstin e saktë të gabimit te profesori.

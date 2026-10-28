@@ -747,11 +747,11 @@ describe("protected semester and roster management", () => {
     ]);
     expect(wrongIdError).toMatchObject({
       code: "roster_mismatch",
-      message: "The supplied details do not match an available roster entry",
+      message: "Kontrollo emrin, mbiemrin dhe indeksin sipas listës së fakultetit. Nëse je regjistruar më parë, përdor të njëjtën llogari GitHub. Nëse nuk zgjidhet, kontakto profesorin.",
     });
     expect(wrongNameError).toMatchObject({
       code: "roster_mismatch",
-      message: "The supplied details do not match an available roster entry",
+      message: "Kontrollo emrin, mbiemrin dhe indeksin sipas listës së fakultetit. Nëse je regjistruar më parë, përdor të njëjtën llogari GitHub. Nëse nuk zgjidhet, kontakto profesorin.",
     });
   });
 
@@ -2108,4 +2108,40 @@ describe("shared class activity report and large QR classes", () => {
     const report = await attendanceService.getCourseActivityReport(sessionFor("1001", "load-student-1"));
     expect(report.present).toHaveLength(80);
   }, 30_000);
+});
+
+// Regression: typing without an Albanian keyboard must not block the same student ID.
+it("activates an imported Albanian name typed without diacritics and preserves the official name", async () => {
+  const semester = await createActiveSemester();
+  await attendanceService.importRoster(professor, {semesterId:semester.id,rows:[{studentId:"REG-01",fullName:"Ëndrra Çela",groupName:"G1"}]});
+  const activated = await attendanceService.activateRoster(studentA,{semesterId:semester.id,studentId:"REG-01",firstName:"Endrra",lastName:"Cela",email:"endrra.personal@gmail.com"},"198.51.100.150");
+  expect(activated.fullName).toBe("Ëndrra Çela");
+  expect(activated.email).toBe("endrra.personal@gmail.com");
+  await expect(attendanceService.activateRoster(studentB,{semesterId:semester.id,studentId:"REG-01",firstName:"Endrra",lastName:"Cela",email:"other@gmail.com"},"198.51.100.151")).rejects.toMatchObject({code:"roster_mismatch"});
+});
+
+it.each(["student@gmail.com","student@universitetiaab.com"])("accepts registration with %s before class through the HTTP route", async email => {
+  const {semesterId} = await attendanceService.ensureCurrentCourseSetup(professor);
+  routeSession.current = studentA;
+  const response = await activateRoute(jsonRequest("http://attendance.test/api/roster/activate",{semesterId,studentId:"REG-02",firstName:"Arta",lastName:"Kola",email,groupName:"G1",beforeClass:true},"198.51.100.152"));
+  expect(response.status).toBe(200);
+  expect((await response.json()).email).toBe(email);
+  expect(await sql`select id from attendance_records`).toHaveLength(0);
+});
+
+it("identifies an invalid email in Albanian instead of a generic invalid-request error", async () => {
+  const response = await activateRoute(jsonRequest("http://attendance.test/api/roster/activate",{semesterId:"11111111-1111-4111-8111-111111111111",studentId:"REG-03",firstName:"Arta",lastName:"Kola",email:"not-an-email",groupName:"G1",beforeClass:true},"198.51.100.153"));
+  expect(response.status).toBe(400);
+  expect((await response.json()).error.message).toMatch(/email.*vlefshëm/iu);
+});
+
+it("explains a registration conflict without exposing another student's identity", async () => {
+  const {semesterId} = await attendanceService.ensureCurrentCourseSetup(professor);
+  const profile={semesterId,studentId:"REG-04",firstName:"Arta",lastName:"Kola",email:"shared@gmail.com",groupName:"G1" as const,beforeClass:true};
+  await attendanceService.activateRoster(studentA,profile,"198.51.100.154");
+  const error=await attendanceService.activateRoster(studentB,{...profile,studentId:"REG-05",firstName:"Besa",lastName:"Dema"},"198.51.100.155").catch(e=>e);
+  expect(error).toMatchObject({code:"roster_mismatch"});
+  expect(error.message).toMatch(/emaili.*përdorur/iu);
+  expect(error.message).not.toContain("Arta");
+  expect(error.message).not.toContain("shared@gmail.com");
 });
