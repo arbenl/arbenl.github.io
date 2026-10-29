@@ -2,9 +2,16 @@ import Link from "next/link";
 import { attendanceService, AttendanceServiceError } from "../../lib/attendance/service";
 import { CURRENT_COURSE } from "../../lib/attendance/current-course";
 import { loadSubmissions } from "../../lib/attendance/submissions";
+import { submissionProgress, type SubmissionProgress } from "../../lib/attendance/submission-progress";
 import { getCurrentSession } from "../../lib/auth/session";
 
 export const dynamic = "force-dynamic";
+
+function Progress({ value, unlinked = false }: { value: SubmissionProgress | null; unlinked?: boolean }) {
+  if (!value) return <>E panjohur{unlinked && <><br /><small>Profili pa lidhje GitHub</small></>}</>;
+  if (value.percentage === null) return <>Ende pa detyra</>;
+  return <><strong>{value.percentage}%</strong><br /><small>{value.completed}/{value.total} javë</small></>;
+}
 
 export default async function CourseReportPage({ searchParams }: {
   searchParams: Promise<{ week?: string }>;
@@ -33,6 +40,7 @@ export default async function CourseReportPage({ searchParams }: {
   const rosterAccounts = new Set(report.students.map(s => s.githubId));
   const unmatched = weeklySubmissions.filter(s => !rosterAccounts.has(s.githubId)).sort((a, b) => a.login.localeCompare(b.login));
   const participants = report.students.filter(student => sessions.some(s => present.has(`${student.rosterId}:${s.id}`))).length;
+  const reportTime = new Date();
   return <main className="admin-shell attendance-report" id="permbajtja-kryesore">
     <header className="admin-page-header">
       <p className="eyebrow">Programimi Mobile · 2026/2027 · Për studentët dhe profesorin</p>
@@ -46,6 +54,7 @@ export default async function CourseReportPage({ searchParams }: {
     <section className="admin-section" aria-labelledby="activity-week">
       <h2 id="activity-week">Java {week}</h2>
       <p className="report-overview">{participants} studentë me pjesëmarrje të konfirmuar · {submissions ? `${weeklySubmissions.length} studentë me dorëzim` : "Dorëzimet përkohësisht të padisponueshme"}</p>
+      <p>“Dorëzimet totale deri tani” = javët e dorëzuara / javët e lëndës deri sot × 100. Përfshihen edhe javët vetëm për feedback; javët e ardhshme përjashtohen. Totali nuk ndryshon kur zgjedh javë tjetër. Kjo është evidencë dorëzimi, jo notë.</p>
       <details><summary>Si lexohet raporti?</summary><p>“Po” tregon check-in të konfirmuar. “—” tregon se nuk ka konfirmim në këtë orë; nuk është vendim për mungesën. “Nuk u gjet” do të thotë se nuk u gjet formular dorëzimi nga e njëjta llogari GitHub, jo se puna është vlerësuar. Dorëzimet përditësohen brenda 5 minutave.</p></details>
       {!sessions.length ? <p>Nuk ka ende orë të hapur ose të përfunduar këtë javë.</p> : null}
       {submissions === null ? <p role="alert">GitHub nuk mund të lexohet tani. Dorëzimet shënohen “E panjohur”; provo përsëri më vonë.</p> : null}
@@ -53,16 +62,17 @@ export default async function CourseReportPage({ searchParams }: {
         <caption>Java {week} · {report.students.length} studentë · Renditje alfabetike sipas emrit</caption>
         <thead><tr><th scope="col">Nr.</th><th scope="col">Emri dhe mbiemri</th><th scope="col">Grupi</th>
           {sessions.map(s => <th key={s.id} scope="col">{s.kind === "lecture" ? "Ligjëratë" : "Ushtrime"} · {s.groupName}<br /><small>{s.state === "open" ? "Check-in i hapur" : "Check-in i mbyllur"}</small></th>)}
-          <th scope="col">Detyra · Java {week}</th></tr></thead>
+          <th scope="col">Detyra · Java {week}</th><th scope="col">Dorëzimet totale deri tani</th></tr></thead>
         <tbody>{report.students.map((student, i) => {
           const submission = weeklySubmissions.find(s => s.githubId === student.githubId);
           return <tr key={student.rosterId}><td>{i + 1}</td><th scope="row">{student.fullName}</th><td>{student.groupName}</td>
             {sessions.map(s => <td key={s.id}>{present.has(`${student.rosterId}:${s.id}`) ? <strong className="report-presence is-present">Po</strong> : "—"}</td>)}
-            <td>{submission ? <a href={submission.url}>Dorëzuar · #{submission.number}</a> : submissions === null ? "E panjohur" : "Nuk u gjet"}</td></tr>;
+            <td>{submission ? <a href={submission.url}>Dorëzuar · #{submission.number}</a> : submissions === null || !student.githubId ? "E panjohur" : "Nuk u gjet"}</td>
+            <td><Progress value={submissionProgress(submissions, student.githubId, reportTime)} unlinked={!student.githubId} /></td></tr>;
         })}</tbody>
       </table></div>
     </section>
     {unmatched.length ? <section className="admin-section"><h2>Dorëzime pa profil të lidhur · Java {week}</h2><p>Këto llogari kanë dorëzuar, por nuk përputhen me një profil në regjistrin e lëndës. Përgatit profilin me të njëjtën llogari GitHub që përdore për dorëzim.</p>
-      <ul>{unmatched.map(s => <li key={s.githubId}><a href={s.url}>{s.login} · Dorëzuar #{s.number}</a></li>)}</ul></section> : null}
+      <ul>{unmatched.map(s => <li key={s.githubId}><a href={s.url}>{s.login} · Dorëzuar #{s.number}</a> · <Progress value={submissionProgress(submissions, s.githubId, reportTime)} /></li>)}</ul></section> : null}
   </main>;
 }

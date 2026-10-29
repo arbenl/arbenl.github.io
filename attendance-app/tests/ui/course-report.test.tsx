@@ -6,7 +6,7 @@ vi.mock("../../lib/attendance/service", async importOriginal => ({ ...await impo
 vi.mock("../../lib/attendance/submissions", () => ({ loadSubmissions: mocks.submissions }));
 import CourseReportPage from "../../app/report/page";
 import { AttendanceServiceError } from "../../lib/attendance/service";
-afterEach(() => { cleanup(); vi.clearAllMocks(); });
+afterEach(() => { cleanup(); vi.clearAllMocks(); vi.useRealTimers(); });
 
 describe("shared weekly course report", () => {
   it("renders 80 students, confirmed attendance and submissions without private profile fields", async () => {
@@ -32,7 +32,28 @@ describe("shared weekly course report", () => {
     mocks.submissions.mockRejectedValue(new Error("GitHub unavailable"));
     render(await CourseReportPage({searchParams:Promise.resolve({week:"4"})}));
     expect(screen.getByRole("alert")).toBeTruthy();
-    expect(screen.getByText("E panjohur")).toBeTruthy();
+    expect(screen.getAllByText("E panjohur").length).toBeGreaterThan(0);
     expect(screen.queryByText("Nuk u gjet")).toBeNull();
+  });
+  it('shows the same cumulative percentage when viewing different weekly reports', async () => {
+    vi.useFakeTimers(); vi.setSystemTime(new Date('2026-10-29T15:00:00Z'));
+    mocks.report.mockResolvedValue({students:[{rosterId:'1',fullName:'Arta Test',groupName:'G1',githubId:'200'}],sessions:[],present:[]});
+    mocks.submissions.mockResolvedValue([1,2,3,7,8].map(week=>({githubId:'200',login:'arta',week,number:week,url:`https://github.com/example/course/issues/${week}`})));
+    let view = render(await CourseReportPage({searchParams:Promise.resolve({week:'3'})}));
+    expect(screen.getByRole('columnheader',{name:'Dorëzimet totale deri tani'})).toBeTruthy();
+    expect(screen.getByText('57%')).toBeTruthy();
+    expect(screen.getByText('4/7 javë')).toBeTruthy();
+    view.unmount();
+    view = render(await CourseReportPage({searchParams:Promise.resolve({week:'15'})}));
+    expect(screen.getByText('57%')).toBeTruthy();
+    expect(screen.getByText('4/7 javë')).toBeTruthy();
+    view.unmount();
+  });
+  it('keeps an unlinked student unknown rather than assigning a false zero', async () => {
+    mocks.report.mockResolvedValue({students:[{rosterId:'1',fullName:'Arta Test',groupName:'G1',githubId:null}],sessions:[],present:[]});
+    mocks.submissions.mockResolvedValue([]);
+    render(await CourseReportPage({searchParams:Promise.resolve({week:'7'})}));
+    expect(screen.getByText('Profili pa lidhje GitHub')).toBeTruthy();
+    expect(screen.queryByText('0%')).toBeNull();
   });
 });
