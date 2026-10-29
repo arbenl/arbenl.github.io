@@ -32,7 +32,22 @@ export function renderPhoneSvg(role,scene='normal',options={}){
  }
  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 560" width="360" height="560" role="img" aria-label="${e(label+' · RideShare · '+scene)}">${box(2,2,356,556,'#080e19','#697c96',35)}${box(12,12,336,536,'#101b2d','#101b2d',27)}<rect x="137" y="19" width="86" height="7" rx="4" fill="#43516a"/>${txt('RideShare',29,67,24,'#fff',700)}${txt(label,29,91,15,'#fbb16b',700)}<path d="M29 103h302" stroke="#3f526e"/>${inner}<rect x="131" y="531" width="98" height="4" rx="2" fill="#8596ad"/></svg>`;
 }
+
+// Crop the unchanged app view to the fields being discussed, so classroom text stays readable.
+export const PHONE_FOCUS={driver:{x:25,y:130,width:310,height:180},passenger:{x:25,y:278,width:310,height:212}};
+export function renderPhoneFocusSvg(role,scene='normal',options={}){
+ const area=PHONE_FOCUS[role];if(!area)throw Error('Unknown phone role');
+ return renderPhoneSvg(role,scene,options).replace('viewBox="0 0 360 560"',`viewBox="${area.x} ${area.y} ${area.width} ${area.height}"`).replace('width="360" height="560"',`width="${area.width}" height="${area.height}"`);
+}
+export function expandPhoneSlides(slides,kind){
+ return slides.flatMap(s=>{
+  if(!s.screens)return [s];
+  const explanation={...s};delete explanation.screens;
+  const focus={title:s.title,kicker:s.kicker,body:[],focusOnly:true,screens:{...s.screens,focus:true}};
+  return kind==='lecture'?[focus,explanation]:[explanation,focus];
+ });
+}
 export function renderPhonePair(view,compact=false){
  const scene=view.scene||'normal';
- return `<figure class="screen-checkpoint phone-checkpoint${compact?' compact':''}"><figcaption>${e(view.caption||'I njëjti RideShare në të dy rolet')}</figcaption><div class="role-screens">${['driver','passenger'].map(role=>`<div class="role-screen ${role}" aria-label="${role==='driver'?'Ekrani i shoferit':'Ekrani i udhëtarit'}"><div class="rs-phone">${renderPhoneSvg(role,scene)}</div>${view[role]?.status?`<p class="phone-context">${e(view[role].status)}</p>`:''}</div>`).join('')}</div><p class="screen-rule">${e(view.rule||'Pamje ilustruese të demonstrimit. Krahaso gjendjen me projektin tënd.')}</p></figure>`;
+ return `<figure class="screen-checkpoint phone-checkpoint phone-focus${compact?' compact':''}"><figcaption>${e(view.caption||'Krahaso ekranet e RideShare')}</figcaption><div class="role-screens">${['driver','passenger'].map(role=>`<div class="role-screen ${role}" aria-label="${role==='driver'?'Ekrani i shoferit':'Ekrani i udhëtarit'}"><p class="phone-role-title">${role==='driver'?'Shoferi · Dritoni':'Udhëtari · Arta'}</p><div class="rs-phone focus-view">${renderPhoneFocusSvg(role,scene)}</div>${view[role]?.status?`<p class="phone-context">${e(view[role].status)}</p>`:''}</div>`).join('')}</div><p class="screen-rule">${compact?'Pamje e zmadhuar nga aplikacioni. Përdor shigjetën për të vazhduar.':e(view.rule||'Pamje e zmadhuar nga aplikacioni. Krahaso gjendjen me projektin tënd.')}</p></figure>`;
 }

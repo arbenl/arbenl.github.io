@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {execFileSync} from 'node:child_process';
-import {renderPhoneSvg} from '../materials/week-07/phone-ui.mjs';
+import {renderPhoneFocusSvg,expandPhoneSlides} from '../materials/week-07/phone-ui.mjs';
 import {validateSlideQuestions} from './week05-slide-contract.mjs';
 const root=process.cwd(),work=process.env.WEEK07_BUILD_DIR,skill=process.env.SKILL_DIR;
 if(!path.isAbsolute(work||''))throw Error('Use a fresh private WEEK07_BUILD_DIR.');
@@ -14,7 +14,7 @@ const ref=await PresentationFile.importPptx(await FileBlob.load(root+'/lendet/20
 for(const i of [0,2,9]){const png=await ref.export({slide:ref.slides.items[i],format:'png',scale:1});await fs.writeFile(work+'/reference-'+i+'.png',new Uint8Array(await png.arrayBuffer()));}
 const logo=await fs.readFile(root+'/img/aab_logo_white.png');
 for(const kind of (process.env.WEEK07_BUILD_KIND || 'lecture,lab').split(',')){
- const data=JSON.parse(await fs.readFile(root+'/materials/week-07/'+kind+'-slides.json','utf8'));validateSlideQuestions(data,kind);
+ const sourceData=JSON.parse(await fs.readFile(root+'/materials/week-07/'+kind+'-slides.json','utf8'));validateSlideQuestions(sourceData,kind);const data=expandPhoneSlides(sourceData,kind);
  const p=Presentation.create({slideSize:{width:1280,height:720}});
  function text(s,value,x,y,w,h,size=26,color='#edf2ff',bold=false){const o=s.shapes.add({geometry:'textbox',position:{left:x,top:y,width:w,height:h},fill:'none',line:{fill:'none',width:0}});o.text=value;o.text.style={typeface:'Arial',fontSize:size,color,bold,autoFit:'none'};return o;}
  for(const [i,d]of data.entries()){
@@ -22,16 +22,15 @@ for(const kind of (process.env.WEEK07_BUILD_KIND || 'lecture,lab').split(',')){
   if(i===0)s.images.add({blob:logo,contentType:'image/png',fit:'contain',alt:'Kolegji AAB',position:{left:1090,top:80,width:125,height:55}});
   text(s,d.title,64,88,i===0?1000:1150,105,42,'#ffffff',true);
   if(d.screens){
-   text(s,d.body.join('\n\n'),64,205,560,d.quiz?145:210,24);
    for(const[j,role]of ['driver','passenger'].entries()){
-    const svg=renderPhoneSvg(role,d.screens.scene||'normal');
-    const png=await sharp(Buffer.from(svg)).resize(720,1120).png().toBuffer();
+    const svg=renderPhoneFocusSvg(role,d.screens.scene||'normal');
+    const h=role==='driver'?180:212;const png=await sharp(Buffer.from(svg)).resize(1240,h*4).png().toBuffer();
     await fs.mkdir(work+'/phone-images',{recursive:true});await fs.writeFile(work+'/phone-images/'+kind+'-'+(i+1)+'-'+role+'.png',png);
-    s.images.add({blob:png,contentType:'image/png',alt:role==='driver'?'Ekrani i shoferit':'Ekrani i udhëtarit',position:{left:665+j*280,top:205,width:230,height:358}});
+    const x=64+j*600;text(s,j?'UDHËTARI · ARTA':'SHOFERI · DRITONI',x,192,510,42,28,'#fdba74',true);
+    s.images.add({blob:png,contentType:'image/png',alt:role==='driver'?'Ekrani i shoferit, i zmadhuar':'Ekrani i udhëtarit, i zmadhuar',position:{left:x,top:249,width:500,height:500*h/310}});
+    if(d.screens[role]?.status)text(s,d.screens[role].status,x,605,520,56,25,'#c8d3e6');
    }
-   if(d.quiz){text(s,d.quiz.question,64,375,560,64,25,'#fdba74',true);text(s,d.quiz.options.map((o,j)=>String.fromCharCode(65+j)+' · '+o).join('\n'),64,451,560,145,23);text(s,'Votoni dhe diskutoni arsyen përpara përgjigjes.',64,650,1150,32,22,'#fdba74');}
-   else if(d.question){text(s,d.question,64,570,1150,40,24,'#fdba74',true);text(s,d.answer,64,620,1150,76,22,'#b8eddb');}
-   else {text(s,d.screens.driver?.status||'I njëjti RideShare si në demonstrim.',64,462,540,60,23,'#fdba74',true);text(s,d.screens.passenger?.status||'',64,530,540,60,23,'#b8eddb');text(s,d.screens.rule,64,625,1150,58,20,'#c8d3e6');}
+   text(s,'Pamje e zmadhuar nga aplikacioni. Përdor shigjetën për të vazhduar.',64,677,1150,30,21,'#c8d3e6');
   }else if(d.simulation){
    text(s,'PUBLIKIMI I KODIT',64,205,1150,30,18,'#fdba74',true);
    text(s,'Git në kompjuter   →   GitHub   →   Vercel',64,246,1150,60,32);

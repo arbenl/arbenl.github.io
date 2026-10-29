@@ -33,7 +33,7 @@ test('week 7 lecture votes have explanations and lab asks for genuine work rathe
 test('week 7 student downloads match final slides, links and manifest without speaker notes',async()=>{
  const {createHash}=await import('node:crypto');const {execFileSync}=await import('node:child_process');const manifest=JSON.parse(await readFile('materials/manifest.json','utf8'));
  const publication=JSON.parse(await readFile('materials/week-07/publication.json','utf8'));
- const decks=[['lecture7','ligjerates',18],...(publication.labsPublished?[['lab7','ushtrimeve',12]]:[])];
+ const decks=[['lecture7','ligjerates',22],...(publication.labsPublished?[['lab7','ushtrimeve',24]]:[])];
  if(!publication.labsPublished)assert.equal(manifest.lab7,undefined);
  for(const[key,kind,count]of decks){
   const item=manifest[key];assert.equal(item.slides,count);assert.equal(createHash('sha256').update(await readFile(item.file)).digest('hex'),item.sha256);
@@ -43,7 +43,7 @@ test('week 7 student downloads match final slides, links and manifest without sp
  }
 });
 test('week 7 phone scenes share one deterministic view for the demo and teaching material',async()=>{
- const {renderPhoneSvg,renderPhonePair,PHONE_HITS}=await import('../materials/week-07/phone-ui.mjs');
+ const {renderPhoneSvg,renderPhoneFocusSvg,renderPhonePair,expandPhoneSlides,PHONE_HITS}=await import('../materials/week-07/phone-ui.mjs');
  const normal=renderPhoneSvg('passenger');assert.equal(normal,renderPhoneSvg('passenger','normal'));assert.ok(normal.includes('Dritoni'));assert.ok(normal.includes('08:15'));assert.ok(normal.includes('Provo kërkesën'));
  assert.ok(renderPhoneSvg('passenger','mismatch').includes('08:40'));
  assert.ok(renderPhoneSvg('passenger','pa-vende').includes('Nuk ka vende të lira'));
@@ -51,6 +51,7 @@ test('week 7 phone scenes share one deterministic view for the demo and teaching
  assert.ok(renderPhoneSvg('passenger','offline').includes('Kopja mund të jetë e vjetër'));
  assert.ok(renderPhoneSvg('passenger','pending').includes('Pa rezervim real ose njoftim te shoferi'));
  assert.throws(()=>renderPhoneSvg('unknown'));assert.equal(PHONE_HITS.trips.length,3);
- const pair=renderPhonePair({scene:'normal',caption:'Ekranet',rule:'Krahaso'});assert.ok(pair.includes(renderPhoneSvg('driver')));assert.ok(pair.includes(normal));
- const renderer=await readFile('scripts/build-week07-presentations.mjs','utf8');assert.ok(renderer.includes('renderPhoneSvg(role,d.screens.scene'));
+ const pair=renderPhonePair({scene:'normal',caption:'Ekranet',rule:'Krahaso'});assert.ok(pair.includes(renderPhoneFocusSvg('driver')));assert.ok(pair.includes(renderPhoneFocusSvg('passenger')));
+ assert.equal(expandPhoneSlides([{title:'A',body:[],screens:{scene:'normal'}}],'lecture').length,2);
+ const renderer=await readFile('scripts/build-week07-presentations.mjs','utf8');assert.ok(renderer.includes('renderPhoneFocusSvg(role,d.screens.scene'));
 });
