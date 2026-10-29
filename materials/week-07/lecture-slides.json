@@ -77,6 +77,11 @@
       ],
       "correct": 1,
       "explanation": "I njëjti ID mund të vijë nga lexime ose kopje të ndryshme. Gjej burimin para se të mbulosh ndryshimin me tekst."
+    },
+    "screens": {
+      "scene": "mismatch",
+      "caption": "RideShare · e njëjta ndërfaqe si në demonstrim",
+      "rule": "Pamjet tregojnë gjendjen e aplikacionit. Votoni për arsyen dhe diskutoni provën."
     }
   },
   {
@@ -178,6 +183,11 @@
       ],
       "correct": 2,
       "explanation": "Mesazhi në ekran tregon simulimin. Pranimi i shoferit dhe ruajtja reale kërkojnë funksione të tjera."
+    },
+    "screens": {
+      "scene": "pending",
+      "caption": "RideShare · e njëjta ndërfaqe si në demonstrim",
+      "rule": "Pamjet tregojnë gjendjen e aplikacionit. Votoni për arsyen dhe diskutoni provën."
     }
   },
   {
@@ -254,6 +264,11 @@
       ],
       "correct": 1,
       "explanation": "navigator.onLine nuk provon që serveri përgjigjet. Kopja shërben për lexim dhe nuk konfirmon vendet aktuale."
+    },
+    "screens": {
+      "scene": "offline",
+      "caption": "RideShare · e njëjta ndërfaqe si në demonstrim",
+      "rule": "Pamjet tregojnë gjendjen e aplikacionit. Votoni për arsyen dhe diskutoni provën."
     }
   },
   {
@@ -352,6 +367,11 @@
       ],
       "correct": 2,
       "explanation": "Fshehja e butonit nuk e mbron veprimin. Serveri verifikon sesionin dhe pronësinë përpara ndryshimit."
+    },
+    "screens": {
+      "scene": "normal",
+      "caption": "RideShare · e njëjta ndërfaqe si në demonstrim",
+      "rule": "Pamjet tregojnë gjendjen e aplikacionit. Votoni për arsyen dhe diskutoni provën."
     }
   },
   {

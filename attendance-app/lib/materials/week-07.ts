@@ -3,7 +3,7 @@ import encrypted from "../../private-materials/week-07.encrypted.json";
 
 export const privateMaterialNames = [
   "ushtrimet.html", "prezantimi-ushtrimeve.html", "java-07-model.md",
-  "week-07.css", "week-07.js", "week-07-model.mjs",
+  "week-07.css", "week-07.js", "week-07-model.mjs", "phone-ui.mjs",
   "ushtrimet-07-kontrolli-mvp-rideshare-2026.pptx",
 ] as const;
 

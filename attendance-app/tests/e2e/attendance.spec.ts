@@ -266,7 +266,7 @@ for (const viewport of [
 
 test("private week 7 teacher materials enforce access on every resource",async({page})=>{
  const base="/api/staff/materials/week-07/";
- const resources=["ushtrimet.html","prezantimi-ushtrimeve.html","java-07-model.md","week-07.js","week-07-model.mjs","week-07.css","ushtrimet-07-kontrolli-mvp-rideshare-2026.pptx"];
+ const resources=["ushtrimet.html","prezantimi-ushtrimeve.html","java-07-model.md","week-07.js","week-07-model.mjs","week-07.css","phone-ui.mjs","ushtrimet-07-kontrolli-mvp-rideshare-2026.pptx"];
  await page.goto("/staff/materials/week-07");await expect(page.getByRole("heading",{name:"Materialet hapen vetëm nga profesori",exact:true})).toBeVisible();
  for(const file of resources){const response=await page.request.get(base+file);expect(response.status()).toBe(401);expect(response.headers()["cache-control"]).toContain("no-store");}
  await signIn(page,"studentOne");
@@ -274,7 +274,7 @@ test("private week 7 teacher materials enforce access on every resource",async({
  await signIn(page,"professor");expect((await api(page,"/api/admin/bootstrap","POST")).status).toBe(201);
  await page.goto("/staff/materials/week-07");await expect(page.getByRole("heading",{name:"Java 7 · Ushtrimet",exact:true})).toBeVisible();await expect(page.locator("#permbajtja-kryesore")).toHaveCount(1);
  if(!process.env.MOBILE_MATERIALS_KEY){expect((await api(page,base+resources[0])).status).toBe(503);return;}
- const response=await page.evaluate(async path=>{const r=await fetch(path);const digest=await crypto.subtle.digest("SHA-256",await r.arrayBuffer());return {status:r.status,cache:r.headers.get("cache-control"),sha:[...new Uint8Array(digest)].map(n=>n.toString(16).padStart(2,"0")).join("")}},base+"ushtrimet-07-kontrolli-mvp-rideshare-2026.pptx");expect(response.status).toBe(200);expect(response.cache).toContain("private");expect(response.sha).toBe("831b87f83907a4d835c7b1ae3da62a8b4d2c9dbcc61044d654e21edd2282be1d");
+ const response=await page.evaluate(async path=>{const r=await fetch(path);const digest=await crypto.subtle.digest("SHA-256",await r.arrayBuffer());return {status:r.status,cache:r.headers.get("cache-control"),sha:[...new Uint8Array(digest)].map(n=>n.toString(16).padStart(2,"0")).join("")}},base+"ushtrimet-07-kontrolli-mvp-rideshare-2026.pptx");expect(response.status).toBe(200);expect(response.cache).toContain("private");expect(response.sha).toBe("fb266a338b2f63da707871bc3898b0a0d04148ba22cbd1ea91e987d2c089f4a5");
  const errors:string[]=[];page.on("pageerror",e=>errors.push(e.message));
  await page.getByRole("link",{name:"Hap udhëzimin e plotë · 90 minuta →",exact:true}).click();
  await expect(page.getByRole("heading",{name:"Provo, korrigjo dhe shpjego RideShare-in tënd",exact:true})).toBeVisible();await expect(page.locator(".screen-checkpoint")).toHaveCount(6);await expect(page.locator(".role-screen.driver")).toHaveCount(6);await expect(page.locator(".role-screen.passenger")).toHaveCount(6);await expect(page.getByRole("link",{name:"Shiko demonstrimin mësimor",exact:true})).toHaveAttribute("href","https://arbenl.github.io/lendet/2026-2027/mobile/java-07/demonstrimi.html");

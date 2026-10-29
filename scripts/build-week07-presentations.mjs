@@ -2,9 +2,11 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {execFileSync} from 'node:child_process';
+import {renderPhoneSvg} from '../materials/week-07/phone-ui.mjs';
 import {validateSlideQuestions} from './week05-slide-contract.mjs';
 const root=process.cwd(),work=process.env.WEEK07_BUILD_DIR,skill=process.env.SKILL_DIR;
 if(!path.isAbsolute(work||''))throw Error('Use a fresh private WEEK07_BUILD_DIR.');
+const {default:sharp}=await import(pathToFileURL(path.join(process.env.RUNTIME_NODE_MODULES,'sharp/dist/index.mjs')));
 const {Presentation,PresentationFile,FileBlob}=await import(pathToFileURL(path.join(process.env.RUNTIME_NODE_MODULES,'@oai/artifact-tool/dist/artifact_tool.mjs')));
 const {finalizePresentation}=await import(pathToFileURL(path.join(skill,'container_tools/artifact_tool_utils.mjs')));
 await fs.mkdir(work+'/output',{recursive:true});
@@ -20,19 +22,16 @@ for(const kind of (process.env.WEEK07_BUILD_KIND || 'lecture,lab').split(',')){
   if(i===0)s.images.add({blob:logo,contentType:'image/png',fit:'contain',alt:'Kolegji AAB',position:{left:1090,top:80,width:125,height:55}});
   text(s,d.title,64,88,i===0?1000:1150,105,42,'#ffffff',true);
   if(d.screens){
-   function rect(x,y,w,h,fill){return s.shapes.add({geometry:'rect',position:{left:x,top:y,width:w,height:h},fill,line:{fill:'#65748f',width:1}});}
-   text(s,d.body.join('\n'),64,195,1150,90,24);
+   text(s,d.body.join('\n\n'),64,205,560,d.quiz?145:210,24);
    for(const[j,role]of ['driver','passenger'].entries()){
-    const x=64+j*596,card=d.screens[role];rect(x,303,554,236,'#152238');
-    s.images.add({blob:await fs.readFile(root+'/assets/week06-icons/'+(j?'smartphone':'car')+'.png'),contentType:'image/png',alt:j?'Udhëtari':'Shoferi',position:{left:x+18,top:318,width:34,height:34}});
-    text(s,j?'UDHËTARI · ARTA':'SHOFERI · DRITONI',x+66,320,460,34,22,'#fdba74',true);
-    text(s,card.view,x+20,367,514,32,21,'#c8d3e6');
-    text(s,card.title,x+20,405,514,45,29,'#fff',true);
-    text(s,card.detail,x+20,458,514,32,22);
-    text(s,card.status,x+20,500,514,30,20,'#b8eddb');
+    const svg=renderPhoneSvg(role,d.screens.scene||'normal');
+    const png=await sharp(Buffer.from(svg)).resize(720,1120).png().toBuffer();
+    await fs.mkdir(work+'/phone-images',{recursive:true});await fs.writeFile(work+'/phone-images/'+kind+'-'+(i+1)+'-'+role+'.png',png);
+    s.images.add({blob:png,contentType:'image/png',alt:role==='driver'?'Ekrani i shoferit':'Ekrani i udhëtarit',position:{left:665+j*280,top:205,width:230,height:358}});
    }
-   if(d.question){text(s,d.question,64,557,1150,36,23,'#fdba74',true);text(s,d.answer,64,600,1150,66,22,'#b8eddb');}
-   else {text(s,d.screens.rule,64,565,1150,60,21,'#c8d3e6');if(d.href)text(s,'Hapat e plotë: java-07/ushtrimet.html',64,645,1150,34,22,'#fdba74');}
+   if(d.quiz){text(s,d.quiz.question,64,375,560,64,25,'#fdba74',true);text(s,d.quiz.options.map((o,j)=>String.fromCharCode(65+j)+' · '+o).join('\n'),64,451,560,145,23);text(s,'Votoni dhe diskutoni arsyen përpara përgjigjes.',64,650,1150,32,22,'#fdba74');}
+   else if(d.question){text(s,d.question,64,570,1150,40,24,'#fdba74',true);text(s,d.answer,64,620,1150,76,22,'#b8eddb');}
+   else {text(s,d.screens.driver?.status||'I njëjti RideShare si në demonstrim.',64,462,540,60,23,'#fdba74',true);text(s,d.screens.passenger?.status||'',64,530,540,60,23,'#b8eddb');text(s,d.screens.rule,64,625,1150,58,20,'#c8d3e6');}
   }else if(d.simulation){
    text(s,'PUBLIKIMI I KODIT',64,205,1150,30,18,'#fdba74',true);
    text(s,'Git në kompjuter   →   GitHub   →   Vercel',64,246,1150,60,32);

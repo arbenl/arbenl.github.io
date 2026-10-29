@@ -21,3 +21,24 @@
 .projector .has-screens .explanations p{font-size:21px;margin:8px 0}
 .projector .has-screens .screen-checkpoint{margin:10px 0;padding:10px 16px}
 .projector .has-screens .mock-screen p{margin:8px 0}
+/* The same SVG view supplies the live demo and all teaching phone illustrations. */
+.rs-phone{position:relative;max-width:290px;width:100%;margin:0 auto;line-height:0;isolation:isolate}
+.rs-phone>svg{display:block;width:100%;height:auto;max-width:none}
+.phone-checkpoint .role-screens{gap:24px;align-items:start}.phone-context{font-size:17px;line-height:1.4;margin:12px auto 0;max-width:290px;color:#cbd8ea}
+.phone-checkpoint .role-screen{border:0;padding:0;margin:0;background:none}
+.phone-hit{position:absolute!important;z-index:2;margin:0!important;padding:0!important;border:0!important;border-radius:8px!important;background:transparent!important;color:transparent!important;font-size:0!important;line-height:0!important;min-width:0;min-height:0;cursor:pointer;overflow:hidden}
+.phone-hit:focus-visible{outline:3px solid #fff!important;outline-offset:2px}.phone-hit:disabled{cursor:not-allowed;opacity:1}
+.demo-phone-stage{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;max-width:760px;margin:30px auto}.demo-phone-stage .rs-phone{max-width:340px}.demo-semantics{margin:24px 0}
+.projector .has-screens .phone-checkpoint{padding:0;border:0;background:none;margin:0}
+.projector .has-screens .phone-checkpoint>figcaption,.projector .has-screens .phone-checkpoint .screen-rule,.projector .has-screens .phone-context{display:none}
+.projector .has-screens .phone-checkpoint .rs-phone{max-width:176px}
+.projector .has-screens.has-vote .phone-checkpoint{float:right;width:42%;margin-left:22px}
+.projector .has-screens.has-vote .explanations{max-width:55%}
+.projector .has-screens.has-vote .quiz{width:53%;box-sizing:border-box}
+.projector .has-screens.has-vote .quiz button[data-correct]{font-size:18px;padding:7px 9px}
+.projector .has-screens.has-vote .quiz legend{font-size:20px}.projector .has-screens.has-vote .quiz-answer{font-size:19px}
+.projector .has-screens:not(.has-vote) .phone-checkpoint .role-screens{gap:18px}.projector .has-screens:not(.has-vote) .phone-checkpoint .rs-phone{max-width:155px}
+.projector .has-screens:not(.has-vote) .reveal-question{margin:8px 0;font-size:21px}.projector .has-screens:not(.has-vote) .answer{font-size:19px;margin:8px 0;padding:10px}
+.projector .has-screens .sources{clear:both}.has-screens::after{content:'';display:block;clear:both}
+@media(max-width:600px){.demo-phone-stage{grid-template-columns:1fr}.phone-checkpoint .role-screens{grid-template-columns:1fr}.rs-phone{max-width:280px}.projector .has-screens.has-vote .phone-checkpoint{float:none;width:100%;margin:0}.projector .has-screens.has-vote .explanations{max-width:none}.projector .has-screens.has-vote .quiz{width:100%}.projector .has-screens .phone-checkpoint .role-screens{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
+@media(min-width:768px){.projector .has-screens.has-vote .explanations p{font-size:20px;margin:6px 0}.projector .has-screens.has-vote .quiz{margin:9px 0;padding:8px 12px}.projector .has-screens.has-vote .quiz-answer{font-size:18px;padding:10px;margin:8px 0}.projector .has-screens.has-vote .vote-status{font-size:16px;margin:6px 0}.projector .has-screens.has-vote .phone-checkpoint .rs-phone{max-width:200px}}

@@ -315,8 +315,8 @@ for(const width of [320,375,1280]){
   const downloading=page.waitForEvent('download');await page.getByRole('button',{name:'Shkarko raportin tim · java-07.md',exact:true}).click();const download=await downloading;expect(download.suggestedFilename()).toBe('java-07.md');const report=await readFile((await download.path())!,'utf8');expect(report).toContain('Kodi: P7-974');expect(report).toContain('GitHub: arta');expect(report).toContain('[PLOTËSO]');
   await page.getByLabel('Emri publik në GitHub',{exact:true}).fill('not@email.test');await page.getByRole('button',{name:'Gjenero rastin tim',exact:true}).click();await expect(page.locator('#case-result')).toBeHidden();await expect(page.locator('#case-status')).toContainText('pa @');
   await expect(page.getByRole('link',{name:'Dorëzo punën · Java 7',exact:true})).toHaveAttribute('href',/week=Java%207/);expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
-  await page.goto(origin+base+'demonstrimi.html');await expect(page.locator('#trip-list button')).toHaveCount(3);await page.getByRole('button',{name:'Provo kërkesën · simulim',exact:true}).click();await expect(page.locator('#request-result')).toContainText('Nuk u ruajt');
-  await page.locator('#trip-list button').first().click();await expect(page.locator('#trip-driver')).toHaveText('Dreni');
+  await page.goto(origin+base+'demonstrimi.html');await expect(page.locator('[data-phone-role=passenger] button[aria-pressed]')).toHaveCount(3);await page.getByRole('button',{name:'Provo kërkesën · simulim',exact:true}).click();await expect(page.locator('#request-result')).toContainText('Nuk u ruajt');
+  await page.locator('[data-phone-role=passenger] button[aria-pressed]').first().click();await expect(page.locator('#trip-driver')).toHaveText('Dreni');
   for(const scenario of ['pa-vende','id-gabuar','offline','rikthimi']){
    await page.getByLabel('Skenari',{exact:true}).selectOption(scenario);
    if(scenario==='id-gabuar'){await expect(page.locator('#demo-details')).toBeHidden();await expect(page.locator('#demo-message')).toContainText('nuk u gjet');}else await expect(page.getByRole('button',{name:'Provo kërkesën · simulim',exact:true})).toBeDisabled();
@@ -324,7 +324,7 @@ for(const width of [320,375,1280]){
   }
   await page.emulateMedia({reducedMotion:'reduce'});await page.getByRole('button',{name:'Luaj animacionin',exact:true}).click();await expect(page.locator('#flow-text')).toContainText('reduktuar');await page.emulateMedia({reducedMotion:'no-preference'});await page.getByRole('button',{name:'Luaj animacionin',exact:true}).click();await expect(page.getByRole('button',{name:'Ndalo animacionin',exact:true})).toHaveAttribute('aria-pressed','true');await page.getByRole('button',{name:'Ndalo animacionin',exact:true}).click();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);await page.screenshot({path:testInfo.outputPath(`week07-demo-${width}.png`)});
-  }else{await page.goto(origin+base+'ushtrimet.html');await expect(page.getByRole('heading',{name:'Ushtrimet hapen nesër',exact:true})).toBeVisible();await expect(page.locator('#case-form')).toHaveCount(0);expect((await page.request.get(origin+'/lendet/2026-2027/mobile/lectures/ushtrimet-07-kontrolli-mvp-rideshare-2026.pptx')).status()).toBe(404);}
+  }else{await page.goto(origin+base+'ushtrimet.html');await expect(page.getByRole('heading',{name:'Ushtrimet hapen më 29 tetor, në 14:40',exact:true})).toBeVisible();await expect(page.locator('#case-form')).toHaveCount(0);expect((await page.request.get(origin+'/lendet/2026-2027/mobile/lectures/ushtrimet-07-kontrolli-mvp-rideshare-2026.pptx')).status()).toBe(404);}
   for(const [kind,total]of [['ligjerates',18],['ushtrimeve',12]] as const){
    if(!published&&kind==='ushtrimeve')continue;
    await page.goto(origin+base+`prezantimi-${kind}.html`);if(width<768)await page.getByRole('button',{name:'Hap në projektor',exact:true}).click();
@@ -339,3 +339,13 @@ for(const width of [320,375,1280]){
   expect(errors).toEqual([]);
  });
 }
+for(const width of [375,1280])test(`week 7 shared phone demo stays interactive at ${width}px`,async({page})=>{
+ await page.setViewportSize({width,height:850});const base='/lendet/2026-2027/mobile/java-07/';
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(origin+base+'demonstrimi.html');
+ await expect(page.locator('.rs-phone svg')).toHaveCount(2);await expect(page.locator('[data-phone-role=passenger] button[aria-pressed]')).toHaveCount(3);
+ await page.getByRole('button',{name:'Provo kërkesën · simulim',exact:true}).click();await expect(page.locator('#request-result')).toContainText('Nuk u ruajt');await expect(page.locator('[data-phone-role=passenger] svg')).toHaveAttribute('aria-label',/pending/);
+ await page.locator('[data-phone-role=passenger] button[aria-pressed]').first().click();await expect(page.locator('#trip-driver')).toHaveText('Dreni');
+ for(const scene of ['pa-vende','offline','rikthimi']){await page.getByLabel('Skenari',{exact:true}).selectOption(scene);await expect(page.getByRole('button',{name:'Provo kërkesën · simulim',exact:true})).toBeDisabled();}
+ await page.getByLabel('Skenari',{exact:true}).selectOption('id-gabuar');await expect(page.locator('#demo-details')).toBeHidden();await page.getByRole('button',{name:'Kthehu te lista',exact:true}).click();await expect(page.locator('#trip-id')).toHaveText('2');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);expect(errors).toEqual([]);
+});

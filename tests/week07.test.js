@@ -42,3 +42,15 @@ test('week 7 student downloads match final slides, links and manifest without sp
   const hub=await readFile('lendet/2026-2027/mobile/java-07/index.html','utf8');assert.ok(hub.includes(item.file.split('/').at(-1)));
  }
 });
+test('week 7 phone scenes share one deterministic view for the demo and teaching material',async()=>{
+ const {renderPhoneSvg,renderPhonePair,PHONE_HITS}=await import('../materials/week-07/phone-ui.mjs');
+ const normal=renderPhoneSvg('passenger');assert.equal(normal,renderPhoneSvg('passenger','normal'));assert.ok(normal.includes('Dritoni'));assert.ok(normal.includes('08:15'));assert.ok(normal.includes('Provo kërkesën'));
+ assert.ok(renderPhoneSvg('passenger','mismatch').includes('08:40'));
+ assert.ok(renderPhoneSvg('passenger','pa-vende').includes('Nuk ka vende të lira'));
+ assert.ok(renderPhoneSvg('passenger','id-gabuar').includes('Udhëtimi nuk u gjet'));
+ assert.ok(renderPhoneSvg('passenger','offline').includes('Kopja mund të jetë e vjetër'));
+ assert.ok(renderPhoneSvg('passenger','pending').includes('Pa rezervim real ose njoftim te shoferi'));
+ assert.throws(()=>renderPhoneSvg('unknown'));assert.equal(PHONE_HITS.trips.length,3);
+ const pair=renderPhonePair({scene:'normal',caption:'Ekranet',rule:'Krahaso'});assert.ok(pair.includes(renderPhoneSvg('driver')));assert.ok(pair.includes(normal));
+ const renderer=await readFile('scripts/build-week07-presentations.mjs','utf8');assert.ok(renderer.includes('renderPhoneSvg(role,d.screens.scene'));
+});
