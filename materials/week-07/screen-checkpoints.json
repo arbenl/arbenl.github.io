@@ -1,0 +1,104 @@
+[
+  {
+    "caption": "Pas hapit 1 · Rasti 1 · Lista dhe detajet · pamje orientuese",
+    "driver": {
+      "view": "Udhëtimi im",
+      "title": "Ferizaj → AAB",
+      "detail": "ID 2 · 08:15 · 2 vende",
+      "status": "Burimi i të dhënave të provës"
+    },
+    "passenger": {
+      "view": "Lista dhe detajet",
+      "title": "Dritoni · Ferizaj → AAB",
+      "detail": "ID 2 · 08:15 · 2 vende",
+      "status": "I njëjti ID dhe të njëjtat vlera"
+    },
+    "rule": "Shembull ilustrues. Përdor vlerat e rastit tënd. Nëse lista dhe detajet ndryshojnë, shëno këtë si problem.",
+    "scene": "normal"
+  },
+  {
+    "caption": "Pas hapit 2 · Rasti 2 · Pa vende · pamje orientuese",
+    "driver": {
+      "view": "Rasti kufitar",
+      "title": "Udhëtimi im · 0 vende",
+      "detail": "Rreshti i provës ka 0 vende.",
+      "status": "Parashikim, jo ndryshim i ri"
+    },
+    "passenger": {
+      "view": "Rezultati i pritur",
+      "title": "Nuk ka vende të lira",
+      "detail": "Mund të kthehem te lista.",
+      "status": "Asnjë premtim për rezervim"
+    },
+    "rule": "Shkruaj pritshmërinë, pastaj ruaj commit-in Para. Në këtë hap nuk kërkohet që aplikacioni ta shfaqë tashmë saktë këtë gjendje.",
+    "scene": "pa-vende"
+  },
+  {
+    "caption": "Pas hapit 3 · Rasti 2 · Pa vende · pamje orientuese",
+    "driver": {
+      "view": "Burimi i testimit",
+      "title": "Udhëtimi im · 0 vende",
+      "detail": "I njëjti ID. Vendet mbeten 0.",
+      "status": "Korrigjimi nuk shpik vende të lira"
+    },
+    "passenger": {
+      "view": "Detajet",
+      "title": "Nuk ka vende të lira",
+      "detail": "Mesazh i qartë dhe kthim te lista.",
+      "status": "Kërkesa nuk premton rezervim"
+    },
+    "rule": "Ky është një shembull i një korrigjimi të mundshëm. Nëse zgjodhe ID të panjohur, pritet “Udhëtimi nuk u gjet”, pa kartë të gabuar. Provo vetëm problemin që zgjodhe.",
+    "scene": "pa-vende"
+  },
+  {
+    "caption": "Pas hapit 4 · Rasti 4 · Kopja pa internet · pamje orientuese",
+    "driver": {
+      "view": "Rasti tjetër",
+      "title": "Ora e provës · 08:25",
+      "detail": "I njëjti ID, vetëm ora ndryshon.",
+      "status": "Ruaje në burim, nëse rrjedha ekziston"
+    },
+    "passenger": {
+      "view": "Pas rifreskimit online",
+      "title": "Dritoni · 08:25",
+      "detail": "Lista dhe detajet tregojnë orën e re.",
+      "status": "Offline? Trego se kopja mund të jetë e vjetër"
+    },
+    "rule": "Shembulli në demonstrim: pas përgjigjes së re, ora është 08:25 dhe vendet janë 0. Në provën tënde ndrysho vetëm një vlerë, sipas gjeneratorit. Krahaso listën me detajet pas rifreskimit online.",
+    "scene": "rikthimi"
+  },
+  {
+    "caption": "Pas hapit 5 · Rasti 4 · Kopja pa internet · pamje orientuese",
+    "driver": {
+      "view": "Aplikacioni lokal",
+      "title": "Gjendja e fundit e provës",
+      "detail": "Vlerat e testimit mbeten si i le.",
+      "status": "Commit dhe Push ruajnë kodin"
+    },
+    "passenger": {
+      "view": "Aplikacioni lokal",
+      "title": "Korrigjimi që sapo provove",
+      "detail": "Lista dhe detajet ruajnë sjelljen e provuar.",
+      "status": "Versioni online pret publikimin e suksesshëm"
+    },
+    "rule": "Në GitHub shfaqen dy commit-e të ndryshme Para/Pas dhe raporti final java-07.md. Push nuk garanton publikim të suksesshëm në Vercel dhe nuk dërgon njoftim te përdoruesit.",
+    "scene": "rikthimi"
+  },
+  {
+    "caption": "Pas hapit 6 · Rasti 4 · Kopja pa internet · pamje orientuese",
+    "driver": {
+      "view": "RideShare",
+      "title": "Gjendja mbetet e njëjtë",
+      "detail": "Dorëzimi nuk ndryshon të dhënat.",
+      "status": "Asnjë veprim i ri në aplikacion"
+    },
+    "passenger": {
+      "view": "RideShare",
+      "title": "Gjendja mbetet e njëjtë",
+      "detail": "Kontrolli nuk krijon rezervim.",
+      "status": "Rezultati i detyrës shfaqet në GitHub"
+    },
+    "rule": "Hap Issue-n: kërko komentin e botit. Nëse mungon diçka, korrigjo, bëj Commit dhe Push, pastaj shkruaj rikontrollo te i njëjti Issue. Raporto edhe provat që dështuan.",
+    "scene": "rikthimi"
+  }
+]

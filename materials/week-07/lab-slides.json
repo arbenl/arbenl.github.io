@@ -1,0 +1,505 @@
+[
+  {
+    "title": "Nga ligjërata te projekti yt",
+    "kicker": "JAVA 7 · 0–5 MIN",
+    "body": [
+      "Zgjidh një nga Rastet 1–5 të ligjëratës që mund ta provosh në projektin tënd. Rasti 6 mbetet vetëm diskutim.",
+      "Shëno dy probleme, korrigjo njërin dhe bëj tri prova. Pastaj dorëzo dhe lexo raportin në GitHub."
+    ],
+    "visual": [
+      {
+        "icon": "route",
+        "label": "Kupto rrjedhën",
+        "note": "I njëjti udhëtim në çdo ekran"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "Provo korrigjimin",
+        "note": "Hapat, pritshmëria, vëzhgimi"
+      },
+      {
+        "icon": "send",
+        "label": "Mbyll dorëzimin",
+        "note": "Raporti teknik në GitHub"
+      }
+    ]
+  },
+  {
+    "title": "Rastet e ligjëratës → zgjedhja jote",
+    "kicker": "JAVA 7 · 0–5 MIN",
+    "caseList": true,
+    "body": [
+      "Zgjidh një nga Rastet 1–5 që mund ta provosh. Nëse hyrja ose offline s’janë gati, zgjidh Rastin 1, 2 ose 3.",
+      "Nuk i realizon të gjitha rastet. Shënon dy probleme, korrigjon njërin dhe dokumenton tri prova."
+    ]
+  },
+  {
+    "title": "Çfarë dorëzon në javën 7?",
+    "kicker": "JAVA 7 · 0–5 MIN",
+    "body": [
+      "Në repository-n tënd publik: java-07.md pranë README dhe kodi Next.js me një korrigjim.",
+      "Në raport: rasti, dy probleme, tri prova, skedari dhe dy linket Para/Pas. Dorëzo linkun e repository-t te Issue i Javës 7."
+    ],
+    "visual": [
+      {
+        "icon": "hard-drive",
+        "label": "java-07.md",
+        "note": "Raporti në rrënjën e repository-t"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "Kodi yt",
+        "note": "Një korrigjim dhe dy versione"
+      },
+      {
+        "icon": "send",
+        "label": "Një Issue",
+        "note": "Java 7 dhe linku i repository-t"
+      }
+    ],
+    "href": "ushtrimet.html#cka-dorezoj",
+    "link": "Hap listën e dorëzimit"
+  },
+  {
+    "title": "Hape mjedisin e punës",
+    "kicker": "JAVA 7 · 5–10 MIN",
+    "body": [
+      "Hap projektin që ke në GitHub Desktop dhe VS Code. Për të zgjedhur rastin, shiko hartën te udhëzimi i ushtrimeve.",
+      "Nëse përdor aplikacioni/, hape terminalin aty. Ekzekuto npm run dev dhe hap adresën që shfaq terminali."
+    ],
+    "visual": [
+      {
+        "icon": "hard-drive",
+        "label": "Kodi lokal",
+        "note": "Mos puno te repository i profesorit"
+      },
+      {
+        "icon": "smartphone",
+        "label": "Shfletuesi",
+        "note": "Projekti që hape vetë"
+      }
+    ],
+    "href": "ushtrimet.html#pergatitja",
+    "link": "Hap përgatitjen",
+    "screens": {
+      "caption": "Rasti 1 · Lista dhe detajet · pamje orientuese",
+      "driver": {
+        "view": "Burimi i të dhënave",
+        "title": "Udhëtimi i provës",
+        "detail": "Mos ndrysho të dhëna reale",
+        "status": "Vetëm projekti yt"
+      },
+      "passenger": {
+        "view": "Lista dhe detajet",
+        "title": "Projekti hapet lokalisht",
+        "detail": "Hap adresën e terminalit",
+        "status": "Nëse s’nisej, kërko ndihmë"
+      },
+      "rule": "Ilustrim i rezultatit të pritur. Nuk kërkohet kopjim i dizajnit ose ekran i ri shoferi.",
+      "scene": "normal"
+    }
+  },
+  {
+    "title": "Zgjidh rastin dhe merr kodin personal",
+    "kicker": "JAVA 7 · 10–15 MIN",
+    "body": [
+      "Rasti 1–5 është skenari i ligjëratës. P7-… është kodi i të dhënave të tua të provës; nuk është numri i rastit.",
+      "Gjenero kodin nga emri publik GitHub dhe shkarko raportin. Te Skenari shkruaj numrin dhe titullin e rastit që zgjodhe."
+    ],
+    "visual": [
+      {
+        "icon": "car",
+        "label": "Kodi personal",
+        "note": "Ora dhe vendet fiktive"
+      },
+      {
+        "icon": "route",
+        "label": "ID-ja jote",
+        "note": "Mos ndrysho të dhënat e kolegut"
+      }
+    ],
+    "href": "ushtrimet.html#rasti",
+    "link": "Hap gjeneratorin e rastit",
+    "screens": {
+      "caption": "Rasti 1 · Lista dhe detajet · pamje orientuese",
+      "driver": {
+        "view": "Rreshti yt i testimit",
+        "title": "ID-ja që zgjodhe",
+        "detail": "Ora dhe vendet e rastit",
+        "status": "Pa panel të ri shoferi"
+      },
+      "passenger": {
+        "view": "Detajet e atij ID-je",
+        "title": "I njëjti udhëtim",
+        "detail": "Krahaso orën dhe vendet",
+        "status": "Vlerat nga gjeneratori"
+      },
+      "rule": "Ilustrim i rezultatit të pritur. Nuk kërkohet kopjim i dizajnit ose ekran i ri shoferi.",
+      "scene": "normal"
+    }
+  },
+  {
+    "title": "Parashikimi para kodimit",
+    "kicker": "JAVA 7 · 15–20 MIN",
+    "body": [
+      "Pa AI në këtë hap: shkruaj çfarë pret në listë, detaje dhe kur nuk ka vende. Nuk kërkohet fjali perfekte.",
+      "Ruaj java-07.md pranë README. Bëj Commit dhe Push. Kopjo linkun e këtij commit-i si Para."
+    ],
+    "visual": [
+      {
+        "icon": "circle-question-mark",
+        "label": "Parashiko",
+        "note": "Me fjalët e tua"
+      },
+      {
+        "icon": "hard-drive",
+        "label": "Ruaj bazën",
+        "note": "Para korrigjimit"
+      }
+    ],
+    "screens": {
+      "caption": "Rasti 2 · Pa vende · pamje orientuese",
+      "driver": {
+        "view": "Parashikim · 0 vende",
+        "title": "Vendet mbeten 0",
+        "detail": "Shkruaj para ndryshimit",
+        "status": "Ruaj commit-in Para"
+      },
+      "passenger": {
+        "view": "Çfarë pret të shohësh?",
+        "title": "Nuk ka vende të lira",
+        "detail": "Pa premtim për rezervim",
+        "status": "Ende vetëm pritshmëri"
+      },
+      "rule": "Ilustrim i rezultatit të pritur. Nuk kërkohet kopjim i dizajnit ose ekran i ri shoferi.",
+      "scene": "pa-vende"
+    }
+  },
+  {
+    "title": "Gjej dy probleme reale",
+    "kicker": "JAVA 7 · 20–30 MIN",
+    "body": [
+      "Te rasti që zgjodhe shëno dy probleme ose paqartësi reale. Mund të jenë në të njëjtin rast ose në një tjetër.",
+      "Korrigjo vetëm njërin. Nëse s’ke ende hyrjen ose offline, zgjidh Rastin 1, 2 ose 3 që mund ta provosh."
+    ],
+    "visual": [
+      {
+        "icon": "route",
+        "label": "Problemi 1",
+        "note": "Hapat që e përsërisin"
+      },
+      {
+        "icon": "circle-question-mark",
+        "label": "Problemi 2",
+        "note": "Pasojë për përdoruesin"
+      }
+    ],
+    "question": "A duhet ta prishësh aplikacionin për ta korrigjuar?",
+    "answer": "Jo. Puno me një problem ose paqartësi reale. Një mesazh bosh, buton pa sqarim apo kufi i patrajtuar mjafton.",
+    "screens": {
+      "caption": "Rasti 1 · Lista dhe detajet · pamje orientuese",
+      "driver": {
+        "view": "Burimi i testimit",
+        "title": "I njëjti ID dhe vlera",
+        "detail": "Ndiq problemin real",
+        "status": "Mos krijo gabim qëllimisht"
+      },
+      "passenger": {
+        "view": "Lista, detajet, kërkesa",
+        "title": "Çfarë të ngatërron?",
+        "detail": "Shëno ku dhe si ndodh",
+        "status": "Dy vëzhgime konkrete"
+      },
+      "rule": "Ilustrim i rezultatit të pritur. Nuk kërkohet kopjim i dizajnit ose ekran i ri shoferi.",
+      "scene": "id-gabuar"
+    }
+  },
+  {
+    "title": "Korrigjo vetëm njërin",
+    "kicker": "JAVA 7 · 30–45 MIN",
+    "body": [
+      "Zgjidh një skedar dhe trego çfarë bën përpara se ta ndryshosh. Shkruaj vetë ndryshimin në mjedisin tënd.",
+      "Ndihma pas parashikimit lejohet për një gabim ose shpjegim. Mos kërko një projekt të plotë. Shëno ndihmën që more."
+    ],
+    "visual": [
+      {
+        "icon": "refresh-cw",
+        "label": "Ndryshimi",
+        "note": "Një sjellje e provueshme"
+      },
+      {
+        "icon": "lock-keyhole",
+        "label": "Kufijtë",
+        "note": "Ruaj lejet dhe sekretet"
+      }
+    ],
+    "screens": {
+      "caption": "Rasti 2 · Pa vende · pamje orientuese",
+      "driver": {
+        "view": "Rasti me 0 vende",
+        "title": "Vendet mbeten 0",
+        "detail": "Korrigjo vetëm sjelljen",
+        "status": "Ruaj kontrollin e pronarit"
+      },
+      "passenger": {
+        "view": "Shembull korrigjimi",
+        "title": "Nuk ka vende të lira",
+        "detail": "Kthim i qartë te lista",
+        "status": "Pa premtim për rezervim"
+      },
+      "rule": "Ilustrim i rezultatit të pritur. Nuk kërkohet kopjim i dizajnit ose ekran i ri shoferi.",
+      "scene": "pa-vende"
+    }
+  },
+  {
+    "title": "Tri prova të shkurtra",
+    "kicker": "JAVA 7 · 45–55 MIN",
+    "body": [
+      "Prova 1: ndiq ID-në nga lista te detajet. Prova 2: përsërit problemin e rastit që korrigjove.",
+      "Prova 3: ndrysho një hyrje dhe provo sërish. Për secilën shkruaj Hapat, Pritshmëria dhe Vëzhgimi."
+    ],
+    "visual": [
+      {
+        "icon": "route",
+        "label": "Rrjedha",
+        "note": "I njëjti udhëtim"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "Korrigjimi",
+        "note": "Rezultati pas ndryshimit"
+      },
+      {
+        "icon": "circle-question-mark",
+        "label": "Hyrja e re",
+        "note": "Rezultat i parashikuar"
+      }
+    ],
+    "href": "ushtrimet.html#provat",
+    "link": "Hap tabelën e provave",
+    "screens": {
+      "caption": "Rasti 1 · Lista dhe detajet · pamje orientuese",
+      "driver": {
+        "view": "Burimi i provës",
+        "title": "ID dhe vlera të njohura",
+        "detail": "Ndrysho vetëm një hyrje",
+        "status": "Shëno çfarë ndryshove"
+      },
+      "passenger": {
+        "view": "Rezultati i provës",
+        "title": "Krahaso me parashikimin",
+        "detail": "Shëno çfarë pe realisht",
+        "status": "Raporto edhe dështimin"
+      },
+      "rule": "Ilustrim i rezultatit të pritur. Nuk kërkohet kopjim i dizajnit ose ekran i ri shoferi.",
+      "scene": "normal"
+    }
+  },
+  {
+    "title": "Ndrysho hyrjen para kolegut",
+    "kicker": "JAVA 7 · 55–65 MIN",
+    "body": [
+      "Shpjego në 60–90 sekonda skedarin dhe kushtin që ndryshove, pa AI gjatë shpjegimit.",
+      "Kolegu zgjedh një vlerë të re: 0 vende, një ID tjetër ose orë tjetër. Parashiko, provo dhe shpjego çfarë ndodhi."
+    ],
+    "visual": [
+      {
+        "icon": "circle-question-mark",
+        "label": "Kolegu pyet",
+        "note": "Po sikur kjo vlerë ndryshon?"
+      },
+      {
+        "icon": "smartphone",
+        "label": "Ti demonstron",
+        "note": "Në aplikacionin tënd"
+      }
+    ],
+    "screens": {
+      "caption": "Rasti 4 · Kopja pa internet · pamje orientuese",
+      "driver": {
+        "view": "Rasti tjetër",
+        "title": "Ora e re e provës",
+        "detail": "Shembulli i demonstrimit: 08:25",
+        "status": "Vetëm në rreshtin tënd"
+      },
+      "passenger": {
+        "view": "Pas rifreskimit online",
+        "title": "Ora e re në ekran",
+        "detail": "Lista dhe detajet përputhen",
+        "status": "Parashiko para klikimit"
+      },
+      "rule": "Ilustrim i rezultatit të pritur. Nuk kërkohet kopjim i dizajnit ose ekran i ri shoferi.",
+      "scene": "rikthimi"
+    }
+  },
+  {
+    "title": "Ruaj versionin pas korrigjimit",
+    "kicker": "JAVA 7 · 65–70 MIN",
+    "body": [
+      "Commit dhe Push i korrigjimit. Hap Commits në GitHub dhe kopjo adresën si Pas.",
+      "Plotëso raportin me Para dhe Pas. Ruaje raportin me një commit tjetër dhe bëj Push."
+    ],
+    "visual": [
+      {
+        "icon": "hard-drive",
+        "label": "Para",
+        "note": "Commit-i fillestar"
+      },
+      {
+        "icon": "refresh-cw",
+        "label": "Pas",
+        "note": "Commit-i që ka korrigjimin"
+      }
+    ],
+    "screens": {
+      "caption": "Rasti 4 · Kopja pa internet · pamje orientuese",
+      "driver": {
+        "view": "Projekti lokal",
+        "title": "Gjendja e fundit",
+        "detail": "Commit dhe Push ruajnë kodin",
+        "status": "Të dhënat nuk ndryshojnë"
+      },
+      "passenger": {
+        "view": "Projekti lokal",
+        "title": "Sjellja që sapo provove",
+        "detail": "Online pret publikimin",
+        "status": "Para / Pas / raporti final"
+      },
+      "rule": "Ilustrim i rezultatit të pritur. Nuk kërkohet kopjim i dizajnit ose ekran i ri shoferi.",
+      "scene": "rikthimi"
+    }
+  },
+  {
+    "title": "Dorëzimi në tre veprime",
+    "kicker": "JAVA 7 · 70–80 MIN",
+    "body": [
+      "1. Bëj Push në repository-n tënd. 2. Hap formularin e lëndës, zgjidh Java 7 dhe vendos linkun kryesor të repository-t.",
+      "3. Kliko Create / Submit new issue. Ruaj këtë faqe: këtu do ta lexosh komentin e github-actions[bot]."
+    ],
+    "visual": [
+      {
+        "icon": "hard-drive",
+        "label": "Ruaj",
+        "note": "Kodi dhe raporti"
+      },
+      {
+        "icon": "send",
+        "label": "Dorëzo",
+        "note": "Linku i repository-t"
+      },
+      {
+        "icon": "circle-question-mark",
+        "label": "Lexo",
+        "note": "Përgjigjja në të njëjtën faqe"
+      }
+    ],
+    "href": "https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues/new?template=mobile-submission.yml&week=Java%207",
+    "link": "Hap formularin · Java 7",
+    "screens": {
+      "caption": "Rasti 4 · Kopja pa internet · pamje orientuese",
+      "driver": {
+        "view": "RideShare",
+        "title": "Asnjë veprim i ri",
+        "detail": "Dorëzimi nuk ndryshon app-in",
+        "status": "Kodi është në GitHub"
+      },
+      "passenger": {
+        "view": "RideShare",
+        "title": "Asnjë veprim i ri",
+        "detail": "Hap Issue-n e Javës 7",
+        "status": "Përgjigjja vjen nga boti"
+      },
+      "rule": "Ilustrim i rezultatit të pritur. Nuk kërkohet kopjim i dizajnit ose ekran i ri shoferi.",
+      "scene": "rikthimi"
+    }
+  },
+  {
+    "title": "Ku e shoh GREEN apo RED?",
+    "kicker": "JAVA 7 · 80–85 MIN",
+    "body": [
+      "Hap Issue-n që krijove për Javën 7. Gjej komentin e github-actions[bot]: Kontrolli automatik i dorëzimit.",
+      "Shembuj ilustrues të raportit. Rezultatin tënd e lexon në Issue, në çdo rresht me ✅ ose ❌."
+    ],
+    "feedback": true,
+    "href": "https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues?q=is%3Aissue%20author%3A%40me%20%22Java%207%22%20in%3Abody",
+    "link": "Gjej dorëzimin tim · Java 7"
+  },
+  {
+    "title": "Nëse kam një kontroll të kuq, çfarë bëj?",
+    "kicker": "JAVA 7 · 80–87 MIN",
+    "body": [
+      "Lexo rreshtin me ❌ në raportin e botit. Korrigjo atë që kërkon, pastaj Commit dhe Push.",
+      "Te i njëjti Issue shkruaj rikontrollo. Rifresko dhe lexo raportin e përditësuar më sipër."
+    ],
+    "visual": [
+      {
+        "icon": "refresh-cw",
+        "label": "Rikontrollo",
+        "note": "Përditësohet i njëjti raport"
+      },
+      {
+        "icon": "lock-keyhole",
+        "label": "Pa sekrete",
+        "note": "Mos ngarko .env"
+      }
+    ],
+    "question": "A do të thotë 5/5 që ke marrë notën maksimale?",
+    "answer": "Jo. Kontrolli nuk ekzekuton kodin dhe nuk vërteton kuptimin ose përdorimin e AI. Kjo javë nuk shton pikë laboratori.",
+    "screens": {
+      "caption": "Rasti 4 · Kopja pa internet · pamje orientuese",
+      "driver": {
+        "view": "RideShare",
+        "title": "Gjendja mbetet",
+        "detail": "Rikontrolli lexon dorëzimin",
+        "status": "Pa ndryshime në databazë"
+      },
+      "passenger": {
+        "view": "RideShare",
+        "title": "Gjendja mbetet",
+        "detail": "Lexo çfarë mungon në Issue",
+        "status": "Korrigjo, Push, rikontrollo"
+      },
+      "rule": "Ilustrim i rezultatit të pritur. Nuk kërkohet kopjim i dizajnit ose ekran i ri shoferi.",
+      "scene": "rikthimi"
+    }
+  },
+  {
+    "title": "Kur e di që e kam përfunduar?",
+    "kicker": "JAVA 7 · 87–90 MIN",
+    "body": [
+      "Kodi dhe java-07.md janë online; Para/Pas dhe tri provat janë në raport.",
+      "Issue-n e ke ruajtur. Lexo raportin e botit dhe shpjego korrigjimin. Mund të vazhdosh gjatë javës."
+    ],
+    "visual": [
+      {
+        "icon": "route",
+        "label": "Dorëzimi",
+        "note": "Një vend për përgjigjen"
+      },
+      {
+        "icon": "car",
+        "label": "Produkti",
+        "note": "Një hap më i përdorshëm"
+      }
+    ],
+    "href": "ushtrimet.html",
+    "link": "Kthehu te udhëzimi i plotë",
+    "screens": {
+      "caption": "Rasti 1 · Lista dhe detajet · pamje orientuese",
+      "driver": {
+        "view": "Ekrani i shoferit",
+        "title": "Rezultati që provove",
+        "detail": "Trego problemin dhe ndryshimin",
+        "status": "Shpjego kufizimet"
+      },
+      "passenger": {
+        "view": "Ekrani i udhëtarit",
+        "title": "Rezultati që provove",
+        "detail": "Krahaso me pritshmërinë",
+        "status": "Ruaj linkun e dorëzimit"
+      },
+      "rule": "Ilustrim i rezultatit të pritur. Nuk kërkohet kopjim i dizajnit ose ekran i ri shoferi.",
+      "scene": "normal"
+    }
+  }
+]

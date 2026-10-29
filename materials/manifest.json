@@ -78,5 +78,13 @@
     "sha256": "5fabb7ec809eb9021f8e69b06b52e3eb20b4f146039648cad2b1a1a07341df12",
     "audience": "student",
     "speakerNotes": false
+  },
+  "lab7": {
+    "file": "lendet/2026-2027/mobile/lectures/ushtrimet-07-kontrolli-mvp-rideshare-2026.pptx",
+    "slides": 37,
+    "updated": "2026-10-29",
+    "sha256": "fc83b5d995856c5630acdf1fea2311119e1620519d3fd30fb8dbeeb742c946a5",
+    "audience": "student",
+    "speakerNotes": false
   }
 }
