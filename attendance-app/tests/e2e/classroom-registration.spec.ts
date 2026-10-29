@@ -117,6 +117,13 @@ for (const width of [320, 375, 430]) {
         ] as const) expect((await api(student, path, method, data)).status).toBe(403);
         await student.goto("/report");
         await expect(student.getByRole("heading", { name: "Pjesëmarrja dhe detyrat sipas javëve" })).toBeVisible();
+        await expect(student.getByRole('columnheader', { name: 'Dorëzimet totale deri tani', exact: true })).toBeVisible();
+        if (studentId === 'CLASS-NEW') {
+          const ownRow = student.getByRole('row').filter({ has: student.getByRole('rowheader', { name: 'Besa Duka', exact: true }) });
+          await expect(ownRow.getByText('Profili pa lidhje GitHub', { exact: true })).toBeVisible();
+          await expect(ownRow.getByText('0%', { exact: true })).toHaveCount(0);
+        }
+        await noOverflow(student);
       } finally { await context.close(); }
     }
     expect((await sql`select * from attendance_records where id = ${oldRecord.id}`)[0]).toEqual(oldRecord);

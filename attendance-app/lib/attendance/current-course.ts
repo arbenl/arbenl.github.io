@@ -22,6 +22,11 @@ const THURSDAYS = [
   "24.12.2026",
 ] as const;
 
+export const CURRENT_COURSE_DATES = THURSDAYS.map((date, index) => ({
+  week: index + 1,
+  date: date.split('.').reverse().join('-'),
+}));
+
 const LECTURES = [
   "Hyrje në Mobile PWA, Next.js dhe AI",
   "Ideja e biznesit, PRD dhe arkitektura",
