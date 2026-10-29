@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {personalCase,demoState,runtimeSteps,offlineSteps} from '../materials/week-07/week-07-model.mjs';
+import {personalCase,demoState,runtimeSteps,offlineSteps,demoCaseState,teachingPhoneState} from '../materials/week-07/week-07-model.mjs';
 test('week 7 personal cases are stable, safe and leave room for changed-input testing',()=>{
  assert.deepEqual(personalCase(' Arta '),personalCase('arta'));assert.equal(personalCase('arta').code,'P7-974');
  for(const name of ['arta','dritoni','dreni','test-student','a']){const c=personalCase(name);assert.match(c.code,/^P7-\d{3}$/);assert.ok(c.seats>=1&&c.seats<=3);assert.notEqual(c.time,c.newTime);assert.match(c.newTime,/^\d{2}:[0-5]\d$/);}
@@ -57,4 +57,17 @@ test('week 7 phone scenes share one deterministic view for the demo and teaching
  const pair=renderPhonePair({scene:'normal',caption:'Ekranet',rule:'Krahaso'});assert.ok(pair.includes(renderPhoneFocusSvg('driver')));assert.ok(pair.includes(renderPhoneFocusSvg('passenger')));
  assert.equal(expandPhoneSlides([{title:'A',body:[],screens:{scene:'normal'}}],'lecture').length,3);
  assert.equal(phoneTeachingFacts('driver','mismatch').fields.find(([label])=>label==='Nisja')[1],'08:15');assert.equal(phoneTeachingFacts('passenger','mismatch').fields.find(([label])=>label==='Nisja')[1],'08:40');assert.equal(phoneTeachingFacts('passenger','id-gabuar').fields.length,2);assert.match(phoneTeachingFacts('passenger','pending').status,/Në pritje/);
+});
+
+test('numbered demo cases preserve identity and distinguish local teaching states from real writes',async()=>{
+ const cases=JSON.parse(await readFile('materials/week-07/cases.json','utf8'));
+ for(const c of cases){const first=demoCaseState(c.id);assert.equal(first.caseId,c.id);assert.ok(first.question.endsWith('?'));for(let n=0;n<first.phases.length;n++){const step=demoCaseState(c.id,n);assert.ok(step.change.length>20);assert.ok(step.observe.length>20);assert.ok(step.flow.length>=3);}}
+ const chosen=demoCaseState(1,0,1);assert.equal(chosen.state.trip.driver,'Dreni');assert.match(chosen.change,/ID 1/);
+ assert.equal(demoCaseState(1,1,1).state.trip.id,2);assert.equal(demoCaseState(1,2).state.trip,null);
+ assert.equal(demoCaseState(2,0).state.trip.seats,2);assert.equal(demoCaseState(2,1).state.trip.seats,0);assert.equal(demoCaseState(2,1).state.disabled,true);
+ const pending=demoCaseState(3,1);assert.equal(pending.state.pending,true);assert.equal(pending.state.trip.seats,2);assert.match(pending.observe,/Nuk u ruajt/);
+ assert.equal(demoCaseState(4,1).state.offline,true);assert.equal(demoCaseState(4,1).state.trip.seats,1);assert.equal(demoCaseState(4,2).state.trip.seats,0);
+ assert.equal(demoCaseState(5,1).state.permission,'denied');assert.equal(demoCaseState(5,1).state.trip.time,'08:15');assert.equal(demoCaseState(5,2).state.permission,'allowed');assert.equal(demoCaseState(5,2).state.trip.time,'08:25');assert.match(demoCaseState(5,2).observe,/nuk u shkrua/);
+ for(const n of [0,1]){const future=demoCaseState(6,n);assert.equal(future.state.trip.seats,1);assert.equal(future.state.disabled,true);assert.match(future.observe,/nuk/);}
+ assert.equal(demoState('normal').trip.time,'08:15');assert.equal(teachingPhoneState('last-seat').discussion,true);assert.throws(()=>demoCaseState(7));assert.throws(()=>demoCaseState(1,99));
 });
