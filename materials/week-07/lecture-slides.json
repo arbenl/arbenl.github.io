@@ -25,32 +25,16 @@
     ]
   },
   {
-    "title": "Pjesët duhet të punojnë së bashku",
+    "title": "Rastet që trajtojmë në javën 7",
     "kicker": "JAVA 7 · 2–4 MIN",
+    "caseList": true,
     "body": [
-      "Javët 3–4: lista → detajet → të dhënat në Neon. Javët 5–6: kush lejohet të veprojë dhe çfarë shohim pa internet.",
-      "Një MVP nuk ka nevojë t’i ketë të gjitha funksionet. Rrjedha që ofron duhet të jetë e kuptueshme dhe kufijtë të jenë të qartë."
-    ],
-    "visual": [
-      {
-        "icon": "route",
-        "label": "Zgjedh një udhëtim",
-        "note": "Lista dhe detajet lidhen me ID"
-      },
-      {
-        "icon": "database",
-        "label": "Lexon të dhënat",
-        "note": "Dallon serverin nga kopja"
-      },
-      {
-        "icon": "lock-keyhole",
-        "label": "Kupton çfarë lejohet",
-        "note": "Hyrja nuk jep çdo të drejtë"
-      }
+      "Rastet 1–5 lidhin ekranet, të dhënat dhe lejet. Parashikojmë rezultatin, pastaj shpjegojmë arsyen.",
+      "Rasti 6 është vetëm diskutim. Në ushtrime zgjedh një rast të zbatueshëm; nuk ndërton gjashtë funksione."
     ]
   },
   {
-    "title": "Ora në dy ekrane",
+    "title": "Rasti 1 · Lista dhe detajet",
     "kicker": "JAVA 7 · 4–7 MIN",
     "body": [
       "Lista thotë 08:15. Arta hap udhëtimin e Dritonit dhe detajet thonë 08:40.",
@@ -80,12 +64,13 @@
     },
     "screens": {
       "scene": "mismatch",
-      "caption": "RideShare · e njëjta ndërfaqe si në demonstrim",
+      "caption": "Rasti 1 · Lista dhe detajet",
       "rule": "Pamjet tregojnë gjendjen e aplikacionit. Votoni për arsyen dhe diskutoni provën."
-    }
+    },
+    "caseId": 1
   },
   {
-    "title": "I njëjti udhëtim, një burim i qartë",
+    "title": "Rasti 1 · Lista dhe detajet",
     "kicker": "JAVA 7 · 7–9 MIN",
     "body": [
       "Simptoma: dy orë të ndryshme. Shkaqet e mundshme: ID i gabuar, tekst i shkruar në kod ose kopje e vjetër.",
@@ -104,7 +89,8 @@
       }
     ],
     "question": "Çfarë mëson klasa nëse i shkruajmë të dyja orët 08:15?",
-    "answer": "Vetëm e mbulojmë simptomën. Pa kontrolluar ID-në dhe burimin, gabimi mund të shfaqet sërish te udhëtimi tjetër."
+    "answer": "Vetëm e mbulojmë simptomën. Pa kontrolluar ID-në dhe burimin, gabimi mund të shfaqet sërish te udhëtimi tjetër.",
+    "caseId": 1
   },
   {
     "title": "Ku kalon veprimi i Artës",
@@ -136,17 +122,17 @@
     ]
   },
   {
-    "title": "Klasa vendos: çfarë duhet të ndodhë?",
+    "title": "Rasti 2 · Pa vende",
     "kicker": "JAVA 7 · 12–15 MIN",
     "body": [
-      "Zgjidhni një rast: pa vende, ID i panjohur ose kopje offline. Para klikimit, thoni çfarë duhet të kuptojë Arta.",
-      "Profesori hap demonstrimin. Klasa krahason rezultatin me parashikimin dhe shpjegon arsyen."
+      "Dritoni ka 0 vende. Para klikimit, parashikoni mesazhin që duhet të shohë Arta dhe gjendjen e butonit.",
+      "Profesori zgjedh “Pa vende · 0” në demonstrim. Klasa krahason rezultatin me parashikimin."
     ],
     "visual": [
       {
         "icon": "circle-question-mark",
         "label": "Parashiko mesazhin",
-        "note": "Çfarë mund t’i premtojmë Artës?"
+        "note": "Çfarë i themi Artës kur ka 0 vende?"
       },
       {
         "icon": "refresh-cw",
@@ -154,10 +140,11 @@
         "note": "Cila e dhënë e justifikon?"
       }
     ],
-    "demo": true
+    "demo": true,
+    "caseId": 2
   },
   {
-    "title": "Butoni u shtyp. A u rezervua vendi?",
+    "title": "Rasti 3 · Klikim apo rezervim",
     "kicker": "JAVA 7 · 15–18 MIN",
     "body": [
       "Faqja e Javës 3 shfaq “Në pritje” në një simulim. Nuk ka ende kërkesë të ruajtur në server."
@@ -186,12 +173,13 @@
     },
     "screens": {
       "scene": "pending",
-      "caption": "RideShare · e njëjta ndërfaqe si në demonstrim",
+      "caption": "Rasti 3 · Klikim apo rezervim",
       "rule": "Pamjet tregojnë gjendjen e aplikacionit. Votoni për arsyen dhe diskutoni provën."
-    }
+    },
+    "caseId": 3
   },
   {
-    "title": "Një klikim dhe tri kuptime",
+    "title": "Rasti 3 · Klikim apo rezervim",
     "kicker": "JAVA 7 · 18–20 MIN",
     "body": [
       "Klikova: telefoni mori veprimin. Në pritje: kërkesa ende nuk ka një vendim. E pranuar: procesi real e ka konfirmuar.",
@@ -215,10 +203,11 @@
       }
     ],
     "question": "Pse një mesazh i bukur “Sukses” mund ta mashtrojë Artën?",
-    "answer": "Ajo mund ta kuptojë si vend të siguruar. Mesazhi duhet të tregojë vetëm atë që sistemi ka kryer realisht."
+    "answer": "Ajo mund ta kuptojë si vend të siguruar. Mesazhi duhet të tregojë vetëm atë që sistemi ka kryer realisht.",
+    "caseId": 3
   },
   {
-    "title": "Nga simptoma te shkaku",
+    "title": "Rasti 1 · Lista dhe detajet",
     "kicker": "JAVA 7 · 20–23 MIN",
     "body": [
       "Arta thotë: “Zgjodha Dritonin, por shoh orë tjetër”. Ky është vëzhgimi; ende nuk e dimë shkakun.",
@@ -240,10 +229,11 @@
         "label": "Çfarë prove na duhet?",
         "note": "Krahasojmë të njëjtin udhëtim"
       }
-    ]
+    ],
+    "caseId": 1
   },
   {
-    "title": "Ikona online është ndezur",
+    "title": "Rasti 4 · Kopja pa internet",
     "kicker": "JAVA 7 · 23–26 MIN",
     "body": [
       "Arta ka kopjen e fundit me 1 vend. Telefoni shfaq lidhje aktive, por serveri nuk përgjigjet."
@@ -272,12 +262,13 @@
     },
     "screens": {
       "scene": "offline",
-      "caption": "RideShare · e njëjta ndërfaqe si në demonstrim",
+      "caption": "Rasti 4 · Kopja pa internet",
       "rule": "Pamjet tregojnë gjendjen e aplikacionit. Votoni për arsyen dhe diskutoni provën."
-    }
+    },
+    "caseId": 4
   },
   {
-    "title": "E dhënë e ruajtur apo gjendje e tanishme?",
+    "title": "Rasti 4 · Kopja pa internet",
     "kicker": "JAVA 7 · 26–28 MIN",
     "body": [
       "Kopja thotë: “Në 07:00 kishte 1 vend”. Kjo nuk do të thotë: “Tani ka 1 vend”.",
@@ -299,7 +290,8 @@
     "answer": "Koha e ruajtjes, shënimi që kopja mund të jetë e vjetër dhe mesazh i qartë kur përditësimi nuk arrihet.",
     "sources": [
       "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine"
-    ]
+    ],
+    "caseId": 4
   },
   {
     "title": "Cilin problem korrigjojmë së pari?",
@@ -351,7 +343,7 @@
     "answer": "Jo. Një provë jep besim për rastin e provuar. Zgjedhim edhe raste që mund ta nxjerrin gabimin në pah."
   },
   {
-    "title": "Butoni i fshehur dhe leja në server",
+    "title": "Rasti 5 · Lejet e ndryshimit",
     "kicker": "JAVA 7 · 34–37 MIN",
     "body": [
       "Arta nuk është pronarja e udhëtimit të Dritonit. Ndërfaqja fsheh ndryshimin e orës."
@@ -380,9 +372,10 @@
     },
     "screens": {
       "scene": "normal",
-      "caption": "RideShare · e njëjta ndërfaqe si në demonstrim",
+      "caption": "Rasti 5 · Lejet e ndryshimit",
       "rule": "Pamjet tregojnë gjendjen e aplikacionit. Votoni për arsyen dhe diskutoni provën."
-    }
+    },
+    "caseId": 5
   },
   {
     "title": "Çfarë premton MVP-ja jonë?",
@@ -410,8 +403,8 @@
     ]
   },
   {
-    "title": "Një vend, dy udhëtarë",
-    "kicker": "JAVA 7 · 39–41 MIN",
+    "title": "Rasti 6 · Një vend, dy udhëtarë",
+    "kicker": "JAVA 7 · 39–41 MIN · VETËM DISKUTIM",
     "body": [
       "Skenar për një version të ardhshëm: Arta dhe Besa shohin njëkohësisht vendin e fundit. Të dyja klikojnë.",
       "Të dy telefonat e panë të lirë. A do të thotë kjo se të dyja mund ta marrin? Arsyetoni pa shkruar kod."
@@ -434,7 +427,8 @@
       }
     ],
     "question": "Ku duhet të merret vendimi përfundimtar në një rezervim real?",
-    "answer": "Në server, me një veprim të sigurt mbi të dhënat. Telefoni mund të shfaqë informacion të vjetër. Sot vetëm e kuptojmë kufirin; nuk ndërtojmë rezervime."
+    "answer": "Në server, me një veprim të sigurt mbi të dhënat. Telefoni mund të shfaqë informacion të vjetër. Sot vetëm e kuptojmë kufirin; nuk ndërtojmë rezervime.",
+    "caseId": 6
   },
   {
     "title": "I njëjti mendim te një biznes tjetër",
@@ -468,7 +462,7 @@
     "kicker": "JAVA 7 · 43–45 MIN",
     "body": [
       "Shpjego rrugën lista → ID → detajet → veprimi. Dallo punën e telefonit, serverit dhe databazës.",
-      "Arsyeto një problem, zgjidh korrigjimin sipas pasojës dhe thuaj çfarë provojnë testet. Në laborator këtë do ta zbatosh në projektin tënd."
+      "Arsyeto problemin dhe kufijtë e MVP-së. Në laborator zgjedh një nga Rastet 1–5: dy probleme, një korrigjim dhe tri prova."
     ],
     "visual": [
       {

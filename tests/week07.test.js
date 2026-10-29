@@ -20,12 +20,14 @@ test('week 7 demo handles normal, no seats, missing id and a stale offline list 
 test('week 7 lecture votes have explanations and lab asks for genuine work rather than a full solution',async()=>{
  const lecture=JSON.parse(await readFile('materials/week-07/lecture-slides.json','utf8'));assert.equal(lecture.length,18);assert.equal(lecture.filter(s=>s.quiz).length,4);
  for(const s of lecture){if(s.quiz){assert.ok(s.quiz.options[s.quiz.correct]);assert.ok(s.quiz.explanation.length>30);assert.ok(s.quiz.question.endsWith('?'));}if(s.answer)assert.ok(s.question.endsWith('?'));}
+ const cases=JSON.parse(await readFile('materials/week-07/cases.json','utf8'));assert.deepEqual(cases.map(c=>c.id),[1,2,3,4,5,6]);assert.equal(cases.filter(c=>c.discussionOnly).length,1);assert.equal(cases[5].discussionOnly,true);
  const publication=JSON.parse(await readFile('materials/week-07/publication.json','utf8'));
  const guide=await readFile('lendet/2026-2027/mobile/java-07/ushtrimet.html','utf8');
  if(!publication.labsPublished){assert.ok(guide.includes('29.10.2026, ora 14:40'));assert.ok(!guide.includes('case-form'));return;}
  for(const word of ['Parashiko','Skedari:','Para:','Pas:','Prova','rikontrollo','Ndryshimi i ri','pa pikë shtesë','gjatë javës'])assert.ok(guide.includes(word),word);
  for(const id of ['pergatitja','parashikimi','korrigjimi','provat','versionet','dorezimi']){const section=guide.split('id="'+id+'"')[1].split('</section><section class="card"')[0];assert.ok(section.includes('class="screen-checkpoint'),'role illustration after '+id);assert.ok(section.includes('Ekrani i shoferit'));assert.ok(section.includes('Ekrani i udhëtarit'));}
- for(const id of ['sot-kuptoj','cka-dorezoj','harta-90','rezultati-github'])assert.ok(guide.includes('id="'+id+'"'),id);assert.ok(guide.includes('raporti ekzistues i botit'));assert.ok(guide.includes('author%3A%40me'));
+ for(const c of cases)assert.ok(guide.includes('Rasti '+c.id+' · '+c.title),'matching lecture/lab title '+c.id);
+ for(const id of ['rastet-ligjerates','sot-kuptoj','cka-dorezoj','harta-90','rezultati-github'])assert.ok(guide.includes('id="'+id+'"'),id);assert.ok(guide.includes('raporti ekzistues i botit'));assert.ok(guide.includes('author%3A%40me'));
  assert.ok(!guide.includes('data-example-file'));assert.ok(!guide.includes('<pre><code>'));assert.ok(guide.includes('nuk provon autorësinë'));
  const report=await readFile('materials/week-07/java-07-model.md','utf8');assert.ok(!report.split('## Rasti im')[0].includes('[PLOTËSO]'),'report instructions must not permanently fail the placeholder check');
  for(const title of ['Rasti im','Parashikimi','Dy probleme','Korrigjimi','Versionet','Ndryshimi i ri','Ndihma nga AI'])assert.ok(report.includes('## '+title));
@@ -34,7 +36,7 @@ test('week 7 lecture votes have explanations and lab asks for genuine work rathe
 test('week 7 student downloads match final slides, links and manifest without speaker notes',async()=>{
  const {createHash}=await import('node:crypto');const {execFileSync}=await import('node:child_process');const manifest=JSON.parse(await readFile('materials/manifest.json','utf8'));
  const publication=JSON.parse(await readFile('materials/week-07/publication.json','utf8'));
- const decks=[['lecture7','ligjerates',26],...(publication.labsPublished?[['lab7','ushtrimeve',36]]:[])];
+ const decks=[['lecture7','ligjerates',26],...(publication.labsPublished?[['lab7','ushtrimeve',37]]:[])];
  if(!publication.labsPublished)assert.equal(manifest.lab7,undefined);
  for(const[key,kind,count]of decks){
   const item=manifest[key];assert.equal(item.slides,count);assert.equal(createHash('sha256').update(await readFile(item.file)).digest('hex'),item.sha256);

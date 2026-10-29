@@ -1,0 +1,43 @@
+[
+  {
+    "id": 1,
+    "title": "Lista dhe detajet",
+    "note": "I njëjti ID dhe të dhëna të kuptueshme.",
+    "action": "Ndiq një ID nga lista te detajet. Provo edhe një ID që nuk ekziston.",
+    "expected": "Detaje për udhëtimin e zgjedhur; mesazh i qartë kur ID mungon."
+  },
+  {
+    "id": 2,
+    "title": "Pa vende",
+    "note": "0 vende nuk duhet të premtojë rezervim.",
+    "action": "Te të dhënat e tua të provës vendos 0 vende. Hape sërish udhëtimin.",
+    "expected": "Mesazh pa vende; butoni nuk premton një vend të lirë."
+  },
+  {
+    "id": 3,
+    "title": "Klikim apo rezervim",
+    "note": "Reagimi në ekran nuk provon ruajtjen.",
+    "action": "Provo kërkesën demonstrative dhe lexo mesazhin që shfaqet.",
+    "expected": "Tregohet simulimi; nuk pretendohet rezervim ose njoftim real."
+  },
+  {
+    "id": 4,
+    "title": "Kopja pa internet",
+    "note": "E dhëna e ruajtur mund të jetë e vjetër.",
+    "action": "Nëse e ke punën offline: hape listën online, ndalo rrjetin e atij tab-i dhe rifresko.",
+    "expected": "Dallohet kopja nga të dhënat e reja. Pa funksion offline, raporto kufizimin."
+  },
+  {
+    "id": 5,
+    "title": "Lejet e ndryshimit",
+    "note": "Serveri verifikon sesionin dhe pronarin.",
+    "action": "Vetëm nëse hyrja punon: provo veprimin e pronarit me llogaritë e tua të testimit.",
+    "expected": "Llogaria tjetër nuk ndryshon udhëtimin e pronarit. Mos prek të dhëna reale."
+  },
+  {
+    "id": 6,
+    "title": "Një vend, dy udhëtarë",
+    "note": "Vetëm diskutim për një version të ardhshëm.",
+    "discussionOnly": true
+  }
+]

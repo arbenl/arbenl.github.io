@@ -13,6 +13,7 @@ await fs.mkdir(work+'/output',{recursive:true});
 const ref=await PresentationFile.importPptx(await FileBlob.load(root+'/lendet/2026-2027/mobile/lectures/ligjerata-06-pwa-offline-rideshare-2026.pptx'));
 for(const i of [0,2,9]){const png=await ref.export({slide:ref.slides.items[i],format:'png',scale:1});await fs.writeFile(work+'/reference-'+i+'.png',new Uint8Array(await png.arrayBuffer()));}
 const logo=await fs.readFile(root+'/img/aab_logo_white.png');
+const cases=JSON.parse(await fs.readFile(root+'/materials/week-07/cases.json','utf8'));
 for(const kind of (process.env.WEEK07_BUILD_KIND || 'lecture,lab').split(',')){
  const sourceData=JSON.parse(await fs.readFile(root+'/materials/week-07/'+kind+'-slides.json','utf8'));validateSlideQuestions(sourceData,kind);const data=expandPhoneSlides(sourceData,kind);
  const p=Presentation.create({slideSize:{width:1280,height:720}});
@@ -21,7 +22,10 @@ for(const kind of (process.env.WEEK07_BUILD_KIND || 'lecture,lab').split(',')){
   const s=p.slides.add();s.background.fill='#0b101b';text(s,d.kicker,64,27,1060,32,17,'#fdba74',true);text(s,`${i+1} / ${data.length}`,1135,27,100,32,17,'#bfcbdf');
   if(i===0)s.images.add({blob:logo,contentType:'image/png',fit:'contain',alt:'Kolegji AAB',position:{left:1090,top:80,width:125,height:55}});
   text(s,d.title,64,d.screens?65:88,i===0?1000:1150,d.screens?60:105,d.screens?34:42,'#ffffff',true);
-  if(d.feedback){
+  if(d.caseList){
+   for(const [j,c]of cases.entries()){const x=64+(j%2)*600,y=210+Math.floor(j/2)*112;text(s,'Rasti '+c.id+' · '+c.title,x,y,550,45,27,'#fff',true);text(s,c.note,x,y+46,550,58,22,c.discussionOnly?'#fdba74':'#c8d3e6');}
+   text(s,d.body.join('\n\n'),64,571,1150,125,25);
+  }else if(d.feedback){
    text(s,'Te Issue yt, gjej komentin: Kontrolli automatik i dorëzimit',64,205,1150,55,28);
    for(const [j,label]of ['GREEN · të gjitha kontrollet kaluan','RED · ka një kontroll që mungon'].entries()){
     const x=64+j*600,color=j?'#ffb2b2':'#b8eddb';

@@ -6,7 +6,7 @@
 
 **Tech Stack:** JSON, existing HTML generator, Artifact Tool PPTX renderer.
 
-- [ ] Replace procedural lecture slides with conceptual questions and explicit learning outcomes.
-- [ ] Render and validate lecture PPTX, update its hash, regenerate canonical HTML.
-- [ ] Verify projector interaction, slide fit and unchanged lab archive hashes.
-- [ ] Run material tests and isolated scheduled-release check; publish and verify live lecture.
+- [x] Replace procedural lecture slides with conceptual questions and explicit learning outcomes.
+- [x] Render and validate lecture PPTX, update its hash, regenerate canonical HTML.
+- [x] Verify projector interaction, slide fit and unchanged lab archive hashes.
+- [x] Run material tests and isolated scheduled-release check; publish and verify live lecture.
