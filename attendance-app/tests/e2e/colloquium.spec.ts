@@ -125,6 +125,12 @@ test('remembered canonical profile enters directly and results sort names after 
   await sql`update colloquium_rooms set started_at = now() - interval '601 seconds', deadline = now() - interval '1 second' where group_name = 'G1'`;
   await expect(arta.getByRole('rowheader')).toHaveText(['Arta Test', 'Besa Test']);
   expect((await api(arta, '/api/colloquium/results')).body.every((row: object) => Object.keys(row).sort().join(',') === 'fullName,groupName,score')).toBe(true);
+  // A broken group request must not prevent the independent real results read.
+  await professor.route('**/api/staff/colloquium', route => route.abort());
+  await professor.reload();
+  await expect(professor.getByRole('rowheader')).toHaveText(['Arta Test', 'Besa Test']);
+  await expect(professor.getByRole('link', { name: 'Shiko rezultatet', exact: true })).toHaveAttribute('href', '#cq-results');
+  await expect(professor.getByRole('button', { name: 'Rifresko rezultatet', exact: true })).toBeEnabled();
  } finally { await first.close(); await second.close(); }
 });
 test('professor entry routes to group controls while anonymous entry remains available', async ({ browser, page: professor }) => {

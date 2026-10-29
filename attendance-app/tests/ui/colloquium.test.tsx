@@ -31,12 +31,58 @@ it('automatically joins a remembered student and waits without showing questions
  expect(view.queryByRole('radio')).toBeNull();
 });
 it('never starts a teacher lobby automatically and renders both group controls', async () => {
- const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(json({ serverTime: state.serverTime, rooms: [{ ...room, token: 'abc', joinedCount: 1, participants: [{ fullName: 'Arta Kola', submitted: false }] }] }));
+ const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(async url => json(String(url).endsWith('/results') ? [] : { serverTime: state.serverTime, rooms: [{ ...room, token: 'abc', joinedCount: 1, participants: [{ fullName: 'Arta Kola', submitted: false }] }] }));
  const view = render(<ColloquiumStaff />);
  await view.findByRole('button', { name: 'Fillo G1 · 10 minuta' });
  expect(view.getByRole('button', { name: 'Hap pritjen për G2' })).toBeTruthy();
  expect(view.getByText('Arta Kola')).toBeTruthy();
- expect(fetchMock.mock.calls).toHaveLength(1);
+ expect(fetchMock.mock.calls.every(([, init]) => !init?.method || init.method === 'GET')).toBe(true);
+});
+it('shows published points before a slow professor group request completes', async () => {
+ vi.spyOn(globalThis, 'fetch').mockImplementation(async url => String(url).endsWith('/results')
+  ? json([{ fullName: 'Arta Kola', groupName: 'G1', score: 8 }])
+  : new Promise<Response>(() => {}));
+ const view = render(<ColloquiumStaff />);
+ await view.findByText('8/10');
+ expect(view.getByText('Arta Kola')).toBeTruthy();
+ expect(view.getByRole('link', { name: 'Shiko rezultatet' }).getAttribute('href')).toBe('#cq-results');
+ expect(view.getByText('Duke ngarkuar grupet…')).toBeTruthy();
+});
+it('shows a result loading failure honestly and recovers on explicit retry', async () => {
+ let failed = true;
+ vi.spyOn(globalThis, 'fetch').mockImplementation(async url => {
+  if (String(url).endsWith('/results')) return failed
+   ? new Response(JSON.stringify({ error: { code: 'internal_error' } }), { status: 500 })
+   : json([{ fullName: 'Arta Kola', groupName: 'G1', score: 8 }]);
+  return json({ serverTime: state.serverTime, rooms: [] });
+ });
+ const view = render(<ColloquiumStaff />);
+ await view.findByRole('button', { name: 'Provo rezultatet përsëri' });
+ expect(view.queryByText('Rezultatet shfaqen këtu kur përfundon koha e grupit.')).toBeNull();
+ failed = false;
+ fireEvent.click(view.getByRole('button', { name: 'Provo rezultatet përsëri' }));
+ await view.findByText('8/10');
+ expect(view.queryByRole('alert')).toBeNull();
+});
+it('keeps published points visible while refresh fails, then clears the error on recovery', async () => {
+ let failed = false;
+ vi.spyOn(globalThis, 'fetch').mockImplementation(async url => {
+  if (String(url).endsWith('/results')) {
+   if (failed) throw new Error('offline');
+   return json([{ fullName: 'Arta Kola', groupName: 'G1', score: 8 }]);
+  }
+  return json({ serverTime: state.serverTime, rooms: [] });
+ });
+ const view = render(<ColloquiumStaff />);
+ await view.findByText('8/10');
+ failed = true;
+ fireEvent.click(view.getByRole('button', { name: 'Rifresko rezultatet' }));
+ await view.findByRole('button', { name: 'Provo rezultatet përsëri' });
+ expect(view.getByText('8/10')).toBeTruthy();
+ failed = false;
+ fireEvent.click(view.getByRole('button', { name: 'Provo rezultatet përsëri' }));
+ await waitFor(() => expect(view.queryByRole('alert')).toBeNull());
+ expect(view.getByText('8/10')).toBeTruthy();
 });
 it('serializes same-question writes, preserves the last click through polling, and flushes latest global revision', async () => {
  let release!: (value: { questionRevision: number; revision: number }) => void;
