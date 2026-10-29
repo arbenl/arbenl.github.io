@@ -33,7 +33,7 @@ test('week 7 lecture votes have explanations and lab asks for genuine work rathe
 test('week 7 student downloads match final slides, links and manifest without speaker notes',async()=>{
  const {createHash}=await import('node:crypto');const {execFileSync}=await import('node:child_process');const manifest=JSON.parse(await readFile('materials/manifest.json','utf8'));
  const publication=JSON.parse(await readFile('materials/week-07/publication.json','utf8'));
- const decks=[['lecture7','ligjerates',22],...(publication.labsPublished?[['lab7','ushtrimeve',24]]:[])];
+ const decks=[['lecture7','ligjerates',26],...(publication.labsPublished?[['lab7','ushtrimeve',36]]:[])];
  if(!publication.labsPublished)assert.equal(manifest.lab7,undefined);
  for(const[key,kind,count]of decks){
   const item=manifest[key];assert.equal(item.slides,count);assert.equal(createHash('sha256').update(await readFile(item.file)).digest('hex'),item.sha256);
@@ -43,15 +43,15 @@ test('week 7 student downloads match final slides, links and manifest without sp
  }
 });
 test('week 7 phone scenes share one deterministic view for the demo and teaching material',async()=>{
- const {renderPhoneSvg,renderPhoneFocusSvg,renderPhonePair,expandPhoneSlides,PHONE_HITS}=await import('../materials/week-07/phone-ui.mjs');
+ const {renderPhoneSvg,renderPhoneFocusSvg,renderPhonePair,expandPhoneSlides,phoneTeachingFacts,PHONE_HITS}=await import('../materials/week-07/phone-ui.mjs');
  const normal=renderPhoneSvg('passenger');assert.equal(normal,renderPhoneSvg('passenger','normal'));assert.ok(normal.includes('Dritoni'));assert.ok(normal.includes('08:15'));assert.ok(normal.includes('Provo kërkesën'));
  assert.ok(renderPhoneSvg('passenger','mismatch').includes('08:40'));
  assert.ok(renderPhoneSvg('passenger','pa-vende').includes('Nuk ka vende të lira'));
  assert.ok(renderPhoneSvg('passenger','id-gabuar').includes('Udhëtimi nuk u gjet'));
  assert.ok(renderPhoneSvg('passenger','offline').includes('Kopja mund të jetë e vjetër'));
  assert.ok(renderPhoneSvg('passenger','pending').includes('Pa rezervim real ose njoftim te shoferi'));
- assert.throws(()=>renderPhoneSvg('unknown'));assert.equal(PHONE_HITS.trips.length,3);
+ assert.equal(renderPhoneFocusSvg('passenger'),normal);assert.ok(renderPhoneFocusSvg('passenger').includes('viewBox="0 0 360 560"'));assert.throws(()=>renderPhoneSvg('unknown'));assert.equal(PHONE_HITS.trips.length,3);
  const pair=renderPhonePair({scene:'normal',caption:'Ekranet',rule:'Krahaso'});assert.ok(pair.includes(renderPhoneFocusSvg('driver')));assert.ok(pair.includes(renderPhoneFocusSvg('passenger')));
- assert.equal(expandPhoneSlides([{title:'A',body:[],screens:{scene:'normal'}}],'lecture').length,2);
- const renderer=await readFile('scripts/build-week07-presentations.mjs','utf8');assert.ok(renderer.includes('renderPhoneFocusSvg(role,d.screens.scene'));
+ assert.equal(expandPhoneSlides([{title:'A',body:[],screens:{scene:'normal'}}],'lecture').length,3);
+ assert.equal(phoneTeachingFacts('driver','mismatch').fields.find(([label])=>label==='Nisja')[1],'08:15');assert.equal(phoneTeachingFacts('passenger','mismatch').fields.find(([label])=>label==='Nisja')[1],'08:40');assert.equal(phoneTeachingFacts('passenger','id-gabuar').fields.length,2);assert.match(phoneTeachingFacts('passenger','pending').status,/Në pritje/);
 });

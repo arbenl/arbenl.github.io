@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {execFileSync} from 'node:child_process';
-import {renderPhoneFocusSvg,expandPhoneSlides} from '../materials/week-07/phone-ui.mjs';
+import {renderPhoneFocusSvg,expandPhoneSlides,phoneTeachingFacts} from '../materials/week-07/phone-ui.mjs';
 import {validateSlideQuestions} from './week05-slide-contract.mjs';
 const root=process.cwd(),work=process.env.WEEK07_BUILD_DIR,skill=process.env.SKILL_DIR;
 if(!path.isAbsolute(work||''))throw Error('Use a fresh private WEEK07_BUILD_DIR.');
@@ -20,17 +20,16 @@ for(const kind of (process.env.WEEK07_BUILD_KIND || 'lecture,lab').split(',')){
  for(const [i,d]of data.entries()){
   const s=p.slides.add();s.background.fill='#0b101b';text(s,d.kicker,64,27,1060,32,17,'#fdba74',true);text(s,`${i+1} / ${data.length}`,1135,27,100,32,17,'#bfcbdf');
   if(i===0)s.images.add({blob:logo,contentType:'image/png',fit:'contain',alt:'Kolegji AAB',position:{left:1090,top:80,width:125,height:55}});
-  text(s,d.title,64,88,i===0?1000:1150,105,42,'#ffffff',true);
+  text(s,d.title,64,d.screens?65:88,i===0?1000:1150,d.screens?60:105,d.screens?34:42,'#ffffff',true);
   if(d.screens){
-   for(const[j,role]of ['driver','passenger'].entries()){
-    const svg=renderPhoneFocusSvg(role,d.screens.scene||'normal');
-    const h=role==='driver'?180:212;const png=await sharp(Buffer.from(svg)).resize(1240,h*4).png().toBuffer();
-    await fs.mkdir(work+'/phone-images',{recursive:true});await fs.writeFile(work+'/phone-images/'+kind+'-'+(i+1)+'-'+role+'.png',png);
-    const x=64+j*600;text(s,j?'UDHËTARI · ARTA':'SHOFERI · DRITONI',x,192,510,42,28,'#fdba74',true);
-    s.images.add({blob:png,contentType:'image/png',alt:role==='driver'?'Ekrani i shoferit, i zmadhuar':'Ekrani i udhëtarit, i zmadhuar',position:{left:x,top:249,width:500,height:500*h/310}});
-    if(d.screens[role]?.status)text(s,d.screens[role].status,x,605,520,56,25,'#c8d3e6');
-   }
-   text(s,'Pamje e zmadhuar nga aplikacioni. Përdor shigjetën për të vazhduar.',64,677,1150,30,21,'#c8d3e6');
+   const role=d.screens.role,scene=d.screens.scene||'normal',facts=phoneTeachingFacts(role,scene);
+   const svg=renderPhoneFocusSvg(role,scene),png=await sharp(Buffer.from(svg)).resize(1080,1680).png().toBuffer();
+   await fs.mkdir(work+'/phone-images',{recursive:true});await fs.writeFile(work+'/phone-images/'+kind+'-'+(i+1)+'-'+role+'.png',png);
+   s.images.add({blob:png,contentType:'image/png',alt:facts.label+' · telefoni i plotë',position:{left:90,top:130,width:360,height:560}});
+   text(s,facts.label.toUpperCase(),525,150,670,50,32,'#fdba74',true);
+   let y=232;for(const[label,value]of facts.fields){text(s,label,525,y,665,30,21,'#bfcbdf');text(s,value,525,y+37,665,52,label==='Udhëtimi'?29:38,'#fff',true);y+=108;}
+   text(s,facts.status,525,575,665,56,28,'#b8eddb',true);
+   text(s,facts.note,525,642,665,65,23,'#c8d3e6');
   }else if(d.simulation){
    text(s,'PUBLIKIMI I KODIT',64,205,1150,30,18,'#fdba74',true);
    text(s,'Git në kompjuter   →   GitHub   →   Vercel',64,246,1150,60,32);

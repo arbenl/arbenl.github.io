@@ -58,3 +58,21 @@
 .projector .phone-focus-slide .phone-checkpoint .phone-context{display:block;font-size:22px;line-height:1.3;margin:16px auto 0;max-width:470px}
 .projector .phone-focus-slide .phone-checkpoint .screen-rule{display:block;font-size:18px;line-height:1.3;margin-top:16px!important}
 @media(max-width:767px){.projector .phone-focus-slide .phone-checkpoint .role-screens{grid-template-columns:1fr;gap:28px}.projector .phone-focus-slide h2{font-size:28px}.projector .phone-focus-slide .phone-checkpoint .phone-role-title{font-size:24px}.projector .phone-focus-slide .phone-checkpoint .phone-context{font-size:20px}.phone-focus .phone-role-title{font-size:24px}}
+
+/* One full portrait phone per projector slide; readable observations alongside it. */
+.portrait-view .role-screens{display:grid;grid-template-columns:1fr;gap:36px}
+.portrait-view .role-screen{display:grid;grid-template-columns:minmax(0,330px) minmax(0,1fr);gap:32px;align-items:start}
+.portrait-view .focus-view{max-width:330px;border:0;border-radius:0;overflow:visible}
+.portrait-view .phone-role-title{font-size:28px;margin:6px 0 22px;color:#fdba74;font-weight:700}
+.phone-facts{margin:0;display:grid;gap:18px}.phone-facts dt{font-size:18px;color:#bfcde2;margin-bottom:5px}.phone-facts dd{font-size:31px;line-height:1.25;font-weight:700;margin:0}
+.portrait-status{font-size:24px;line-height:1.3;font-weight:700;color:#b8eddb;margin:22px 0 12px}.portrait-note{font-size:21px;line-height:1.4;color:#d1dcef;margin:12px 0}.portrait-view .phone-context{font-size:19px;line-height:1.35;margin-top:18px}
+.projector .portrait-phone-slide{padding:12px 24px;margin:10px 0}
+.projector .portrait-phone-slide h2{font-size:30px;margin:6px 0 12px}
+.projector .portrait-phone-slide .phone-checkpoint .role-screens{grid-template-columns:1fr;gap:0}
+.projector .portrait-phone-slide .phone-checkpoint .role-screen{grid-template-columns:315px minmax(0,1fr);gap:64px;align-items:start}
+.projector .portrait-phone-slide .phone-checkpoint .rs-phone{width:315px;max-width:315px}
+.projector .portrait-phone-slide .phone-checkpoint .phone-role-title{font-size:30px;margin:4px 0 20px}
+.projector .portrait-phone-slide .phone-facts{gap:15px}.projector .portrait-phone-slide .phone-facts dt{font-size:20px}.projector .portrait-phone-slide .phone-facts dd{font-size:34px}
+.projector .portrait-phone-slide .portrait-status{font-size:27px;margin-top:22px}.projector .portrait-phone-slide .portrait-note{font-size:23px}
+.projector .portrait-phone-slide .phone-checkpoint .phone-context{font-size:19px;margin-top:16px}
+@media(max-width:767px){.portrait-view .role-screen,.projector .portrait-phone-slide .phone-checkpoint .role-screen{grid-template-columns:1fr;gap:20px}.projector .portrait-phone-slide .phone-checkpoint .rs-phone{width:100%;max-width:315px}.portrait-view .phone-role-title{font-size:25px}.phone-facts dd{font-size:27px}}
