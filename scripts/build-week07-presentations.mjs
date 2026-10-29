@@ -21,7 +21,17 @@ for(const kind of (process.env.WEEK07_BUILD_KIND || 'lecture,lab').split(',')){
   const s=p.slides.add();s.background.fill='#0b101b';text(s,d.kicker,64,27,1060,32,17,'#fdba74',true);text(s,`${i+1} / ${data.length}`,1135,27,100,32,17,'#bfcbdf');
   if(i===0)s.images.add({blob:logo,contentType:'image/png',fit:'contain',alt:'Kolegji AAB',position:{left:1090,top:80,width:125,height:55}});
   text(s,d.title,64,d.screens?65:88,i===0?1000:1150,d.screens?60:105,d.screens?34:42,'#ffffff',true);
-  if(d.screens){
+  if(d.feedback){
+   text(s,'Te Issue yt, gjej komentin: Kontrolli automatik i dorëzimit',64,205,1150,55,28);
+   for(const [j,label]of ['GREEN · të gjitha kontrollet kaluan','RED · ka një kontroll që mungon'].entries()){
+    const x=64+j*600,color=j?'#ffb2b2':'#b8eddb';
+    s.shapes.add({geometry:'rect',position:{left:x,top:286,width:548,height:225},fill:j?'#361e28':'#14362e',line:{fill:color,width:1}});
+    text(s,label,x+20,305,508,42,24,color,true);text(s,j?'p.sh. 4/5':'5/5',x+20,360,508,65,45,color,true);
+    text(s,j?'Lexo rreshtin me kontrollin e kuq.':'Lexo edhe të pesë rreshtat e raportit.',x+20,443,508,55,23);
+   }
+   text(s,'Korrigjo në projekt, Commit, Push dhe komento rikontrollo te i njëjti Issue.',64,542,1150,70,27,'#fdba74');
+   text(s,'Actions mund të jetë i gjelbër ndërsa raporti ka ende një kontroll të kuq. 5/5 është kontroll teknik, jo notë.',64,625,1150,78,23,'#c8d3e6');
+  }else if(d.screens){
    const role=d.screens.role,scene=d.screens.scene||'normal',facts=phoneTeachingFacts(role,scene);
    const svg=renderPhoneFocusSvg(role,scene),png=await sharp(Buffer.from(svg)).resize(1080,1680).png().toBuffer();
    await fs.mkdir(work+'/phone-images',{recursive:true});await fs.writeFile(work+'/phone-images/'+kind+'-'+(i+1)+'-'+role+'.png',png);

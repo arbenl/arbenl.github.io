@@ -25,8 +25,9 @@ test('week 7 lecture votes have explanations and lab asks for genuine work rathe
  if(!publication.labsPublished){assert.ok(guide.includes('29.10.2026, ora 14:40'));assert.ok(!guide.includes('case-form'));return;}
  for(const word of ['Parashiko','Skedari:','Para:','Pas:','Prova','rikontrollo','Ndryshimi i ri','pa pikë shtesë','gjatë javës'])assert.ok(guide.includes(word),word);
  for(const id of ['pergatitja','parashikimi','korrigjimi','provat','versionet','dorezimi']){const section=guide.split('id="'+id+'"')[1].split('</section><section class="card"')[0];assert.ok(section.includes('class="screen-checkpoint'),'role illustration after '+id);assert.ok(section.includes('Ekrani i shoferit'));assert.ok(section.includes('Ekrani i udhëtarit'));}
+ for(const id of ['sot-kuptoj','cka-dorezoj','harta-90','rezultati-github'])assert.ok(guide.includes('id="'+id+'"'),id);assert.ok(guide.includes('raporti ekzistues i botit'));assert.ok(guide.includes('author%3A%40me'));
  assert.ok(!guide.includes('data-example-file'));assert.ok(!guide.includes('<pre><code>'));assert.ok(guide.includes('nuk provon autorësinë'));
- const report=await readFile('materials/week-07/java-07-model.md','utf8');
+ const report=await readFile('materials/week-07/java-07-model.md','utf8');assert.ok(!report.split('## Rasti im')[0].includes('[PLOTËSO]'),'report instructions must not permanently fail the placeholder check');
  for(const title of ['Rasti im','Parashikimi','Dy probleme','Korrigjimi','Versionet','Ndryshimi i ri','Ndihma nga AI'])assert.ok(report.includes('## '+title));
  for(let n=1;n<=3;n++)assert.ok(report.includes('### Prova '+n));
 });
