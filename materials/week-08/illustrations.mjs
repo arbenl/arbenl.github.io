@@ -10,3 +10,12 @@ export function portrait(index){
  const [role,status,label,value,reason]=states[index];
  return `<div class="portrait8 ${index===3?'driver8':'passenger8'}"><div class="handset8" role="img" aria-label="Telefoni i ${role}. ${status}. ${value}"><i></i><strong>RideShare</strong><small>${role} · ID 2</small><hr><span>Ferizaj → AAB</span><section><small>${label}</small><b>${value}</b></section><em>${status}</em><div class="home8"></div></div><aside><strong>Çfarë ndryshoi në ekran?</strong><p>${reason}</p></aside></div>`;
 }
+
+export const journeyMap = `<figure style="margin:12px 0"><svg role="img" aria-label="Skemë e udhëtimit: Dritoni ndalet te biblioteka për Artën dhe vazhdojnë bashkë te Kolegji AAB" viewBox="0 0 840 240" style="display:block;width:100%;max-height:300px">
+<rect width="840" height="240" rx="16" fill="#14283b"/>
+<g fill="none" stroke="#334858" stroke-width="9"><path d="M0 80H840M0 180H840M190 0V240M530 0V240M680 0V240"/></g>
+<path d="M20 155H215" fill="none" stroke="#ffcf86" stroke-width="6" stroke-dasharray="10 7"/>
+<path d="M215 155H395Q420 155 420 130V100Q420 80 445 80H708" fill="none" stroke="#82ead2" stroke-width="9"/>
+<path d="m555 68 18 12-18 12" fill="none" stroke="#14283b" stroke-width="5"/>
+<circle cx="215" cy="155" r="13" fill="#ffcf86"/><circle cx="708" cy="80" r="13" fill="#82ead2"/>
+<g font-family="Arial" fill="#fff"><text x="115" y="115" font-size="27" font-weight="bold">Biblioteka</text><text x="115" y="204" font-size="20">Arta pret te hyrja</text><text x="595" y="47" font-size="27" font-weight="bold">Kolegji AAB</text><text x="580" y="130" font-size="20">Mbërrijnë së bashku</text><text x="18" y="138" font-size="18">Dritoni</text></g></svg><figcaption>Skemë mësimore e udhëtimit. Vija e ndërprerë tregon ardhjen e shoferit te vendtakimi. Vija e plotë tregon udhëtimin e përbashkët.</figcaption></figure>`;

@@ -1,4 +1,4 @@
-import {accuracyMap,portrait} from './illustrations.mjs';
+import {accuracyMap,portrait,journeyMap} from './illustrations.mjs';
 import {simulation} from './scenes.mjs';
 const icon=(name)=>'<img width="42" height="42" alt="" src="/assets/week06-icons/'+name+'.svg">';
 const figure=(items)=>'<div class="concepts">'+items.map(([img,label,detail])=>'<div>'+icon(img)+'<strong>'+label+'</strong><span>'+detail+'</span></div>').join('')+'</div>';
@@ -51,4 +51,5 @@ const measurement=sections.find(s=>s[1]==='Ku duhet të ndalet Dritoni?' && s!==
 measurement[1]='Si lexohet përgjigjja e pajisjes?';
 measurement[2]='Shfletuesi i kthen RideShare-it një matje. Secila vlerë i përgjigjet një pyetjeje të ndryshme.';
 measurement[3]=figure([['route','latitude dhe longitude','Ku e vendos pajisja pikën në hartë?'],['smartphone','accuracy · 80 m','Sa e pasigurt është pika e raportuar?'],['clock','timestamp','Kur u mor kjo matje?']])+'<p class="example">RideShare i jep Artës mundësinë ta emërtojë vendtakimin edhe kur leximi dështon. Konfirmimi shfaqet fillimisht në telefonin e saj. Që Dritoni ta shohë, aplikacioni duhet t’ia dërgojë.</p>';
+sections.splice(2,0,['','Nga biblioteka te Kolegji AAB','Dritoni ka një vend të lirë dhe po shkon në ligjëratë. Arta po shkon në të njëjtin kolegj. Edhe kur e dinë destinacionin, duhet të merren vesh ku të takohen.',journeyMap+'<p class="example">Arta zgjedh “Te hyrja e bibliotekës”. Ky është vendtakimi që RideShare duhet ta ndihmojë ta përshkruajë qartë, që Dritoni të dijë ku të ndalet.</p>']);
 export const lesson=sections.map(([,title,body,visual],i)=>'<section class="step"><p class="eyebrow">JAVA 8 · '+(i+1)+' / '+sections.length+'</p><h2>'+title+'</h2><p>'+body+'</p>'+visual+'</section>').join('');
