@@ -12,7 +12,7 @@ const path=[
 ];
 export const walk='<div data-walk><div class="nodes">'+path.map(([img,label,detail],i)=>'<button type="button" aria-pressed="'+(i===0)+'" data-detail="'+detail+'">'+icon(img)+'<span>'+label+'</span></button>').join('')+'</div><p class="walk-detail" role="status">'+path[0][2]+'</p><button type="button" data-advance>Hapi tjetër →</button></div>';
 const sections=[
- ['0–3 min','Sensorët dhe Device APIs','Java 8 lidh telefonin me RideShare. Arta do të tregojë ku ta takojë Dritoni. Deri në fund të orës do të shpjegosh si merret pozicioni, kush kontrollon lejen dhe si zgjidhet vendtakimi kur leximi dështon.',figure([['smartphone','Leximi','Nga vjen sinjali?'],['lock-keyhole','Leja','Kur lejohet përdorimi?'],['car','Vendtakimi','Çfarë kupton shoferi?']])],
+ ['','Sensorët dhe ndërfaqet e pajisjes (Device APIs)','Si mund ta zgjedhë Arta pikën e nisjes në RideShare? Sot ndjekim tri pjesë të ligjëratës.',figure([['smartphone','1 · Matja','Çfarë mat telefoni dhe si e lexon aplikacioni vendndodhjen?'],['lock-keyhole','2 · Leja dhe saktësia','Kush e lejon leximin dhe sa saktë mund ta dallojmë hyrjen?'],['car','3 · Vendtakimi','Shih tri raste: leja pranohet, refuzohet ose leximi dështon.']])],
  ['3–7 min','Një matje fizike bëhet e dhënë','Akselerometri mat përshpejtimin, xhiroskopi mat shpejtësinë e rrotullimit. Sistemi i pozicionimit vlerëson vendndodhjen. Një aplikacion zgjedh aftësinë që i duhet për punën e përdoruesit.',figure([['smartphone','Lëvizje','Telefoni ndryshon shpejtësi.'],['refresh-cw','Rrotullim','Telefoni kthehet rreth boshtit.'],['route','Pozicion','Ku ndodhet afërsisht Arta?']])],
  ['7–11 min','Si e lexon një aplikacion pajisjen?','API (Application Programming Interface) është ndërfaqja përmes së cilës kodi kërkon një aftësi. RideShare përdor navigator.geolocation në shfletues. Sistemi operativ zgjedh burimet e pozicionimit dhe shfletuesi ia kthen rezultatin aplikacionit.', '<p class="example">Për një pikë nisjeje mjafton një lexim me getCurrentPosition(). Ndjekja e vazhdueshme me watchPosition() do të jepte përditësime të tjera dhe do të kërkonte një arsye tjetër për përdoruesin.</p>'],
  ['11–16 min','Ndiq kërkesën nga klikimi te vendtakimi','Hap secilën hallkë të skemës. Dallo çastin kur Vercel shërben faqen nga çasti kur telefoni lexon pajisjen.',walk],
@@ -22,7 +22,7 @@ const sections=[
  ['29–33 min','Rasti 3 · Leximi dështon','Kur API mungon, aplikacioni mund ta dallojë përpara thirrjes. Kur API ekziston, leximi mund të dështojë sepse pozicioni nuk gjendet ose koha mbaron. Në secilën degë ekrani duhet të dalë nga pritja.',figure([['smartphone','Pa mbështetje','Shfaq menjëherë fushën manuale.'],['wifi-off','Pa rezultat','Ofron riprovim ose vendtakim manual.'],['clock','Koha mbaroi','Trego se leximi nuk u krye në kohë.']])],
  ['33–39 min','Demonstrim · Një udhëtim, katër rezultate','Para çdo klikimi klasa parashikon çfarë do të shohë Arta. Pas klikimit një student shpjegon pse ndryshoi ekrani dhe një tjetër shpjegon çfarë di Dritoni.',simulation],
  ['39–43 min','Çfarë do ta provonte dërgimin?','Arta ka konfirmuar “Biblioteka” në telefonin e vet. Për të vërtetuar ndarjen, do të duhej të shihnim kërkesën e pranuar në server dhe të njëjtin vendtakim në ekranin e Dritonit për ID-në e duhur.',figure([['smartphone','Sot','Zgjedhje lokale e konfirmuar.'],['cloud','Hapi i ardhshëm','Serveri pranon dërgimin e autorizuar.'],['car','Prova përfundimtare','Shoferi lexon vendtakimin e duhur.']])],
- ['43–45 min','Dalja nga ligjërata','Në çift, njëri shpjegon si një matje bëhet vendtakim. Tjetri zgjedh një dështim dhe tregon si vazhdon Arta. Në ushtrime do t’i kthesh këto dy shpjegime në sjellje të provueshme.', '<p><a href="prezantimi-ushtrimeve.html">Hap laboratorin · 90 minuta →</a></p>']
+ ['43–45 min','Dalja nga ligjërata','Në çift, njëri shpjegon si një matje bëhet vendtakim. Tjetri zgjedh një dështim dhe tregon si vazhdon Arta. Në ushtrime do t’i kthesh këto dy shpjegime në sjellje të provueshme.', '<p><a href="prezantimi-ushtrimeve.html">Hap laboratorin →</a></p>']
 ];
 sections[4][3]=accuracyMap;
 for(const [position,state] of [[9,3],[7,2],[6,1],[5,0]]){
@@ -35,4 +35,9 @@ sections.find(s=>s[1]==='Çfarë përmban rezultati?')[3]+=vote('Cilën hyrje mu
  ['Hyrjen B','Edhe hyrja A është brenda rrezes. Kërko përshkrimin e Artës.'],
  ['Duhet sqarim nga Arta','Saktë. Koordinatat dhe saktësia japin një zonë. Arta emërton hyrjen.']
 ]);
-export const lesson=sections.map(([time,title,body,visual])=>'<section class="step"><p class="eyebrow">JAVA 8 · '+time+'</p><h2>'+title+'</h2><p>'+body+'</p>'+visual+'</section>').join('');
+sections.splice(1,0,['','Çfarë kemi ndërtuar deri tani?','RideShare nisi me një pyetje: si e gjen Arta udhëtimin e duhur? Sot vazhdojmë nga detajet e atij udhëtimi për të zgjedhur vendtakimin.',figure([
+ ['route','Javët 1–3 · Nga ideja te ekranet','Përcaktuam problemin, skicuam rrjedhën dhe lidhëm listën me detajet e udhëtimit të zgjedhur.'],
+ ['database','Javët 4–5 · Të dhënat dhe lejet','Lexuam udhëtimet nga Neon dhe pamë si kontrollon serveri kush mund ta ndryshojë një udhëtim.'],
+ ['refresh-cw','Javët 6–7 · Pa internet dhe nën provë','Lexuam kopjen lokale dhe provuam çfarë i tregon RideShare përdoruesit kur të dhënat mungojnë ose vjetrohen.']
+])]);
+export const lesson=sections.map(([,title,body,visual],i)=>'<section class="step"><p class="eyebrow">JAVA 8 · '+(i+1)+' / '+sections.length+'</p><h2>'+title+'</h2><p>'+body+'</p>'+visual+'</section>').join('');
