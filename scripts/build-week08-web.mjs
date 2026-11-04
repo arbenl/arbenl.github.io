@@ -1,3 +1,4 @@
+import {lesson,walk} from '../materials/week-08/lesson.mjs';
 import {activities,checkpoints} from '../materials/week-08/scenes.mjs';
 import {readFile,writeFile} from 'node:fs/promises';
 const dir='lendet/2026-2027/mobile/java-08';
@@ -25,7 +26,8 @@ for(const [file,title,data] of [['prezantimi-ligjerates','Ligjërata 8 · Sensor
  const extras=data===lecture?activities:checkpoints;
  const positions=data===lecture?[1,2,3,5]:[1,2,4,5];
  for(let i=positions.length-1;i>=0;i--){const [time,heading,content]=extras[i];slides.splice(positions[i]+1,0,'<section class="step"><p class="eyebrow">JAVA 8 · '+time+'</p><h2>'+heading+'</h2>'+content+'</section>');}
- const steps=slides.join('');
+ if(data===lab)slides.splice(1,0,'<section class="step"><h2>Ku do të punosh sot?</h2><p>Ndiq skemën. Kodi që shkruan sot ekzekutohet te komponenti i klientit, në telefon.</p>'+walk+'</section>');
+ const steps=data===lecture?lesson:slides.join('');
  await writeFile(dir+'/'+file+'.html','<!doctype html><html lang="sq"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+title+'</title><link rel="stylesheet" href="../java-02/week.css"><link rel="stylesheet" href="../java-02/projector.css"><link rel="stylesheet" href="/assets/week-colors.css"><link rel="stylesheet" href="classroom.css"><style>.step p,.step summary{font-size:clamp(19px,2vw,27px);line-height:1.4}summary{cursor:pointer}</style><body data-week="8" data-start-projector="true"><main><nav><a href="./">← Java 8</a><button id="mode">Hap në projektor</button></nav><h1>'+title+'</h1>'+steps+'<div id="controls" hidden><button id="prev">← Para</button><span id="counter"></span><button id="next">Tjetri →</button><button id="exit">Mbyll projektorin</button></div></main><script type="module" src="classroom.mjs"></script><script src="../java-02/projector.js"></script></body></html>');
 }
 let hub=await readFile(dir+'/index.html','utf8');

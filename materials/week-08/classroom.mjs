@@ -28,3 +28,15 @@ for (const demo of document.querySelectorAll('[data-demo]')) {
   demo.querySelector('.reset').onclick = start;
   start();
 }
+for (const walk of document.querySelectorAll('[data-walk]')) {
+  const nodes = [...walk.querySelectorAll('[data-detail]')];
+  let current = 0;
+  function select(index) {
+    current = index;
+    nodes.forEach((node,i)=>node.setAttribute('aria-pressed',String(i===index)));
+    walk.querySelector('.walk-detail').textContent = nodes[index].dataset.detail;
+    walk.querySelector('[data-advance]').textContent = index===nodes.length-1?'Nga fillimi':'Hapi tjetër →';
+  }
+  nodes.forEach((node,i)=>node.onclick=()=>select(i));
+  walk.querySelector('[data-advance]').onclick=()=>select((current+1)%nodes.length);
+}
