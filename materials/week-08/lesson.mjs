@@ -1,3 +1,4 @@
+import {accuracyMap,portrait} from './illustrations.mjs';
 import {simulation} from './scenes.mjs';
 const icon=(name)=>'<img width="42" height="42" alt="" src="/assets/week06-icons/'+name+'.svg">';
 const figure=(items)=>'<div class="concepts">'+items.map(([img,label,detail])=>'<div>'+icon(img)+'<strong>'+label+'</strong><span>'+detail+'</span></div>').join('')+'</div>';
@@ -23,4 +24,15 @@ const sections=[
  ['39–43 min','Çfarë do ta provonte dërgimin?','Arta ka konfirmuar “Biblioteka” në telefonin e vet. Për të vërtetuar ndarjen, do të duhej të shihnim kërkesën e pranuar në server dhe të njëjtin vendtakim në ekranin e Dritonit për ID-në e duhur.',figure([['smartphone','Sot','Zgjedhje lokale e konfirmuar.'],['cloud','Hapi i ardhshëm','Serveri pranon dërgimin e autorizuar.'],['car','Prova përfundimtare','Shoferi lexon vendtakimin e duhur.']])],
  ['43–45 min','Dalja nga ligjërata','Në çift, njëri shpjegon si një matje bëhet vendtakim. Tjetri zgjedh një dështim dhe tregon si vazhdon Arta. Në ushtrime do t’i kthesh këto dy shpjegime në sjellje të provueshme.', '<p><a href="prezantimi-ushtrimeve.html">Hap laboratorin · 90 minuta →</a></p>']
 ];
+sections[4][3]=accuracyMap;
+for(const [position,state] of [[9,3],[7,2],[6,1],[5,0]]){
+ const [time,title]=sections[position];
+ sections.splice(position+1,0,[time,title+' · Ekrani i '+(state===3?'Dritonit':'Artës'),'Ilustrim me të dhëna fiktive.',portrait(state)]);
+}
+const vote=(question,choices)=>'<div data-vote><p><strong>'+question+'</strong></p>'+choices.map(([label,reason])=>'<button aria-pressed="false" data-reason="'+reason+'">'+label+'</button>').join('')+'<output aria-live="polite"></output></div>';
+sections.find(s=>s[1]==='Çfarë përmban rezultati?')[3]+=vote('Cilën hyrje mund të zgjedhim vetëm nga kjo matje?',[
+ ['Hyrjen A','Edhe hyrja B është brenda rrezes. Kërko përshkrimin e Artës.'],
+ ['Hyrjen B','Edhe hyrja A është brenda rrezes. Kërko përshkrimin e Artës.'],
+ ['Duhet sqarim nga Arta','Saktë. Koordinatat dhe saktësia japin një zonë. Arta emërton hyrjen.']
+]);
 export const lesson=sections.map(([time,title,body,visual])=>'<section class="step"><p class="eyebrow">JAVA 8 · '+time+'</p><h2>'+title+'</h2><p>'+body+'</p>'+visual+'</section>').join('');

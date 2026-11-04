@@ -40,3 +40,11 @@ for (const walk of document.querySelectorAll('[data-walk]')) {
   nodes.forEach((node,i)=>node.onclick=()=>select(i));
   walk.querySelector('[data-advance]').onclick=()=>select((current+1)%nodes.length);
 }
+for (const vote of document.querySelectorAll('[data-vote]')) {
+  for (const button of vote.querySelectorAll('button')) {
+    button.onclick = () => {
+      for (const option of vote.querySelectorAll('button')) option.setAttribute('aria-pressed',String(option===button));
+      vote.querySelector('output').textContent = button.dataset.reason;
+    };
+  }
+}
