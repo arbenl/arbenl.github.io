@@ -40,4 +40,15 @@ sections.splice(1,0,['','Çfarë kemi ndërtuar deri tani?','RideShare nisi me n
  ['database','Javët 4–5 · Të dhënat dhe lejet','Lexuam udhëtimet nga Neon dhe pamë si kontrollon serveri kush mund ta ndryshojë një udhëtim.'],
  ['refresh-cw','Javët 6–7 · Pa internet dhe nën provë','Lexuam kopjen lokale dhe provuam çfarë i tregon RideShare përdoruesit kur të dhënat mungojnë ose vjetrohen.']
 ])]);
+sections[0]=['','Ku duhet të ndalet Dritoni?',
+'Arta pret pranë bibliotekës ose pranë parkingut. Hyrjet janë 40 m larg. Telefoni jep një pozicion me saktësi të vlerësuar prej 80 m. Dritoni sheh hartën. A ka informacion të mjaftueshëm për të zgjedhur hyrjen?',
+accuracyMap+vote('Çfarë do t’i këshilloje Dritonit?',[
+ ['Shko te biblioteka','Edhe parkingu bie brenda rrethit. Dritonit i mungon emri i vendtakimit.'],
+ ['Shko te parkingu','Edhe biblioteka bie brenda rrethit. Dritonit i mungon emri i vendtakimit.'],
+ ['Pyete Artën','Arta sqaron «Po pres te hyrja pranë bibliotekës». Tani Dritoni e di ku ta presë.']
+])+ '<p><strong>Sensorët dhe ndërfaqet e pajisjes (Device APIs)</strong> · Sot ndjekim matjen në telefon, lejen në shfletues dhe konfirmimin e vendtakimit nga Arta.</p>'];
+const measurement=sections.find(s=>s[1]==='Ku duhet të ndalet Dritoni?' && s!==sections[0]);
+measurement[1]='Si lexohet përgjigjja e pajisjes?';
+measurement[2]='Shfletuesi i kthen RideShare-it një matje. Secila vlerë i përgjigjet një pyetjeje të ndryshme.';
+measurement[3]=figure([['route','latitude dhe longitude','Ku e vendos pajisja pikën në hartë?'],['smartphone','accuracy · 80 m','Sa e pasigurt është pika e raportuar?'],['clock','timestamp','Kur u mor kjo matje?']])+'<p class="example">RideShare i jep Artës mundësinë ta emërtojë vendtakimin edhe kur leximi dështon. Konfirmimi shfaqet fillimisht në telefonin e saj. Që Dritoni ta shohë, aplikacioni duhet t’ia dërgojë.</p>';
 export const lesson=sections.map(([,title,body,visual],i)=>'<section class="step"><p class="eyebrow">JAVA 8 · '+(i+1)+' / '+sections.length+'</p><h2>'+title+'</h2><p>'+body+'</p>'+visual+'</section>').join('');
