@@ -21,3 +21,13 @@
 
 ## Ndihma nga AI (Artificial Intelligence – inteligjencë artificiale)
 [PLOTËSO] Çfarë ndihme more dhe çfarë verifikove vetë, ose: Nuk përdora AI.
+
+## Prova me një hyrje të re
+[PLOTËSO] Zgjidh me kolegun njërën: tekst me vetëm hapësira ose ndryshim vendtakimi pa konfirmim.
+- Hyrja që provova:
+- Parashikimi im para klikimit:
+- Çfarë pashë realisht:
+- Skedari dhe funksioni që e shpjegojnë:
+- Çfarë kuptova ose korrigjova:
+
+Këtë pjesë e shpjegoj në klasë. Kontrolli automatik nuk verifikon vërtetësinë e provës.

@@ -12,3 +12,19 @@ await writeFile(dir+'/index.html',hub);
 await writeFile(dir+'/ushtrimet.html',guide8);
 
 for(const asset of ['classroom.css','classroom.mjs']) await writeFile(dir+'/'+asset,await readFile('materials/week-08/'+asset));
+
+// Preserve the generated report and add the in-class reasoning prompt once.
+const reportPath=dir+'/java-08-model.md';
+let report=await readFile(reportPath,'utf8');
+if(!report.includes('## Prova me një hyrje të re')) report += `
+## Prova me një hyrje të re
+[PLOTËSO] Zgjidh me kolegun njërën: tekst me vetëm hapësira ose ndryshim vendtakimi pa konfirmim.
+- Hyrja që provova:
+- Parashikimi im para klikimit:
+- Çfarë pashë realisht:
+- Skedari dhe funksioni që e shpjegojnë:
+- Çfarë kuptova ose korrigjova:
+
+Këtë pjesë e shpjegoj në klasë. Kontrolli automatik nuk verifikon vërtetësinë e provës.
+`;
+await writeFile(reportPath,report);
