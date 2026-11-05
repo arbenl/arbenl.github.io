@@ -51,7 +51,7 @@ test('each of fifteen weeks has a home and a consistent submission path',async()
    assert.ok(page.includes(`java-${n}.md`));
    assert.ok((await read(`lendet/2026-2027/mobile/java-${n}/java-${n}-model.md`)).includes('Provat që bëra'));
    const exercises=await read(`lendet/2026-2027/mobile/java-${n}/ushtrimet.html`);
-   assert.ok(exercises.includes(week===6?'4. Dorëzo dhe lexo përgjigjen':week===4 || week===5 || week===7?'6. Dorëzo dhe lexo përgjigjen':week===3?'5. Merr përgjigjen e GitHub-it':'4. Dorëzo detyrën'),`week ${week}: exercise link stopped working`);
+   assert.ok(exercises.includes(week===8?'Hapi 6 · Lexo përgjigjen dhe korrigjo':week===6?'4. Dorëzo dhe lexo përgjigjen':week===4 || week===5 || week===7?'6. Dorëzo dhe lexo përgjigjen':week===3?'5. Merr përgjigjen e GitHub-it':'4. Dorëzo detyrën'),`week ${week}: exercise link stopped working`);
   }
  }
 });
