@@ -7,7 +7,7 @@ for(const [file,title,steps] of [['prezantimi-ligjerates','Ligjërata 8 · Senso
 }
 let hub=await readFile(dir+'/index.html','utf8');
 hub=hub.replace('<p>Prezantimi i ligjëratës do të publikohet para orës.</p>','<p><a class="button" href="prezantimi-ligjerates.html">Hap ligjëratën · 45 minuta</a></p>').replace('href="#hapat">Shiko hapat në këtë faqe','href="prezantimi-ushtrimeve.html">Fillo ushtrimet · 90 minuta');
-hub=hub.replace('Fillo ushtrimet · 90 minuta</a>','Fillo ushtrimet · 90 minuta</a><p><a href="#hapat">Shiko hapat në këtë faqe</a> · <a href="ushtrimet.html">Udhëzimi i ushtrimeve</a></p>');
+hub=hub.replace('Fillo ushtrimet · 90 minuta</a>','Fillo ushtrimet · 90 minuta</a><p><a href="#hapat">Shiko hapat në këtë faqe</a> · <a href="ushtrimet.html">Udhëzimi i ushtrimeve</a> · <a href="demonstrimi.html">Shiko rezultatin në aplikacion</a></p>');
 await writeFile(dir+'/index.html',hub);
 await writeFile(dir+'/ushtrimet.html',guide8);
 
