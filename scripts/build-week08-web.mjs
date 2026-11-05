@@ -28,3 +28,7 @@ if(!report.includes('## Prova me një hyrje të re')) report += `
 Këtë pjesë e shpjegoj në klasë. Kontrolli automatik nuk verifikon vërtetësinë e provës.
 `;
 await writeFile(reportPath,report);
+
+await writeFile(dir+'/testimi-automatik.html',await readFile('materials/week-08/testimi-automatik.html'));
+
+for(const name of ['demonstrimi.html','demonstrimi.mjs']) await writeFile(dir+'/'+name,await readFile('materials/week-08/'+name));
