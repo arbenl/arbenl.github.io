@@ -1,10 +1,7 @@
 import Link from "next/link";
+import { SignIn } from "../../components/sign-in";
 import { StudentGitHubLink } from "../../components/student-github-link";
-import {
-  StudentAccessLogin,
-  StudentAccessCode,
-  SwitchAccount,
-} from "../../components/student-access";
+import { SwitchAccount } from "../../components/student-access";
 import {
   attendanceService,
   AttendanceServiceError,
@@ -34,22 +31,21 @@ export default async function ProgressPage({
         <section className="status-card">
           <p className="eyebrow">Mobile 2026/2027</p>
           <h1>Karta e studentit</h1>
-          <StudentAccessLogin />
+          <p>
+            Hyr me llogarinë tënde GitHub për të hapur kartën nga çdo telefon
+            ose shfletues.
+          </p>
+          <SignIn callbackUrl="/progress" />
           <p>
             Karta dhe regjistri hapen nga studentët e regjistruar në këtë lëndë
             dhe profesori.
           </p>
           <p>
-            Përdor të njëjtin shfletues ku bëre regjistrimin me QR. Nëse ke
-            profil me GitHub, hyr me të njëjtën llogari. Për regjistrimin e parë
-            skano QR-në e profesorit gjatë orës.
+            Nëse je regjistruar fillimisht me QR dhe email, lidh GitHub-in një
+            herë nga karta në pajisjen ku je i kyçur. Për regjistrimin e parë në
+            lëndë skano QR-në e profesorit gjatë orës.
           </p>
-          <Link
-            className="admin-link"
-            href="/api/auth/signin?callbackUrl=/progress"
-          >
-            Hyr me GitHub
-          </Link>
+
           <p>
             <Link href="https://arbenl.github.io/lendet/2026-2027/mobile/#javet">
               Vazhdo te materialet e lëndës →
@@ -85,7 +81,7 @@ export default async function ProgressPage({
               : (session?.user?.name ?? "Student")}
           </strong>
         </p>
-        <SwitchAccount />
+        <SwitchAccount />{report.viewerIsStaff&&<p><Link className="admin-link" href="/staff">Hap panelin e profesorit →</Link></p>}
         <p>
           Pjesëmarrja nga QR-ja, rezultatet e publikuara të testit dhe dorëzimet
           në GitHub.
@@ -113,7 +109,6 @@ export default async function ProgressPage({
       )}
       {!report.viewerIsStaff && report.viewerRosterId && (
         <>
-          <StudentAccessCode />
           <StudentGitHubLink />
         </>
       )}

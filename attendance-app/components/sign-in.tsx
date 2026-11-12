@@ -10,6 +10,7 @@ export function SignIn({ callbackUrl = "/student" }: SignInProps) {
   return (
     <button
       type="button"
+      className="student-control primary-action"
       onClick={() => void signIn("github", { callbackUrl })}
     >
       Hyr me GitHub

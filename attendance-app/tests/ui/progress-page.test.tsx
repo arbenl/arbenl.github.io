@@ -1,3 +1,4 @@
+import {render,screen,cleanup} from "@testing-library/react";
 import { expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   report: vi.fn(),
@@ -23,7 +24,11 @@ it("does not read submissions or test results before membership authorization", 
   mocks.report.mockRejectedValue(
     new AttendanceServiceError(403, "forbidden", "Forbidden"),
   );
-  await Page();
+  const page = await Page();
+  render(page);
+  expect(screen.getByRole("button", { name: "Hyr me GitHub" })).toBeTruthy();
+  expect(screen.queryByLabelText("Kodi personal")).toBeNull();
+  cleanup();
   expect(mocks.submissions).not.toHaveBeenCalled();
   expect(mocks.tests).not.toHaveBeenCalled();
 });

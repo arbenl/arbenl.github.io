@@ -68,7 +68,7 @@ export function StudentGitHubLink() {
     }
   }
   return (
-    <details className="admin-section">
+    <details className="admin-section" open={profile?.githubLogin === null}>
       <summary>Lidh GitHub-in dhe repository-n tim</summary>
       <p>
         {profile
@@ -95,7 +95,11 @@ export function StudentGitHubLink() {
       </p>
       {profile?.githubLogin && (
         <form className="student-form" onSubmit={save}>
-          {profile.repository&&<p><a href={profile.repository}>Hap repository-n e verifikuar →</a></p>}
+          {profile.repository && (
+            <p>
+              <a href={profile.repository}>Hap repository-n e verifikuar →</a>
+            </p>
+          )}
           <label htmlFor="student-repo-url">Repository i punës</label>
           <input
             className="student-control"
