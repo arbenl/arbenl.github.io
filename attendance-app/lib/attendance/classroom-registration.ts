@@ -60,7 +60,7 @@ export async function classroomRegistrationReady(): Promise<boolean> {
   }
 }
 
-async function consumeLimit(db: Executor, action: string, subject: string, limit: number) {
+export async function consumeLimit(db: Executor, action: string, subject: string, limit: number) {
   const key = createHmac("sha256", getEnv().RATE_LIMIT_SECRET).update(subject).digest().toString("hex");
   // This deliberately commits independently of enrollment, including failed identity matches.
   const rows = await db.execute(sql`

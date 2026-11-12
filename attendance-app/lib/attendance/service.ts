@@ -1579,6 +1579,8 @@ async function getCourseActivityReport(session: Session | null) {
     .where(and(eq(roster.semesterId, semester.id), eq(roster.userId, actor.userId))).limit(1);
   if (!membership) await requireStaffActor(db, session);
 
+  const isProfessor=actor.authMethod!=="classroom"&&actor.githubId===getEnv().PROFESSOR_GITHUB_ID;
+  if(isProfessor)await requireStaffActor(db,session);
   // Select only the shared report's fields. Private IDs, email and correction reasons stay private.
   const students = await db.select({ rosterId: roster.id, fullName: roster.fullName,
     groupName: roster.groupName, githubId: users.githubId, login: users.githubUsername })
@@ -1592,7 +1594,7 @@ async function getCourseActivityReport(session: Session | null) {
     .from(attendanceRecords).innerJoin(classSessions, eq(classSessions.id, attendanceRecords.sessionId))
     .where(and(eq(classSessions.semesterId, semester.id), eq(attendanceRecords.status, "present"),
       inArray(classSessions.state, ["open", "closed"])));
-  return { viewerRosterId: membership?.id ?? null, students: students.sort((a, b) => a.fullName.localeCompare(b.fullName, "sq", { sensitivity: "base" })), sessions, present };
+  return { viewerIsStaff:isProfessor, viewerRosterId: isProfessor ? null : membership?.id ?? null, students: students.filter(s=>s.githubId!==getEnv().PROFESSOR_GITHUB_ID).sort((a, b) => a.fullName.localeCompare(b.fullName, "sq", { sensitivity: "base" })), sessions, present };
 }
 
 async function getWeeklyAttendanceReport(session: Session | null) {

@@ -139,6 +139,17 @@ export function createAuthOptions(
     providers: [
       {
         ...CredentialsProvider({
+          id: 'student-access', name: 'Student access', credentials: {email:{},code:{}},
+          async authorize(credentials,request){
+            if(!credentials)return null;
+            try{const {loginStudentAccess}=await import('../attendance/student-access');const result=await loginStudentAccess(credentials,request.headers?.['x-forwarded-for']?.split(',')[0]?.trim()||'unknown');return {id:result.id,name:result.name,email:result.email,userId:result.id,authMethod:'classroom',rosterId:result.rosterId,semesterId:result.semesterId};}
+            catch{throw new Error('invalid_access');}
+          }
+        }),id:'student-access'
+      },
+
+      {
+        ...CredentialsProvider({
         id: "classroom", name: "Classroom registration",
         credentials: { token: {}, email: {}, firstName: {}, lastName: {}, studentId: {}, groupName: {} },
         async authorize(credentials, request) {
@@ -195,7 +206,7 @@ export function createAuthOptions(
     },
     callbacks: {
       async signIn({ user, profile, account }) {
-        if ((account?.provider === "classroom" || account?.provider === "colloquium")) return getSessionIdentity({ expires: "", user })?.authMethod === "classroom";
+        if ((account?.provider === "classroom" || account?.provider === "colloquium" || account?.provider === "student-access")) return getSessionIdentity({ expires: "", user })?.authMethod === "classroom";
         const identity = readGitHubIdentity(profile);
 
         if (!identity) {
@@ -209,7 +220,7 @@ export function createAuthOptions(
         return true;
       },
       async jwt({ token, profile, user, account }) {
-        if ((account?.provider === "classroom" || account?.provider === "colloquium")) {
+        if ((account?.provider === "classroom" || account?.provider === "colloquium" || account?.provider === "student-access")) {
           const identity = getSessionIdentity({ expires: "", user });
           delete token.githubId;
           delete token.githubLogin;

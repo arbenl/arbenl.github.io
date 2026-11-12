@@ -1,5 +1,10 @@
 import Link from "next/link";
 import {
+  StudentAccessLogin,
+  StudentAccessCode,
+  SwitchAccount,
+} from "../../components/student-access";
+import {
   attendanceService,
   AttendanceServiceError,
 } from "../../lib/attendance/service";
@@ -25,6 +30,7 @@ export default async function ProgressPage() {
         <section className="status-card">
           <p className="eyebrow">Mobile 2026/2027</p>
           <h1>Karta e studentit</h1>
+          <StudentAccessLogin />
           <p>
             Karta dhe regjistri hapen nga studentët e regjistruar në këtë lëndë
             dhe profesori.
@@ -62,7 +68,20 @@ export default async function ProgressPage() {
     <main className="admin-shell" id="permbajtja-kryesore">
       <header className="admin-page-header">
         <p className="eyebrow">Programimi për Pajisje Mobile · 2026/2027</p>
-        <h1>Karta e studentit dhe regjistri i klasës</h1>
+        <h1>
+          {report.viewerIsStaff
+            ? "Regjistri i studentëve · Profesori Arben"
+            : "Karta e studentit dhe regjistri i klasës"}
+        </h1>
+        <p>
+          Hyrë si:{" "}
+          <strong>
+            {report.viewerIsStaff
+              ? "Profesor Arben"
+              : (session?.user?.name ?? "Student")}
+          </strong>
+        </p>
+        <SwitchAccount />
         <p>
           Pjesëmarrja nga QR-ja, rezultatet e publikuara të testit dhe dorëzimet
           në GitHub.
@@ -77,6 +96,7 @@ export default async function ProgressPage() {
           · <Link href="/report">Raporti sipas javëve</Link>
         </p>
       </header>
+      {!report.viewerIsStaff && report.viewerRosterId && <StudentAccessCode />}
       <StudentProgress cards={cards} viewerId={report.viewerRosterId ?? null} />
     </main>
   );

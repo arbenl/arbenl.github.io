@@ -66,6 +66,8 @@ export function progressCards(
     return {
       id: student.rosterId,
       name: student.fullName,
+      possibleDuplicate: report.students.some(s=>s.rosterId!==student.rosterId&&s.fullName.normalize("NFD").replace(/\p{Diacritic}/gu,"").toLowerCase().trim()===student.fullName.normalize("NFD").replace(/\p{Diacritic}/gu,"").toLowerCase().trim()),
+      githubLogin: student.login??null,
       group: student.groupName,
       linked: !!student.githubId,
       lecture,

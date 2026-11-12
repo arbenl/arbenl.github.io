@@ -130,7 +130,7 @@ export function StudentProgress({
               .join("")}
           </div>
           <h2 id="identity-name">{current.name}</h2>
-          <p>Grupi {current.group}</p>
+          <p>Grupi {current.group}</p>{current.possibleDuplicate&&<p role="status">Në regjistër ekziston edhe një profil me këtë emër. Profesori duhet të verifikojë identifikuesit para se të bashkojë të dhënat.</p>}{current.githubLogin&&<p>Llogaria e dorëzimeve: <a href={`https://github.com/${current.githubLogin}`}>{current.githubLogin}</a></p>}{current.total===0&&<p>Nuk u gjet check-in i konfirmuar për këtë profil. Nëse ke marrë pjesë, kërko verifikimin e profesorit; mos krijo profil tjetër.</p>}
           <dl className="identity-metrics">
             <div>
               <dt>Ligjërata</dt>
