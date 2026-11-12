@@ -1594,7 +1594,13 @@ async function getCourseActivityReport(session: Session | null) {
     .from(attendanceRecords).innerJoin(classSessions, eq(classSessions.id, attendanceRecords.sessionId))
     .where(and(eq(classSessions.semesterId, semester.id), eq(attendanceRecords.status, "present"),
       inArray(classSessions.state, ["open", "closed"])));
-  return { viewerIsStaff:isProfessor, viewerRosterId: isProfessor ? null : membership?.id ?? null, students: students.filter(s=>s.githubId!==getEnv().PROFESSOR_GITHUB_ID).sort((a, b) => a.fullName.localeCompare(b.fullName, "sq", { sensitivity: "base" })), sessions, present };
+  const {getSubmissionAccounts}=await import('./submission-accounts');
+  const submissionAccounts=await getSubmissionAccounts(semester.id);
+  const mappedStudents=students.filter(s=>s.githubId!==getEnv().PROFESSOR_GITHUB_ID).map(student=>{
+    const accounts=submissionAccounts.filter(a=>a.rosterId===student.rosterId);
+    return {...student,loginGithubId:student.githubId,githubId:student.githubId??accounts[0]?.githubId??null,submissionGithubIds:accounts.map(a=>a.githubId),submissionLogins:accounts.map(a=>a.login)};
+  });
+  return { viewerIsStaff:isProfessor, viewerRosterId: isProfessor ? null : membership?.id ?? null, students: mappedStudents.sort((a, b) => a.fullName.localeCompare(b.fullName, "sq", { sensitivity: "base" })), sessions, present };
 }
 
 async function getWeeklyAttendanceReport(session: Session | null) {

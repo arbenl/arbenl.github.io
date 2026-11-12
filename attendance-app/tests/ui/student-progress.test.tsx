@@ -114,3 +114,40 @@ it("excludes explicitly marked staff test issues from student progress", async (
     ]),
   ).toEqual([]);
 });
+
+it("keeps teacher-verified submission evidence distinct from an account linked for login", () => {
+  const cards = progressCards(
+    {
+      ...report,
+      students: [
+        {
+          ...report.students[0],
+          githubId: "20",
+          loginGithubId: null,
+          submissionLogins: ["arta-work"],
+        },
+      ],
+    },
+    [
+      {
+        githubId: "20",
+        login: "arta-work",
+        week: 1,
+        number: 1,
+        url: "https://github.com/example/course/issues/1",
+      },
+    ],
+    [],
+    new Date("2026-09-17T12:00:00Z"),
+  );
+  expect(cards[0]).toMatchObject({
+    linked: false,
+    percentage: 100,
+    submitted: 1,
+  });
+  render(<StudentProgress cards={cards} viewerId="1" />);
+  expect(screen.queryByText(/Vetëm profesori/)).toBeNull();
+  expect(
+    screen.getByText(/Dorëzime të verifikuara nga: arta-work/),
+  ).toBeTruthy();
+});

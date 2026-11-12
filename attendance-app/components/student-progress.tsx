@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { StaffSubmissionAccount } from "./staff-submission-account";
 import type { ProgressCard } from "../lib/attendance/progress";
 const normalize = (s: string) =>
   s
@@ -10,9 +11,11 @@ const normalize = (s: string) =>
 export function StudentProgress({
   cards,
   viewerId,
+  isStaff = false,
 }: {
   cards: ProgressCard[];
   viewerId: string | null;
+  isStaff?: boolean;
 }) {
   const [query, setQuery] = useState(""),
     [group, setGroup] = useState(""),
@@ -130,7 +133,35 @@ export function StudentProgress({
               .join("")}
           </div>
           <h2 id="identity-name">{current.name}</h2>
-          <p>Grupi {current.group}</p>{current.possibleDuplicate&&<p role="status">Në regjistër ekziston edhe një profil me këtë emër. Profesori duhet të verifikojë identifikuesit para se të bashkojë të dhënat.</p>}{current.githubLogin&&<p>Llogaria e dorëzimeve: <a href={`https://github.com/${current.githubLogin}`}>{current.githubLogin}</a></p>}{current.total===0&&<p>Nuk u gjet check-in i konfirmuar për këtë profil. Nëse ke marrë pjesë, kërko verifikimin e profesorit; mos krijo profil tjetër.</p>}
+          <p>Grupi {current.group}</p>
+          {current.submissionLogins.length > 0 && (
+            <p>
+              Dorëzime të verifikuara nga: {current.submissionLogins.join(", ")}
+            </p>
+          )}
+          {isStaff && (
+            <StaffSubmissionAccount key={current.id} rosterId={current.id} />
+          )}
+          {current.possibleDuplicate && (
+            <p role="status">
+              Në regjistër ekziston edhe një profil me këtë emër. Profesori
+              duhet të verifikojë identifikuesit para se të bashkojë të dhënat.
+            </p>
+          )}
+          {current.githubLogin && (
+            <p>
+              Llogaria e hyrjes:{" "}
+              <a href={`https://github.com/${current.githubLogin}`}>
+                {current.githubLogin}
+              </a>
+            </p>
+          )}
+          {current.total === 0 && (
+            <p>
+              Nuk u gjet check-in i konfirmuar për këtë profil. Nëse ke marrë
+              pjesë, kërko verifikimin e profesorit; mos krijo profil tjetër.
+            </p>
+          )}
           <dl className="identity-metrics">
             <div>
               <dt>Ligjërata</dt>
@@ -213,7 +244,8 @@ export function StudentProgress({
           </ul>
           {!current.linked && (
             <p>
-              Për t’i njohur dorëzimet, hap “Lidh GitHub-in dhe repository-n tim” në kartën tënde dhe konfirmo llogarinë që përdor për detyrat.
+              Për t’i njohur dorëzimet, hap “Lidh GitHub-in dhe repository-n
+              tim” në kartën tënde dhe konfirmo llogarinë që përdor për detyrat.
             </p>
           )}
           <details>

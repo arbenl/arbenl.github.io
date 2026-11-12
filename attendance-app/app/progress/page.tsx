@@ -56,7 +56,7 @@ export default async function ProgressPage({
     );
   }
   const [submissions, tests] = await Promise.allSettled([
-    loadSubmissions(),
+    loadSubmissions(report.students),
     progressResults(session),
   ]);
   const cards = progressCards(
@@ -81,7 +81,21 @@ export default async function ProgressPage({
               : (session?.user?.name ?? "Student")}
           </strong>
         </p>
-        <SwitchAccount />{report.viewerIsStaff&&<p><Link className="admin-link" href="/staff">Hap panelin e profesorit →</Link></p>}
+        <SwitchAccount />
+        {report.viewerIsStaff && (
+          <p>
+            <a className="admin-link" href="/api/staff/course-audit">
+              Shkarko të dhënat për auditimin e gjithë klasës →
+            </a>
+          </p>
+        )}
+        {report.viewerIsStaff && (
+          <p>
+            <Link className="admin-link" href="/staff">
+              Hap panelin e profesorit →
+            </Link>
+          </p>
+        )}
         <p>
           Pjesëmarrja nga QR-ja, rezultatet e publikuara të testit dhe dorëzimet
           në GitHub.
@@ -112,7 +126,11 @@ export default async function ProgressPage({
           <StudentGitHubLink />
         </>
       )}
-      <StudentProgress cards={cards} viewerId={report.viewerRosterId ?? null} />
+      <StudentProgress
+        cards={cards}
+        viewerId={report.viewerRosterId ?? null}
+        isStaff={report.viewerIsStaff}
+      />
     </main>
   );
 }

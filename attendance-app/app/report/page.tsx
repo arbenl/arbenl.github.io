@@ -34,7 +34,7 @@ export default async function CourseReportPage({ searchParams }: {
     ? requested : Math.max(1, ...report.sessions.map(s => s.week));
   const sessions = report.sessions.filter(s => s.week === week).sort((a, b) => a.title.localeCompare(b.title, "sq"));
   let submissions: Awaited<ReturnType<typeof loadSubmissions>> | null;
-  try { submissions = await loadSubmissions(); } catch { submissions = null; }
+  try { submissions = await loadSubmissions(report.students); } catch { submissions = null; }
   const weeklySubmissions = submissions?.filter(s => s.week === week) ?? [];
   const present = new Set(report.present.map(r => `${r.rosterId}:${r.sessionId}`));
   const rosterAccounts = new Set(report.students.map(s => s.githubId));

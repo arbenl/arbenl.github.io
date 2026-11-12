@@ -7,7 +7,10 @@ export interface ActivityReport {
     fullName: string;
     groupName: string;
     githubId: string | null;
+    loginGithubId?: string | null;
     login?: string | null;
+    submissionGithubIds?: string[];
+    submissionLogins?: string[];
   }[];
   sessions: {
     id: string;
@@ -66,10 +69,27 @@ export function progressCards(
     return {
       id: student.rosterId,
       name: student.fullName,
-      possibleDuplicate: report.students.some(s=>s.rosterId!==student.rosterId&&s.fullName.normalize("NFD").replace(/\p{Diacritic}/gu,"").toLowerCase().trim()===student.fullName.normalize("NFD").replace(/\p{Diacritic}/gu,"").toLowerCase().trim()),
-      githubLogin: student.login??null,
+      possibleDuplicate: report.students.some(
+        (s) =>
+          s.rosterId !== student.rosterId &&
+          s.fullName
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "")
+            .toLowerCase()
+            .trim() ===
+            student.fullName
+              .normalize("NFD")
+              .replace(/\p{Diacritic}/gu, "")
+              .toLowerCase()
+              .trim(),
+      ),
+      githubLogin: student.login ?? null,
+      submissionLogins: student.submissionLogins ?? [],
       group: student.groupName,
-      linked: !!student.githubId,
+      linked:
+        student.loginGithubId === undefined
+          ? !!student.githubId
+          : !!student.loginGithubId,
       lecture,
       lab,
       total: lecture + lab,

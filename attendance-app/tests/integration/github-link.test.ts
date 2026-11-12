@@ -1,4 +1,6 @@
 import postgres from "postgres";
+import { verifySubmissionAccount } from "../../lib/attendance/submission-accounts";
+import { mapSubmissionAccounts } from "../../lib/attendance/submissions";
 import type { Account, Profile, User } from "next-auth";
 import { encode, decode } from "next-auth/jwt";
 import { createAuthOptions } from "../../lib/auth/options";
@@ -298,4 +300,89 @@ it("recognizes submissions after linking and a fresh-device GitHub session while
     testsBefore,
   );
   expect(await sql`select id from roster`).toHaveLength(1);
+});
+
+it("adds a verified submission source without changing the student login, profile, attendance or score", async () => {
+  const [prof] =
+    await sql`insert into users(github_id,github_username) values('100','professor') returning id`;
+  await sql`insert into staff(user_id,role) values(${prof.id},'professor')`;
+  await sql`update users set github_id='281168996',github_username='ilda-sh' where id=${userId}`;
+  const beforeUser = (await sql`select * from users where id=${userId}`)[0],
+    beforeRoster = (await sql`select * from roster where id=${rosterId}`)[0];
+  const [c] =
+    await sql`insert into class_sessions(semester_id,week_number,kind,group_name,title,state,created_by) values(${session.user.semesterId!},8,'lab','G1','Fixture Lab','closed',${prof.id}) returning id`;
+  const [a] =
+    await sql`insert into attendance_records(session_id,roster_id,status,scanned_at) values(${c.id},${rosterId},'present',now()) returning *`;
+  const [room] =
+    await sql`insert into colloquium_rooms(semester_id,week_number,group_name,token_hash,created_by) values(${session.user.semesterId!},7,'G1',${Buffer.alloc(32, 3)},${prof.id}) returning id`;
+  const [test] =
+    await sql`insert into colloquium_attempts(room_id,semester_id,user_id,roster_id,question_order,score,submitted_at) values(${room.id},${session.user.semesterId!},${userId},${rosterId},'[]'::jsonb,9,now()) returning *`;
+  const source = {
+    number: 647,
+    title: "[MOBILE DORËZIM]",
+    body: "### Java\n\nJava 6\n\n### Linku i punës në GitHub\n\nhttps://github.com/ildasheholli/rideshare-mobile",
+    created_at: "2026-10-22",
+    html_url:
+      "https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues/647",
+    user: { id: 333398587, login: "ildasheholli" },
+  };
+  const load = vi.fn().mockImplementation(async () => Response.json(source));
+  await expect(
+    verifySubmissionAccount(
+      session,
+      { rosterId, issue: 647, reason: "Teacher verified the source" },
+      load,
+    ),
+  ).rejects.toMatchObject({ status: 403 });
+  expect(load).not.toHaveBeenCalled();
+  const staffSession = {
+    expires: "2099",
+    user: { githubId: "100", githubLogin: "professor" },
+  };
+  await verifySubmissionAccount(
+    staffSession,
+    { rosterId, issue: 647, reason: "Teacher verified the source" },
+    load,
+  );
+  const report = await attendanceService.getCourseActivityReport(session);
+  const mapped = mapSubmissionAccounts(
+    parseSubmissions([source]),
+    report.students,
+  );
+  expect(
+    progressCards(report, mapped, [], new Date("2026-11-12T12:00:00Z"))[0],
+  ).toMatchObject({
+    id: rosterId,
+    total: 1,
+    submitted: 1,
+    percentage: 11,
+    submissionLogins: ["ildasheholli"],
+  });
+  expect((await sql`select * from users where id=${userId}`)[0]).toEqual(
+    beforeUser,
+  );
+  expect((await sql`select * from roster where id=${rosterId}`)[0]).toEqual(
+    beforeRoster,
+  );
+  expect(
+    (await sql`select * from attendance_records where id=${a.id}`)[0],
+  ).toEqual(a);
+  expect(
+    (await sql`select * from colloquium_attempts where id=${test.id}`)[0],
+  ).toEqual(test);
+  const [other] =
+    await sql`insert into users(github_id,github_username) values('444','other') returning id`;
+  const [otherRoster] =
+    await sql`insert into roster(semester_id,student_id,full_name,email,group_name,user_id,activated_at) values(${session.user.semesterId!},'OTHER','Other Student','other@example.test','G1',${other.id},now()) returning id`;
+  await expect(
+    verifySubmissionAccount(
+      staffSession,
+      {
+        rosterId: otherRoster.id,
+        issue: 647,
+        reason: "Wrong student must be refused",
+      },
+      load,
+    ),
+  ).rejects.toThrow("account_belongs_to_other_student");
 });
