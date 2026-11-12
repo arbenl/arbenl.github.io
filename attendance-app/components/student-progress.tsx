@@ -213,8 +213,7 @@ export function StudentProgress({
           </ul>
           {!current.linked && (
             <p>
-              Për të lidhur dorëzimet me profilin, kërko ndihmën e profesorit.
-              Nuk i bashkojmë llogaritë vetëm nga emri.
+              Për t’i njohur dorëzimet, hap “Lidh GitHub-in dhe repository-n tim” në kartën tënde dhe konfirmo llogarinë që përdor për detyrat.
             </p>
           )}
           <details>

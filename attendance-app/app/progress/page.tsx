@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { StudentGitHubLink } from "../../components/student-github-link";
 import {
   StudentAccessLogin,
   StudentAccessCode,
@@ -14,7 +15,10 @@ import { progressResults } from "../../lib/colloquium/service";
 import { progressCards } from "../../lib/attendance/progress";
 import { StudentProgress } from "../../components/student-progress";
 export const dynamic = "force-dynamic";
-export default async function ProgressPage() {
+export default async function ProgressPage({
+  searchParams,
+}: { searchParams?: Promise<{ github?: string }> } = {}) {
+  const githubStatus = (await searchParams)?.github;
   const session = await getCurrentSession();
   let report;
   try {
@@ -96,7 +100,23 @@ export default async function ProgressPage() {
           · <Link href="/report">Raporti sipas javëve</Link>
         </p>
       </header>
-      {!report.viewerIsStaff && report.viewerRosterId && <StudentAccessCode />}
+      {githubStatus === "link_failed" && (
+        <p role="alert">
+          GitHub-i nuk u lidh. Llogaria mund të jetë e lidhur me një profil
+          tjetër ose konfirmimi ka skaduar. Profili yt nuk u ndryshua.
+        </p>
+      )}
+      {githubStatus === "linked" && (
+        <p role="status">
+          GitHub-i u konfirmua. Dorëzimet përditësohen brenda 5 minutave.
+        </p>
+      )}
+      {!report.viewerIsStaff && report.viewerRosterId && (
+        <>
+          <StudentAccessCode />
+          <StudentGitHubLink />
+        </>
+      )}
       <StudentProgress cards={cards} viewerId={report.viewerRosterId ?? null} />
     </main>
   );

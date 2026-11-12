@@ -403,3 +403,20 @@ describe('classroom callback security', () => {
     await expect(provider.options.authorize({}, {headers:{}})).rejects.toThrow(/^registration_failed$/);
   });
 });
+
+it('preserves the canonical classroom identity after a verified GitHub linking callback',async()=>{
+ const linked={id:'00000000-0000-4000-8000-000000000001',authMethod:'classroom' as const,rosterId:'00000000-0000-4000-8000-000000000002',semesterId:'00000000-0000-4000-8000-000000000003',email:'arta@example.com',name:'Arta'};
+ const upsert=vi.fn();const link=vi.fn().mockResolvedValue(linked);const options=createAuthOptions(authEnvironment,{upsertUser:upsert,linkGitHub:link});
+ const user={id:'777',name:'OAuth name'};
+ const account={provider:'github',providerAccountId:'777',type:'oauth' as const};
+ const profile={id:777,login:'arta'} as Profile;
+ const signIn=options.callbacks!.signIn!;
+ expect(await signIn(callbackArguments(signIn,{user,account,profile}))).toBe(true);expect(upsert).not.toHaveBeenCalled();
+ const jwt=options.callbacks!.jwt!;const token=await jwt(callbackArguments(jwt,{token:{githubId:'old'},user,account,profile,trigger:'signIn'}));
+ expect(token).toMatchObject({authMethod:'classroom',userId:linked.id,rosterId:linked.rosterId});expect(token.githubId).toBeUndefined();
+});
+it('returns a safe error without creating a user when account linking is refused',async()=>{
+ const upsert=vi.fn();const options=createAuthOptions(authEnvironment,{upsertUser:upsert,linkGitHub:async()=>{throw new Error('account_already_linked');}});
+ const cb=options.callbacks!.signIn!;
+ expect(await cb(callbackArguments(cb,{user:{id:'777'},account:{provider:'github',providerAccountId:'777',type:'oauth'},profile:{id:777,login:'taken'} as Profile}))).toBe('/progress?github=link_failed');expect(upsert).not.toHaveBeenCalled();
+});

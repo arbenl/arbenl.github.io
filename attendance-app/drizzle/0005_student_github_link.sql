@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS student_github_link_intents(token_hash text PRIMARY KEY,roster_id uuid NOT NULL REFERENCES roster(id) ON DELETE RESTRICT,user_id uuid NOT NULL REFERENCES users(id) ON DELETE RESTRICT,expires_at timestamptz NOT NULL,consumed_at timestamptz);
+CREATE TABLE IF NOT EXISTS student_project_links(roster_id uuid PRIMARY KEY REFERENCES roster(id) ON DELETE RESTRICT,repository_url text NOT NULL,github_id text NOT NULL,updated_at timestamptz NOT NULL DEFAULT now());

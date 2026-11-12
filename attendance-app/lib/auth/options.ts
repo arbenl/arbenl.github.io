@@ -33,6 +33,7 @@ interface ClassroomUser extends User {
   email: string;
 }
 interface AuthDependencies {
+  linkGitHub?: (record:GitHubUserRecord)=>Promise<ClassroomUser>;
   registerColloquiumStudent?: (input: Omit<ClassroomRegistrationInput, "groupName">, ip: string) => Promise<ClassroomUser>;
   registerClassroomStudent?: (input: ClassroomRegistrationInput, ip: string) => Promise<ClassroomUser>;
   production?: boolean;
@@ -213,6 +214,10 @@ export function createAuthOptions(
           return false;
         }
 
+        if(dependencies.linkGitHub){
+          try{const linked=await dependencies.linkGitHub({...identity,name:readUserName(user,profile)});Object.assign(user,linked,{userId:linked.id});return getSessionIdentity({expires:"",user})?.authMethod==="classroom";}
+          catch{return '/progress?github=link_failed';}
+        }
         await upsertUser({
           ...identity,
           name: readUserName(user, profile),
@@ -220,7 +225,7 @@ export function createAuthOptions(
         return true;
       },
       async jwt({ token, profile, user, account }) {
-        if ((account?.provider === "classroom" || account?.provider === "colloquium" || account?.provider === "student-access")) {
+        if ((account?.provider === "classroom" || account?.provider === "colloquium" || account?.provider === "student-access" || account?.provider === "github" && !!dependencies.linkGitHub)) {
           const identity = getSessionIdentity({ expires: "", user });
           delete token.githubId;
           delete token.githubLogin;
@@ -277,10 +282,11 @@ function readUserName(user: User, profile: Profile | undefined): string | null {
   return user.name ?? readProfileName(profile);
 }
 
-export function getAuthOptions(): AuthOptions {
+export function getAuthOptions(linkGitHub?:AuthDependencies["linkGitHub"]): AuthOptions {
   const environment = getEnv();
 
   return createAuthOptions(environment, {
     production: process.env.NODE_ENV === "production",
+    linkGitHub,
   });
 }
