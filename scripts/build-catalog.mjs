@@ -41,5 +41,6 @@ await writeFile(mcc.slice(1)+'udhezim-provim.html',shell('Material përgatitor p
 
 const courseHome=mobile.replace(/^\//,'')+'index.html';
 let courseMarkup=await readFile(courseHome,'utf8');
+courseMarkup=courseMarkup.replace('</head>','<script src="/assets/mobile-course-entry.js" defer></script></head>');
 courseMarkup=courseMarkup.replace('<main id="main">','<main id="main"><section class="notice"><h2>Karta ime e studentit</h2><p>Hap kartën për të parë pjesëmarrjen në ligjërata e ushtrime, rezultatin e testit dhe dorëzimet e tua. Kërkon profilin e regjistruar të lëndës.</p><a class="button" href="https://aab-mobile-attendance.vercel.app/progress">Hap kartën time →</a></section>');
 await writeFile(courseHome,courseMarkup);
