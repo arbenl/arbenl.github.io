@@ -54,3 +54,5 @@ await import("./build-week07-web.mjs");
 await import("./build-weekly-guides.mjs");
 await import("./build-week-colors.mjs");
 await import("./build-week08-web.mjs");
+
+await import("./build-week09-web.mjs");

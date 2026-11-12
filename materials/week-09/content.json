@@ -1,0 +1,161 @@
+{
+  "lecture": [
+    {
+      "id": "tema",
+      "title": "Gjendja dhe ndërfaqet optimiste",
+      "body": "<p class=\"lead\">Si mund të reagojë RideShare menjëherë, pa pretenduar se serveri e ka ruajtur veprimin?</p><div class=\"ideas\"><article><span class=\"symbol\">◉</span><h3>1 · Gjendja</h3><p>Çfarë di telefoni dhe çfarë është ruajtur?</p></article><article><span class=\"symbol\">↗</span><h3>2 · Reagimi optimist</h3><p>Pamja ndryshon para përgjigjes.</p></article><article><span class=\"symbol\">↶</span><h3>3 · Besueshmëria</h3><p>Konfirmim, rikthim pas gabimit dhe provë.</p></article></div><p>Sot: preferimet e Artës. Në fund shpjegon kur ylli është një pritshmëri dhe kur është një e dhënë e ruajtur.</p>"
+    },
+    {
+      "id": "deri-tani",
+      "title": "Nga kartat te veprimet që ruhen",
+      "body": "<div class=\"flow\"><div><strong>Java 3</strong><span>Lista dhe detajet</span></div><div><strong>Java 4–5</strong><span>Neon dhe hyrja</span></div><div><strong>Java 6–7</strong><span>Offline dhe provat</span></div><div><strong>Java 8</strong><span>Vendtakimi lokal</span></div></div><p>Arta tashmë zgjedh një udhëtim dhe vendtakimin. Sot shtojmë <strong>“Ruaj udhëtimin”</strong>, që ajo ta gjejë përsëri më vonë.</p><p class=\"callout\">Java 9 shton një preferim personal. Nuk e dërgon vendtakimin te Dritoni dhe nuk rezervon vend.</p>"
+    },
+    {
+      "id": "pyetja",
+      "title": "Arta prek yllin. Çfarë pret të ndodhë?",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">☆</span><h3>Para klikimit</h3><p>Udhëtimi nuk është te preferimet.</p></article><article><span class=\"symbol\">👆</span><h3>Klikimi</h3><p>Rrjeti mund të marrë disa sekonda.</p></article><article><span class=\"symbol\">★</span><h3>Pas klikimit</h3><p>A presim në heshtje apo reagojmë?</p></article></div><div class=\"question\"><p><strong>A provon ylli i mbushur se Neon e ka ruajtur preferimin?</strong></p><details><summary>Zbulo përgjigjen</summary><p>Jo. Mund të jetë vetëm gjendje lokale optimiste. Duhet mesazh “Po ruhet…” deri te konfirmimi i serverit.</p></details></div>"
+    },
+    {
+      "id": "gjendja",
+      "title": "Gjendja: kujtesa e aplikacionit në këtë çast",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">📱</span><h3>Gjendja lokale</h3><p>Telefoni mban çfarë shfaq: yllin, pritjen, mesazhin.</p></article><article><span class=\"symbol\">☁</span><h3>Gjendja e ruajtur</h3><p>Serveri lexon preferimet e përdoruesit nga databaza.</p></article><article><span class=\"symbol\">↻</span><h3>Pas rifreskimit</h3><p>Gjendja në memorie rikrijohet; preferimi lexohet përsëri.</p></article></div><p>Një ndryshim në <strong>state</strong> (gjendje) rifreskon pamjen. Vetëm ndryshimi i pamjes nuk është ruajtje në databazë.</p>"
+    },
+    {
+      "id": "dy-qasje",
+      "title": "Dy mënyra për të trajtuar pritjen",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">⏳</span><h3>Prit përgjigjen</h3><p>Klikim → pritje → serveri konfirmon → ylli mbushet.</p></article><article><span class=\"symbol\">⚡</span><h3>Përditëso në mënyrë optimiste</h3><p>Klikim → ylli mbushet dhe shfaqet pritja → serveri përgjigjet.</p></article><article><span class=\"symbol\">↶</span><h3>Kostoja e shpejtësisë</h3><p>Nëse serveri refuzon, duhet rikthyer pamja dhe shpjeguar gabimi.</p></article></div><p>“Optimist” do të thotë <strong>paraqes rezultatin që pres</strong>. Nuk do të thotë se e fsheh pasigurinë.</p>"
+    },
+    {
+      "id": "gjendjet",
+      "title": "Katër gjendje, një histori e qartë",
+      "body": "<div class=\"flow\"><div><strong>☆ Pa preferim</strong><span>Gjendja e konfirmuar</span></div><div><strong>★ Po ruhet</strong><span>Pamje e përkohshme</span></div><div><strong>★ I ruajtur</strong><span>Serveri konfirmoi</span></div><div><strong>☆ Nuk u ruajt</strong><span>Serveri refuzoi</span></div></div><p>Dy kutitë e fundit janë <strong>dy përfundime alternative</strong>. Suksesi ruan ndryshimin; gabimi kthen gjendjen e fundit të konfirmuar.</p><div class=\"question\"><p><strong>Ku shkon një gabim në provën që nisi me yll bosh?</strong></p><details><summary>Zbulo përgjigjen</summary><p>Te ylli bosh, numri i mëparshëm dhe mesazhi “Nuk u ruajt”. Jo te një sukses i rremë.</p></details></div>"
+    },
+    {
+      "id": "infrastruktura",
+      "title": "Ndiq yllin nga telefoni te databaza",
+      "body": "<div data-walk><div class=\"infra-nodes\"><button type=\"button\" data-detail=\"Arta klikon. Pamja tregon yllin dhe “Po ruhet…”. Ky është ndryshim lokal.\" aria-pressed=\"true\"><img src=\"/assets/week06-icons/smartphone.svg\" alt=\"\"><span>Telefoni</span></button><button type=\"button\" data-detail=\"Kërkesa arrin në server. Serveri lexon sesionin e përdoruesit dhe kontrollon udhëtimin.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/cloud.svg\" alt=\"\"><span>Next.js · Vercel</span></button><button type=\"button\" data-detail=\"Ruhet lidhja përdorues–udhëtim. Një çift i njëjtë duhet të ekzistojë vetëm një herë.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/database.svg\" alt=\"\"><span>Neon · PostgreSQL</span></button><button type=\"button\" data-detail=\"Serveri kthen rezultatin e ruajtjes. Në sukses konfirmohet pamja; në refuzim rikthehet gjendja.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/send.svg\" alt=\"\"><span>Përgjigjja</span></button></div><p class=\"walk-detail\" role=\"status\">Arta klikon. Pamja tregon yllin dhe “Po ruhet…”. Ky është ndryshim lokal.</p><button type=\"button\" data-advance>Hapi tjetër →</button></div><p class=\"small\">Git → GitHub → Vercel publikon <strong>kodin</strong>. Klikimi “Ruaj” dërgon <strong>të dhëna</strong> te aplikacioni në Vercel; nuk krijon commit në GitHub.</p>"
+    },
+    {
+      "id": "praktika",
+      "title": "Si përkthehet ideja në një implementim?",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">◉</span><h3>Pamja</h3><p>Mbaj vlerën e konfirmuar, pritjen dhe gabimin. Pamjen e përkohshme lidhe me kërkesën aktive.</p></article><article><span class=\"symbol\">⇄</span><h3>Kërkesa</h3><p>Dërgo synimin “ruaje këtë udhëtim”. Lexo rezultatin, jo vetëm faktin që kërkesa u nis.</p></article><article><span class=\"symbol\">▤</span><h3>Ruajtja</h3><p>Serveri përdor sesionin; databaza garanton që nuk krijohet kopje e të njëjtit preferim.</p></article></div><p>Në React mund të përdorësh <code>useState</code>; <code>useOptimistic</code> është një mjet tjetër për gjendjen e përkohshme. Për këtë ushtrim mjafton qasja që e kupton dhe e provon.</p>"
+    },
+    {
+      "id": "rasti-1",
+      "title": "Rasti 1 · Ruajtja konfirmohet",
+      "body": "<div class=\"phone-scene\"><div class=\"phone\" role=\"img\" aria-label=\"Pamje e pritshme e telefonit të Artës: Po presim konfirmimin e serverit.\"><div class=\"notch\"></div><header><strong>RideShare</strong><span>Arta · Udhëtare</span></header><div class=\"phone-label\">UDHËTIMET DREJT AAB</div><div class=\"ride\"><small>UDHËTIMI 2</small><h3>Dritoni</h3><p>Ferizaj → AAB</p><div class=\"ride-meta\"><span>Nisja<strong>08:15</strong></span><span>Vende<strong>2</strong></span></div></div><div class=\"favorite pending\"><span>★</span> Po ruhet…</div><p class=\"phone-status pending\">Po presim konfirmimin e serverit.</p><div class=\"count\">Të preferuarat <strong>1</strong></div><small class=\"phone-foot\">Preferim personal · jo rezervim</small><div class=\"homebar\"></div></div><aside><h3>Pamja ndryshon, pritja mbetet e dukshme</h3><p>Arta sheh ★ dhe “Po ruhet…”. Numri 1 është ende optimist. Pasi serveri konfirmon, mesazhi bëhet “I ruajtur”.</p><p class=\"muted\">Dritoni: 2 vende. Nuk merr kërkesë rezervimi.</p></aside></div>"
+    },
+    {
+      "id": "rasti-1-prova",
+      "title": "Rasti 1 · A mbetet pas rifreskimit?",
+      "body": "<div class=\"phone-scene\"><div class=\"phone\" role=\"img\" aria-label=\"Pamje e pritshme e telefonit të Artës: Preferimet u lexuan nga serveri.\"><div class=\"notch\"></div><header><strong>RideShare</strong><span>Arta · Udhëtare</span></header><div class=\"phone-label\">UDHËTIMET DREJT AAB</div><div class=\"ride\"><small>UDHËTIMI 2</small><h3>Dritoni</h3><p>Ferizaj → AAB</p><div class=\"ride-meta\"><span>Nisja<strong>08:15</strong></span><span>Vende<strong>2</strong></span></div></div><div class=\"favorite success\"><span>★</span> I ruajtur</div><p class=\"phone-status success\">Preferimet u lexuan nga serveri.</p><div class=\"count\">Të preferuarat <strong>1</strong></div><small class=\"phone-foot\">Preferim personal · jo rezervim</small><div class=\"homebar\"></div></div><aside><h3>Rifreskimi është prova e ruajtjes</h3><p>Pas suksesit Arta rifreskon faqen. Aplikacioni lexon preferimin nga serveri dhe e shfaq sërish. Vetëm localStorage nuk provon ruajtjen në Neon.</p><p class=\"muted\">Dritoni: 2 vende. Nuk merr kërkesë rezervimi.</p></aside></div>"
+    },
+    {
+      "id": "rasti-2",
+      "title": "Rasti 2 · Serveri refuzon ruajtjen",
+      "body": "<div class=\"phone-scene\"><div class=\"phone\" role=\"img\" aria-label=\"Pamje e pritshme e telefonit të Artës: Nuk u ruajt. Provo përsëri.\"><div class=\"notch\"></div><header><strong>RideShare</strong><span>Arta · Udhëtare</span></header><div class=\"phone-label\">UDHËTIMET DREJT AAB</div><div class=\"ride\"><small>UDHËTIMI 2</small><h3>Dritoni</h3><p>Ferizaj → AAB</p><div class=\"ride-meta\"><span>Nisja<strong>08:15</strong></span><span>Vende<strong>2</strong></span></div></div><div class=\"favorite error\"><span>☆</span> Provo përsëri</div><p class=\"phone-status error\">Nuk u ruajt. Provo përsëri.</p><div class=\"count\">Të preferuarat <strong>0</strong></div><small class=\"phone-foot\">Preferim personal · jo rezervim</small><div class=\"homebar\"></div></div><aside><h3>Rikthim i gjendjes · rollback</h3><p>Prova nisi me 0 preferime. Pas një përgjigjeje gabimi pa shkrim në databazë, pamja kthehet te ☆ dhe 0. Arta merr një mesazh dhe mundësinë për të provuar përsëri.</p><p class=\"muted\">Dritoni: 2 vende. Nuk merr kërkesë rezervimi.</p></aside></div>"
+    },
+    {
+      "id": "gabim-pa-pergjigje",
+      "title": "Refuzimi dhe mungesa e përgjigjes nuk janë e njëjta gjë",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">✕</span><h3>Refuzim i qartë</h3><p>Serveri njofton se veprimi nuk u ruajt. Rikthe pamjen.</p></article><article><span class=\"symbol\">？</span><h3>Përgjigjja humbi</h3><p>Kërkesa mund të jetë ruajtur edhe pse telefoni nuk mori përgjigje.</p></article><article><span class=\"symbol\">↻</span><h3>Verifiko</h3><p>Mos shfaq sukses të sigurt. Lexo gjendjen e serverit dhe provo sërish në mënyrë të sigurt.</p></article></div><p>Laboratori provon një refuzim të kontrolluar <strong>para ruajtjes</strong>. Për një timeout real, rezultati mund të jetë i panjohur.</p>"
+    },
+    {
+      "id": "rasti-3",
+      "title": "Rasti 3 · Tre klikime, një preferim",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">👆</span><h3>Në telefon</h3><p>Gjatë pritjes butoni nuk nis kërkesa të tjera për të njëjtin veprim.</p></article><article><span class=\"symbol\">🔒</span><h3>Në server</h3><p>Përdor identitetin nga sesioni, jo një userId të besuar nga telefoni.</p></article><article><span class=\"symbol\">▤</span><h3>Në databazë</h3><p>Çifti përdorues–udhëtim është unik. Përsëritja nuk krijon rresht tjetër.</p></article></div><p><strong>Idempotencë:</strong> përsëritja e të njëjtit synim ka të njëjtin efekt. “Ruaje” është më e qartë se “ndërroje gjendjen” kur një kërkesë përsëritet.</p>"
+    },
+    {
+      "id": "zgjedhja",
+      "title": "Ku ia vlen të jemi optimistë?",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">★</span><h3>Preferim</h3><p>Veprim i kthyeshëm. Reagimi i menjëhershëm është i dobishëm.</p></article><article><span class=\"symbol\">💺</span><h3>Vendi i fundit</h3><p>Nuk e premtojmë vendin para kontrollit të serverit.</p></article><article><span class=\"symbol\">💳</span><h3>Pagesë</h3><p>Nuk shfaqim pagesë të përfunduar pa konfirmimin përkatës.</p></article></div><div class=\"question\"><p><strong>Nëse Arta ruan udhëtimin, a zbresin vendet nga 2 në 1?</strong></p><details><summary>Zbulo përgjigjen</summary><p>Jo. Preferimi është kujtesë personale. Rezervimi është veprim tjetër, me rregulla dhe konfirmim tjetër.</p></details></div>"
+    },
+    {
+      "id": "lexo-rastin",
+      "title": "Gjej premtimin e gabuar",
+      "body": "<div class=\"callout\"><strong>★ U ruajt!</strong><p>Ky mesazh shfaqet menjëherë pas klikimit. Pas 2 sekondash serveri përgjigjet me gabim, por ylli dhe mesazhi nuk ndryshojnë.</p></div><div class=\"question\"><p><strong>Cilat dy gjëra duhet të ndryshojnë në këtë rrjedhë?</strong></p><details><summary>Zbulo përgjigjen</summary><p>Gjatë kërkesës duhet të shfaqet “Po ruhet…”. Pas refuzimit rikthehen ylli dhe numri i mëparshëm, me një mesazh dhe mundësi riprovimi.</p></details></div><p>Diskuto me kolegun: si do ta provonit këtë gabim pa fshirë të dhëna reale?</p>"
+    },
+    {
+      "id": "tre-provat",
+      "title": "Çfarë provon secili rast?",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">1</span><h3>Suksesi + rifreskimi</h3><p>Dallon pamjen e përkohshme nga preferimi i ruajtur.</p></article><article><span class=\"symbol\">2</span><h3>Refuzimi + riprovimi</h3><p>Provon që gabimi nuk lë sukses të rremë.</p></article><article><span class=\"symbol\">3</span><h3>Klikimet e përsëritura</h3><p>Provon që një synim nuk prodhon disa kopje.</p></article></div><p class=\"callout\">Për çdo provë shëno: gjendjen fillestare → veprimin → pritshmërinë → vëzhgimin real.</p>"
+    },
+    {
+      "id": "mbyllja",
+      "title": "I shpejtë për Artën. I saktë ndaj të dhënave.",
+      "body": "<div class=\"flow\"><div><strong>Reago</strong><span>Shfaq ndryshimin</span></div><div><strong>Sqaro</strong><span>Trego pritjen</span></div><div><strong>Konfirmo ose rikthe</strong><span>Ndiq rezultatin</span></div><div><strong>Provo</strong><span>Rifreskim, gabim, përsëritje</span></div></div><p><strong>Pyetja e fundit:</strong> në cilin moment ylli bëhet premtim i besueshëm?</p><div class=\"question\"><p><strong>Shpjego me një fjali.</strong></p><details><summary>Zbulo përgjigjen</summary><p>Kur serveri konfirmon ruajtjen; rifreskimi dhe leximi nga serveri e provojnë më tej rezultatin.</p></details></div><p>Java 10: si përditësohen ekranet kur të dhënat ndryshojnë. Sot sigurojmë që një veprim i vetëm të jetë i kuptueshëm dhe i besueshëm.</p>"
+    },
+    {
+      "id": "burimet",
+      "title": "Fjalori dhe burimet",
+      "body": "<p><strong>UI (User Interface)</strong>: ndërfaqja që sheh përdoruesi. <strong>State</strong>: gjendja. <strong>Optimistic update</strong>: ndryshim i përkohshëm para përgjigjes. <strong>Rollback</strong>: rikthimi pas gabimit.</p><p><strong>MVP (Minimum Viable Product)</strong>: produkti minimal i përdorshëm. <strong>API (Application Programming Interface)</strong>: ndërfaqja për komunikimin mes pjesëve të aplikacionit.</p><ul><li><a href=\"https://react.dev/reference/react/useOptimistic\">React · useOptimistic</a></li><li><a href=\"https://www.postgresql.org/docs/current/sql-insert.html\">PostgreSQL · INSERT dhe ON CONFLICT</a></li><li><a href=\"../syllabusi-2026-2027.html#java-9\">Syllabusi · Java 9</a></li></ul>"
+    }
+  ],
+  "lab": [
+    {
+      "id": "detyra",
+      "title": "Detyra e sotme · Ruaj udhëtimin e preferuar",
+      "body": "<p class=\"lead\">Në RideShare-in tënd, Arta ruan udhëtimin e Dritonit te të preferuarat. Pamja reagon menjëherë, por suksesi konfirmohet vetëm pas ruajtjes në server.</p><div class=\"ideas\"><article><span class=\"symbol\">★</span><h3>Suksesi</h3><p>Preferimi mbetet pas rifreskimit.</p></article><article><span class=\"symbol\">↶</span><h3>Gabimi</h3><p>Ylli dhe numri kthehen te vlerat e mëparshme.</p></article><article><span class=\"symbol\">1</span><h3>Përsëritja</h3><p>Klikimet nuk krijojnë kopje.</p></article></div><p>Përdor projektin ekzistues, hyrjen dhe Neon-in. Këtë javë kërkohet vetëm shtimi i preferimit; heqja është zgjerim opsional.</p>"
+    },
+    {
+      "id": "plani",
+      "title": "Plani i 90 minutave",
+      "body": "<div class=\"flow\"><div><strong>0–10</strong><span>Shiko pamjet; hap projektin</span></div><div><strong>10–45</strong><span>Ndërto zgjidhjen tënde</span></div><div><strong>45–60</strong><span>Provo tri rastet</span></div><div><strong>60–65</strong><span>Raporti dhe dorëzimi</span></div></div><p><strong>65–90:</strong> lexo përgjigjen në GitHub, korrigjo dhe shpjego zgjidhjen me një koleg.</p><p>Duhet të hapet projekti i javës 8, hyrja dhe leximi i udhëtimeve nga Neon. Nëse ndonjëra nuk punon, kërko ndihmë gjatë 10 minutave të para.</p><p>Pamjet në vijim janë rezultate të pritshme, jo aplikacion që ruan të dhëna. Ti zgjedh strukturën e kodit.</p>"
+    },
+    {
+      "id": "fillimi",
+      "title": "Para veprimit · çfarë duhet të shohë Arta?",
+      "body": "<div class=\"phone-scene\"><div class=\"phone\" role=\"img\" aria-label=\"Pamje e pritshme e telefonit të Artës: Nuk është te të preferuarat.\"><div class=\"notch\"></div><header><strong>RideShare</strong><span>Arta · Udhëtare</span></header><div class=\"phone-label\">UDHËTIMET DREJT AAB</div><div class=\"ride\"><small>UDHËTIMI 2</small><h3>Dritoni</h3><p>Ferizaj → AAB</p><div class=\"ride-meta\"><span>Nisja<strong>08:15</strong></span><span>Vende<strong>2</strong></span></div></div><div class=\"favorite neutral\"><span>☆</span> Ruaj udhëtimin</div><p class=\"phone-status neutral\">Nuk është te të preferuarat.</p><div class=\"count\">Të preferuarat <strong>0</strong></div><small class=\"phone-foot\">Preferim personal · jo rezervim</small><div class=\"homebar\"></div></div><aside><h3>Nis me një udhëtim të paruajtur</h3><p>Përdor udhëtimin 2 ose një ID që ekziston në projektin tënd. Arta është e kyçur. Në këtë provë, ajo nis me 0 preferime.</p><p class=\"muted\">Dritoni: 2 vende. Nuk merr kërkesë rezervimi.</p></aside></div>"
+    },
+    {
+      "id": "pritja",
+      "title": "Pas klikimit · pamja ndryshon menjëherë",
+      "body": "<div class=\"phone-scene\"><div class=\"phone\" role=\"img\" aria-label=\"Pamje e pritshme e telefonit të Artës: Po presim konfirmimin e serverit.\"><div class=\"notch\"></div><header><strong>RideShare</strong><span>Arta · Udhëtare</span></header><div class=\"phone-label\">UDHËTIMET DREJT AAB</div><div class=\"ride\"><small>UDHËTIMI 2</small><h3>Dritoni</h3><p>Ferizaj → AAB</p><div class=\"ride-meta\"><span>Nisja<strong>08:15</strong></span><span>Vende<strong>2</strong></span></div></div><div class=\"favorite pending\"><span>★</span> Po ruhet…</div><p class=\"phone-status pending\">Po presim konfirmimin e serverit.</p><div class=\"count\">Të preferuarat <strong>1</strong></div><small class=\"phone-foot\">Preferim personal · jo rezervim</small><div class=\"homebar\"></div></div><aside><h3>★ Po ruhet…</h3><p>Ylli mbushet dhe numri bëhet 1, ndërsa kërkesa ende pret. Butoni nuk nis ruajtje të tjera gjatë pritjes. Kjo nuk është ende konfirmim.</p><p class=\"muted\">Dritoni: 2 vende. Nuk merr kërkesë rezervimi.</p></aside></div>"
+    },
+    {
+      "id": "suksesi",
+      "title": "Rasti 1 · Serveri konfirmon",
+      "body": "<div class=\"phone-scene\"><div class=\"phone\" role=\"img\" aria-label=\"Pamje e pritshme e telefonit të Artës: U ruajt te të preferuarat.\"><div class=\"notch\"></div><header><strong>RideShare</strong><span>Arta · Udhëtare</span></header><div class=\"phone-label\">UDHËTIMET DREJT AAB</div><div class=\"ride\"><small>UDHËTIMI 2</small><h3>Dritoni</h3><p>Ferizaj → AAB</p><div class=\"ride-meta\"><span>Nisja<strong>08:15</strong></span><span>Vende<strong>2</strong></span></div></div><div class=\"favorite success\"><span>★</span> I ruajtur</div><p class=\"phone-status success\">U ruajt te të preferuarat.</p><div class=\"count\">Të preferuarat <strong>1</strong></div><small class=\"phone-foot\">Preferim personal · jo rezervim</small><div class=\"homebar\"></div></div><aside><h3>★ I ruajtur</h3><p>Pas përgjigjes së suksesshme, mesazhi i pritjes largohet. Preferimi është i lidhur me përdoruesin e kyçur dhe me këtë udhëtim.</p><p class=\"muted\">Dritoni: 2 vende. Nuk merr kërkesë rezervimi.</p></aside></div>"
+    },
+    {
+      "id": "rifreskimi",
+      "title": "Rasti 1 · Rifresko faqen",
+      "body": "<div class=\"phone-scene\"><div class=\"phone\" role=\"img\" aria-label=\"Pamje e pritshme e telefonit të Artës: Preferimet u lexuan nga serveri.\"><div class=\"notch\"></div><header><strong>RideShare</strong><span>Arta · Udhëtare</span></header><div class=\"phone-label\">UDHËTIMET DREJT AAB</div><div class=\"ride\"><small>UDHËTIMI 2</small><h3>Dritoni</h3><p>Ferizaj → AAB</p><div class=\"ride-meta\"><span>Nisja<strong>08:15</strong></span><span>Vende<strong>2</strong></span></div></div><div class=\"favorite success\"><span>★</span> I ruajtur</div><p class=\"phone-status success\">Preferimet u lexuan nga serveri.</p><div class=\"count\">Të preferuarat <strong>1</strong></div><small class=\"phone-foot\">Preferim personal · jo rezervim</small><div class=\"homebar\"></div></div><aside><h3>Preferimi duhet të mbetet</h3><p>Mbylle e hape faqen ose rifreskoje. Të dhënat lexohen nga serveri. Për një përdorues tjetër, ky preferim nuk duhet të shfaqet automatikisht.</p><p class=\"muted\">Dritoni: 2 vende. Nuk merr kërkesë rezervimi.</p></aside></div>"
+    },
+    {
+      "id": "gabimi",
+      "title": "Rasti 2 · Një ruajtje e refuzuar",
+      "body": "<div class=\"phone-scene\"><div class=\"phone\" role=\"img\" aria-label=\"Pamje e pritshme e telefonit të Artës: Nuk u ruajt. Provo përsëri.\"><div class=\"notch\"></div><header><strong>RideShare</strong><span>Arta · Udhëtare</span></header><div class=\"phone-label\">UDHËTIMET DREJT AAB</div><div class=\"ride\"><small>UDHËTIMI 2</small><h3>Dritoni</h3><p>Ferizaj → AAB</p><div class=\"ride-meta\"><span>Nisja<strong>08:15</strong></span><span>Vende<strong>2</strong></span></div></div><div class=\"favorite error\"><span>☆</span> Provo përsëri</div><p class=\"phone-status error\">Nuk u ruajt. Provo përsëri.</p><div class=\"count\">Të preferuarat <strong>0</strong></div><small class=\"phone-foot\">Preferim personal · jo rezervim</small><div class=\"homebar\"></div></div><aside><h3>☆ Nuk u ruajt</h3><p>Nga një udhëtim fillimisht i paruajtur, provo një gabim të kontrolluar para shkrimit në databazë. Pas pritjes: ylli bosh, numri 0 dhe “Provo përsëri”.</p><p class=\"muted\">Dritoni: 2 vende. Nuk merr kërkesë rezervimi.</p></aside></div>"
+    },
+    {
+      "id": "perseritja",
+      "title": "Rasti 3 · Përsëritja nuk krijon kopje",
+      "body": "<div class=\"phone-scene\"><div class=\"phone\" role=\"img\" aria-label=\"Pamje e pritshme e telefonit të Artës: Vetëm një preferim për këtë udhëtim.\"><div class=\"notch\"></div><header><strong>RideShare</strong><span>Arta · Udhëtare</span></header><div class=\"phone-label\">UDHËTIMET DREJT AAB</div><div class=\"ride\"><small>UDHËTIMI 2</small><h3>Dritoni</h3><p>Ferizaj → AAB</p><div class=\"ride-meta\"><span>Nisja<strong>08:15</strong></span><span>Vende<strong>2</strong></span></div></div><div class=\"favorite success\"><span>★</span> I ruajtur</div><p class=\"phone-status success\">Vetëm një preferim për këtë udhëtim.</p><div class=\"count\">Të preferuarat <strong>1</strong></div><small class=\"phone-foot\">Preferim personal · jo rezervim</small><div class=\"homebar\"></div></div><aside><h3>Një preferim për çiftin përdorues–udhëtim</h3><p>Provo disa klikime të shpejta, pastaj përsërit të njëjtin synim ruajtjeje dhe rifresko. Në databazë duhet të ketë vetëm një rresht për atë çift.</p><p class=\"muted\">Dritoni: 2 vende. Nuk merr kërkesë rezervimi.</p></aside></div>"
+    },
+    {
+      "id": "hint",
+      "title": "Nëse ngec · pyetje që të drejtojnë",
+      "body": "<details><summary>Si ta ndaj gjendjen?</summary><p>Cila vlerë ishte e konfirmuar para klikimit? Cila po shfaqet përkohësisht? Ku tregon pritjen dhe ku gabimin?</p></details><details><summary>Ku ruhet preferimi?</summary><p>Rishiko lidhjen me Neon të javës 4 dhe sesionin e javës 5. Cilat dy identitete e përkufizojnë një preferim? Identiteti i përdoruesit merret nga sesioni në server.</p></details><details><summary>Si shmangen kopjet?</summary><p>A mjafton butoni joaktiv në telefon? Kërko çfarë bën një kufizim UNIQUE për një çift kolonash dhe si trajtohet një konflikt gjatë shtimit.</p></details><details><summary>Si provoj gabimin pa prishur projektin?</summary><p>Në mjedisin lokal të zhvillimit krijo një refuzim prove para ruajtjes, vetëm për të dhëna fiktive. Mos ndrysho fjalëkalimet dhe mos fshi databazën. Hiqe mekanizmin e provës para publikimit; shëno në raport si e provove.</p></details>"
+    },
+    {
+      "id": "provat",
+      "title": "Tri prova që duhet t’i bësh vetë",
+      "body": "<ol><li><strong>Rasti 1:</strong> ruaj, prit suksesin, rifresko. Trego preferimin në aplikacion dhe rreshtin përkatës në databazën tënde.</li><li><strong>Rasti 2:</strong> nis nga një udhëtim i paruajtur; shkakto refuzim prove para shkrimit. Shiko rikthimin, pastaj çaktivizo refuzimin dhe provo sërish.</li><li><strong>Rasti 3:</strong> kliko disa herë gjatë pritjes. Përsërit të njëjtin synim ruajtjeje dhe kontrollo që çifti nuk ka kopje.</li></ol><p>Kolegu zgjedh një udhëtim tjetër. Parashiko çfarë ndryshon dhe shpjego ku e trajton zgjidhja jote. Nëse diçka dështon, raporto rezultatin real.</p>"
+    },
+    {
+      "id": "dorezimi",
+      "title": "Çfarë dorëzon deri në minutën 65?",
+      "body": "<ol><li>Kodin e ndryshuar dhe skedarin SQL (Structured Query Language) të skemës ose migrimit në repository-n tënd. Mos ngarko <code>.env</code>, kredenciale ose të dhëna personale.</li><li><a href=\"java-09-model.md\" download=\"java-09.md\">Raportin java-09.md</a> pranë README: çfarë ndërtove, tri provat, skedarët, kufizimet dhe ndihma nga AI (Artificial Intelligence).</li><li>GitHub Desktop: <strong>Commit → Push origin</strong>. Kontrollo skedarët online. Pastaj hap formularin më poshtë, zgjidh <strong>Java 9</strong> dhe vendos linkun kryesor të repository-t tënd publik.</li></ol><p><a class=\"button\" href=\"https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues/new?template=mobile-submission.yml&amp;week=Java%209\">Dorëzo · Java 9</a></p>"
+    },
+    {
+      "id": "pergjigjja",
+      "title": "Ku e shoh përgjigjen dhe çfarë do të thotë?",
+      "body": "<p>Te <strong>i njëjti Issue</strong>, poshtë dorëzimit, lexo komentin <strong>“Kontrolli automatik i dorëzimit”</strong> nga github-actions[bot].</p><div class=\"ideas\"><article><span class=\"symbol\">✅</span><h3>2/2 teknikisht</h3><p>Raporti është plotësuar dhe projekti ka package.json të vlefshëm për Next.js.</p></article><article><span class=\"symbol\">❌</span><h3>Korrigjo mungesën</h3><p>Lexo rreshtin → ndrysho → Commit → Push → komento rikontrollo.</p></article><article><span class=\"symbol\">👀</span><h3>Provo aplikacionin</h3><p>Java 9 aktualisht nuk ka test automatik të sjelljes. 2/2 nuk provon tri rastet.</p></article></div><p>Nëse komenti vonon, ruaj linkun dhe njofto profesorin. Mos hap Issue të dytë. Mund të vazhdosh dhe dorëzosh gjatë javës sipas afatit të profesorit.</p>"
+    },
+    {
+      "id": "perfundimi",
+      "title": "Përfundove kur mund ta tregosh dhe ta shpjegosh",
+      "body": "<ul><li>★ shfaqet menjëherë me pritjen dhe konfirmohet pas përgjigjes.</li><li>Preferimi mbetet pas rifreskimit; gabimi rikthen pamjen.</li><li>Një përdorues dhe një udhëtim nuk krijojnë disa preferime.</li><li>Ke kodin, raportin, linkun e Issue-t dhe e ke lexuar përgjigjen.</li></ul><p class=\"callout\">Shpjego pa lexuar kodin: pse një yll i mbushur nuk mjafton si provë ruajtjeje?</p><p>Ushtrim i vlerësuar deri në 3 pikë sipas rubrikës së lëndës. Përgjigjja automatike është feedback teknik, jo notë.</p>"
+    }
+  ]
+}
