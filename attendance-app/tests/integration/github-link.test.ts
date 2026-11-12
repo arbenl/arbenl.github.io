@@ -1,5 +1,11 @@
 import postgres from "postgres";
-import { beforeEach, afterAll, expect, it } from "vitest";
+import type { Account, Profile, User } from "next-auth";
+import { encode, decode } from "next-auth/jwt";
+import { createAuthOptions } from "../../lib/auth/options";
+import { parseSubmissions } from "../../lib/attendance/submissions";
+import { progressCards } from "../../lib/attendance/progress";
+import { progressResults } from "../../lib/colloquium/service";
+import { beforeEach, afterAll, expect, it, vi } from "vitest";
 import type { Session } from "next-auth";
 import { CURRENT_COURSE } from "../../lib/attendance/current-course";
 import { attendanceService } from "../../lib/attendance/service";
@@ -7,6 +13,27 @@ import {
   beginGitHubLink,
   completeGitHubLink,
 } from "../../lib/attendance/github-link";
+// Refuse destructive fixture cleanup outside the harness-owned local database.
+vi.mock("../../lib/colloquium/bank", () => ({
+  getQuestionBank: () =>
+    Array.from({ length: 10 }, (_, i) => ({
+      id: `synthetic-${i}`,
+      prompt: "Synthetic fixture only",
+      source: "Local test only",
+      correctOptionId: "yes",
+      options: [
+        { id: "yes", text: "A" },
+        { id: "no1", text: "B" },
+        { id: "no2", text: "C" },
+      ],
+    })),
+}));
+const testDatabase = new URL(process.env.DATABASE_URL ?? "invalid:");
+if (
+  testDatabase.hostname !== "127.0.0.1" ||
+  testDatabase.pathname !== "/attendance_test"
+)
+  throw new Error("Disposable local attendance_test database required");
 const sql = postgres(process.env.DATABASE_URL!, { max: 1 });
 let session: Session, rosterId: string, userId: string;
 beforeEach(async () => {
@@ -139,4 +166,136 @@ it("preserves the existing check-in and test records when changing the students 
   expect(
     (await attendanceService.getCourseActivityReport(session)).present,
   ).toHaveLength(1);
+});
+
+function callbackArgs<T extends (...a: never[]) => unknown>(
+  _cb: T,
+  value: Parameters<T>[0],
+): Parameters<T>[0] {
+  return value;
+}
+it("recognizes submissions after linking and a fresh-device GitHub session while preserving attendance and test points", async () => {
+  const [prof] =
+    await sql`insert into users(github_id,github_username) values('100','professor') returning id`;
+  const [c] =
+    await sql`insert into class_sessions(semester_id,week_number,kind,group_name,title,state,created_by) values(${session.user.semesterId!},8,'lab','G1','Fixture Lab','closed',${prof.id}) returning id`;
+  await sql`insert into attendance_records(session_id,roster_id,status,scanned_at) values(${c.id},${rosterId},'present',now())`;
+  const [room] =
+    await sql`insert into colloquium_rooms(semester_id,week_number,group_name,token_hash,created_by,started_at,deadline) values(${session.user.semesterId!},7,'G1',${Buffer.alloc(32, 2)},${prof.id},now()-interval '11 minutes',now()-interval '1 minute') returning id`;
+  await sql`insert into colloquium_attempts(room_id,semester_id,user_id,roster_id,question_order,score,submitted_at) values(${room.id},${session.user.semesterId!},${userId},${rosterId},'[]'::jsonb,9,now()-interval '1 minute')`;
+  const attendanceBefore =
+      await sql`select * from attendance_records order by id`,
+    testsBefore = await sql`select * from colloquium_attempts order by id`;
+  const submissions = parseSubmissions(
+    [1, 2].map((week) => ({
+      number: week,
+      title: "[MOBILE DORËZIM]",
+      body: `### Java\n\nJava ${week}\n\n### Linku i punës në GitHub\n\nhttps://github.com/ilda-sh/example`,
+      html_url: `https://github.com/example/course/issues/${week}`,
+      created_at: "2026-10-01",
+      user: { id: 281168996, login: "ilda-sh" },
+    })),
+  );
+  const now = new Date("2026-11-12T12:00:00Z");
+  expect(
+    progressCards(
+      await attendanceService.getCourseActivityReport(session),
+      submissions,
+      [],
+      now,
+    )[0].percentage,
+  ).toBeNull();
+  const environment = {
+    GITHUB_ID: process.env.GITHUB_ID!,
+    GITHUB_SECRET: process.env.GITHUB_SECRET!,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET!,
+  };
+  const intent = await beginGitHubLink(session),
+    opts = createAuthOptions(environment, {
+      linkGitHub: (record) => completeGitHubLink(intent, record),
+    });
+  const account: Account = {
+      provider: "github",
+      type: "oauth",
+      providerAccountId: "281168996",
+    },
+    profile = { id: 281168996, login: "ilda-sh" } as Profile,
+    user: User = { id: "281168996", name: "GitHub display" };
+  const signIn = opts.callbacks!.signIn!;
+  expect(await signIn(callbackArgs(signIn, { user, account, profile }))).toBe(
+    true,
+  );
+  const linkJwt = opts.callbacks!.jwt!;
+  expect(
+    await linkJwt(
+      callbackArgs(linkJwt, {
+        token: {},
+        user,
+        account,
+        profile,
+        trigger: "signIn",
+      }),
+    ),
+  ).toMatchObject({ rosterId, userId, authMethod: "classroom" });
+  const fresh = createAuthOptions(environment),
+    newUser: User = { id: "281168996", name: "Different display name" };
+  const freshSignIn = fresh.callbacks!.signIn!;
+  expect(
+    await freshSignIn(
+      callbackArgs(freshSignIn, { user: newUser, account, profile }),
+    ),
+  ).toBe(true);
+  const jwt = fresh.callbacks!.jwt!;
+  const token = await jwt(
+    callbackArgs(jwt, {
+      token: {},
+      user: newUser,
+      account,
+      profile,
+      trigger: "signIn",
+    }),
+  );
+  const encoded = await encode({
+      secret: environment.NEXTAUTH_SECRET,
+      token,
+      maxAge: 3600,
+    }),
+    decoded = await decode({
+      secret: environment.NEXTAUTH_SECRET,
+      token: encoded,
+    });
+  expect(decoded).not.toBeNull();
+  const sc = fresh.callbacks!.session!;
+  const freshSession = (await sc(
+    callbackArgs(sc, {
+      session: { expires: "2099-01-01", user: {} },
+      token: decoded!,
+      user: { id: userId, email: "arta@example.com", emailVerified: null },
+      newSession: undefined,
+      trigger: "update",
+    }),
+  )) as Session;
+  const report = await attendanceService.getCourseActivityReport(freshSession);
+  expect(report.viewerRosterId).toBe(rosterId);
+  const card = progressCards(
+    report,
+    submissions,
+    await progressResults(freshSession),
+    now,
+  )[0];
+  expect(card).toMatchObject({
+    id: rosterId,
+    total: 1,
+    lab: 1,
+    submitted: 2,
+    percentage: 22,
+  });
+  expect(card.tests![0].score).toBe(9);
+  expect(await sql`select * from attendance_records order by id`).toEqual(
+    attendanceBefore,
+  );
+  expect(await sql`select * from colloquium_attempts order by id`).toEqual(
+    testsBefore,
+  );
+  expect(await sql`select id from roster`).toHaveLength(1);
 });
