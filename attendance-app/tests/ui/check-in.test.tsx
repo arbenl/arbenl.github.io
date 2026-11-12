@@ -391,3 +391,13 @@ describe("student check-in", () => {
     expect(css).toMatch(/\.student-control[^}]*min-height:\s*44px/u);
   });
 });
+
+it('still completes check-in when private browsing denies session storage',async()=>{
+ window.history.replaceState({},'',`/check-in#token=${TOKEN}`);
+ vi.spyOn(Storage.prototype,'getItem').mockImplementation(()=>{throw new DOMException('Blocked','SecurityError');});
+ vi.spyOn(Storage.prototype,'removeItem').mockImplementation(()=>{throw new DOMException('Blocked','SecurityError');});
+ vi.spyOn(globalThis,'fetch').mockResolvedValue(jsonResponse({sessionTitle:'Ora provë',status:'present',duplicate:false}));
+ const view=render(<CheckInResult/>);
+ await view.findByRole('heading',{name:'Vijueshmëria u konfirmua'});
+ expect(window.location.hash).toBe('');
+});

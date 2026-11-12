@@ -9,6 +9,10 @@ import { ProfileForm } from "./profile-form";
 const TOKEN_PATTERN = /^[0-9a-f]{64}$/u;
 const STORAGE_KEY = "attendance-check-in";
 const TOKEN_LIFETIME_MS = 5 * 60_000;
+function safeStorageRead(){try{return window.sessionStorage.getItem(STORAGE_KEY);}catch{return null;}}
+function safeStorageClear(){try{window.sessionStorage.removeItem(STORAGE_KEY);}catch{/* Private browsers may block storage. */}}
+function safeStorageWrite(value:unknown){try{window.sessionStorage.setItem(STORAGE_KEY,JSON.stringify(value));}catch{/* In-memory QR login still works. */}}
+
 
 interface HeldToken {
   token: string;
@@ -40,8 +44,8 @@ function validToken(value: unknown): value is string {
 }
 
 function readStoredToken(now: number): HeldToken | null {
-  const raw = window.sessionStorage.getItem(STORAGE_KEY);
-  window.sessionStorage.removeItem(STORAGE_KEY);
+  const raw = safeStorageRead();
+  safeStorageClear();
   if (!raw) {
     return null;
   }
@@ -112,7 +116,7 @@ export function CheckInResult() {
         const body = (await response.json()) as ApiError | CheckInSuccess;
         if (response.ok) {
           heldToken.current = null;
-          window.sessionStorage.removeItem(STORAGE_KEY);
+          safeStorageClear();
           setView({ phase: "success", result: body as CheckInSuccess });
           return;
         }
@@ -128,7 +132,7 @@ export function CheckInResult() {
         const retryable = response.status === 429 || response.status >= 500;
         if (!retryable) {
           heldToken.current = null;
-          window.sessionStorage.removeItem(STORAGE_KEY);
+          safeStorageClear();
         }
         setView({
           phase: "error",
@@ -146,7 +150,7 @@ export function CheckInResult() {
       setView({ phase: "missing" });
       return;
     }
-    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(heldToken.current));
+    safeStorageWrite(heldToken.current);
     void signIn("github", { callbackUrl: "/check-in" });
   }
 
@@ -158,7 +162,7 @@ export function CheckInResult() {
       Date.now() - token.capturedAt > TOKEN_LIFETIME_MS
     ) {
       heldToken.current = null;
-      window.sessionStorage.removeItem(STORAGE_KEY);
+      safeStorageClear();
       setView({ phase: "error", message: "Profili u ruajt. Për vijueshmërinë skano përsëri QR-në e re." });
       return;
     }
@@ -205,7 +209,7 @@ export function CheckInResult() {
   return (
     <div className="check-in-success" role="status">
       <span aria-hidden="true" className="success-mark">✓</span>
-      <h2>Vijueshmëria u konfirmua</h2>
+      <h2>Vijueshmëria u konfirmua</h2><p><a className="admin-link" href="/progress">Hap kartën time →</a></p>
       <p>{view.result.sessionTitle}</p>
       <p>
         {view.result.duplicate ? "Check-in-i ishte regjistruar më parë." : "Check-in-i u regjistrua."}

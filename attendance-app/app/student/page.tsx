@@ -73,7 +73,7 @@ export default function StudentPage() {
             skanoje QR-në dhe ndiq lidhjen; regjistrimi përfundon në atë faqe.
           </p>
         </aside>
-        <p><a href="/colloquium">Kolokviumi I · Hyrja dhe rezultatet →</a></p>
+        <p><a className="admin-link" href="/progress">Karta ime · Pjesëmarrja, testi dhe detyrat →</a></p><p><a href="/colloquium">Kolokviumi I · Hyrja dhe rezultatet →</a></p>
         <p><a href="/report">Raporti i klasës · Pjesëmarrja dhe detyrat sipas javëve →</a></p>
         <p><a href="https://arbenl.github.io/lendet/2026-2027/mobile/dorezimet.html">Detyrat dhe dorëzimet →</a></p>
         {state === "loading" ? <p role="status">Duke ngarkuar…</p> : null}

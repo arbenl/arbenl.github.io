@@ -366,3 +366,12 @@ export async function submitAttempt(session: Session | null, input: unknown) {
   });
   return studentState(session, { roomId: parsed.data.roomId });
 }
+
+// Reuse the existing membership and publication gate; join by roster ID, never by name.
+export async function progressResults(session: Session | null) {
+  await results(session);
+  const db = await database();
+  const semester = await currentSemester(db);
+  const rows = await db.execute(sql`select a.roster_id,a.week_number,a.score from colloquium_attempts a join colloquium_rooms c on c.id=a.room_id where a.semester_id=${semester} and c.deadline<=clock_timestamp() and a.score is not null`);
+  return rows.map(row => ({rosterId:String(row.roster_id),week:Number(row.week_number),score:Number(row.score),maxScore:10}));
+}

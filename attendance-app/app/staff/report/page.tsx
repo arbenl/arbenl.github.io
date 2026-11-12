@@ -25,7 +25,7 @@ export default async function AttendanceReportPage({ searchParams }: {
       <main className="page-shell" id="permbajtja-kryesore">
         <section className="status-card">
           <p className="eyebrow">Vetëm për profesorin</p>
-          <h1>Raporti i vijueshmërisë</h1>
+          <h1>Raporti i vijueshmërisë</h1><p><Link href="/progress">Kërko studentin · Karta me pjesëmarrjen dhe testin →</Link></p>
           <p>Hyr me llogarinë e autorizuar GitHub për të parë raportin.</p>
           <Link className="admin-link" href="/api/auth/signin?callbackUrl=/staff/report">Hyr me GitHub</Link>
         </section>
@@ -48,7 +48,7 @@ export default async function AttendanceReportPage({ searchParams }: {
     <main className="admin-shell attendance-report" id="permbajtja-kryesore">
       <header className="admin-page-header">
         <p className="eyebrow">Vetëm për profesorin · {report.semesterTitle}</p>
-        <h1>Raporti i vijueshmërisë</h1>
+        <h1>Raporti i vijueshmërisë</h1><p><Link href="/progress">Kërko studentin · Karta me pjesëmarrjen dhe testin →</Link></p>
         <p>Çdo orë e mbajtur, sipas javës. “Jo” vendoset vetëm pasi check-in-i mbyllet; gjatë orës studenti pa konfirmim shënohet “Në pritje”.</p>
         <div className="report-actions">
           <Link className="admin-link" href="/staff">← Paneli i profesorit</Link>

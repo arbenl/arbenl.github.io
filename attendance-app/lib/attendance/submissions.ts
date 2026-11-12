@@ -19,7 +19,7 @@ export interface WeeklySubmission {
 export function parseSubmissions(issues: SubmissionIssue[]): WeeklySubmission[] {
   const unique = new Map<string, WeeklySubmission>();
   for (const issue of issues) {
-    if (issue.pull_request || issue.created_at < "2026-09-01") continue;
+    if (issue.pull_request || issue.created_at < "2026-09-01" || issue.title.includes("[TEST STAFI 2026/2027]")) continue;
     const body = issue.body ?? "";
     if (!/^### Linku i punës në GitHub\s*$/mu.test(body)) continue;
     const weekField = body.match(/^### Java\s*\n+Java\s+(\d+)\s*$/mu);

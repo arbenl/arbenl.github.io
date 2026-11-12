@@ -30,7 +30,7 @@ export default function RootLayout({
             </Link>
             <nav className="app-nav" aria-label="Navigimi kryesor">
               <a href="https://arbenl.github.io/lendet/2026-2027/mobile/">Materialet e lëndës</a>
-              <Link href="/student">Vijueshmëria ime</Link>
+              <Link href="/progress">Karta ime</Link><Link href="/student">Vijueshmëria ime</Link>
             </nav>
           </div>
         </header>

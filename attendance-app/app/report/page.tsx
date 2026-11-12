@@ -44,7 +44,7 @@ export default async function CourseReportPage({ searchParams }: {
   return <main className="admin-shell attendance-report" id="permbajtja-kryesore">
     <header className="admin-page-header">
       <p className="eyebrow">Programimi Mobile · 2026/2027 · Për studentët dhe profesorin</p>
-      <h1>Pjesëmarrja dhe detyrat sipas javëve</h1>
+      <h1>Pjesëmarrja dhe detyrat sipas javëve</h1><p><Link className="admin-link" href="/progress">Kërko studentin · Hap kartën →</Link></p>
       <p>Emrat renditen sipas alfabetit shqip. Pjesëmarrja merret nga regjistri QR; dorëzimet nga formularët në GitHub, duke përfshirë edhe ato të mbyllura.</p>
       <p><Link href="https://arbenl.github.io/lendet/2026-2027/mobile/">← Faqja e lëndës</Link> · <Link href="/student">Vijueshmëria ime</Link></p>
     </header>

@@ -19,6 +19,7 @@ interface ClassroomLoginProps {
 
 export function ClassroomLogin({ token, onAuthenticated }: ClassroomLoginProps) {
   const [readiness, setReadiness] = useState<"loading" | "ready" | "unavailable">("loading");
+  const [readinessAttempt,setReadinessAttempt]=useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -31,7 +32,7 @@ export function ClassroomLogin({ token, onAuthenticated }: ClassroomLoginProps) 
       })
       .catch(() => { if (active) setReadiness("unavailable"); });
     return () => { active = false; };
-  }, []);
+  }, [readinessAttempt]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -64,17 +65,17 @@ export function ClassroomLogin({ token, onAuthenticated }: ClassroomLoginProps) 
   }
 
   if (readiness === "loading") return <p role="status">Duke kontrolluar regjistrimin me QR…</p>;
-  if (readiness === "unavailable") return <p role="status">Regjistrimi me QR është përkohësisht i padisponueshëm. Mund të përdorësh GitHub ose të kërkosh ndihmën e profesorit.</p>;
+  if (readiness === "unavailable") return <div><p role="alert">Regjistrimi me QR është përkohësisht i padisponueshëm. Kontrollo internetin dhe provo përsëri.</p><button className="student-control" type="button" onClick={()=>{setReadiness("loading");setReadinessAttempt(n=>n+1);}}>Provo përsëri</button></div>;
 
   return <form aria-label="Regjistrohu me QR" className="student-form" onSubmit={submit}>
-    <h2>Regjistrohu me QR</h2>
+    <h2>Regjistrohu një herë</h2>
     <p className="form-guidance">Plotëso të dhënat gjatë orës me QR-në aktive të profesorit. Pranohet emaili i fakultetit ose privat; nuk duhet fjalëkalim apo kod emaili.</p>
     <label htmlFor="classroom-firstName">Emri</label>
     <input id="classroom-firstName" name="firstName" autoComplete="given-name" maxLength={100} className="student-control" required disabled={submitting} />
     <label htmlFor="classroom-lastName">Mbiemri</label>
     <input id="classroom-lastName" name="lastName" autoComplete="family-name" maxLength={100} className="student-control" required disabled={submitting} />
     <label htmlFor="classroom-studentId">Student ID</label>
-    <input id="classroom-studentId" name="studentId" autoComplete="off" maxLength={100} className="student-control" required disabled={submitting} />
+    <input id="classroom-studentId" name="studentId" autoComplete="off" inputMode="text" autoCapitalize="none" spellCheck={false} maxLength={100} className="student-control" required disabled={submitting} />
     <label htmlFor="classroom-groupName">Grupi i ushtrimeve</label>
     <select id="classroom-groupName" name="groupName" className="student-control" required disabled={submitting}>
       <option value="">Zgjidh grupin tënd</option>
@@ -83,7 +84,7 @@ export function ClassroomLogin({ token, onAuthenticated }: ClassroomLoginProps) 
     </select>
     <label htmlFor="classroom-email">Emaili i fakultetit ose emaili privat</label>
     <input id="classroom-email" name="email" type="email" autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck={false} maxLength={254} aria-describedby="classroom-email-help" className="student-control" required disabled={submitting} />
-    <p id="classroom-email-help" className="form-guidance">Përdor emailin tënd dhe kontrolloje para ruajtjes. Profili ruhet për skanimet e ardhshme në këtë shfletues.</p>
+    <p id="classroom-email-help" className="form-guidance">Përdor emailin tënd dhe kontrolloje para ruajtjes. Profili ruhet për skanimet e ardhshme në këtë shfletues. Përdor kamerën dhe të njëjtin shfletues; shmang dritaren private. Nëse je nga grupi tjetër, mund të regjistrohesh në këtë orë.</p>
     {message ? <p role="alert">{message}</p> : null}
     <button className="student-control primary-action" type="submit" disabled={submitting}>{submitting ? "Duke regjistruar…" : "Regjistrohu dhe konfirmo vijueshmërinë"}</button>
   </form>;

@@ -29,7 +29,7 @@ export default async function StaffPage({ searchParams }: {
 
   return (
     <main className="admin-shell" id="permbajtja-kryesore">
-      <header className="admin-page-header">
+      <header className="admin-page-header"><p><a className="admin-link" href="/progress">Kërko studentin · Karta, pjesëmarrja dhe testi →</a></p>
         <p className="eyebrow">Paneli i profesorit · 2026/2027</p>
         <h1>Programimi për Pajisje Mobile</h1>
         <p><strong>Vijueshmëria · Semestri dimëror 2026/2027 · Kolegji AAB</strong></p>

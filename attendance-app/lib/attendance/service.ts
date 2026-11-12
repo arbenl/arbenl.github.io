@@ -1592,7 +1592,7 @@ async function getCourseActivityReport(session: Session | null) {
     .from(attendanceRecords).innerJoin(classSessions, eq(classSessions.id, attendanceRecords.sessionId))
     .where(and(eq(classSessions.semesterId, semester.id), eq(attendanceRecords.status, "present"),
       inArray(classSessions.state, ["open", "closed"])));
-  return { students: students.sort((a, b) => a.fullName.localeCompare(b.fullName, "sq", { sensitivity: "base" })), sessions, present };
+  return { viewerRosterId: membership?.id ?? null, students: students.sort((a, b) => a.fullName.localeCompare(b.fullName, "sq", { sensitivity: "base" })), sessions, present };
 }
 
 async function getWeeklyAttendanceReport(session: Session | null) {
