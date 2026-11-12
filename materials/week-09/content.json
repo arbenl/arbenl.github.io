@@ -3,42 +3,67 @@
     {
       "id": "tema",
       "title": "Gjendja dhe ndërfaqet optimiste",
-      "body": "<p class=\"lead\">Si mund të reagojë RideShare menjëherë, pa pretenduar se serveri e ka ruajtur veprimin?</p><div class=\"ideas\"><article><span class=\"symbol\">◉</span><h3>1 · Gjendja</h3><p>Çfarë di telefoni dhe çfarë është ruajtur?</p></article><article><span class=\"symbol\">↗</span><h3>2 · Reagimi optimist</h3><p>Pamja ndryshon para përgjigjes.</p></article><article><span class=\"symbol\">↶</span><h3>3 · Besueshmëria</h3><p>Konfirmim, rikthim pas gabimit dhe provë.</p></article></div><p>Sot: preferimet e Artës. Në fund shpjegon kur ylli është një pritshmëri dhe kur është një e dhënë e ruajtur.</p>"
+      "body": "<p class=\"lead\">Si ndërtojmë një ndërfaqe që reagon shpejt dhe mbetet e saktë kur ruajtja vonon ose dështon?</p><div class=\"ideas\"><article><span class=\"symbol\">◉</span><h3>1 · Kupto teorinë</h3><p>Gjendja lokale, ruajtja dhe komunikimi asinkron.</p></article><article><span class=\"symbol\">⇄</span><h3>2 · Shiko praktikën</h3><p>Një veprim i thjeshtë: pritje, sukses dhe rikthim pas gabimit.</p></article><article><span class=\"symbol\">→</span><h3>3 · Apliko konceptin</h3><p>Në pjesën e dytë, i zbatojmë idetë në aplikacionin e kursit.</p></article></div><p>Në fund dallon reagimin e ekranit nga konfirmimi i serverit dhe zgjedh kur është e përshtatshme qasja optimiste.</p>"
     },
     {
-      "id": "deri-tani",
-      "title": "Nga kartat te veprimet që ruhen",
-      "body": "<div class=\"flow\"><div><strong>Java 3</strong><span>Lista dhe detajet</span></div><div><strong>Java 4–5</strong><span>Neon dhe hyrja</span></div><div><strong>Java 6–7</strong><span>Offline dhe provat</span></div><div><strong>Java 8</strong><span>Vendtakimi lokal</span></div></div><p>Arta tashmë zgjedh një udhëtim dhe vendtakimin. Sot shtojmë <strong>“Ruaj udhëtimin”</strong>, që ajo ta gjejë përsëri më vonë.</p><p class=\"callout\">Java 9 shton një preferim personal. Nuk e dërgon vendtakimin te Dritoni dhe nuk rezervon vend.</p>"
-    },
-    {
-      "id": "pyetja",
-      "title": "Arta prek yllin. Çfarë pret të ndodhë?",
-      "body": "<div class=\"ideas\"><article><span class=\"symbol\">☆</span><h3>Para klikimit</h3><p>Udhëtimi nuk është te preferimet.</p></article><article><span class=\"symbol\">👆</span><h3>Klikimi</h3><p>Rrjeti mund të marrë disa sekonda.</p></article><article><span class=\"symbol\">★</span><h3>Pas klikimit</h3><p>A presim në heshtje apo reagojmë?</p></article></div><div class=\"question\"><p><strong>A provon ylli i mbushur se Neon e ka ruajtur preferimin?</strong></p><details><summary>Zbulo përgjigjen</summary><p>Jo. Mund të jetë vetëm gjendje lokale optimiste. Duhet mesazh “Po ruhet…” deri te konfirmimi i serverit.</p></details></div>"
+      "id": "baza",
+      "title": "Çfarë dimë deri tani — dhe çfarë shtojmë sot?",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">📱</span><h3>Ndërfaqja</h3><p>Komponentët shfaqin të dhëna dhe reagojnë ndaj klikimeve.</p></article><article><span class=\"symbol\">☁</span><h3>Serveri dhe databaza</h3><p>Serveri kontrollon kërkesën; databaza ruan të dhënat.</p></article><article><span class=\"symbol\">⏳</span><h3>Pyetja e re</h3><p>Çfarë duhet të shohë përdoruesi gjatë kohës mes klikimit dhe përgjigjes?</p></article></div><p>Njohim faqet, hyrjen, ruajtjen, punën offline dhe lejet e pajisjes. Sot fokusohemi te <strong>gjendja gjatë një ndryshimi</strong>, jo vetëm te leximi i të dhënave.</p>"
     },
     {
       "id": "gjendja",
-      "title": "Gjendja: kujtesa e aplikacionit në këtë çast",
-      "body": "<div class=\"ideas\"><article><span class=\"symbol\">📱</span><h3>Gjendja lokale</h3><p>Telefoni mban çfarë shfaq: yllin, pritjen, mesazhin.</p></article><article><span class=\"symbol\">☁</span><h3>Gjendja e ruajtur</h3><p>Serveri lexon preferimet e përdoruesit nga databaza.</p></article><article><span class=\"symbol\">↻</span><h3>Pas rifreskimit</h3><p>Gjendja në memorie rikrijohet; preferimi lexohet përsëri.</p></article></div><p>Një ndryshim në <strong>state</strong> (gjendje) rifreskon pamjen. Vetëm ndryshimi i pamjes nuk është ruajtje në databazë.</p>"
+      "title": "Gjendja: të dhënat që përcaktojnë ekranin",
+      "body": "<p>Gjendja (<strong>state</strong>) është kujtesa e aplikacionit në një çast. Kur ajo ndryshon, ndërfaqja paraqet rezultatin e ri.</p><div class=\"ideas\"><article><span class=\"symbol\">☐</span><h3>Vlera</h3><p>Një detyrë është e papërfunduar ose e përfunduar.</p></article><article><span class=\"symbol\">⏳</span><h3>Statusi</h3><p>A po dërgohet ndryshimi te serveri?</p></article><article><span class=\"symbol\">!</span><h3>Mesazhi</h3><p>A pati gabim dhe çfarë mund të bëjë përdoruesi?</p></article></div><p class=\"callout\">Ekrani = vlera që shfaqim + statusi i kërkesës + shpjegimi për përdoruesin.</p>"
+    },
+    {
+      "id": "dy-kujtesa",
+      "title": "Ekrani dhe databaza kanë role të ndryshme",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">📱</span><h3>Gjendja lokale</h3><p>Mbahet në shfletues. Ndryshon shpejt, por mund të humbasë pas rifreskimit.</p></article><article><span class=\"symbol\">▤</span><h3>Gjendja e ruajtur</h3><p>Mbahet në databazë. Lexohet sërish kur hapim faqen.</p></article><article><span class=\"symbol\">↻</span><h3>Përputhja</h3><p>Pas përgjigjes, pamja duhet të përputhet me rezultatin e serverit.</p></article></div><div class=\"question\"><p><strong>Nëse shënoj një detyrë ✓ në ekran, a është ruajtur domosdoshmërisht?</strong></p><details><summary>Zbulo përgjigjen</summary><p>Jo. Ndryshimi lokal nuk provon se serveri e ka pranuar ose ruajtur ndryshimin.</p></details></div>"
+    },
+    {
+      "id": "asinkron",
+      "title": "Klikimi dhe përgjigjja nuk ndodhin njëkohësisht",
+      "body": "<div class=\"flow\"><div><strong>1 · Përdoruesi</strong><span>Klikon “Përfundo detyrën”</span></div><div><strong>2 · Shfletuesi</strong><span>Dërgon kërkesën</span></div><div><strong>3 · Serveri</strong><span>Kontrollon dhe ruan</span></div><div><strong>4 · Përgjigjja</strong><span>Mbërrin në shfletues</span></div></div><p><strong>Asinkron</strong> do të thotë se përgjigjja vjen më vonë. Ndërfaqja duhet ta trajtojë këtë interval, edhe nëse zgjat vetëm pak.</p><p>Rrjeti mund të jetë i ngadalshëm. Kërkesa mund të refuzohet. Përdoruesi duhet të kuptojë nëse veprimi është ende në proces.</p>"
     },
     {
       "id": "dy-qasje",
-      "title": "Dy mënyra për të trajtuar pritjen",
-      "body": "<div class=\"ideas\"><article><span class=\"symbol\">⏳</span><h3>Prit përgjigjen</h3><p>Klikim → pritje → serveri konfirmon → ylli mbushet.</p></article><article><span class=\"symbol\">⚡</span><h3>Përditëso në mënyrë optimiste</h3><p>Klikim → ylli mbushet dhe shfaqet pritja → serveri përgjigjet.</p></article><article><span class=\"symbol\">↶</span><h3>Kostoja e shpejtësisë</h3><p>Nëse serveri refuzon, duhet rikthyer pamja dhe shpjeguar gabimi.</p></article></div><p>“Optimist” do të thotë <strong>paraqes rezultatin që pres</strong>. Nuk do të thotë se e fsheh pasigurinë.</p>"
+      "title": "Prit konfirmimin apo reago menjëherë?",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">⏳</span><h3>Qasja që pret</h3><p>Klikim → “Po ruhet…” → serveri konfirmon → detyra shfaqet ✓.</p></article><article><span class=\"symbol\">⚡</span><h3>Qasja optimiste</h3><p>Klikim → detyra shfaqet ✓ dhe “Po ruhet…” → serveri konfirmon ose refuzon.</p></article><article><span class=\"symbol\">↶</span><h3>Përgjegjësia</h3><p>Reagimi më i shpejtë kërkon trajtim të qartë të gabimit dhe rikthim të pamjes.</p></article></div><p><strong>Përditësim optimist</strong> është paraqitja e përkohshme e rezultatit që presim, para se të kemi konfirmim.</p>"
     },
     {
-      "id": "gjendjet",
-      "title": "Katër gjendje, një histori e qartë",
-      "body": "<div class=\"flow\"><div><strong>☆ Pa preferim</strong><span>Gjendja e konfirmuar</span></div><div><strong>★ Po ruhet</strong><span>Pamje e përkohshme</span></div><div><strong>★ I ruajtur</strong><span>Serveri konfirmoi</span></div><div><strong>☆ Nuk u ruajt</strong><span>Serveri refuzoi</span></div></div><p>Dy kutitë e fundit janë <strong>dy përfundime alternative</strong>. Suksesi ruan ndryshimin; gabimi kthen gjendjen e fundit të konfirmuar.</p><div class=\"question\"><p><strong>Ku shkon një gabim në provën që nisi me yll bosh?</strong></p><details><summary>Zbulo përgjigjen</summary><p>Te ylli bosh, numri i mëparshëm dhe mesazhi “Nuk u ruajt”. Jo te një sukses i rremë.</p></details></div>"
+      "id": "shembulli",
+      "title": "Shembull praktik · përfundo një detyrë",
+      "body": "<div class=\"flow\"><div><strong>Para klikimit</strong><span>☐ Lexo kapitullin</span></div><div><strong>Menjëherë pas klikimit</strong><span>☑ Lexo kapitullin · Po ruhet…</span></div></div><div class=\"ideas\"><article><span class=\"symbol\">✓</span><h3>Nëse ruhet</h3><p>☑ Lexo kapitullin · U ruajt. Gjendja e re është e konfirmuar.</p></article><article><span class=\"symbol\">↶</span><h3>Nëse refuzohet</h3><p>☐ Lexo kapitullin · Nuk u ruajt. Provo përsëri.</p></article><article><span class=\"symbol\">◉</span><h3>Çfarë rikthehet?</h3><p>Vlera e mëparshme e konfirmuar, jo një vlerë e hamendësuar.</p></article></div>"
+    },
+    {
+      "id": "praktika",
+      "title": "Si përkthehet kjo rrjedhë në kod?",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">1</span><h3>Para kërkesës</h3><p>Mbaj mend vlerën e konfirmuar. Shfaq vlerën e re të përkohshme dhe statusin e pritjes.</p></article><article><span class=\"symbol\">2</span><h3>Kur vjen suksesi</h3><p>Përditëso vlerën e konfirmuar nga rezultati. Mbyll pritjen dhe pastro gabimin.</p></article><article><span class=\"symbol\">3</span><h3>Kur vjen refuzimi</h3><p>Rikthe vlerën e konfirmuar. Mbyll pritjen dhe shfaq mesazhin e riprovimit.</p></article></div><p>Në React mund ta modelosh me <code>useState</code>. <code>useOptimistic</code> ndihmon për pamjen e përkohshme gjatë një veprimi; ruajtja në server dhe trajtimi i gabimeve mbeten përgjegjësi të aplikacionit.</p>"
+    },
+    {
+      "id": "persistence",
+      "title": "Si e provojmë se ndryshimi është ruajtur?",
+      "body": "<div class=\"flow\"><div><strong>Vepro</strong><span>Shëno detyrën ✓</span></div><div><strong>Prit</strong><span>Merre konfirmimin</span></div><div><strong>Rifresko</strong><span>Lexo nga serveri</span></div><div><strong>Krahaso</strong><span>A mbeti detyra ✓?</span></div></div><p>Vetëm pamja para rifreskimit nuk mjafton. Duhet të dimë nga erdhi vlera pas rifreskimit: nga serveri apo vetëm nga një kopje në shfletues?</p><div class=\"question\"><p><strong>A provon localStorage se databaza e ka ruajtur ndryshimin?</strong></p><details><summary>Zbulo përgjigjen</summary><p>Jo. localStorage është ruajtje në shfletues. Për ruajtjen në server duhen kontrolluar përgjigjja dhe leximi i të dhënave nga serveri.</p></details></div>"
+    },
+    {
+      "id": "gabim-pa-pergjigje",
+      "title": "Refuzimi dhe mungesa e përgjigjes nuk janë e njëjta gjë",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">✕</span><h3>Refuzim i qartë</h3><p>Serveri thotë se ndryshimi nuk u ruajt. Rikthe gjendjen e mëparshme.</p></article><article><span class=\"symbol\">？</span><h3>Përgjigjja humbi</h3><p>Serveri mund ta ketë ruajtur ndryshimin, por përgjigjja nuk mbërriti.</p></article><article><span class=\"symbol\">↻</span><h3>Rezultat i pasigurt</h3><p>Mos premto sukses. Lexo gjendjen e serverit përpara se të vendosësh çfarë ndodhi.</p></article></div><p>Rikthimi i pamjes në telefon <strong>nuk e zhbën vetvetiu një shkrim në databazë</strong>. Duhet të dallojmë gabimin e konfirmuar nga rezultati i panjohur."
+    },
+    {
+      "id": "zgjedhja",
+      "title": "Kur është e përshtatshme qasja optimiste?",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\">✓</span><h3>Veprime të kthyeshme</h3><p>Shënimi i një detyre ose ruajtja e një artikulli: gabimi mund të shpjegohet dhe korrigjohet.</p></article><article><span class=\"symbol\">🔒</span><h3>Premtime me pasoja</h3><p>Pagesa ose blerja e biletës së fundit kërkojnë konfirmim përpara se të premtojmë përfundimin.</p></article><article><span class=\"symbol\">1</span><h3>Veprime të përsëritura</h3><p>Tri klikime nuk duhet të bëhen tri regjistrime. Mbrojtja kërkohet edhe në server.</p></article></div><div class=\"question\"><p><strong>A mjafton ta çaktivizojmë butonin për të shmangur çdo kopje?</strong></p><details><summary>Zbulo përgjigjen</summary><p>Jo. Ndihmon ndërfaqen, por serveri dhe databaza duhet të trajtojnë edhe kërkesa të përsëritura.</p></details></div>"
+    },
+    {
+      "id": "kalimi-rideshare",
+      "title": "Tani e zbatojmë në RideShare",
+      "body": "<p class=\"eyebrow\">PJESA II · NGA KONCEPTI TE APLIKACIONI YNË</p><p class=\"lead\">Arta dëshiron ta ruajë udhëtimin e Dritonit për ta gjetur më vonë.</p><div class=\"ideas\"><article><span class=\"symbol\">☐ → ☆</span><h3>Nga detyra te preferimi</h3><p>Në vend të shenjës ✓, kemi yllin ★.</p></article><article><span class=\"symbol\">☁</span><h3>I njëjti parim</h3><p>Pamja reagon, serveri kontrollon dhe Neon ruan.</p></article><article><span class=\"symbol\">↶</span><h3>Të njëjtat prova</h3><p>Suksesi, refuzimi dhe përsëritja e kërkesës.</p></article></div><p class=\"callout\">Preferimi është kujtesë personale. Nuk rezervon vend dhe nuk dërgon vendtakimin te shoferi.</p>"
     },
     {
       "id": "infrastruktura",
       "title": "Ndiq yllin nga telefoni te databaza",
       "body": "<div data-walk><div class=\"infra-nodes\"><button type=\"button\" data-detail=\"Arta klikon. Pamja tregon yllin dhe “Po ruhet…”. Ky është ndryshim lokal.\" aria-pressed=\"true\"><img src=\"/assets/week06-icons/smartphone.svg\" alt=\"\"><span>Telefoni</span></button><button type=\"button\" data-detail=\"Kërkesa arrin në server. Serveri lexon sesionin e përdoruesit dhe kontrollon udhëtimin.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/cloud.svg\" alt=\"\"><span>Next.js · Vercel</span></button><button type=\"button\" data-detail=\"Ruhet lidhja përdorues–udhëtim. Një çift i njëjtë duhet të ekzistojë vetëm një herë.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/database.svg\" alt=\"\"><span>Neon · PostgreSQL</span></button><button type=\"button\" data-detail=\"Serveri kthen rezultatin e ruajtjes. Në sukses konfirmohet pamja; në refuzim rikthehet gjendja.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/send.svg\" alt=\"\"><span>Përgjigjja</span></button></div><p class=\"walk-detail\" role=\"status\">Arta klikon. Pamja tregon yllin dhe “Po ruhet…”. Ky është ndryshim lokal.</p><button type=\"button\" data-advance>Hapi tjetër →</button></div><p class=\"small\">Git → GitHub → Vercel publikon <strong>kodin</strong>. Klikimi “Ruaj” dërgon <strong>të dhëna</strong> te aplikacioni në Vercel; nuk krijon commit në GitHub.</p>"
-    },
-    {
-      "id": "praktika",
-      "title": "Si përkthehet ideja në një implementim?",
-      "body": "<div class=\"ideas\"><article><span class=\"symbol\">◉</span><h3>Pamja</h3><p>Mbaj vlerën e konfirmuar, pritjen dhe gabimin. Pamjen e përkohshme lidhe me kërkesën aktive.</p></article><article><span class=\"symbol\">⇄</span><h3>Kërkesa</h3><p>Dërgo synimin “ruaje këtë udhëtim”. Lexo rezultatin, jo vetëm faktin që kërkesa u nis.</p></article><article><span class=\"symbol\">▤</span><h3>Ruajtja</h3><p>Serveri përdor sesionin; databaza garanton që nuk krijohet kopje e të njëjtit preferim.</p></article></div><p>Në React mund të përdorësh <code>useState</code>; <code>useOptimistic</code> është një mjet tjetër për gjendjen e përkohshme. Për këtë ushtrim mjafton qasja që e kupton dhe e provon.</p>"
     },
     {
       "id": "rasti-1",
@@ -56,19 +81,9 @@
       "body": "<div class=\"phone-scene\"><div class=\"phone\" role=\"img\" aria-label=\"Pamje e pritshme e telefonit të Artës: Nuk u ruajt. Provo përsëri.\"><div class=\"notch\"></div><header><strong>RideShare</strong><span>Arta · Udhëtare</span></header><div class=\"phone-label\">UDHËTIMET DREJT AAB</div><div class=\"ride\"><small>UDHËTIMI 2</small><h3>Dritoni</h3><p>Ferizaj → AAB</p><div class=\"ride-meta\"><span>Nisja<strong>08:15</strong></span><span>Vende<strong>2</strong></span></div></div><div class=\"favorite error\"><span>☆</span> Provo përsëri</div><p class=\"phone-status error\">Nuk u ruajt. Provo përsëri.</p><div class=\"count\">Të preferuarat <strong>0</strong></div><small class=\"phone-foot\">Preferim personal · jo rezervim</small><div class=\"homebar\"></div></div><aside><h3>Rikthim i gjendjes · rollback</h3><p>Prova nisi me 0 preferime. Pas një përgjigjeje gabimi pa shkrim në databazë, pamja kthehet te ☆ dhe 0. Arta merr një mesazh dhe mundësinë për të provuar përsëri.</p><p class=\"muted\">Dritoni: 2 vende. Nuk merr kërkesë rezervimi.</p></aside></div>"
     },
     {
-      "id": "gabim-pa-pergjigje",
-      "title": "Refuzimi dhe mungesa e përgjigjes nuk janë e njëjta gjë",
-      "body": "<div class=\"ideas\"><article><span class=\"symbol\">✕</span><h3>Refuzim i qartë</h3><p>Serveri njofton se veprimi nuk u ruajt. Rikthe pamjen.</p></article><article><span class=\"symbol\">？</span><h3>Përgjigjja humbi</h3><p>Kërkesa mund të jetë ruajtur edhe pse telefoni nuk mori përgjigje.</p></article><article><span class=\"symbol\">↻</span><h3>Verifiko</h3><p>Mos shfaq sukses të sigurt. Lexo gjendjen e serverit dhe provo sërish në mënyrë të sigurt.</p></article></div><p>Laboratori provon një refuzim të kontrolluar <strong>para ruajtjes</strong>. Për një timeout real, rezultati mund të jetë i panjohur.</p>"
-    },
-    {
       "id": "rasti-3",
       "title": "Rasti 3 · Tre klikime, një preferim",
       "body": "<div class=\"ideas\"><article><span class=\"symbol\">👆</span><h3>Në telefon</h3><p>Gjatë pritjes butoni nuk nis kërkesa të tjera për të njëjtin veprim.</p></article><article><span class=\"symbol\">🔒</span><h3>Në server</h3><p>Përdor identitetin nga sesioni, jo një userId të besuar nga telefoni.</p></article><article><span class=\"symbol\">▤</span><h3>Në databazë</h3><p>Çifti përdorues–udhëtim është unik. Përsëritja nuk krijon rresht tjetër.</p></article></div><p><strong>Idempotencë:</strong> përsëritja e të njëjtit synim ka të njëjtin efekt. “Ruaje” është më e qartë se “ndërroje gjendjen” kur një kërkesë përsëritet.</p>"
-    },
-    {
-      "id": "zgjedhja",
-      "title": "Ku ia vlen të jemi optimistë?",
-      "body": "<div class=\"ideas\"><article><span class=\"symbol\">★</span><h3>Preferim</h3><p>Veprim i kthyeshëm. Reagimi i menjëhershëm është i dobishëm.</p></article><article><span class=\"symbol\">💺</span><h3>Vendi i fundit</h3><p>Nuk e premtojmë vendin para kontrollit të serverit.</p></article><article><span class=\"symbol\">💳</span><h3>Pagesë</h3><p>Nuk shfaqim pagesë të përfunduar pa konfirmimin përkatës.</p></article></div><div class=\"question\"><p><strong>Nëse Arta ruan udhëtimin, a zbresin vendet nga 2 në 1?</strong></p><details><summary>Zbulo përgjigjen</summary><p>Jo. Preferimi është kujtesë personale. Rezervimi është veprim tjetër, me rregulla dhe konfirmim tjetër.</p></details></div>"
     },
     {
       "id": "lexo-rastin",
