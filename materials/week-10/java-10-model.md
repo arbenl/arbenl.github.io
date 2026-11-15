@@ -3,6 +3,8 @@
 ## Çfarë ndërtova
 [PLOTËSO] Përshkruaj sinkronizimin në projektin tënd dhe një ndryshim ndaj javës 9.
 
+Plotëso fushat e modelit me vëzhgimet e tua para dorëzimit. Pjesa e përgjigjes së GitHub-it përditësohet pas dorëzimit të parë.
+
 ## Përgatitja e provës
 [PLOTËSO] ID-ja e udhëtimit fiktiv, vendet fillestare, dy rolet dhe si i ndave sesionet. Mos publiko të dhëna reale ose kredenciale.
 
@@ -19,7 +21,7 @@
 - Çfarë pashë realisht te të dy përdoruesit: [PLOTËSO]
 
 ### Prova 3: Rasti 3 · Ndërprerja dhe rilidhja
-- Cila dritare ishte offline dhe si e provova: [PLOTËSO]
+- ID-ja e udhëtimit të ri të provës, cila dritare ishte offline dhe si e provova: [PLOTËSO]
 - Pamja e fundit gjatë ndërprerjes: [PLOTËSO]
 - Çfarë ndryshoi pas rilidhjes: [PLOTËSO]
 
@@ -35,5 +37,5 @@
 ## Ndihma nga AI (Artificial Intelligence – inteligjencë artificiale)
 [PLOTËSO] Çfarë ndihme more dhe si e provove vetë, ose shkruaj: Nuk përdora AI.
 
-## Dorëzimi dhe përgjigjja
-[PLOTËSO] Linku i Issue-t, versioni/commit-i i kontrolluar, rreshtat që kaluan ose kërkojnë korrigjim. 2/2 teknikisht nuk provon funksionimin e aplikacionit.
+## Pas dorëzimit të parë — përditëso më vonë
+Ky seksion mund të mbetet kështu në dorëzimin e parë. Pasi të marrësh përgjigjen, shto linkun e Issue-t, commit-in e kontrolluar dhe çfarë kaloi ose duhet korrigjuar. 2/2 teknikisht nuk provon funksionimin e aplikacionit.

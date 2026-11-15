@@ -38,3 +38,20 @@ test('empty capacity and an offline actor cannot produce a new acceptance',()=>{
  let empty=initialState(2);empty.server.seats=0;assert.equal(transition(empty,{type:'accept'}).server.request,'pending');
  const offline=transition(initialState(2),{type:'disconnect',role:'driver'});assert.equal(transition(offline,{type:'accept'}).server.seats,2);
 });
+
+test('the demo counts screen reads, including reconnects, rather than polling rounds',()=>{
+ const both=transition(initialState(1),{type:'poll'});
+ assert.equal(both.reads,2);
+ const oneOffline=transition(both,{type:'disconnect',role:'passenger'});
+ const oneRead=transition(oneOffline,{type:'poll'});
+ assert.equal(oneRead.reads,3);
+ const allOffline=transition(oneRead,{type:'disconnect',role:'driver'});
+ assert.equal(transition(allOffline,{type:'poll'}).reads,3);
+ assert.equal(transition(allOffline,{type:'connect',role:'passenger'}).reads,4);
+});
+test('a stale driver retry cannot accept an already accepted request twice',()=>{
+ const accepted=transition(initialState(2),{type:'accept'});
+ accepted.clients.driver.request='pending';
+ const retried=transition(accepted,{type:'accept'});
+ assert.deepEqual(retried.server,accepted.server);
+});

@@ -11,3 +11,7 @@
 @media(max-width:1099px){.demo-stage{display:block}.demo-panel{margin-top:20px}.demo-panel .demo-tools{display:flex;flex-wrap:wrap}.demo-panel .demo-infra{display:flex;flex-wrap:wrap}.demo-shell .header-link{flex-wrap:wrap}}
 
 .snapshot-example{padding:14px 18px;background:#1b303b;border:1px solid #466373;border-radius:10px;white-space:pre-wrap;font-size:23px;line-height:1.4;color:#cdf5e9}
+
+/* Keep a revealed answer and its illustration together on the projector. */
+.projector .question details[open]{margin-bottom:0}
+.projector .question details[open] p{margin:8px 0 0}
