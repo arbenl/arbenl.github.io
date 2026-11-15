@@ -142,7 +142,7 @@
     {
       "id": "pergatitja",
       "title": "Hapi 1 · Përgatit një provë të vogël",
-      "body": "<ol><li>Hap projektin ekzistues dhe kontrollo leximin nga Neon. Mos krijo repository ose projekt Vercel të dytë.</li><li>Zgjidh një udhëtim fiktiv. Vendos 2 vende të lira dhe shëno ID-në e tij.</li><li>Hap dy dritare me <strong>dy sesione të ndryshme</strong>: një shofer pronar dhe një udhëtar. Këto janë llogari të RideShare-it tënd, të ndara nga vijueshmëria e lëndës. Përdor profile të veçanta shfletuesi ose një dritare normale dhe një private. Dy skeda normale zakonisht ndajnë të njëjtin sesion.</li><li>Nëse databaza ose hyrja nuk punojnë deri në minutën 15, kërko ndihmë para se të shtosh sinkronizimin.</li></ol><p class=\"handoff\">Vazhdo në Hapin 2 kur të dy përdoruesit lexojnë të njëjtin udhëtim. Java 7 mund të ketë vetëm simulim kërkese; sot kërkesa duhet të ruhet realisht.</p>"
+      "body": "<ol><li>Hap projektin ekzistues. Verifiko leximin nga Neon dhe një udhëtim fiktiv me <strong>2 vende</strong>. Shëno ID-në.</li><li>Të dy rolet hapin <strong>të njëjtën adresë të aplikacionit</strong>. Mund të punoni në çift me llogaritë ekzistuese; mos ndani fjalëkalime.</li><li>Shoferi pronar dhe udhëtari kanë <strong>sesione të ndryshme të RideShare-it</strong>, jo të vijueshmërisë. Në një kompjuter përdor një dritare normale dhe një private. Dy skeda normale zakonisht ndajnë sesionin.</li><li>Nëse databaza ose hyrja nuk punojnë deri në minutën 15, kërko ndihmë para se të shtosh sinkronizimin.</li></ol><p class=\"handoff\">Vazhdo në Hapin 2 kur të dy përdoruesit lexojnë të njëjtin udhëtim. Java 7 mund të ketë vetëm simulim kërkese; sot kërkesa duhet të ruhet realisht.</p>"
     },
     {
       "id": "fillimi",
