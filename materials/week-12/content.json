@@ -148,7 +148,7 @@
     {
       "id": "pergatitja",
       "title": "Hapi 1 · Përgatit të njëjtin projekt",
-      "body": "<ol><li>Provo fillimisht pranimin dhe leximin nga java 10. Nëse nuk punojnë deri në minutën 15, kërko ndihmë.</li><li>Puno në çift me dy sesione: shofer pronar dhe udhëtar. Të dy përdorni të njëjtin aplikacion. Një dritare normale dhe një private ndajnë sesionet.</li><li>Për rastin 1 përdor një udhëtim fiktiv me 2 vende dhe një kërkesë në pritje.</li><li>Për rastin 3 përgatit një udhëtim tjetër me 1 vend dhe dy kërkesa në pritje. Shëno ID-të e tua.</li></ol><p class=\"handoff\">Në shembull përdoren K-42 dhe K-43. Në projekt përdor ID-të dhe formatin e skemës tënde; mos ndrysho të dhëna reale.</p>"
+      "body": "<ol><li>Provo fillimisht pranimin dhe leximin nga java 10. Nëse nuk punojnë deri në minutën 15, kërko ndihmë.</li><li>Puno në çift me dy sesione: shofer pronar dhe udhëtar. Të dy përdorni të njëjtin aplikacion. Një dritare normale dhe një private ndajnë sesionet.</li><li>Për rastin 1 përdor një udhëtim fiktiv me 2 vende dhe një kërkesë në pritje.</li><li>Për rastin 3: udhëtim tjetër, 1 vend, dy kërkesa nga udhëtarë të ndryshëm. Udhëtarin e dytë hape në telefonin e kolegut ose shfletues tjetër. Shëno ID-të.</li></ol><p class=\"handoff\">Në shembull përdoren K-42 dhe K-43. Në projekt përdor ID-të dhe formatin e skemës tënde; mos ndrysho të dhëna reale.</p>"
     },
     {
       "id": "infrastruktura-punes",

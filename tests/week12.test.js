@@ -42,6 +42,7 @@ test('week 12 teaches general concepts first and aligns the three student case c
  for(const file of ['prezantimi-ligjerates.html','prezantimi-ushtrimeve.html','ushtrimet.html','java-12-model.md','demo/index.html']){
   const text=await readFile(base+file,'utf8');for(const title of cases)assert.ok(text.includes(title),`${file}: missing ${title}`);
  }
+ const hub=await readFile(base+'index.html','utf8');assert.ok(hub.includes('formulari i Javës 12'));assert.ok(!hub.includes('Javës 10'));assert.ok(hub.includes('../java-11/'));
  const lab=await readFile(base+'ushtrimet.html','utf8');assert.ok(lab.includes('week=Java%2012'));assert.ok(lab.includes('rikontrollo'));assert.ok(lab.includes('kontroll strukturor'));assert.ok(lab.includes('65–90'));
 });
 test('the lesson phone targets are the same component and state as the demo outcomes',()=>{
