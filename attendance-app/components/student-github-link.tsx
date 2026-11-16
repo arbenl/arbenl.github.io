@@ -2,6 +2,8 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { signIn } from "next-auth/react";
 export function StudentGitHubLink() {
+  const [loadError,setLoadError]=useState(false);
+  const [loadAttempt,setLoadAttempt]=useState(0);
   const [profile, setProfile] = useState<{
       githubLogin: string | null;
       repository: string | null;
@@ -22,13 +24,15 @@ export function StudentGitHubLink() {
         setUrl(p.repository ?? "");
       })
       .catch((e) => {
-        if (e.name !== "AbortError")
+        if (e.name !== "AbortError") {
+          setLoadError(true);
           setMessage(
             "Lidhja me GitHub nuk mund të ngarkohet tani. Provo përsëri.",
           );
+        }
       });
     return () => c.abort();
-  }, []);
+  }, [loadAttempt]);
   async function link() {
     setBusy(true);
     setMessage("");
@@ -68,14 +72,14 @@ export function StudentGitHubLink() {
     }
   }
   return (
-    <details className="admin-section" open={profile?.githubLogin === null}>
+    <details className="admin-section" open={profile?.githubLogin === null || loadError}>
       <summary>Lidh GitHub-in dhe repository-n tim</summary>
       <p>
         {profile
           ? profile.githubLogin
             ? `Llogaria aktuale: ${profile.githubLogin}`
             : "Profili yt nuk ka ende llogari GitHub."
-          : "Duke kontrolluar lidhjen…"}
+          : loadError ? "Lidhja nuk u ngarkua." : "Duke kontrolluar lidhjen…"}
       </p>
       <p>
         1. Në GitHub zgjidh llogarinë me të cilën dorëzon detyrat. 2. Shtyp
@@ -121,6 +125,7 @@ export function StudentGitHubLink() {
         </form>
       )}
       {message && <p role="status">{message}</p>}
+      {loadError && <button type="button" onClick={()=>{setMessage("");setLoadError(false);setLoadAttempt(n=>n+1);}}>Provo ngarkimin përsëri</button>}
     </details>
   );
 }

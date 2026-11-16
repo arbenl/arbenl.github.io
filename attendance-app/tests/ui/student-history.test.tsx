@@ -62,6 +62,7 @@ it("shows the saved profile and keeps an open class pending instead of absent", 
   const view=render(<StudentPage />);
   await waitFor(()=>expect(view.getByText("Regjistrimi është i hapur")).toBeTruthy());
   expect(view.getByText("Arta Kola · G1")).toBeTruthy();
+  expect(view.getByRole("button",{name:"Dil / Ndërro llogarinë"})).toBeTruthy();
   expect(view.queryByText("Mungesë",{exact:true})).toBeNull();
   expect(view.queryByText("Regjistrohu një herë →")).toBeNull();
 });

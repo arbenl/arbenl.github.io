@@ -19,3 +19,11 @@ Verification:
 - Browser `direct-materials.spec.ts` checks direct authoring-source entry points without missing styles/scripts.
 
 These checks do not guarantee every external service or personal production login. Use disposable accounts/databases for write flows; do not create test students or start production classes to verify a website change.
+
+## Student entry recovery
+
+A GitHub login and course enrollment are separate states. A signed-in GitHub student without course membership must receive the profile activation link rather than another login prompt. Registration without GitHub still starts from the live classroom QR and accepts a faculty or private email.
+
+The check-in page must process a camera link even if it changes only the fragment in an already open tab. A response from an earlier scan must not replace the latest scan. Unresolved QR handoffs may remain in same-tab session storage for at most five minutes, with the original capture time; server expiry remains authoritative. Clear handoffs on success or terminal rejection. Do not store registration fields or identity credentials in browser storage.
+
+Sign-in, sign-out and optional GitHub profile loading must surface interrupted requests and offer a working retry. Student history includes an explicit account exit; failed sign-out must not claim that the session ended. Test these paths using the disposable browser/database harness (`student-entry-audit.spec.ts`), including two different students reusing a browser after sign-out.

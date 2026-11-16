@@ -4,9 +4,10 @@ const mocks = vi.hoisted(() => ({
   report: vi.fn(),
   submissions: vi.fn(),
   tests: vi.fn(),
+  session: vi.fn(),
 }));
 vi.mock("../../lib/auth/session", () => ({
-  getCurrentSession: async () => null,
+  getCurrentSession: mocks.session,
 }));
 vi.mock("../../lib/attendance/service", async (orig) => ({
   ...(await orig<typeof import("../../lib/attendance/service")>()),
@@ -31,4 +32,13 @@ it("does not read submissions or test results before membership authorization", 
   cleanup();
   expect(mocks.submissions).not.toHaveBeenCalled();
   expect(mocks.tests).not.toHaveBeenCalled();
+});
+
+it("takes a signed-in unregistered student to profile activation instead of another GitHub login",async()=>{
+ mocks.session.mockResolvedValue({user:{name:"Student Test",githubLogin:"student-test"}});
+ mocks.report.mockRejectedValue(new AttendanceServiceError(403,"forbidden","Forbidden"));
+ const view=render(await Page());
+ expect(view.getByRole("link",{name:"Aktivizo profilin tim"}).getAttribute("href")).toBe("/student/activate");
+ expect(view.getByText(/student-test/)).toBeTruthy();
+ cleanup();
 });

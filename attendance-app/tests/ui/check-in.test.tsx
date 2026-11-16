@@ -248,7 +248,7 @@ describe("student check-in", () => {
     window.history.replaceState({}, "", "/check-in");
     const callback = render(<CheckInResult />);
     await waitFor(() => callback.getByRole("form", { name: /aktivizo profilin/i }));
-    expect(window.sessionStorage.getItem("attendance-check-in")).toBeNull();
+    expect(JSON.parse(window.sessionStorage.getItem("attendance-check-in") ?? "{}")).toMatchObject({token:TOKEN});
     expect(checkIns).toBe(2);
     expect(fetchMock).toHaveBeenCalled();
   });
@@ -296,7 +296,7 @@ describe("student check-in", () => {
     window.history.replaceState({}, "", "/check-in");
     const callback = render(<CheckInResult />);
     await waitFor(() => callback.getByRole("form", { name: /aktivizo profilin/i }));
-    expect(window.sessionStorage.getItem("attendance-check-in")).toBeNull();
+    expect(JSON.parse(window.sessionStorage.getItem("attendance-check-in") ?? "{}")).toMatchObject({token:TOKEN});
     expect(checkIns).toBe(2);
   });
 
@@ -400,4 +400,43 @@ it('still completes check-in when private browsing denies session storage',async
  const view=render(<CheckInResult/>);
  await view.findByRole('heading',{name:'Vijueshmëria u konfirmua'});
  expect(window.location.hash).toBe('');
+});
+
+it('retains an unresolved QR across refresh while waiting for email registration',async()=>{
+ window.history.replaceState({},'',`/check-in#token=${TOKEN}`);
+ vi.spyOn(globalThis,'fetch').mockImplementation(async input=>String(input)==='/api/classroom/status'?jsonResponse({enabled:true}):checkInError('authentication_required','Sign in',401));
+ const first=render(<CheckInResult/>);
+ await first.findByRole('form',{name:'Regjistrohu me QR'});first.unmount();
+ expect(window.location.hash).toBe('');
+ const second=render(<CheckInResult/>);
+ await second.findByRole('form',{name:'Regjistrohu me QR'});
+ expect(second.queryByText(/Nuk ka token/)).toBeNull();
+});
+for(const [code,message,expected] of [['invalid_challenge','This QR code is no longer valid',/QR-ja ka skaduar/],['checkin_closed','Check-in is closed',/Regjistrimi për këtë orë është mbyllur/]] as const)it(`gives actionable Albanian recovery for ${code}`,async()=>{
+ window.history.replaceState({},'',`/check-in#token=${TOKEN}`);
+ vi.spyOn(globalThis,'fetch').mockResolvedValue(checkInError(code,message,409));
+ const view=render(<CheckInResult/>);
+ expect((await view.findByRole('alert')).textContent).toMatch(expected);
+ expect(window.sessionStorage.getItem('attendance-check-in')).toBeNull();
+ expect(view.getByRole('link',{name:'Hap vijueshmërinë time'}).getAttribute('href')).toBe('/student');
+});
+it('accepts a QR scanned into an already open check-in tab',async()=>{
+ vi.spyOn(globalThis,'fetch').mockResolvedValue(jsonResponse({sessionTitle:'Ora e re',status:'present',duplicate:false}));
+ const view=render(<CheckInResult/>);
+ expect(view.getByRole('alert').textContent).toMatch(/Skano QR-në aktive/);
+ act(()=>{window.location.hash=`token=${TOKEN}`;window.dispatchEvent(new HashChangeEvent('hashchange'));});
+ await view.findByRole('heading',{name:'Vijueshmëria u konfirmua'});
+ expect(window.location.hash).toBe('');
+});
+it('ignores a late response from an earlier QR after a new scan',async()=>{
+ let finishFirst!:(r:Response)=>void;
+ const firstReply=new Promise<Response>(resolve=>{finishFirst=resolve;});
+ window.history.replaceState({},'',`/check-in#token=${TOKEN}`);
+ const fetcher=vi.spyOn(globalThis,'fetch').mockReturnValueOnce(firstReply).mockResolvedValueOnce(jsonResponse({sessionTitle:'Ora e dytë',status:'present',duplicate:false}));
+ const view=render(<CheckInResult/>);await waitFor(()=>expect(fetcher).toHaveBeenCalledTimes(1));
+ act(()=>{window.location.hash=`token=${'b'.repeat(64)}`;window.dispatchEvent(new HashChangeEvent('hashchange'));});
+ await view.findByText('Ora e dytë');
+ await act(async()=>{finishFirst(jsonResponse({sessionTitle:'Ora e parë',status:'present',duplicate:false}));});
+ expect(view.queryByText('Ora e parë')).toBeNull();
+ expect(view.getByText('Ora e dytë')).toBeTruthy();
 });

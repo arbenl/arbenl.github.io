@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { SignIn } from "./sign-in";
+import { SwitchAccount } from "./student-access";
 
 interface HistorySession {
   id: string;
@@ -87,6 +88,7 @@ export default function StudentHistory() {
         {state === "error" ? <div><p role="alert">Historia nuk mund të ngarkohet. Kontrollo lidhjen dhe provo përsëri.</p><button className="student-control" onClick={() => window.location.reload()}>Provo përsëri</button></div> : null}
         {state === "ready" && history ? (
           <>
+            <SwitchAccount callbackUrl="/student" />
             {history.profile ? <p className="student-checkin-guide"><strong>{history.profile.fullName} · {history.profile.groupName}</strong><br />Profili yt është ruajtur. Në orën tjetër vetëm skano QR-në.</p>
               : <p className="student-checkin-guide">Bëje gati profilin para orës. <a href="/student/activate">Regjistrohu një herë →</a></p>}
             <dl className="history-totals">

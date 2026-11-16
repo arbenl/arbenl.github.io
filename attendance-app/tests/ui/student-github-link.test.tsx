@@ -18,3 +18,12 @@ it('saves a verified repository and explains that the weekly form is still neede
  vi.spyOn(globalThis,'fetch').mockResolvedValueOnce(Response.json({githubLogin:'arta',repository:null})).mockResolvedValueOnce(Response.json({repository:'https://github.com/arta/rideshare'}));
  render(<StudentGitHubLink/>);fireEvent.click(screen.getByText('Lidh GitHub-in dhe repository-n tim'));await screen.findByLabelText('Repository i punës');fireEvent.change(screen.getByLabelText('Repository i punës'),{target:{value:'https://github.com/arta/rideshare'}});fireEvent.click(screen.getByRole('button',{name:'Verifiko dhe ruaj repository-n'}));await screen.findByText('Repository u verifikua dhe u ruajt.');expect(screen.getByText(/Ruajtja e këtij linku nuk krijon dorëzim/)).toBeTruthy();
 });
+
+it('recovers a failed profile load with an actionable retry instead of a permanent loading label',async()=>{
+ vi.spyOn(globalThis,'fetch').mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce(Response.json({githubLogin:null,repository:null}));
+ const view=render(<StudentGitHubLink/>);fireEvent.click(screen.getByText('Lidh GitHub-in dhe repository-n tim'));
+ await screen.findByText(/nuk mund të ngarkohet/);
+ expect(view.queryByText('Duke kontrolluar lidhjen…')).toBeNull();
+ fireEvent.click(screen.getByRole('button',{name:'Provo ngarkimin përsëri'}));
+ await waitFor(()=>expect(screen.getByRole('button',{name:'Lidh GitHub-in tim'}).hasAttribute('disabled')).toBe(false));
+});
