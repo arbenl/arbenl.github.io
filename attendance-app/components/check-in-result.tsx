@@ -9,6 +9,11 @@ import { ProfileForm } from "./profile-form";
 const TOKEN_PATTERN = /^[0-9a-f]{64}$/u;
 const STORAGE_KEY = "attendance-check-in";
 const TOKEN_LIFETIME_MS = 5 * 60_000;
+const checkInMessages:Record<string,string>={
+  invalid_challenge:"QR-ja ka skaduar ose nuk është më aktive. Skano QR-në e re të profesorit.",
+  checkin_closed:"Regjistrimi për këtë orë është mbyllur. Kontrollo vijueshmërinë tënde ose kërko ndihmën e profesorit.",
+  semester_scope:"Profili i ruajtur i përket një semestri tjetër. Hape kartën për të ndërruar llogarinë ose kërko ndihmën e profesorit.",
+};
 function safeStorageRead(){try{return window.sessionStorage.getItem(STORAGE_KEY);}catch{return null;}}
 function safeStorageClear(){try{window.sessionStorage.removeItem(STORAGE_KEY);}catch{/* Private browsers may block storage. */}}
 function safeStorageWrite(value:unknown){try{window.sessionStorage.setItem(STORAGE_KEY,JSON.stringify(value));}catch{/* In-memory QR login still works. */}}
@@ -74,25 +79,29 @@ export function CheckInResult() {
   const [view, setView] = useState<ViewState>({ phase: "capturing" });
 
   useLayoutEffect(() => {
-    if (initialized.current) {
-      return;
+    function capture(initial = false) {
+      const fragmentToken = new URLSearchParams(window.location.hash.slice(1)).get("token");
+      if (!initial && !validToken(fragmentToken)) return;
+      const now = Date.now();
+      const storedToken = readStoredToken(now);
+      window.history.replaceState(null, "", window.location.pathname);
+      heldToken.current = validToken(fragmentToken)
+        ? { token: fragmentToken, capturedAt: now }
+        : storedToken;
+      if (!heldToken.current) {
+        setView({ phase: "missing" });
+        return;
+      }
+      setAttempt(current => current + 1);
     }
-    initialized.current = true;
-    const now = Date.now();
-    const fragment = new URLSearchParams(window.location.hash.slice(1));
-    const fragmentToken = fragment.get("token");
-    const storedToken = readStoredToken(now);
-
-    window.history.replaceState(null, "", window.location.pathname);
-    heldToken.current = validToken(fragmentToken)
-      ? { token: fragmentToken, capturedAt: now }
-      : storedToken;
-
-    if (!heldToken.current) {
-      setView({ phase: "missing" });
-      return;
+    if (!initialized.current) {
+      initialized.current = true;
+      capture(true);
     }
-    setAttempt(1);
+    // Camera links can reuse this tab and change only its fragment.
+    const rescan = () => capture();
+    window.addEventListener("hashchange", rescan);
+    return () => window.removeEventListener("hashchange", rescan);
   }, []);
 
   useEffect(() => {
@@ -104,7 +113,8 @@ export function CheckInResult() {
       return;
     }
     submittedAttempt.current = attempt;
-    const currentToken = heldToken.current.token;
+    const capturedToken = heldToken.current;
+    const currentToken = capturedToken.token;
     setView({ phase: "pending" });
 
     void fetch("/api/check-in", {
@@ -114,6 +124,7 @@ export function CheckInResult() {
     })
       .then(async (response) => {
         const body = (await response.json()) as ApiError | CheckInSuccess;
+        if (heldToken.current !== capturedToken) return;
         if (response.ok) {
           heldToken.current = null;
           safeStorageClear();
@@ -122,36 +133,42 @@ export function CheckInResult() {
         }
         const error = body as ApiError;
         if (response.status === 401) {
+          safeStorageWrite(heldToken.current);
           setView({ phase: "auth", token: currentToken });
           return;
         }
         if (error.error?.code === "roster_not_activated") {
+          safeStorageWrite(heldToken.current);
           setView({ phase: "activation", token: currentToken, registrationPermit: error.error.registrationPermit });
           return;
         }
         const retryable = response.status === 429 || response.status >= 500;
+        if (retryable) safeStorageWrite(heldToken.current);
         if (!retryable) {
           heldToken.current = null;
           safeStorageClear();
         }
         setView({
           phase: "error",
-          message: retryable ? "Shërbimi është i ngarkuar. Prit pak dhe provo sërish me të njëjtin kod." : error.error?.message ?? "Check-in-i dështoi.",
+          message: retryable ? "Shërbimi është i ngarkuar. Prit pak dhe provo sërish me të njëjtin kod." : checkInMessages[error.error?.code ?? ""] ?? error.error?.message ?? "Check-in-i dështoi.",
           retryable,
         });
       })
       .catch(() => {
+        if (heldToken.current !== capturedToken) return;
+        safeStorageWrite(heldToken.current);
         setView({ phase: "error", message: "Lidhja dështoi. Provo sërish me të njëjtin kod.", retryable: true });
       });
   }, [attempt]);
 
-  function beginLogin() {
+  async function beginLogin() {
     if (!heldToken.current) {
       setView({ phase: "missing" });
       return;
     }
     safeStorageWrite(heldToken.current);
-    void signIn("github", { callbackUrl: "/check-in" });
+    try { await signIn("github", { callbackUrl: "/check-in" }); }
+    catch { setView({phase:"error",message:"Hyrja nuk filloi. Kontrollo lidhjen dhe provo përsëri.",retryable:true}); }
   }
 
   function resumeAfterActivation() {
@@ -173,7 +190,7 @@ export function CheckInResult() {
     return <p role="status">Duke konfirmuar vijueshmërinë…</p>;
   }
   if (view.phase === "missing") {
-    return <p role="alert">Nuk ka token të vlefshëm. Skano QR-në e projektuar.</p>;
+    return <div><p role="alert">Skano QR-në aktive të profesorit për ta konfirmuar vijueshmërinë.</p><p><a href="/student">Hap vijueshmërinë time</a></p></div>;
   }
   if (view.phase === "auth") {
     return (
@@ -203,7 +220,17 @@ export function CheckInResult() {
   if (view.phase === "error") {
     return <div className="student-stack"><p role="alert">{view.message}</p>{view.retryable ? (
       <button className="student-control primary-action" onClick={() => setAttempt((current) => current + 1)} type="button">Provo sërish</button>
-    ) : null}</div>;
+    ) : null}<p><a href="/student">Hap vijueshmërinë time</a></p></div>;
+  }
+
+  if (view.result.status === "rejected" || view.result.status === "excused") {
+    return <div className="student-stack" role="status">
+      <h2>Gjendja e vijueshmërisë</h2>
+      <p>{view.result.sessionTitle}</p>
+      <p><strong>{view.result.status === "rejected" ? "E refuzuar" : "E arsyetuar"}</strong></p>
+      <p>Ky është statusi i ruajtur për këtë orë. Skanimi i përsëritur nuk e ndryshon; për sqarim drejtohu profesorit.</p>
+      <a href="/student">Hap vijueshmërinë time</a>
+    </div>;
   }
 
   return (

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { StaffSubmissionAccount } from "./staff-submission-account";
 import type { ProgressCard } from "../lib/attendance/progress";
 const normalize = (s: string) =>
@@ -12,6 +12,7 @@ interface StudentProgressProps {
   cards: ProgressCard[];
   viewerId: string | null;
   isStaff?: boolean;
+  selfTools?: ReactNode;
 }
 export function StudentProgress(props: StudentProgressProps) {
   const viewerId = props.isStaff ? null : props.viewerId;
@@ -21,6 +22,7 @@ function ProgressRegistry({
   cards,
   viewerId,
   isStaff = false,
+  selfTools,
 }: StudentProgressProps) {
   const [query, setQuery] = useState(""),
     [group, setGroup] = useState(""),
@@ -271,6 +273,7 @@ function ProgressRegistry({
               ))}
             </ul>
           </details>
+          {!isStaff && current.id === viewerId ? selfTools : null}
         </article>
       )}
       {!filtered.length ? (

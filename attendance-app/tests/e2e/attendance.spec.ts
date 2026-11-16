@@ -179,7 +179,7 @@ for (const viewport of [
         const response = await scan(second, token);
         expect(response.status()).toBe(409);
         expect((await response.json()).error.code).toBe("invalid_challenge");
-        await expect(second.getByRole("main").getByRole("alert")).toHaveText("QR-ja ka skaduar. Skano kodin e ri në projektor; nëse ora është mbyllur, njofto profesorin.");
+        await expect(second.getByRole("main").getByRole("alert")).toHaveText(/QR-ja ka skaduar.*Skano.*profesorit\./);
         await noOverflow(second);
         expect(await sql`select id from attendance_records where session_id = ${sessionId}`).toHaveLength(1);
       });

@@ -166,3 +166,16 @@ it("keeps teacher-verified submission evidence distinct from an account linked f
     screen.getByText(/Dorëzime të verifikuara nga: arta-work/),
   ).toBeTruthy();
 });
+
+it('keeps account-linking tools inside the authenticated student own card, after their identity',()=>{
+ const cards=progressCards(report,[],[],new Date('2026-11-12T12:00:00Z'));
+ const view=render(<StudentProgress cards={cards} viewerId="1" selfTools={<button>Lidh llogarinë time provuese</button>}/>);
+ const own=view.getByRole('heading',{name:'Arta Çela'});
+ const tools=view.getByRole('button',{name:'Lidh llogarinë time provuese'});
+ expect(tools.closest('.identity-card')).toBe(own.closest('.identity-card'));
+ expect(own.compareDocumentPosition(tools)&Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+ own.closest<HTMLElement>('.identity-card')!.scrollIntoView=()=>{};
+ fireEvent.click(view.getByRole('button',{name:/Dren Test/}));
+ expect(view.getByRole('heading',{name:'Dren Test'})).toBeTruthy();
+ expect(view.queryByRole('button',{name:'Lidh llogarinë time provuese'})).toBeNull();
+});

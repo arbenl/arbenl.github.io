@@ -126,3 +126,12 @@ it('does not take table-exclusive locks when the classroom migration is already 
  });
  expect(await sql`select id from users`).toHaveLength(1);
 });
+
+it('enrolls 70 simultaneous students behind one campus IP without merging identities',async()=>{
+ const results=await Promise.all(Array.from({length:70},(_,n)=>registerClassroomStudent({...input(),firstName:`Student${n}`,lastName:'Prova',studentId:`AUDIT-${n}`,email:`student${n}@${n%2?'gmail.com':'universitetiaab.com'}`,groupName:n%2?'G1':'G2'},'192.0.2.70')));
+ expect(new Set(results.map(r=>r.id)).size).toBe(70);
+ expect(new Set(results.map(r=>r.rosterId)).size).toBe(70);
+ expect(await sql`select id from roster`).toHaveLength(70);
+ expect(await sql`select id from classroom_registrations`).toHaveLength(70);
+ expect(await sql`select id from attendance_records`).toHaveLength(0);
+},30000);

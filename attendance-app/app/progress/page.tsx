@@ -29,16 +29,19 @@ export default async function ProgressPage({
       ![401, 403].includes(error.status)
     )
       throw error;
+    const needsActivation=error.status===403 && !!session?.user?.githubLogin;
     return (
       <main className="page-shell" id="permbajtja-kryesore">
         <section className="status-card">
           <p className="eyebrow">Mobile 2026/2027</p>
           <h1>Karta e studentit</h1>
           <p>
-            Hyr me llogarinë tënde GitHub për të hapur kartën nga çdo telefon
-            ose shfletues.
+            {needsActivation ? "GitHub-i u njoh. Për ta hapur kartën, plotëso profilin e lëndës një herë." : "Hyr me llogarinë tënde GitHub për të hapur kartën nga çdo telefon ose shfletues."}
           </p>
-          <SignIn callbackUrl="/progress" />
+          {needsActivation ? <div className="student-stack">
+            <p>Ke hyrë me GitHub si <strong>{session?.user?.githubLogin}</strong>, por kjo llogari ende nuk ka profil në lëndë. Aktivizo profilin një herë ose skano QR-në aktive të profesorit në klasë.</p>
+            <Link className="admin-link" href="/student/activate">Aktivizo profilin tim</Link>
+          </div> : <SignIn callbackUrl="/progress" />}
           {session?.user && <SwitchAccount />}
           <p><Link href="/staff">Jam profesor · Hap panelin →</Link></p>
           <p>
@@ -126,15 +129,11 @@ export default async function ProgressPage({
           GitHub-i u konfirmua. Dorëzimet përditësohen brenda 5 minutave.
         </p>
       )}
-      {!report.viewerIsStaff && report.viewerRosterId && (
-        <>
-          <StudentGitHubLink />
-        </>
-      )}
       <StudentProgress
         cards={cards}
         viewerId={report.viewerRosterId ?? null}
         isStaff={report.viewerIsStaff}
+        selfTools={!report.viewerIsStaff && report.viewerRosterId ? <StudentGitHubLink /> : null}
       />
     </main>
   );
