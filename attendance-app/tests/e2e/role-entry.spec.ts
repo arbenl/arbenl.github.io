@@ -26,7 +26,7 @@ test('anonymous professor OAuth entrance preserves week, type and group instead 
  await page.goto('/progress?callbackUrl='+encodeURIComponent(target));
  await expect(page.getByRole('heading',{name:'Hyrja e profesorit'})).toBeVisible();
 });
-for(const width of [375,1280]){
+for(const width of [320,375,1280]){
  test(`professor/student routes and account switching remain separate at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:900});await setup(page);
   for(const route of ['/','/student','/student/activate','/check-in','/colloquium']){
@@ -54,3 +54,23 @@ for(const width of [375,1280]){
   await login(page,'professor');await page.goto('/signin?callbackUrl=%2Fstaff%2Freport%3Fweek%3D7');await expect(page).toHaveURL(/\/staff\/report\?week=7$/);
  });
 }
+
+test('GitHub authorization requests an account choice rather than silently reusing a student account',async({page})=>{
+ await page.route('https://github.com/login/oauth/authorize**',route=>route.fulfill({status:200,contentType:'text/html',body:'<h1>Isolated GitHub authorization boundary</h1>'}));
+ await page.goto('/signin?callbackUrl=%2Fstaff');
+ await page.getByRole('button',{name:'Hyr me GitHub',exact:true}).click();
+ await expect(page).toHaveURL(/^https:\/\/github.com\/login\/oauth\/authorize/);
+ const target=new URL(page.url());
+ expect(target.searchParams.get('prompt')).toBe('select_account');
+ expect(target.searchParams.get('state')).toBeTruthy();
+ expect(target.searchParams.get('scope')).toContain('read:user');
+});
+test('role navigation fits narrow phones with larger browser fonts',async({page})=>{
+ await page.setViewportSize({width:320,height:850});
+ for(const path of ['/','/student','/signin?callbackUrl=%2Fstaff']){
+  await page.goto(path);
+  await page.evaluate(()=>{document.documentElement.style.fontFamily='Arial, sans-serif';document.documentElement.style.fontSize='18px';});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+  await expect(page.getByRole('navigation',{name:'Navigimi kryesor'}).getByRole('link',{name:'Profesori · Paneli'})).toBeVisible();
+ }
+});

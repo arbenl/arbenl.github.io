@@ -178,6 +178,9 @@ export function createAuthOptions(
       GitHubProvider({
         clientId: environment.GITHUB_ID,
         clientSecret: environment.GITHUB_SECRET,
+        // Shared classroom browsers must offer an account choice on every login.
+        // https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps
+        authorization: { params: { prompt: "select_account" } },
       }),
     ],
     session: { strategy: "jwt" },
