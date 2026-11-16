@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { attendanceService } from "../../../lib/attendance/service";
 import { CURRENT_COURSE } from "../../../lib/attendance/current-course";
-import { getCurrentSession, requireStaff } from "../../../lib/auth/session";
+import { AuthorizationError, getCurrentSession, requireStaff } from "../../../lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +20,8 @@ export default async function AttendanceReportPage({ searchParams }: {
   const session = await getCurrentSession();
   try {
     await requireStaff(session);
-  } catch {
+  } catch (error) {
+    if (!(error instanceof AuthorizationError)) throw error;
     return (
       <main className="page-shell" id="permbajtja-kryesore">
         <section className="status-card">

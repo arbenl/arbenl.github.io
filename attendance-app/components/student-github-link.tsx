@@ -39,7 +39,7 @@ export function StudentGitHubLink() {
         body: JSON.stringify({ action: "start" }),
       });
       if (!r.ok) throw new Error();
-      await signIn("github", { callbackUrl: "/progress?github=linked" });
+      await signIn("github", { callbackUrl: "/progress?github=linked", linkIntent: "student-github" });
     } catch {
       setMessage("Lidhja nuk filloi. Provo përsëri.");
       setBusy(false);

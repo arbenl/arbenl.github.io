@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { SignIn } from "../../components/sign-in";
 import { StudentGitHubLink } from "../../components/student-github-link";
 import { SwitchAccount } from "../../components/student-access";
@@ -14,8 +15,10 @@ import { StudentProgress } from "../../components/student-progress";
 export const dynamic = "force-dynamic";
 export default async function ProgressPage({
   searchParams,
-}: { searchParams?: Promise<{ github?: string }> } = {}) {
-  const githubStatus = (await searchParams)?.github;
+}: { searchParams?: Promise<{ github?: string; callbackUrl?: string }> } = {}) {
+  const params = await searchParams;
+  if (params?.callbackUrl) redirect(`/signin?callbackUrl=${encodeURIComponent(params.callbackUrl)}`);
+  const githubStatus = params?.github;
   const session = await getCurrentSession();
   let report;
   try {
@@ -36,6 +39,8 @@ export default async function ProgressPage({
             ose shfletues.
           </p>
           <SignIn callbackUrl="/progress" />
+          {session?.user && <SwitchAccount />}
+          <p><Link href="/staff">Jam profesor · Hap panelin →</Link></p>
           <p>
             Karta dhe regjistri hapen nga studentët e regjistruar në këtë lëndë
             dhe profesori.
@@ -78,7 +83,7 @@ export default async function ProgressPage({
           <strong>
             {report.viewerIsStaff
               ? "Profesor Arben"
-              : (session?.user?.name ?? "Student")}
+              : (cards.find(card => card.id === report.viewerRosterId)?.name ?? session?.user?.name ?? "Student")}
           </strong>
         </p>
         <SwitchAccount />

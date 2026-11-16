@@ -137,7 +137,7 @@ export function createAuthOptions(
 
   return {
     secret: environment.NEXTAUTH_SECRET,
-    pages: {signIn: "/progress"},
+    pages: {signIn: "/signin"},
     providers: [
       {
         ...CredentialsProvider({
@@ -178,6 +178,9 @@ export function createAuthOptions(
       GitHubProvider({
         clientId: environment.GITHUB_ID,
         clientSecret: environment.GITHUB_SECRET,
+        // Shared classroom browsers must offer an account choice on every login.
+        // https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps
+        authorization: { params: { prompt: "select_account" } },
       }),
     ],
     session: { strategy: "jwt" },
@@ -204,7 +207,9 @@ export function createAuthOptions(
           return false;
         }
 
-        if(dependencies.linkGitHub){
+        // A leftover student-link intent must never turn professor OAuth into a
+        // student link or keep the old student's session after a rejected link.
+        if(dependencies.linkGitHub && identity.githubId !== process.env.PROFESSOR_GITHUB_ID){
           try{const linked=await dependencies.linkGitHub({...identity,name:readUserName(user,profile)});Object.assign(user,linked,{userId:linked.id});return getSessionIdentity({expires:"",user})?.authMethod==="classroom";}
           catch{return '/progress?github=link_failed';}
         }
@@ -215,7 +220,7 @@ export function createAuthOptions(
         return true;
       },
       async jwt({ token, profile, user, account }) {
-        if ((account?.provider === "classroom" || account?.provider === "colloquium" || account?.provider === "github" && !!dependencies.linkGitHub)) {
+        if ((account?.provider === "classroom" || account?.provider === "colloquium" || account?.provider === "github" && !!dependencies.linkGitHub && user?.authMethod === "classroom")) {
           const identity = getSessionIdentity({ expires: "", user });
           delete token.githubId;
           delete token.githubLogin;

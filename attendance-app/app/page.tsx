@@ -1,4 +1,7 @@
-export default function Home() {
+import { redirectProfessor } from "../lib/auth/role-entry";
+export const dynamic = "force-dynamic";
+export default async function Home() {
+  await redirectProfessor();
   return (
     <main className="page-shell" id="permbajtja-kryesore">
       <section className="status-card" aria-labelledby="page-title">
@@ -9,7 +12,8 @@ export default function Home() {
           Student ID; në orët e tjera check-in përfundon menjëherë.
         </p>
         <div className="home-actions">
-          <a className="primary-action" href="/student">Vijueshmëria ime</a>
+          <a className="primary-action" href="/progress">Jam student · Karta ime</a>
+          <a className="primary-action" href="/staff">Jam profesor · Hap panelin</a>
           <a className="secondary-link" href="https://arbenl.github.io/lendet/2026-2027/mobile/">Kthehu te lënda</a>
         </div>
       </section>

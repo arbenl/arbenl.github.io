@@ -1,5 +1,3 @@
-// Open the authenticated student card when entering the course home.
-// Explicit material anchors remain directly accessible to everyone.
-if (!window.location.hash) {
-  window.location.replace("https://aab-mobile-attendance.vercel.app/progress");
-}
+// Compatibility for older cached course pages.
+// The course home must remain visible for both students and the professor.
+// Each visitor chooses the appropriate entrance from the page.

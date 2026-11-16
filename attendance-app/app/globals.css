@@ -671,6 +671,11 @@ body {
   gap: 0.75rem;
 }
 
+.app-nav {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
 .app-brand {
   min-width: 0;
   min-height: 44px;
@@ -871,6 +876,8 @@ body:has(.projector-shell) .app-header {
   .app-header-inner {
     width: min(100% - 1rem, 88rem);
     min-height: 3.75rem;
+    flex-wrap: wrap;
+    padding-block: 0.5rem;
   }
 
   .app-brand-copy small,

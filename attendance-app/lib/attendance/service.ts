@@ -98,6 +98,12 @@ function actorSubject(identity: SessionIdentity): string {
   return identity.authMethod === "classroom" ? `classroom:${identity.userId}:${identity.rosterId}` : identity.githubId;
 }
 
+function requireStudentIdentity(identity: SessionIdentity) {
+  if (identity.authMethod !== "classroom" && identity.githubId === getEnv().PROFESSOR_GITHUB_ID) {
+    throw new AttendanceServiceError(403, "student_required", "Llogaria e profesorit përdor panelin e profesorit, jo regjistrimin e studentëve.");
+  }
+}
+
 async function requireActor(
   executor: Executor,
   session: Session | null,
@@ -728,6 +734,7 @@ async function activateRoster(
   ipAddress: string,
 ) {
   const identity = identityFromSession(session);
+  requireStudentIdentity(identity);
   if (identity.authMethod === "classroom") throw new AttendanceServiceError(403, "classroom_activation_forbidden", "Use the classroom registration form");
   await consumeRateLimit("activation", actorSubject(identity), ipAddress);
   const suppliedName = normalizeAlbanianName(
@@ -1085,6 +1092,7 @@ async function checkIn(
 ) {
   const tokenHash = hashChallengeToken(input.token);
   const identity = identityFromSession(session);
+  requireStudentIdentity(identity);
   await consumeRateLimit("scan", actorSubject(identity), ipAddress);
   const db = await database();
 

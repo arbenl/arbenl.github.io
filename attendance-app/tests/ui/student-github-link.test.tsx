@@ -8,7 +8,7 @@ it('starts OAuth only after a server-created self-link intent; no student ID is 
  const fetcher=vi.spyOn(globalThis,'fetch').mockResolvedValueOnce(Response.json({githubLogin:null,repository:null})).mockResolvedValueOnce(Response.json({ready:true}));
  render(<StudentGitHubLink/>);fireEvent.click(screen.getByText('Lidh GitHub-in dhe repository-n tim'));
  const button=screen.getByRole('button',{name:'Lidh GitHub-in tim'});await waitFor(()=>expect(button.hasAttribute('disabled')).toBe(false));fireEvent.click(button);
- await waitFor(()=>expect(auth.signIn).toHaveBeenCalledWith('github',{callbackUrl:'/progress?github=linked'}));expect(JSON.parse(fetcher.mock.calls[1][1]!.body as string)).toEqual({action:'start'});
+ await waitFor(()=>expect(auth.signIn).toHaveBeenCalledWith('github',{callbackUrl:'/progress?github=linked',linkIntent:'student-github'}));expect(JSON.parse(fetcher.mock.calls[1][1]!.body as string)).toEqual({action:'start'});
 });
 it('does not redirect to GitHub if the authenticated start is rejected',async()=>{
  vi.spyOn(globalThis,'fetch').mockResolvedValueOnce(Response.json({githubLogin:null,repository:null})).mockResolvedValueOnce(Response.json({error:'student_required'},{status:403}));

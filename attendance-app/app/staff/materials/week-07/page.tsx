@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { requireCurrentStaff } from "../../../../lib/auth/session";
+import { AuthorizationError, requireCurrentStaff } from "../../../../lib/auth/session";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Java 7 · Materialet e profesorit", robots: { index: false, follow: false } };
 
 export default async function WeekSevenMaterials() {
-  try { await requireCurrentStaff(); } catch {
+  try { await requireCurrentStaff(); } catch (error) {
+    if (!(error instanceof AuthorizationError)) throw error;
     return <main className="page-shell" id="permbajtja-kryesore"><section className="status-card">
       <p className="eyebrow">Programimi për Pajisje Mobile · 2026/2027</p>
       <h1>Materialet hapen vetëm nga profesori</h1>

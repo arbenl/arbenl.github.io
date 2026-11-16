@@ -2145,3 +2145,18 @@ it("explains a registration conflict without exposing another student's identity
   expect(error.message).not.toContain("Arta");
   expect(error.message).not.toContain("shared@gmail.com");
 });
+
+it("rejects professor use of student activation before any roster is created", async () => {
+  const {semesterId}=await attendanceService.ensureCurrentCourseSetup(professor);
+  await expect(attendanceService.activateRoster(professor,{semesterId,studentId:"STAFF-NOT-STUDENT",firstName:"Professor",lastName:"Test",email:"professor@example.test",groupName:"G1",beforeClass:true},"198.51.100.211")).rejects.toMatchObject({status:403,code:"student_required"});
+  expect(await sql`select id from roster`).toHaveLength(0);
+});
+it("rejects professor QR check-in even if an old student roster row is linked to that account", async () => {
+  const {semesterId}=await attendanceService.ensureCurrentCourseSetup(professor);
+  const [user]=await sql`select id from users where github_id='100'`;
+  await sql`insert into roster (semester_id,student_id,full_name,email,group_name,user_id,activated_at) values (${semesterId},'OLD-STAFF','Professor Test','prof@example.test','G1',${user.id},now())`;
+  const opened=await attendanceService.launchCourseSession(professor,3,"lab","G1");
+  const challenge=await attendanceService.createChallenge(professor,opened.id,"198.51.100.212");
+  await expect(attendanceService.checkIn(professor,{token:challenge.token},"198.51.100.213")).rejects.toMatchObject({status:403,code:"student_required"});
+  expect(await sql`select id from attendance_records`).toHaveLength(0);
+});
