@@ -33,3 +33,13 @@ test('all complete site documents have valid resources, fragments and unique IDs
  assert.ok(report.pages>=100);
  assert.deepEqual(report.findings,[]);
 });
+test('unpublished materials are absent from both shared calendars and labelled unavailable',async()=>{
+ for(const file of ['assets/course-schedule.json','attendance-app/lib/attendance/course-schedule.json']){
+  const week=JSON.parse(await read(file)).weeks.find(w=>w.week===12);
+  assert.equal(week.published,false);
+  assert.equal(week.lectureUrl,null);
+  assert.equal(week.labUrl,null);
+ }
+ const article=(await read('lendet/2026-2027/mobile/index.html')).split('id="week-12"')[1].split('</article>')[0];
+ assert.ok(article.includes('Materialet ende nuk janë publikuar.'));
+});

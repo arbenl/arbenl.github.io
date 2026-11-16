@@ -9,11 +9,14 @@ for (const week of plan.weeks) {
   const directory=`${base}/java-${String(week.week).padStart(2,'0')}`;
   const lectureFile=`${directory}/prezantimi-ligjerates.html`;
   const packageFile=manifest[`lecture${week.week}`]?.file;
-  const lectureUrl=await exists(lectureFile) ? `/${lectureFile}` : packageFile && await exists(packageFile) ? `/${packageFile}` : null;
+  const publicationFile=`materials/week-${String(week.week).padStart(2,'0')}/publication.json`;
+  const publication=await exists(publicationFile) ? JSON.parse(await readFile(publicationFile,'utf8')) : {};
+  const published=publication.published !== false;
+  const lectureUrl=!published ? null :await exists(lectureFile) ? `/${lectureFile}` : packageFile && await exists(packageFile) ? `/${packageFile}` : null;
   const labFile=`${directory}/prezantimi-ushtrimeve.html`;
-  const labPublished=week.week !== 7 || JSON.parse(await readFile('materials/week-07/publication.json','utf8')).labsPublished;
+  const labPublished=published && publication.labsPublished !== false;
   const labUrl=week.labHours && labPublished && await exists(labFile) ? `/${directory}/ushtrimet.html` : null;
-  weeks.push({week:week.week,date:week.date,title:week.title,weekUrl:`/${directory}/`,lectureUrl,labUrl});
+  weeks.push({week:week.week,...(!published ? {published:false} : {}),date:week.date,title:week.title,weekUrl:`/${directory}/`,lectureUrl,labUrl});
 }
 const schedule={timeZone:plan.timezone,weeks};
 const json=JSON.stringify(schedule,null,2)+'\n';
@@ -25,7 +28,7 @@ await writeFile('attendance-app/lib/attendance/course-lifecycle.mjs',clock);
 let hub=await readFile(`${base}/index.html`,'utf8');
 hub=hub.replace('Prezantime: javët 1–5 · Plane pune: javët 6–15','Prezantimet dhe ushtrimet e publikuara shënohen te secila javë.');
 for (const week of weeks) {
-  const status=week.lectureUrl ? week.labUrl ? 'Prezantimi dhe ushtrimet janë publikuar.' : 'Prezantimi i ligjëratës është publikuar.' : 'Plani dhe detyra janë publikuar; prezantimi ende jo.';
+  const status=week.published === false ? 'Materialet ende nuk janë publikuar.' : week.lectureUrl ? week.labUrl ? 'Prezantimi dhe ushtrimet janë publikuar.' : 'Prezantimi i ligjëratës është publikuar.' : 'Plani dhe detyra janë publikuar; prezantimi ende jo.';
   hub=hub.replace(new RegExp(`(<article[^>]*id="week-${week.week}"[\\s\\S]*?<h3>[\\s\\S]*?<\\/h3>)<p>[\\s\\S]*?<\\/p>`),`$1<p data-publication-status>${status}</p>`);
 }
 const focus='<section class="notice course-focus" id="course-focus" aria-labelledby="course-focus-title"><h2 id="course-focus-title">Ora e radhës</h2><p data-course-focus-status>Datat dhe materialet e secilës javë i gjen në kalendarin më poshtë.</p><div class="actions" data-course-focus-actions></div></section>';
