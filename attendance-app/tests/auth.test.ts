@@ -118,6 +118,22 @@ describe("GitHub session identity", () => {
 describe("Auth.js policy", () => {
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllEnvs();
+  });
+
+  it('lets the verified professor sign in normally even when a student link intent remains in the browser', async () => {
+    vi.stubEnv('PROFESSOR_GITHUB_ID', '42');
+    const linked = vi.fn().mockRejectedValue(new Error('invalid_link'));
+    const upsert = vi.fn();
+    const options = createAuthOptions(authEnvironment, { linkGitHub: linked, upsertUser: upsert });
+    const user = { id: '42', name: 'Professor' };
+    const account = { provider: 'github', providerAccountId: '42', type: 'oauth' as const };
+    const profile = { id: 42, login: 'arbenl' } as Profile;
+    expect(await options.callbacks!.signIn!({user,account,profile})).toBe(true);
+    const token = await options.callbacks!.jwt!({ token: {authMethod:'classroom',userId:'old-student'}, user, account, profile, trigger:'signIn' });
+    expect(getSessionIdentity({ expires:'2099', user: token })).toEqual({githubId:'42',githubLogin:'arbenl'});
+    expect(linked).not.toHaveBeenCalled();
+    expect(upsert).toHaveBeenCalledWith({githubId:'42',githubLogin:'arbenl',name:'Professor'});
   });
 
   it("uses signed JWT sessions and a secure production session cookie", () => {

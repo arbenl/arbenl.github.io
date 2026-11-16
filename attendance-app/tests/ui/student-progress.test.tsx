@@ -34,6 +34,21 @@ const report: ActivityReport = {
     { rosterId: "1", sessionId: "u" },
   ],
 };
+it('resets the selected card when the authenticated student changes', () => {
+  const cards = progressCards(report, [], [], new Date('2026-11-12T12:00:00Z'));
+  const view = render(<StudentProgress cards={cards} viewerId="1" />);
+  expect(screen.getByRole('heading',{name:'Arta Çela'})).toBeTruthy();
+  view.rerender(<StudentProgress cards={cards} viewerId="2" />);
+  expect(screen.getByRole('heading',{name:'Dren Test'})).toBeTruthy();
+  expect(screen.queryByRole('heading',{name:'Arta Çela'})).toBeNull();
+});
+it('does not open an arbitrary student card for a professor, even with one student', () => {
+  const cards = progressCards({...report,students:[report.students[0]]}, [], [], new Date('2026-11-12T12:00:00Z'));
+  render(<StudentProgress cards={cards} viewerId={null} isStaff />);
+  expect(screen.queryByRole('heading',{name:'Arta Çela'})).toBeNull();
+  fireEvent.click(screen.getByRole('button',{name:/Arta Çela/}));
+  expect(screen.getByRole('heading',{name:'Arta Çela'})).toBeTruthy();
+});
 it("counts cross-group attendance, deduplicates sessions and excludes future work", () => {
   const cards = progressCards(
     { ...report, present: [...report.present, report.present[0]] },

@@ -17,6 +17,7 @@ vi.mock("../../lib/auth/session", () => ({
 import { LiveProjector } from "../../components/live-projector";
 import { SemesterAdmin } from "../../components/semester-admin";
 import { SessionAdmin } from "../../components/session-admin";
+import { AuthorizationError } from "../../lib/auth/session";
 import StaffPage from "../../app/staff/page";
 import ProjectorPage from "../../app/staff/project/[sessionId]/page";
 
@@ -341,7 +342,7 @@ describe("live projector", () => {
 describe("staff administration", () => {
   it("checks current staff membership before rendering the dashboard", async () => {
     staffGate.requireCurrentStaff.mockRejectedValueOnce(
-      new Error("Staff access required"),
+      new AuthorizationError("Staff access required",403),
     );
 
     render(await StaffPage());
@@ -353,7 +354,7 @@ describe("staff administration", () => {
 
   it("checks current staff membership before rendering the projector", async () => {
     staffGate.requireCurrentStaff.mockRejectedValueOnce(
-      new Error("Staff access required"),
+      new AuthorizationError("Staff access required",403),
     );
 
     render(await ProjectorPage({ params: Promise.resolve({ sessionId: SESSION_ID }) }));

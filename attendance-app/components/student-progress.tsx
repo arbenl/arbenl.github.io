@@ -8,15 +8,20 @@ const normalize = (s: string) =>
     .replace(/\p{Diacritic}/gu, "")
     .toLocaleLowerCase("sq")
     .trim();
-export function StudentProgress({
-  cards,
-  viewerId,
-  isStaff = false,
-}: {
+interface StudentProgressProps {
   cards: ProgressCard[];
   viewerId: string | null;
   isStaff?: boolean;
-}) {
+}
+export function StudentProgress(props: StudentProgressProps) {
+  const viewerId = props.isStaff ? null : props.viewerId;
+  return <ProgressRegistry key={`${props.isStaff ? 'staff' : 'student'}:${viewerId ?? ''}`} {...props} viewerId={viewerId} />;
+}
+function ProgressRegistry({
+  cards,
+  viewerId,
+  isStaff = false,
+}: StudentProgressProps) {
   const [query, setQuery] = useState(""),
     [group, setGroup] = useState(""),
     [registration, setRegistration] = useState(""),
@@ -36,7 +41,7 @@ export function StudentProgress({
   );
   const current =
     filtered.find((c) => c.id === selection) ??
-    (filtered.length === 1 ? filtered[0] : null);
+    ((query || group || registration || test) && filtered.length === 1 ? filtered[0] : null);
   function change() {
     setSelection(null);
   }
@@ -124,6 +129,7 @@ export function StudentProgress({
       </p>
       {current && (
         <article className="identity-card" aria-labelledby="identity-name">
+          <p><strong>{!isStaff && current.id === viewerId ? 'Karta jote' : 'Karta e studentit të zgjedhur'}</strong></p>
           <p className="eyebrow">AAB · Karta akademike · Mobile 2026/2027</p>
           <div className="identity-avatar" aria-hidden="true">
             {current.name

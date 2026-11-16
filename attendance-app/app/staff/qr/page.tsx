@@ -1,5 +1,5 @@
 import { CourseLauncher } from "../../../components/course-launcher";
-import { requireCurrentStaff } from "../../../lib/auth/session";
+import { AuthorizationError, requireCurrentStaff } from "../../../lib/auth/session";
 import { CURRENT_COURSE_SESSIONS } from "../../../lib/attendance/current-course";
 export const dynamic = "force-dynamic";
 export default async function CourseQRPage({ searchParams }: {
@@ -18,7 +18,8 @@ export default async function CourseQRPage({ searchParams }: {
     </main>;
   }
   const selectedGroup = kind === "lab" || week >= 3 ? group as "G1" | "G2" : undefined;
-  try { await requireCurrentStaff(); } catch {
+  try { await requireCurrentStaff(); } catch (error) {
+    if (!(error instanceof AuthorizationError)) throw error;
     const callback = `/staff/qr?week=${week}&kind=${kind}${selectedGroup ? `&group=${selectedGroup}` : ""}`;
     return <main className="page-shell"><section className="status-card">
       <h1>QR-ja hapet vetëm nga profesori</h1>

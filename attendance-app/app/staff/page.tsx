@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { SemesterAdmin } from "../../components/semester-admin";
-import { requireCurrentStaff } from "../../lib/auth/session";
+import { AuthorizationError, requireCurrentStaff } from "../../lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +10,8 @@ export default async function StaffPage({ searchParams }: {
 } = {}) {
   try {
     await requireCurrentStaff();
-  } catch {
+  } catch (error) {
+    if (!(error instanceof AuthorizationError)) throw error;
     return (
       <main className="page-shell" id="permbajtja-kryesore">
         <section className="status-card" aria-labelledby="staff-access-title">

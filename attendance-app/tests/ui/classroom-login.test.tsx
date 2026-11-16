@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const auth = vi.hoisted(() => ({ signIn: vi.fn() }));
 vi.mock("next-auth/react", () => ({ signIn: auth.signIn }));
-import StudentPage from "../../app/student/page";
+import StudentPage from "../../components/student-history";
 import { ProfileForm } from "../../components/profile-form";
 import { ClassroomLogin } from "../../components/classroom-login";
 

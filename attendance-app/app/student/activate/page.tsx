@@ -1,6 +1,9 @@
+import { redirectProfessor } from "../../../lib/auth/role-entry";
 import { ProfileForm } from "@/components/profile-form";
 
-export default function ActivateStudentPage() {
+export const dynamic = "force-dynamic";
+export default async function ActivateStudentPage() {
+  await redirectProfessor();
   return (
     <main className="page-shell" id="permbajtja-kryesore">
       <section className="status-card student-card" aria-labelledby="activation-title">

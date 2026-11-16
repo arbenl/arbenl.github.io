@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { LiveProjector } from "../../../../components/live-projector";
-import { requireCurrentStaff } from "../../../../lib/auth/session";
+import { AuthorizationError, requireCurrentStaff } from "../../../../lib/auth/session";
 
 export default async function ProjectorPage({
   params,
@@ -11,7 +11,8 @@ export default async function ProjectorPage({
   const { sessionId } = await params;
   try {
     await requireCurrentStaff();
-  } catch {
+  } catch (error) {
+    if (!(error instanceof AuthorizationError)) throw error;
     return (
       <main className="page-shell" id="permbajtja-kryesore">
         <section className="status-card" aria-labelledby="projector-access-title">
