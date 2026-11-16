@@ -126,18 +126,9 @@
     ]
   },
   "12": {
-    "outcome": "Kërkesa të vlefshme dhe vende të sakta",
-    "steps": [
-      "Vendos kufij për fushat: vendet duhet të jenë numër pozitiv, nisja dhe ora të plotësohen.",
-      "Kontrolloji të njëjtat rregulla në server.",
-      "Provo dy kërkesa për vendin e fundit dhe klikimin dy herë nga i njëjti përdorues.",
-      "Ruaj rezultatet e provave dhe përmirëso mesazhet e gabimit."
-    ],
-    "checks": [
-      "Të dhënat e pavlefshme refuzohen edhe nga serveri.",
-      "Nuk konfirmohen dy përdorues për të njëjtin vend të fundit.",
-      "Mesazhi i gabimit tregon si korrigjohet fusha."
-    ]
+    "outcome": "Materialet ende nuk janë publikuar",
+    "steps": [],
+    "checks": []
   },
   "13": {
     "outcome": "Mat dhe përmirëso përdorimin në telefon",

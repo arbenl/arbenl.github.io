@@ -37,6 +37,7 @@ test('each of fifteen weeks has a home and a consistent submission path',async()
   const n=String(week).padStart(2,'0');
   assert.ok(hub.includes(`/java-${n}/`));
   const page=await read(`lendet/2026-2027/mobile/java-${n}/index.html`);
+  if(week===12 && !JSON.parse(await read('materials/week-12/publication.json')).published){assert.ok(page.includes('data-publication="unpublished"'));assert.ok(!page.includes('issues/new?'));continue;}
   assert.ok(page.includes('Dorëzo edhe gjatë javës.'),`week ${week}: weekly submission policy missing`);
   assert.ok(page.includes('dorezimet.html'));
   if(week===7 && !JSON.parse(await read('materials/week-07/publication.json')).labsPublished){assert.ok(page.includes('29.10.2026, ora 14:40'));continue;}
@@ -51,7 +52,7 @@ test('each of fifteen weeks has a home and a consistent submission path',async()
    assert.ok(page.includes(`java-${n}.md`));
    assert.ok((await read(`lendet/2026-2027/mobile/java-${n}/java-${n}-model.md`)).includes('Provat që bëra'));
    const exercises=await read(`lendet/2026-2027/mobile/java-${n}/ushtrimet.html`);
-   assert.ok(exercises.includes((week===10 || week===12)?'id="dorezimi"':week===9?'Ku e shoh përgjigjen dhe çfarë do të thotë?':week===8?'Hapi 6 · Lexo përgjigjen dhe korrigjo':week===6?'4. Dorëzo dhe lexo përgjigjen':week===4 || week===5 || week===7?'6. Dorëzo dhe lexo përgjigjen':week===3?'5. Merr përgjigjen e GitHub-it':'4. Dorëzo detyrën'),`week ${week}: exercise link stopped working`);
+   assert.ok(exercises.includes(week===10?'id="dorezimi"':week===9?'Ku e shoh përgjigjen dhe çfarë do të thotë?':week===8?'Hapi 6 · Lexo përgjigjen dhe korrigjo':week===6?'4. Dorëzo dhe lexo përgjigjen':week===4 || week===5 || week===7?'6. Dorëzo dhe lexo përgjigjen':week===3?'5. Merr përgjigjen e GitHub-it':'4. Dorëzo detyrën'),`week ${week}: exercise link stopped working`);
   }
  }
 });
