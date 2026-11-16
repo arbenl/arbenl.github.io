@@ -127,6 +127,8 @@ for (const width of [320, 375, 430, 1280])
       await student.screenshot({
         path: info.outputPath(`03-own-card-${width}.png`),
       });
+      const ownCard=student.locator('.identity-card');
+      await expect(ownCard.getByText('Lidh GitHub-in dhe repository-n tim',{exact:true})).toBeVisible();
       await fits(student, width);
       // A failed optional GitHub read must be recoverable without replacing the session.
       await student.route("**/api/student/github-link", (route) =>
@@ -148,6 +150,7 @@ for (const width of [320, 375, 430, 1280])
       await student.screenshot({
         path: info.outputPath(`04-student-history-${width}.png`),
       });
+      expect((await student.getByRole('button',{name:'Dil / Ndërro llogarinë'}).boundingBox())!.height).toBeGreaterThanOrEqual(44);
       await student
         .getByRole("button", { name: "Dil / Ndërro llogarinë" })
         .click();
@@ -182,6 +185,13 @@ for (const width of [320, 375, 430, 1280])
       expect(
         await sql`select id from attendance_records where session_id=${sessionId}`,
       ).toHaveLength(2);
+      // A repeated scan must report the existing staff decision, not pretend presence.
+      const [record]=await sql`select ar.id from attendance_records ar join roster r on r.id=ar.roster_id where ar.session_id=${sessionId} and r.student_id='AUDIT-ARTA'`;
+      await sql`update attendance_records set status='rejected' where id=${record.id}`;
+      await student.goto(`/check-in#token=${token}`);
+      await expect(student.getByText('E refuzuar',{exact:true})).toBeVisible();
+      await expect(student.getByRole('heading',{name:'Vijueshmëria u konfirmua'})).toHaveCount(0);
+      expect((await sql`select status from attendance_records where id=${record.id}`)[0].status).toBe('rejected');
       expect(errors).toEqual([]);
     } finally {
       await context.close();

@@ -223,6 +223,16 @@ export function CheckInResult() {
     ) : null}<p><a href="/student">Hap vijueshmërinë time</a></p></div>;
   }
 
+  if (view.result.status === "rejected" || view.result.status === "excused") {
+    return <div className="student-stack" role="status">
+      <h2>Gjendja e vijueshmërisë</h2>
+      <p>{view.result.sessionTitle}</p>
+      <p><strong>{view.result.status === "rejected" ? "E refuzuar" : "E arsyetuar"}</strong></p>
+      <p>Ky është statusi i ruajtur për këtë orë. Skanimi i përsëritur nuk e ndryshon; për sqarim drejtohu profesorit.</p>
+      <a href="/student">Hap vijueshmërinë time</a>
+    </div>;
+  }
+
   return (
     <div className="check-in-success" role="status">
       <span aria-hidden="true" className="success-mark">✓</span>

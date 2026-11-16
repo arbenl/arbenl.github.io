@@ -20,7 +20,7 @@ export function SwitchAccount({
   }
   return (
     <>
-      <button type="button" disabled={busy} onClick={() => void logout()}>
+      <button className="student-control" type="button" disabled={busy} onClick={() => void logout()}>
         {busy ? "Duke dalë…" : "Dil / Ndërro llogarinë"}
       </button>
       {error && (

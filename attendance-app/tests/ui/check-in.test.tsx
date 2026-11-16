@@ -440,3 +440,11 @@ it('ignores a late response from an earlier QR after a new scan',async()=>{
  expect(view.queryByText('Ora e parë')).toBeNull();
  expect(view.getByText('Ora e dytë')).toBeTruthy();
 });
+for(const [status,label] of [['rejected','E refuzuar'],['excused','E arsyetuar']] as const)it(`shows the recorded ${status} status instead of a false present confirmation`,async()=>{
+ window.history.replaceState({},'',`/check-in#token=${TOKEN}`);
+ vi.spyOn(globalThis,'fetch').mockResolvedValue(jsonResponse({sessionTitle:'Ora provë',status,duplicate:true}));
+ const view=render(<CheckInResult/>);
+ await view.findByText(label);
+ expect(view.queryByRole('heading',{name:'Vijueshmëria u konfirmua'})).toBeNull();
+ expect(view.getByRole('link',{name:'Hap vijueshmërinë time'}).getAttribute('href')).toBe('/student');
+});

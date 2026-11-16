@@ -129,15 +129,11 @@ export default async function ProgressPage({
           GitHub-i u konfirmua. Dorëzimet përditësohen brenda 5 minutave.
         </p>
       )}
-      {!report.viewerIsStaff && report.viewerRosterId && (
-        <>
-          <StudentGitHubLink />
-        </>
-      )}
       <StudentProgress
         cards={cards}
         viewerId={report.viewerRosterId ?? null}
         isStaff={report.viewerIsStaff}
+        selfTools={!report.viewerIsStaff && report.viewerRosterId ? <StudentGitHubLink /> : null}
       />
     </main>
   );
