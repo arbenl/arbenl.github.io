@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';
-import { studentLaunch } from '../assets/mobile-classroom.js';
+import { studentLaunch,refresh } from '../assets/mobile-classroom.js';
 test('course opens the student launch only from a released server response with the canonical target',()=>{
  const base={week:15,released:false,launchUrl:null};assert.equal(studentLaunch(base),null);
  assert.equal(studentLaunch({...base,released:true,launchUrl:'https://evil.example'}),null);
@@ -20,4 +20,22 @@ test('professor landing keeps attendance and adds authenticated RideShare withou
  assert.ok(html.includes('https://aab-rideshare-classroom.vercel.app/staff'));
  assert.ok(html.includes('https://aab-mobile-attendance.vercel.app/staff'));
  assert.ok(!html.includes('http-equiv="refresh"'));
+});
+test('released student link also works when a mobile browser has no AbortSignal.timeout',async t=>{
+ const oldDocument=globalThis.document;
+ const status={},launch={children:[],replaceChildren(){this.children=[];},append(link){this.children.push(link);}};
+ const doc={createElement(){return {};}};globalThis.document=doc;
+ const root={ownerDocument:doc,querySelector:s=>s.includes('status')?status:launch};
+ t.after(()=>{if(oldDocument===undefined)delete globalThis.document;else globalThis.document=oldDocument;});
+ const descriptor=Object.getOwnPropertyDescriptor(AbortSignal,'timeout');
+ Object.defineProperty(AbortSignal,'timeout',{...descriptor,value:undefined});
+ t.after(()=>Object.defineProperty(AbortSignal,'timeout',descriptor));
+ assert.equal(AbortSignal.timeout,undefined);
+ t.mock.method(globalThis,'fetch',async()=>({ok:true,json:async()=>({week:15,released:true,launchUrl:'https://aab-rideshare-classroom.vercel.app/course'})}));
+ await refresh(root);assert.equal(launch.children[0]?.href,'https://aab-rideshare-classroom.vercel.app/course');
+});
+test('failed server check removes any previous student launch',async t=>{
+ const launch={children:[{}],replaceChildren(){this.children=[];}},status={};
+ t.mock.method(globalThis,'fetch',async()=>{throw Error('network down');});
+ await refresh({querySelector:s=>s.includes('status')?status:launch});assert.equal(launch.children.length,0);
 });
