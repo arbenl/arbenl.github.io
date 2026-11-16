@@ -28,6 +28,12 @@ Edit canonical files under `lendet/<academic-year>/<course>/`; never add private
 
 `docs/legacy-material-routes.json` records migration routes. Old HTML pages are small redirects with a clickable fallback; JavaScript preserves query and hash before the delayed meta-refresh fallback. Old PPTX, Markdown, image and ZIP downloads are retained for links already shared. When replacing a download, update its canonical file and any compatibility copy deliberately, then update its manifest hash. Old homepage anchors route to the preserved syllabus (profile to the profile page).
 
+## RideShare classroom entry · Mobile 2026/2027
+
+The current course home has one `#rideshare-klasa` entry. Its student action is created only after the classroom server reports week 15 released; a failed availability check leaves the action absent. The professor entry goes through `/profesor.html#mobile-2026-2027`, which keeps attendance, RideShare and colloquium panels distinct and links to their authenticated controls.
+
+Student release follows the current calendar: 24 December 2026 at 16:30 Europe/Belgrade (`2026-12-24T15:30:00Z`). The classroom application enforces the date on reads, writes and invitations; changing a phone's clock or finding an older URL does not grant early access. Verified professor access is available before release. The link appears automatically from the server status endpoint, without a scheduled AI run. This integration publishes navigation only; the application source and weeks 13–15 teaching materials remain private.
+
 ## Verification
 
 `npm test` checks presentation hashes, absence of notes for lecture 1, all generated local links/assets/anchors, old week-2 redirect, MCC separation, and all 43 staff session links. Browser verification covers catalogue search/year selection, week-2 navigation, old URL redirects and responsive layout. Attendance authentication remains enforced by the existing Vercel application; no real check-in session should be opened during UI verification.
