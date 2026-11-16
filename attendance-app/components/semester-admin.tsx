@@ -41,7 +41,7 @@ async function jsonRequest<T>(url: string, init?: RequestInit): Promise<T> {
   return body as T;
 }
 
-export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string }) {
+export function SemesterAdmin({ initialSessionId, nowIso }: { initialSessionId?: string; nowIso?: string }) {
   const [semesters, setSemesters] = useState<Semester[]>([]);
   const [sessions, setSessions] = useState<ExistingSession[]>([]);
   const [selectedSessionId, setSelectedSessionId] = useState(initialSessionId);
@@ -172,15 +172,7 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
     }
   }
 
-  const [clock, setClock] = useState(() => new Date());
-  useEffect(() => {
-    const update = () => setClock(new Date());
-    const timer = setInterval(update, 60_000);
-    const visible = () => { if (!document.hidden) update(); };
-    document.addEventListener("visibilitychange", visible);
-    return () => { clearInterval(timer); document.removeEventListener("visibilitychange", visible); };
-  }, []);
-  const moment = getCourseMoment(courseSchedule, clock);
+  const moment = getCourseMoment(courseSchedule, nowIso ? new Date(nowIso) : new Date());
   const liveSession = sessions.find(item => item.semesterTitle === CURRENT_COURSE.title && item.state === "open");
   const focusWeek = liveSession?.weekNumber ?? moment.nextWeek?.week ?? null;
   const lectures = CURRENT_COURSE_SESSIONS.filter(item => item.kind === "lecture" && (item.groupName === CURRENT_COURSE.groupName || item.groupName === "G1"));

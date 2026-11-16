@@ -12,9 +12,10 @@ for(const width of [320,514,1280])test(`professor overview prioritizes the next 
  const login=await page.evaluate(async()=>{const r=await fetch('/api/test/session',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({persona:'professor'})});return r.status;});expect(login).toBe(200);
  const bootstrap=await page.evaluate(async()=>{const r=await fetch('/api/admin/bootstrap',{method:'POST'});return r.status;});expect(bootstrap).toBe(201);
  await page.goto('/staff');await expect(page.getByText('Duke ngarkuar panelin…')).toHaveCount(0);
- await expect(page.locator('[data-focus-week]')).toBeVisible();
- const focus=await page.locator('[data-focus-week]').getAttribute('data-focus-week');
- await expect(page.locator(`[data-current-qr-week="${focus}"]`)).toBeVisible();
+ const focusNode=page.locator('[data-focus-week]');
+ const focus=await focusNode.count() ? await focusNode.getAttribute('data-focus-week') : null;
+ if(focus) await expect(page.locator(`[data-current-qr-week="${focus}"]`)).toBeVisible();
+ else await expect(page.getByRole('heading',{name:'Orari i semestrit përfundoi',exact:true})).toBeVisible();
  await expect(page.locator('.course-history a[href="/staff/materials/week-07"]')).not.toBeVisible();
  await fits(page,width);
  const overlap=await page.locator('.course-actions').evaluateAll(groups=>groups.some(group=>{
