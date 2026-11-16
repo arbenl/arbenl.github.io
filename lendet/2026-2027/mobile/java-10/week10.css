@@ -15,3 +15,6 @@
 /* Keep a revealed answer and its illustration together on the projector. */
 .projector .question details[open]{margin-bottom:0}
 .projector .question details[open] p{margin:8px 0 0}
+
+/* PostgreSQL explanations keep the same projector typography and weekly accent. */
+.pg-tables{display:grid;grid-template-columns:1fr 1fr;gap:22px}.pg-tables h3{font-size:23px;margin:7px 0 12px}.pg-tables table{font-size:19px}.pg-commands{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.pg-commands>div{padding:14px;background:#203542;border-radius:10px}.pg-commands strong{display:block;font-size:25px;color:var(--accent)}.pg-commands span{display:block;font-size:20px;margin-top:7px}.step .pg-source{font-size:16px;margin:10px 0 0}.pg-code{font-size:21px;line-height:1.4;overflow-wrap:anywhere}.projector .step .pg-source{font-size:15px;margin:8px 0 0}@media(max-width:767px){.pg-tables{grid-template-columns:1fr}.pg-tables>div{min-width:0;overflow-x:auto}.pg-tables table{font-size:16px}.pg-commands{grid-template-columns:1fr 1fr}.pg-code{font-size:16px}.pg-commands strong{font-size:21px}}
