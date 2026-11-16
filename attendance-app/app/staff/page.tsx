@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { SemesterAdmin } from "../../components/semester-admin";
+import { StaffWorkspace } from "../../components/staff-workspace";
 import { AuthorizationError, requireCurrentStaff } from "../../lib/auth/session";
 
 export const dynamic = "force-dynamic";
@@ -30,17 +30,18 @@ export default async function StaffPage({ searchParams }: {
 
   return (
     <main className="admin-shell" id="permbajtja-kryesore">
-      <header className="admin-page-header"><p><a className="admin-link" href="/progress">Kërko studentin · Karta, pjesëmarrja dhe testi →</a></p>
+      <header className="admin-page-header">
         <p className="eyebrow">Paneli i profesorit · 2026/2027</p>
         <h1>Programimi për Pajisje Mobile</h1>
-        <p><strong>Vijueshmëria · Semestri dimëror 2026/2027 · Kolegji AAB</strong></p>
-        <a className="admin-link" href="https://arbenl.github.io/lendet/2026-2027/mobile/">← Materialet e lëndës</a>
-        <p><Link className="admin-link" href="/staff/colloquium">Kolokviumi I · Grupet, hyrja dhe rezultatet →</Link></p>
-        <p><Link className="admin-link" href="/staff/report">Hap raportin e vijueshmërisë sipas javëve →</Link></p>
-        <p><Link className="admin-link" href="/staff/materials/week-07">Java 7 · Materialet e ushtrimeve për profesorin →</Link></p>
-        <p>Hap lidhjen e ligjëratës ose të ushtrimeve: QR-ja shfaqet automatikisht, pa zgjedhur semestër ose program.</p>
+        <p>Orët, materialet dhe evidencat e lëndës.</p>
+        <nav className="course-actions" aria-label="Veprimet e profesorit">
+          <Link className="admin-link" href="#course-qr-title">Hap QR-në e orës</Link>
+          <Link className="secondary-link" href="/progress">Regjistri i studentëve</Link>
+          <Link className="secondary-link" href="/staff/report">Raporti sipas javëve</Link>
+          <a className="secondary-link" href="https://arbenl.github.io/lendet/2026-2027/mobile/">Materialet e lëndës</a>
+        </nav>
       </header>
-      <SemesterAdmin key={sessionId} initialSessionId={sessionId} />
+      <StaffWorkspace initialNow={new Date().toISOString()} initialSessionId={sessionId} />
     </main>
   );
 }

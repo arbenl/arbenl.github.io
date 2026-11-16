@@ -9,7 +9,7 @@ import StudentPage from "../app/student/page";
 import ActivatePage from "../app/student/activate/page";
 import CheckInPage from "../app/check-in/page";
 import StaffPage from "../app/staff/page";
-afterEach(() => vi.resetAllMocks());
+afterEach(() => { vi.resetAllMocks(); vi.useRealTimers(); });
 describe("course role entry", () => {
   for (const [name, page] of [["QR check-in", CheckInPage], ["home", Home], ["student history", StudentPage], ["student activation", ActivatePage]] as const) {
     it(`sends the verified professor from ${name} to the professor panel`, async () => {
@@ -32,5 +32,25 @@ describe("course role entry", () => {
     const html = renderToStaticMarkup(await Home());
     expect(html).toContain('href="/staff"');
     expect(html).toContain('href="/progress"');
+  });
+});
+
+describe("semester-aware professor entry", () => {
+  it("focuses the next scheduled class and puts week 7 in history on November 16", async () => {
+    vi.useFakeTimers(); vi.setSystemTime(new Date("2026-11-16T08:00:00Z"));
+    mocks.staff.mockResolvedValue({role:"professor"});
+    const html=renderToStaticMarkup(await StaffPage());
+    expect(html).toContain('data-focus-week="10"');
+    expect(html).toContain('19.11.2026');
+    expect(html).toContain('Historiku');
+    const opening=html.split('<details')[0];
+    expect(opening).not.toContain('href="/staff/materials/week-07"');
+  });
+  it("does not present a new class as ready after the semester ends", async () => {
+    vi.useFakeTimers(); vi.setSystemTime(new Date("2026-12-26T08:00:00Z"));
+    mocks.staff.mockResolvedValue({role:"professor"});
+    const html=renderToStaticMarkup(await StaffPage());
+    expect(html).toContain('Orari i semestrit përfundoi');
+    expect(html).not.toContain('data-focus-week=');
   });
 });

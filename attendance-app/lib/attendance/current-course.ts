@@ -1,31 +1,13 @@
+import courseSchedule from "./course-schedule.json";
+
 export const CURRENT_COURSE = {
   title: "Programimi për Pajisje Mobile · Semestri Dimëror 2026/27",
   weekCount: 15,
   groupName: "G1+G2",
 } as const;
 
-const THURSDAYS = [
-  "17.09.2026",
-  "24.09.2026",
-  "01.10.2026",
-  "08.10.2026",
-  "15.10.2026",
-  "22.10.2026",
-  "29.10.2026",
-  "05.11.2026",
-  "12.11.2026",
-  "19.11.2026",
-  "26.11.2026",
-  "03.12.2026",
-  "10.12.2026",
-  "17.12.2026",
-  "24.12.2026",
-] as const;
-
-export const CURRENT_COURSE_DATES = THURSDAYS.map((date, index) => ({
-  week: index + 1,
-  date: date.split('.').reverse().join('-'),
-}));
+const THURSDAYS = courseSchedule.weeks.map(week => week.date.split("-").reverse().join("."));
+export const CURRENT_COURSE_DATES = courseSchedule.weeks.map(({week,date}) => ({week,date}));
 
 const LECTURES = [
   "Hyrje në Mobile PWA, Next.js dhe AI",

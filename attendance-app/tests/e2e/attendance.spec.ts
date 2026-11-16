@@ -90,6 +90,7 @@ for (const viewport of [
         await professor.goto("/staff");
         await expect(professor.getByRole("heading", { name: "Hap QR-në e orës" })).toBeVisible();
         await expect(professor.getByText("Duke ngarkuar panelin…")).toHaveCount(0);
+        await professor.locator(".calendar-history > summary").click();
         await expect(professor.locator('a[href="/staff/qr?week=3&kind=lecture&group=G1"]')).toBeVisible();
         await expect(professor.locator('a[href="/staff/qr?week=3&kind=lecture&group=G2"]')).toBeVisible();
         await expect(professor.locator('a[href="/staff/qr?week=3&kind=lab&group=G2"]')).toBeVisible();
@@ -107,6 +108,7 @@ for (const viewport of [
         projector = await professor.context().newPage();
         await projector.setViewportSize(viewport);
         await projector.goto("/staff");
+        await projector.locator(".calendar-history > summary").click();
         await projector.locator('a[href="/staff/qr?week=3&kind=lab&group=G1"]').click();
         const response = await challenge;
         expect(response.status()).toBe(201);
