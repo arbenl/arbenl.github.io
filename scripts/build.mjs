@@ -59,5 +59,7 @@ await import("./build-week09-web.mjs");
 
 await import("./build-week10-web.mjs");
 
+await import("./build-week12-web.mjs");
+
 await import("./build-source-bases.mjs");
 await import("./build-course-state.mjs");
