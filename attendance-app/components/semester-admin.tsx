@@ -3,6 +3,8 @@
 import { FormEvent, useEffect, useState } from "react";
 
 import { CURRENT_COURSE, CURRENT_COURSE_SESSIONS } from "../lib/attendance/current-course";
+import courseSchedule from "../lib/attendance/course-schedule.json";
+import { getCourseMoment } from "../lib/attendance/course-lifecycle.mjs";
 import { SessionAdmin } from "./session-admin";
 import { CHECKIN_WINDOW_SECONDS } from "../lib/attendance/policy";
 
@@ -170,7 +172,44 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
     }
   }
 
+  const [clock, setClock] = useState(() => new Date());
+  useEffect(() => {
+    const update = () => setClock(new Date());
+    const timer = setInterval(update, 60_000);
+    const visible = () => { if (!document.hidden) update(); };
+    document.addEventListener("visibilitychange", visible);
+    return () => { clearInterval(timer); document.removeEventListener("visibilitychange", visible); };
+  }, []);
+  const moment = getCourseMoment(courseSchedule, clock);
+  const liveSession = sessions.find(item => item.semesterTitle === CURRENT_COURSE.title && item.state === "open");
+  const focusWeek = liveSession?.weekNumber ?? moment.nextWeek?.week ?? null;
+  const lectures = CURRENT_COURSE_SESSIONS.filter(item => item.kind === "lecture" && (item.groupName === CURRENT_COURSE.groupName || item.groupName === "G1"));
   const activeSemesters = semesters.filter(({ status }) => status === "active");
+
+  function renderWeek(lecture: typeof lectures[number]) {
+    const historicalShared = lecture.weekNumber >= 3 ? sessions.find(item =>
+      item.semesterTitle === CURRENT_COURSE.title && item.weekNumber === lecture.weekNumber &&
+      item.kind === "lecture" && item.groupName === CURRENT_COURSE.groupName && item.state !== "draft") : undefined;
+    return <article className="semester-row" key={lecture.weekNumber}>
+      <div><strong>Java {lecture.weekNumber} · {lecture.title.split(" · ")[0]}</strong></div>
+      {historicalShared && <a className="admin-link" href={historicalShared.state === "open"
+        ? `/staff/project/${historicalShared.id}` : `/staff?sessionId=${historicalShared.id}#session-admin-title`}>
+        Ligjëratë historike · G1 + G2 · hap regjistrin
+      </a>}
+      {CURRENT_COURSE_SESSIONS.filter(item => item.weekNumber === lecture.weekNumber && !(historicalShared && item.kind === "lecture"))
+        .sort((left,right) => left.startTime.localeCompare(right.startTime)).map(planned => {
+          const existing = sessions.find(item => item.semesterTitle === CURRENT_COURSE.title && item.weekNumber === planned.weekNumber && item.kind === planned.kind && (item.groupName === planned.groupName ||
+            planned.kind === "lecture" && planned.weekNumber <= 2 && planned.groupName === CURRENT_COURSE.groupName && item.groupName === "G1"));
+          const finished = existing?.state === "closed" || existing?.state === "cancelled";
+          const live = existing?.state === "open";
+          const href = finished ? `/staff?sessionId=${existing.id}#session-admin-title` : live ? `/staff/project/${existing.id}` : `/staff/qr?week=${planned.weekNumber}&kind=${planned.kind}${planned.groupName === CURRENT_COURSE.groupName ? "" : `&group=${planned.groupName}`}`;
+          return <a title={finished ? "Ora ka përfunduar. Hap regjistrin e kësaj ore." : live ? "Shfaq QR-në e orës që është e hapur." : "Hap QR-në vetëm kur klasa është gati."} className="admin-link" key={`${planned.kind}-${planned.groupName}`} href={href}>
+            {finished ? "Regjistri " : live ? "QR aktiv · " : "QR "}{planned.kind === "lecture" ? `Ligjëratë · ${planned.groupName === CURRENT_COURSE.groupName ? "G1 + G2" : planned.groupName}` : `Ushtrime · ${planned.groupName}`} · {planned.startTime}
+            {finished && <span className="session-link-status">{existing.state === "cancelled" ? "E anuluar" : "E mbyllur"}</span>}
+          </a>;
+        })}
+    </article>;
+  }
 
   return (
     <div className="admin-stack">
@@ -180,32 +219,15 @@ export function SemesterAdmin({ initialSessionId }: { initialSessionId?: string 
       <section className="admin-section" aria-labelledby="course-qr-title">
         <h2 id="course-qr-title">Hap QR-në e orës</h2>
         <p>Programimi për Pajisje Mobile · 2026/27. Studentët pa GitHub regjistrohen nga QR-ja aktive në klasë me emailin dhe të dhënat e tyre; në të njëjtin browser profili ruhet për orët e ardhshme. Kliko QR vetëm kur klasa është gati: regjistrimi qëndron hapur {CHECKIN_WINDOW_SECONDS} sekonda dhe mbyllet automatikisht në server. Mbylle më herët nga regjistri kur të gjithë studentët në sallë konfirmohen. Studentët skanojnë QR-në nga projektori. Pranohen studentët e lëndës nga të dy grupet, edhe kur kanë ndërruar orarin.</p>
-        <div className="semester-list">
-          {CURRENT_COURSE_SESSIONS.filter((item) => item.kind === "lecture" && (item.groupName === CURRENT_COURSE.groupName || item.groupName === "G1")).map((lecture) => {
-            const historicalShared = lecture.weekNumber >= 3 ? sessions.find((item) =>
-              item.semesterTitle === CURRENT_COURSE.title && item.weekNumber === lecture.weekNumber &&
-              item.kind === "lecture" && item.groupName === CURRENT_COURSE.groupName && item.state !== "draft") : undefined;
-            return <article className="semester-row" key={lecture.weekNumber}>
-              <div><strong>Java {lecture.weekNumber} · {lecture.title.split(" · ")[0]}</strong></div>
-              {historicalShared ? <a className="admin-link" href={historicalShared.state === "open"
-                ? `/staff/project/${historicalShared.id}` : `/staff?sessionId=${historicalShared.id}#session-admin-title`}>
-                Ligjëratë historike · G1 + G2 · hap regjistrin
-              </a> : null}
-              {CURRENT_COURSE_SESSIONS.filter((item) => item.weekNumber === lecture.weekNumber && !(historicalShared && item.kind === "lecture"))
-                .sort((left, right) => left.startTime.localeCompare(right.startTime)).map((planned) => {
-                const existing = sessions.find((item) => item.semesterTitle === CURRENT_COURSE.title && item.weekNumber === planned.weekNumber && item.kind === planned.kind && (item.groupName === planned.groupName ||
-                  (planned.kind === "lecture" && planned.weekNumber <= 2 && planned.groupName === CURRENT_COURSE.groupName && item.groupName === "G1")));
-                const finished = existing?.state === "closed" || existing?.state === "cancelled";
-                return <a title={finished ? "Ora ka përfunduar. Hap regjistrin e kësaj ore." : "Hap QR-në për regjistrimin e pjesëmarrjes."} className="admin-link" key={`${planned.kind}-${planned.groupName}`} href={finished
-                  ? `/staff?sessionId=${existing.id}#session-admin-title`
-                  : `/staff/qr?week=${planned.weekNumber}&kind=${planned.kind}${planned.groupName === CURRENT_COURSE.groupName ? "" : `&group=${planned.groupName}`}`}>
-                  QR {planned.kind === "lecture" ? `Ligjëratë · ${planned.groupName === CURRENT_COURSE.groupName ? "G1 + G2" : planned.groupName}` : `Ushtrime · ${planned.groupName}`} · {planned.startTime}
-                  {finished ? <span className="session-link-status">{existing.state === "cancelled" ? "E anuluar" : "E mbyllur"}</span> : null}
-                </a>;
-              })}
-            </article>;
-          })}
-        </div>
+        {focusWeek ? <div className="semester-list" data-current-qr-week={focusWeek}>
+          <p>{liveSession ? "Orë e hapur" : moment.status === "today" ? "Ora e sotme" : "Ora e radhës"} · Java {focusWeek}</p>
+          {lectures.filter(item => item.weekNumber === focusWeek).map(renderWeek)}
+        </div> : <p>Orari i semestrit përfundoi. Për orë zëvendësuese përdor administrimin manual.</p>}
+        <details className="calendar-history">
+          <summary>Javët e tjera · Kalendari i plotë</summary>
+          <p>Orët e kaluara dhe të ardhshme mbeten këtu. Hap QR-në vetëm kur klasa është gati; për orët e mbyllura hapet regjistri.</p>
+          <div className="semester-list">{lectures.filter(item => item.weekNumber !== focusWeek).map(renderWeek)}</div>
+        </details>
       </section>
       {selectedSessionId ? <SessionAdmin key={selectedSessionId} sessionId={selectedSessionId} /> : null}
       <details className="admin-manual-tools">

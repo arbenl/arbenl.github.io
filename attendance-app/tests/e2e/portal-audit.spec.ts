@@ -1,0 +1,55 @@
+import { expect,test,type Page } from '@playwright/test';
+import postgres from 'postgres';
+import { staticSite } from './helpers/static-site';
+const sql=postgres(process.env.DATABASE_URL!,{max:1,onnotice:()=>{}});
+let site:Awaited<ReturnType<typeof staticSite>>;
+test.beforeAll(async()=>{site=await staticSite();});
+test.beforeEach(async()=>{await sql`truncate users, semesters, request_limits restart identity cascade`;});
+test.afterAll(async()=>{await site.close();await sql.end();});
+async function fits(page:Page,width:number){expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);}
+for(const width of [320,514,1280])test(`professor overview prioritizes the next week, preserves history and separates padded actions at ${width}px`,async({page},info)=>{
+ await page.setViewportSize({width,height:950});await page.goto('/');
+ const login=await page.evaluate(async()=>{const r=await fetch('/api/test/session',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({persona:'professor'})});return r.status;});expect(login).toBe(200);
+ const bootstrap=await page.evaluate(async()=>{const r=await fetch('/api/admin/bootstrap',{method:'POST'});return r.status;});expect(bootstrap).toBe(201);
+ await page.goto('/staff');await expect(page.getByText('Duke ngarkuar panelin…')).toHaveCount(0);
+ await expect(page.locator('[data-focus-week]')).toBeVisible();
+ const focus=await page.locator('[data-focus-week]').getAttribute('data-focus-week');
+ await expect(page.locator(`[data-current-qr-week="${focus}"]`)).toBeVisible();
+ await expect(page.locator('.course-history a[href="/staff/materials/week-07"]')).not.toBeVisible();
+ await fits(page,width);
+ const overlap=await page.locator('.course-actions').evaluateAll(groups=>groups.some(group=>{
+  const boxes=[...group.querySelectorAll('a')].filter(a=>a.getClientRects().length).map(a=>a.getBoundingClientRect());
+  return boxes.some((a,i)=>boxes.some((b,j)=>j>i&&Math.min(a.right,b.right)-Math.max(a.left,b.left)>1&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1));
+ }));expect(overlap).toBe(false);
+ await page.screenshot({path:info.outputPath(`01-professor-${width}.png`),fullPage:false});
+ await page.locator('.course-history > summary').click();
+ await expect(page.getByRole('link',{name:'Java 7 · Arkiva e materialeve të profesorit'})).toBeVisible();
+ await page.locator('.course-history').scrollIntoViewIfNeeded();
+ await page.screenshot({path:info.outputPath(`02-professor-history-${width}.png`)});
+ await page.locator('.calendar-history > summary').click();
+ await expect(page.locator('a[href="/staff/qr?week=3&kind=lab&group=G1"]')).toBeVisible();
+ await fits(page,width);
+});
+for(const width of [375,1280])test(`student journey, accurate publication and semester-end fallback at ${width}px`,async({page},info)=>{
+ await page.setViewportSize({width,height:950});await page.clock.install({time:new Date('2026-11-16T08:00:00Z')});
+ const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+ await page.goto(site.origin+'/');
+ await page.screenshot({path:info.outputPath(`00-portal-entry-${width}.png`)});
+ await page.getByLabel('Viti akademik').selectOption('2025-2026');await page.getByLabel('Kërko lëndën').fill('mobile');
+ await expect(page.locator('[data-course]:visible')).toHaveCount(1);await expect(page.getByRole('link',{name:'Udhëzim për provim',exact:true}).first()).toBeVisible();
+ await page.locator('[data-course]:visible').scrollIntoViewIfNeeded();
+ await page.screenshot({path:info.outputPath(`03-portal-${width}.png`)});
+ await page.goto(site.origin+'/lendet/2026-2027/mobile/');
+ await expect(page.locator('#course-focus')).toHaveAttribute('data-focus-week','10');await fits(page,width);
+ for(const week of [6,7,8,9,10])await expect(page.locator(`#week-${week} [data-publication-status]`)).toContainText('publikuar');
+ await page.screenshot({path:info.outputPath(`04-course-${width}.png`)});
+ await page.getByRole('link',{name:'Hap materialet · Java 10 →'}).click();
+ await expect(page.getByRole('heading',{level:1})).toContainText('Sinkronizimi në kohë reale');await fits(page,width);
+ await page.screenshot({path:info.outputPath(`05-week10-${width}.png`)});
+ await page.clock.setFixedTime(new Date('2026-12-26T08:00:00Z'));await page.goto(site.origin+'/lendet/2026-2027/mobile/');
+ await expect(page.getByRole('heading',{name:'Orari i semestrit përfundoi'})).toBeVisible();
+ await expect(page.locator('[data-week]')).toHaveCount(15);await expect(page.locator('#course-focus a')).toHaveCount(0);
+ await page.route('**/assets/course-schedule.json',route=>route.abort());await page.reload();
+ await expect(page.locator('[data-course-focus-status]')).toContainText('Hap javën nga kalendari');await expect(page.locator('[data-week]')).toHaveCount(15);
+ expect(errors).toEqual([]);
+});

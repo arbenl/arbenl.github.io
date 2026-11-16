@@ -1,0 +1,125 @@
+{
+  "timeZone": "Europe/Belgrade",
+  "weeks": [
+    {
+      "week": 1,
+      "date": "2026-09-17",
+      "title": "Hyrje në Mobile PWA dhe ambienti i punës",
+      "weekUrl": "/lendet/2026-2027/mobile/java-01/",
+      "lectureUrl": "/lendet/2026-2027/mobile/lectures/ligjerata-01-aab-biznes-real-2026-v2.pptx",
+      "labUrl": null
+    },
+    {
+      "week": 2,
+      "date": "2026-09-24",
+      "title": "Problemi, përdoruesi dhe PRD",
+      "weekUrl": "/lendet/2026-2027/mobile/java-02/",
+      "lectureUrl": "/lendet/2026-2027/mobile/java-02/prezantimi-ligjerates.html",
+      "labUrl": "/lendet/2026-2027/mobile/java-02/ushtrimet.html"
+    },
+    {
+      "week": 3,
+      "date": "2026-10-01",
+      "title": "Komponentët dhe App Router",
+      "weekUrl": "/lendet/2026-2027/mobile/java-03/",
+      "lectureUrl": "/lendet/2026-2027/mobile/java-03/prezantimi-ligjerates.html",
+      "labUrl": "/lendet/2026-2027/mobile/java-03/ushtrimet.html"
+    },
+    {
+      "week": 4,
+      "date": "2026-10-08",
+      "title": "PostgreSQL me Neon dhe leximi nga serveri",
+      "weekUrl": "/lendet/2026-2027/mobile/java-04/",
+      "lectureUrl": "/lendet/2026-2027/mobile/java-04/prezantimi-ligjerates.html",
+      "labUrl": "/lendet/2026-2027/mobile/java-04/ushtrimet.html"
+    },
+    {
+      "week": 5,
+      "date": "2026-10-15",
+      "title": "Autentifikimi dhe sesionet",
+      "weekUrl": "/lendet/2026-2027/mobile/java-05/",
+      "lectureUrl": "/lendet/2026-2027/mobile/java-05/prezantimi-ligjerates.html",
+      "labUrl": "/lendet/2026-2027/mobile/java-05/ushtrimet.html"
+    },
+    {
+      "week": 6,
+      "date": "2026-10-22",
+      "title": "PWA dhe puna offline",
+      "weekUrl": "/lendet/2026-2027/mobile/java-06/",
+      "lectureUrl": "/lendet/2026-2027/mobile/java-06/prezantimi-ligjerates.html",
+      "labUrl": "/lendet/2026-2027/mobile/java-06/ushtrimet.html"
+    },
+    {
+      "week": 7,
+      "date": "2026-10-29",
+      "title": "Kolokviumi I dhe kontrolli i MVP-së",
+      "weekUrl": "/lendet/2026-2027/mobile/java-07/",
+      "lectureUrl": "/lendet/2026-2027/mobile/java-07/prezantimi-ligjerates.html",
+      "labUrl": "/lendet/2026-2027/mobile/java-07/ushtrimet.html"
+    },
+    {
+      "week": 8,
+      "date": "2026-11-05",
+      "title": "Sensorët dhe Device APIs",
+      "weekUrl": "/lendet/2026-2027/mobile/java-08/",
+      "lectureUrl": "/lendet/2026-2027/mobile/java-08/prezantimi-ligjerates.html",
+      "labUrl": "/lendet/2026-2027/mobile/java-08/ushtrimet.html"
+    },
+    {
+      "week": 9,
+      "date": "2026-11-12",
+      "title": "Gjendja dhe ndërfaqet optimiste",
+      "weekUrl": "/lendet/2026-2027/mobile/java-09/",
+      "lectureUrl": "/lendet/2026-2027/mobile/java-09/prezantimi-ligjerates.html",
+      "labUrl": "/lendet/2026-2027/mobile/java-09/ushtrimet.html"
+    },
+    {
+      "week": 10,
+      "date": "2026-11-19",
+      "title": "Sinkronizimi në kohë reale",
+      "weekUrl": "/lendet/2026-2027/mobile/java-10/",
+      "lectureUrl": "/lendet/2026-2027/mobile/java-10/prezantimi-ligjerates.html",
+      "labUrl": "/lendet/2026-2027/mobile/java-10/ushtrimet.html"
+    },
+    {
+      "week": 11,
+      "date": "2026-11-26",
+      "title": "Njoftimet dhe angazhimi",
+      "weekUrl": "/lendet/2026-2027/mobile/java-11/",
+      "lectureUrl": null,
+      "labUrl": null
+    },
+    {
+      "week": 12,
+      "date": "2026-12-03",
+      "title": "Validimi dhe siguria mobile",
+      "weekUrl": "/lendet/2026-2027/mobile/java-12/",
+      "lectureUrl": null,
+      "labUrl": null
+    },
+    {
+      "week": 13,
+      "date": "2026-12-10",
+      "title": "Performanca dhe auditimi mobile",
+      "weekUrl": "/lendet/2026-2027/mobile/java-13/",
+      "lectureUrl": null,
+      "labUrl": null
+    },
+    {
+      "week": 14,
+      "date": "2026-12-17",
+      "title": "Kolokviumi II, testimi dhe CI/CD",
+      "weekUrl": "/lendet/2026-2027/mobile/java-14/",
+      "lectureUrl": null,
+      "labUrl": null
+    },
+    {
+      "week": 15,
+      "date": "2026-12-24",
+      "title": "Demo Day dhe mbrojtja individuale",
+      "weekUrl": "/lendet/2026-2027/mobile/java-15/",
+      "lectureUrl": null,
+      "labUrl": null
+    }
+  ]
+}

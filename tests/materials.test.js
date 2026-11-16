@@ -117,7 +117,7 @@ test('week 5 continues week 4 with verified decks, exact code and five-check ins
 });
 test('each week keeps numbered navigation with a distinct accessible accent',async()=>{
  const colors=await readFile('assets/week-colors.css','utf8');const values=[...colors.matchAll(/--week-accent:(#[a-f0-9]+)/g)].map(m=>m[1]);assert.equal(new Set(values).size,15);
- const hub=await readFile('lendet/2026-2027/mobile/index.html','utf8');assert.equal([...hub.matchAll(/class="week" data-week=/g)].length,15);assert.ok(hub.includes('javët 1–5'));
+ const hub=await readFile('lendet/2026-2027/mobile/index.html','utf8');assert.equal([...hub.matchAll(/class="week" data-week=/g)].length,15);assert.ok(hub.includes('data-publication-status'));
  for(let n=1;n<=15;n++){const page=await readFile(`lendet/2026-2027/mobile/java-${String(n).padStart(2,'0')}/index.html`,'utf8');assert.ok(page.includes(`data-week="${n}"`));assert.ok(page.includes('/assets/week-colors.css'));assert.ok(page.includes('1. Ligjërata'));}
 });
 
