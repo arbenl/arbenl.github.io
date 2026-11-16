@@ -1,0 +1,224 @@
+{
+  "topic": "Validimi dhe siguria mobile",
+  "date": "2026-12-03",
+  "graded": true,
+  "lecture": [
+    {
+      "id": "tema",
+      "title": "Validimi dhe siguria mobile",
+      "body": "<p class=\"lead\">Si sigurohemi që një veprim është i vlefshëm dhe një vend nuk u premtohet dy personave?</p><div class=\"ideas\"><article><span class=\"symbol\" aria-hidden=\"true\">✓</span><h3>Të dhënat</h3><p>Çfarë pranojmë dhe ku e kontrollojmë.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">🔒</span><h3>Lejet</h3><p>Kush është përdoruesi dhe çfarë i lejohet.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">▤</span><h3>Ruajtja</h3><p>Si mbrohet gjendja kur kërkesat mbërrijnë afër njëra-tjetrës.</p></article></div><p class=\"callout\">Së pari konceptet dhe infrastruktura; më pas tri raste të kontrollueshme në aplikacionin tonë.</p>"
+    },
+    {
+      "id": "baza",
+      "title": "Çfarë dimë nga javët e mëparshme?",
+      "body": "<div class=\"flow\"><div><strong>Të dhënat</strong><span>PostgreSQL në Neon dhe kod serveri në Next.js.</span></div><div><strong>Identiteti</strong><span>Sesioni dhe ndryshimi vetëm nga pronari.</span></div><div><strong>Përditësimi</strong><span>Një përdorues rilexon veprimin e tjetrit.</span></div></div><p class=\"lead\">Tani kontrollojmë nëse serveri i mbron rregullat edhe kur ndërfaqja anashkalohet ose dy veprime mbërrijnë bashkë.</p><p class=\"small\">Njoftimet mund të mbeten në projekt; ushtrimi nuk kërkon funksione të reja njoftimi.</p>"
+    },
+    {
+      "id": "problemi",
+      "title": "Dy sportele shohin të njëjtën biletë",
+      "body": "<div class=\"counter-scene\"><div><span>🖥</span><h3>Sporteli A</h3><b>1</b><p>Lexoi një biletë të lirë.</p></div><div><span>▤</span><h3>Databaza</h3><b>1</b><p>Ende nuk ka shkrim të ri.</p></div><div><span>🖥</span><h3>Sporteli B</h3><b>1</b><p>Lexoi të njëjtën gjendje.</p></div></div><div class=\"question\"><h3>A kanë të dy sportelet të drejtë të premtojnë biletën?</h3><details><summary>Zbulo përgjigjen</summary><p>Jo. Një lexim i vjetër nuk e rezervon biletën. Vendimi i saktë duhet mbrojtur kur bëhet shkrimi.</p></details></div>"
+    },
+    {
+      "id": "tre-shtresat",
+      "title": "Tri shtresa me përgjegjësi të ndryshme",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\" aria-hidden=\"true\">📱</span><h3>Klienti</h3><p>Ndihmon përdoruesin: fushat, shpjegimet dhe butoni gjatë pritjes.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">☁</span><h3>Serveri</h3><p>Kontrollon sërish të dhënat, sesionin dhe të drejtën mbi burimin.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">▤</span><h3>Databaza</h3><p>Zbaton kufizimet dhe mban ndryshimet e lidhura në gjendje të vlefshme.</p></article></div><p class=\"callout\">Një buton i fshehur ose i çaktivizuar nuk e bën të sigurt rrugën e serverit.</p>"
+    },
+    {
+      "id": "hyrja",
+      "title": "Autentifikimi dhe autorizimi",
+      "body": "<div class=\"flow\"><div><strong>Autentifikimi</strong><span>Kush po e dërgon kërkesën? Identiteti vjen nga sesioni.</span></div><div><strong>Autorizimi</strong><span>A ka ky përdorues të drejtë mbi këtë burim?</span></div><div><strong>Veprimi</strong><span>Vetëm pas kontrolleve lejohet ndryshimi.</span></div></div><p>Një përdorues i kyçur nuk është automatikisht pronari i çdo objekti. Një ID e vlefshme nuk është leje.</p><div class=\"question\"><h3>A mjafton fusha role: admin në trupin e kërkesës?</h3><details><summary>Zbulo përgjigjen</summary><p>Jo. Serveri nuk duhet ta marrë autoritetin nga një deklaratë e klientit.</p></details></div>"
+    },
+    {
+      "id": "kontrata",
+      "title": "Kontrata e hyrjes dhe burimi i së vërtetës",
+      "body": "<div class=\"table-scroll\"><table><thead><tr><th>Pjesa</th><th>Kush e përcakton?</th></tr></thead><tbody><tr><th>ID-ja e objektit</th><td>Klienti e dërgon; serveri kontrollon formatin dhe ekzistencën.</td></tr><tr><th>Identiteti</th><td>Sesioni i verifikuar në server.</td></tr><tr><th>Pronari dhe kapaciteti</th><td>Të dhënat e ruajtura në databazë.</td></tr><tr><th>Gjendja e re</th><td>Rregulli i lejuar i biznesit, jo një vlerë e lirë nga telefoni.</td></tr></tbody></table></div><p class=\"small\">Parametrat e URL-së, FormData dhe JSON-i trajtohen si hyrje të pakontrolluara.</p>"
+    },
+    {
+      "id": "validimi",
+      "title": "Çfarë kontrollon validimi?",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\" aria-hidden=\"true\">#</span><h3>Tipi dhe formati</h3><p>ID e vlefshme, numër i plotë, tekst me gjatësi të kufizuar.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">↔</span><h3>Kufijtë</h3><p>Një numër vendesh nuk duhet të jetë negativ ose jashtë kufirit të lejuar.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">✓</span><h3>Kuptimi</h3><p>Objekti ekziston dhe gjendja e tij e lejon këtë ndryshim.</p></article></div><p class=\"callout\">Për një pranim, klienti dërgon ID-në e kërkesës. Numri i vendeve lexohet nga databaza; telefoni nuk e vendos atë.</p>"
+    },
+    {
+      "id": "gabimet",
+      "title": "Përgjigjja duhet të ndihmojë përdoruesin",
+      "body": "<div class=\"table-scroll\"><table><thead><tr><th>Kodi HTTP</th><th>Kuptimi në shembull</th><th>Hapi tjetër</th></tr></thead><tbody><tr><th>400</th><td>Hyrje e pavlefshme.</td><td>Korrigjo fushën.</td></tr><tr><th>401</th><td>Nuk ka sesion të vlefshëm.</td><td>Hyr në llogari.</td></tr><tr><th>403</th><td>Nuk lejohet ky veprim.</td><td>Mos e përsërit si i njëjti përdorues.</td></tr><tr><th>409</th><td>Konflikt me gjendjen aktuale.</td><td>Rilexo gjendjen; mos premto sukses.</td></tr></tbody></table></div><p class=\"small\">HTTP (Hypertext Transfer Protocol). Këto kode ilustrojnë një kontratë API (Application Programming Interface); mesazhi i biznesit mbetet i qartë.</p>"
+    },
+    {
+      "id": "sql",
+      "title": "SQL me parametra, jo me bashkim teksti",
+      "body": "<p>Një vlerë e përdoruesit duhet të dërgohet si parametër. Ky shembull i përgjithshëm lexon vetëm objektin e kërkuar.</p><pre class=\"snapshot-example\"><code>SELECT id, available\nFROM inventory\nWHERE id = $1;</code></pre><p class=\"callout\">Driver-i merr vlerën e parametrit veçmas. Parametrizimi mbron sintaksën e SQL-it; ai nuk zëvendëson kontrollin e sesionit dhe pronësisë.</p><p class=\"small\">SQL (Structured Query Language). Me Neon, forma e etiketuar sql`… ${value}` parametrizon vlerat.</p>"
+    },
+    {
+      "id": "infrastruktura-teori",
+      "title": "Ku kontrollohet dhe ku ruhet veprimi?",
+      "body": "<div class=\"infra\" data-infra><div class=\"infra-nodes\"><button data-node=\"0\" data-detail=\"Pajisja dërgon një qëllim, jo një të vërtetë të garantuar për identitetin ose vendet.\" aria-pressed=\"true\"><img src=\"/assets/week06-icons/smartphone.svg\" alt=\"\"><strong>Hyrja nga pajisja</strong><small>Hapi 1</small></button><button data-node=\"1\" data-detail=\"Serveri lexon sesionin, validon hyrjen dhe kontrollon pronësinë e burimit.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/cloud.svg\" alt=\"\"><strong>Serveri i Next.js</strong><small>Hapi 2</small></button><button data-node=\"2\" data-detail=\"Shkrimi i mbrojtur, transaksioni dhe kufizimet ndalojnë një gjendje të pavlefshme.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/database.svg\" alt=\"\"><strong>PostgreSQL</strong><small>Hapi 3</small></button><button data-node=\"3\" data-detail=\"Kthehet sukses vetëm pas ruajtjes ose një gabim i dobishëm pa sekrete.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/cloud.svg\" alt=\"\"><strong>Përgjigjja</strong><small>Hapi 4</small></button><button data-node=\"4\" data-detail=\"Përdoruesi sheh rezultatin e konfirmuar dhe udhëzimin për hapin tjetër.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/smartphone.svg\" alt=\"\"><strong>Ekrani</strong><small>Hapi 5</small></button></div><p class=\"walk-detail\" role=\"status\">Pajisja dërgon një qëllim, jo një të vërtetë të garantuar për identitetin ose vendet.</p><div class=\"actions\"><button data-advance>Hapi tjetër</button><button data-play>Luaj rrjedhën</button></div></div><p class=\"small\">Pjesët komunikojnë, por kanë role të ndryshme. Një gabim i serverit nuk duhet të duket si sukses në telefon.</p>"
+    },
+    {
+      "id": "gara",
+      "title": "Problemi i garës mes dy shkrimeve",
+      "body": "<div class=\"timeline\"><span>A lexon<br><b>1 biletë</b></span><span>B lexon<br><b>1 biletë</b></span><span>A premton<br><b>një personi</b></span><span>B premton<br><b>personit tjetër</b></span></div><p>Të dy lexime mund të jenë të sakta në çastin e tyre. Problemi është vendimi përfundimtar i pakontrolluar.</p><div class=\"question\"><h3>A e zgjidh gara vetëm rifreskimi më i shpeshtë?</h3><details><summary>Zbulo përgjigjen</summary><p>Jo. Rifreskimi përditëson pamjen; nuk e mbron vetë shkrimin konkurrues.</p></details></div>"
+    },
+    {
+      "id": "shkrimi",
+      "title": "Kushti kontrollohet gjatë ndryshimit",
+      "body": "<p>Ky shkrim i përgjithshëm ul stokun vetëm nëse ka ende njësi. Nuk është zgjidhja e plotë e një rezervimi.</p><pre class=\"snapshot-example\"><code>UPDATE inventory\nSET available = available - 1\nWHERE id = 7 AND available &gt; 0\nRETURNING available;</code></pre><p class=\"callout\">Serveri kontrollon rezultatin: një rresht i kthyer tregon se shkrimi ndodhi; zero rreshta nuk është sukses. Shkrimet e tjera të lidhura duhen mbrojtur po ashtu.</p>"
+    },
+    {
+      "id": "transaksioni",
+      "title": "Transaksioni dhe rregulli i biznesit",
+      "body": "<div class=\"flow\"><div><strong>Lexo nën mbrojtje</strong><span>Përdor kushtin atomik ose bllokimin e duhur të rreshtit.</span></div><div><strong>Ndrysho së bashku</strong><span>Statusi i kërkesës dhe vendet lidhen në një transaksion.</span></div><div><strong>Konfirmo ose anulo</strong><span>Nëse një pjesë dështon, nuk mbetet gjysmë ndryshimi.</span></div></div><p class=\"callout\">Vetëm BEGIN dhe COMMIT nuk e garantojnë rregullin. Duhet kontrolluar gjendja e kërkesës dhe kapaciteti gjatë shkrimit.</p>"
+    },
+    {
+      "id": "perseritja",
+      "title": "Përsëritja e sigurt e të njëjtit veprim",
+      "body": "<p>Serveri e ruajti suksesin, por përgjigjja humbi në rrjet. Përdoruesi provon përsëri të njëjtën kërkesë.</p><div class=\"flow\"><div><strong>ID-ja e njëjtë</strong><span>Serveri gjen veprimin e ruajtur.</span></div><div><strong>Rezultati i njëjtë</strong><span>Nuk konsumon një vend të dytë.</span></div><div><strong>Përgjigjja</strong><span>Klienti merr rezultatin e konfirmuar.</span></div></div><p>Kjo quhet idempotencë për atë veprim: përsëritja nuk e ndryshon rezultatin përtej pranimit të parë.</p><div class=\"question\"><h3>A është e njëjta gjë me dy kërkesa nga dy persona?</h3><details><summary>Zbulo përgjigjen</summary><p>Jo. Përsëritja ka të njëjtën ID; dy kërkesa të ndryshme garojnë për kapacitetin e mbetur.</p></details></div>"
+    },
+    {
+      "id": "neon",
+      "title": "Si zbatohet me Neon dhe Next.js?",
+      "body": "<ul><li>Rruga ose veprimi i serverit kontrollon sesionin dhe pronësinë sa herë thirret.</li><li>Me driver-in Neon/HTTP, transaction() grupon kërkesa jo-interaktive. Mos dërgo BEGIN dhe COMMIT si kërkesa HTTP të pavarura.</li><li>Kur një shkrim varet nga rezultati i tjetrit, zgjidh një komandë atomike, funksion në databazë ose lidhje transaksionale të përshtatshme.</li></ul><p class=\"callout\">Zero rreshta të ndryshuar nuk e shkakton vetvetiu anulimin e çdo komande tjetër. Rrjedha duhet ta trajtojë si kusht të dështuar.</p>"
+    },
+    {
+      "id": "mobile",
+      "title": "Kufiri i besimit në një aplikacion mobile",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\" aria-hidden=\"true\">🔑</span><h3>Sekretet</h3><p>DATABASE_URL mbetet në server, pa prefiks NEXT_PUBLIC_.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">↻</span><h3>Ndryshimet</h3><p>GET vetëm lexon. Shkrimet përdorin rrjedhën e mbrojtur të framework-ut dhe kontrollet e aplikacionit.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">📴</span><h3>Gabimet</h3><p>Mos e shndërro dështimin ose pamjen offline në konfirmim rezervimi.</p></article></div><p class=\"small\">Server Actions dhe Route Handlers janë pika hyrëse që duhen mbrojtur. Mos kthe gabime të databazës me kredenciale ose detaje të brendshme.</p>"
+    },
+    {
+      "id": "kalimi-rideshare",
+      "title": "Tani: mbrojtja e pranimit në RideShare",
+      "body": "<p class=\"lead\">Arta kërkon një vend; vetëm shoferi pronar Dritoni mund ta pranojë. Vendet mbeten të sakta edhe në përsëritje ose garë.</p><div class=\"ideas\"><article><span class=\"symbol\" aria-hidden=\"true\">1</span><h3>Pranimi i vlefshëm</h3><p>Pranimi ruhet një herë.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">2</span><h3>Serveri refuzon veprimin e palejuar</h3><p>Hyrja dhe lejet e gabuara nuk ndryshojnë të dhënat.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">3</span><h3>Vendi i fundit, vetëm një fitues</h3><p>Dy kërkesa të ndryshme nuk marrin të njëjtin vend të fundit.</p></article></div>"
+    },
+    {
+      "id": "infrastruktura",
+      "title": "RideShare: nga veprimi te rezultati i sigurt",
+      "body": "<div class=\"infra\" data-infra><div class=\"infra-nodes\"><button data-node=\"0\" data-detail=\"Shoferi kërkon pranimin e një ID-je kërkese. Nuk dërgon numrin e ri të vendeve.\" aria-pressed=\"true\"><img src=\"/assets/week06-icons/smartphone.svg\" alt=\"\"><strong>Dritoni pranon</strong><small>Hapi 1</small></button><button data-node=\"1\" data-detail=\"Serveri merr përdoruesin nga sesioni, kontrollon hyrjen dhe që Dritoni zotëron udhëtimin.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/cloud.svg\" alt=\"\"><strong>Next.js në Vercel</strong><small>Hapi 2</small></button><button data-node=\"2\" data-detail=\"Pranimi dhe vendet ruhen së bashku. Përgjigjja e përsëritur ose vendi i zënë nuk ulin përsëri numrin.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/database.svg\" alt=\"\"><strong>Neon · PostgreSQL</strong><small>Hapi 3</small></button><button data-node=\"3\" data-detail=\"Shoferi merr sukses, konflikt ose refuzim. Një dështim nuk paraqitet si rezervim i kryer.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/cloud.svg\" alt=\"\"><strong>Rezultati i veprimit</strong><small>Hapi 4</small></button><button data-node=\"4\" data-detail=\"Pamjet marrin gjendjen e serverit me rrjedhën e javës 10, pa krijuar rezervime gjatë leximit.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/smartphone.svg\" alt=\"\"><strong>Udhëtarët rilexojnë</strong><small>Hapi 5</small></button></div><p class=\"walk-detail\" role=\"status\">Shoferi kërkon pranimin e një ID-je kërkese. Nuk dërgon numrin e ri të vendeve.</p><div class=\"actions\"><button data-advance>Hapi tjetër</button><button data-play>Luaj rrjedhën</button></div></div><div class=\"deploy-path\"><strong>Kodi:</strong> Git → GitHub → Vercel. <strong>Të dhënat:</strong> Next.js në Vercel ↔ PostgreSQL në Neon.</div>"
+    },
+    {
+      "id": "rasti-1",
+      "title": "Rasti 1 · Pranimi i vlefshëm",
+      "body": "{{scene:1}}<p class=\"phone-caption\">Pas pranimit dhe rileximit: të dy shohin 1 vend. Përsëritja e K-42 duhet ta mbajë numrin 1.</p>"
+    },
+    {
+      "id": "kush-pranon",
+      "title": "Kush e ka të drejtën e pranimit?",
+      "body": "<div class=\"question\"><h3>Arta është e kyçur dhe e di ID-në e kërkesës së vet. A mund ta pranojë si shofer?</h3><details><summary>Zbulo përgjigjen</summary><p>Jo. Sesioni i saj nuk e bën pronare të udhëtimit. Serveri e refuzon ndryshimin dhe vendet mbeten po ato.</p></details></div><p class=\"callout\">Në këtë rrjedhë udhëtari kërkon; shoferi pronar pranon. Mos e merr rolin nga një fushë e formularit.</p>"
+    },
+    {
+      "id": "rasti-2",
+      "title": "Rasti 2 · Serveri refuzon veprimin e palejuar",
+      "body": "{{scene:2}}<p class=\"phone-caption\">Provë e drejtpërdrejtë si Arta: 403. Shoferi ende sheh “Në pritje” dhe 2 vende. Mungesa e butonit në telefon nuk mjafton si kontroll.</p>"
+    },
+    {
+      "id": "rasti-3",
+      "title": "Rasti 3 · Vendi i fundit, vetëm një fitues",
+      "body": "{{scene:3}}<p class=\"phone-caption\">Dritoni tenton të pranojë K-42 dhe K-43 për 1 vend. Njëra pranohet; tjetra mbetet e pakonfirmuar. Pas leximit të ri të dy shohin 0 vende.</p>"
+    },
+    {
+      "id": "rezultati",
+      "title": "Dallo përgjigjen e shoferit nga pamja e udhëtarit",
+      "body": "<p>Shoferi mund të marrë 200 për kërkesën e parë dhe 409 për të dytën. Udhëtarët shohin statusin që u lejohet pas leximit nga serveri.</p><div class=\"flow\"><div><strong>Suksesi</strong><span>Një kërkesë është e pranuar.</span></div><div><strong>Konflikti</strong><span>Tjetra nuk ka konfirmim vendi.</span></div><div><strong>Rileximi</strong><span>Numri i vendeve dhe statusi përditësohen pa shpikur sukses.</span></div></div><p class=\"small\">Në modelin tonë kërkesa pa vend mbetet “Në pritje”. Projekti mund ta paraqesë ndryshe, por nuk duhet ta numërojë si të pranuar.</p>"
+    },
+    {
+      "id": "demonstrimi",
+      "title": "Provo rastet dhe ndrysho rendin",
+      "body": "<p>Parashiko rezultatin para komandës. Në rastin 3 provo edhe rendin Lira → Arta: fituesi mund të ndryshojë, por numri i pranimeve mbetet 1.</p><div class=\"case-links\"><a class=\"button\" href=\"demo/#rast-1\">Rasti 1 · Pranimi i vlefshëm</a><a class=\"button\" href=\"demo/#rast-2\">Rasti 2 · Serveri refuzon veprimin e palejuar</a><a class=\"button\" href=\"demo/#rast-3\">Rasti 3 · Vendi i fundit, vetëm një fitues</a></div><p class=\"small\">Demonstrimi është model mësimor në shfletues, pa sesion real dhe pa Neon. Komandat modelojnë rendin e përfundimit; nuk provojnë databazën e studentit.</p>"
+    },
+    {
+      "id": "mbyllja",
+      "title": "Çfarë duhet të shpjegosh në MVP?",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\" aria-hidden=\"true\">✓</span><h3>Validimi</h3><p>Cila hyrje pranohet dhe nga vjen çdo e dhënë.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">🔒</span><h3>Leja</h3><p>Pse vetëm pronari e kryen veprimin.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">▤</span><h3>Konsistenca</h3><p>Pse përsëritja ose gara nuk konsumon vend dy herë.</p></article></div><p class=\"callout\">Një ekran bindës nuk është provë e ruajtjes së saktë. Kërkojmë përgjigjen e serverit dhe gjendjen pas shkrimit.</p><p class=\"small\">MVP (Minimum Viable Product – produkti minimal i përdorshëm).</p>"
+    },
+    {
+      "id": "burimet",
+      "title": "Burimet për zbatimin",
+      "body": "<ul class=\"sources\"><li><a href=\"https://nextjs.org/docs/app/guides/authentication\">Next.js · autentifikimi dhe autorizimi</a></li><li><a href=\"https://nextjs.org/docs/app/guides/data-security\">Next.js · mbrojtja e të dhënave dhe veprimeve</a></li><li><a href=\"https://www.postgresql.org/docs/current/transaction-iso.html\">PostgreSQL · komandat konkurruese dhe izolimi</a></li><li><a href=\"https://www.postgresql.org/docs/current/explicit-locking.html\">PostgreSQL · bllokimi i rreshtave</a></li><li><a href=\"https://www.postgresql.org/docs/current/ddl-constraints.html\">PostgreSQL · kufizimet e skemës</a></li><li><a href=\"https://neon.com/docs/serverless/serverless-driver\">Neon · driver-i dhe transaksionet</a></li></ul><p class=\"small\">Dokumentacioni u kontrollua më 16.11.2026. Këta mekanizma plotësojnë njëri-tjetrin; asnjëri nuk i zëvendëson të gjitha kontrollet.</p>"
+    }
+  ],
+  "lab": [
+    {
+      "id": "detyra",
+      "title": "Detyra e sotme · Pranim i vlefshëm dhe vende të sakta",
+      "body": "<p class=\"lead\">Forco rrugën ekzistuese të pranimit nga java 10: hyrje e vlefshme, vetëm shoferi pronar dhe asnjë vend i konsumuar dy herë.</p><p>Nuk ndërton aplikacion tjetër. Njoftimet nuk janë kusht për ushtrimin. Do të provosh pranimin, refuzimin nga serveri dhe dy kërkesa për vendin e fundit.</p><p><a class=\"button\" href=\"demo/\">Shiko çfarë do të ndërtosh sot</a></p><p class=\"small\">Pamjet janë rezultati i pritshëm. Kodin dhe provat i bën në projektin tënd me serverin dhe Neon.</p>"
+    },
+    {
+      "id": "plani",
+      "title": "Plani i 90 minutave",
+      "body": "<div class=\"table-scroll\"><table><thead><tr><th>Koha</th><th>Puna</th><th>Kontrolli për të vazhduar</th></tr></thead><tbody><tr><td>0–8</td><td>Demonstrimi dhe parashikimi</td><td>E dallon përsëritjen nga dy kërkesa të ndryshme.</td></tr><tr><td>8–15</td><td>Projekti dhe të dhënat e provës</td><td>Pranimi i javës 10 ruhet.</td></tr><tr><td>15–30</td><td>Hyrja, sesioni dhe pronësia</td><td>Serveri refuzon hyrjen ose përdoruesin e gabuar.</td></tr><tr><td>30–50</td><td>Shkrimi i mbrojtur</td><td>Statusi dhe vendet mbrohen së bashku.</td></tr><tr><td>50–65</td><td>Tri rastet dhe raporti</td><td>Ke provat reale dhe vëzhgimet.</td></tr><tr><td>65–90</td><td>Dorëzimi dhe feedback-u</td><td>Lexon komentin dhe korrigjon të njëjtin Issue.</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "pergatitja",
+      "title": "Hapi 1 · Përgatit të njëjtin projekt",
+      "body": "<ol><li>Provo fillimisht pranimin dhe leximin nga java 10. Nëse nuk punojnë deri në minutën 15, kërko ndihmë.</li><li>Puno në çift me dy sesione: shofer pronar dhe udhëtar. Të dy përdorni të njëjtin aplikacion. Një dritare normale dhe një private ndajnë sesionet.</li><li>Për rastin 1 përdor një udhëtim fiktiv me 2 vende dhe një kërkesë në pritje.</li><li>Për rastin 3 përgatit një udhëtim tjetër me 1 vend dhe dy kërkesa në pritje. Shëno ID-të e tua.</li></ol><p class=\"handoff\">Në shembull përdoren K-42 dhe K-43. Në projekt përdor ID-të dhe formatin e skemës tënde; mos ndrysho të dhëna reale.</p>"
+    },
+    {
+      "id": "infrastruktura-punes",
+      "title": "Rruga e pranimit që do të provosh",
+      "body": "<div class=\"infra\" data-infra><div class=\"infra-nodes\"><button data-node=\"0\" data-detail=\"Shoferi kërkon pranimin e një ID-je kërkese. Nuk dërgon numrin e ri të vendeve.\" aria-pressed=\"true\"><img src=\"/assets/week06-icons/smartphone.svg\" alt=\"\"><strong>Dritoni pranon</strong><small>Hapi 1</small></button><button data-node=\"1\" data-detail=\"Serveri merr përdoruesin nga sesioni, kontrollon hyrjen dhe që Dritoni zotëron udhëtimin.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/cloud.svg\" alt=\"\"><strong>Next.js në Vercel</strong><small>Hapi 2</small></button><button data-node=\"2\" data-detail=\"Pranimi dhe vendet ruhen së bashku. Përgjigjja e përsëritur ose vendi i zënë nuk ulin përsëri numrin.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/database.svg\" alt=\"\"><strong>Neon · PostgreSQL</strong><small>Hapi 3</small></button><button data-node=\"3\" data-detail=\"Shoferi merr sukses, konflikt ose refuzim. Një dështim nuk paraqitet si rezervim i kryer.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/cloud.svg\" alt=\"\"><strong>Rezultati i veprimit</strong><small>Hapi 4</small></button><button data-node=\"4\" data-detail=\"Pamjet marrin gjendjen e serverit me rrjedhën e javës 10, pa krijuar rezervime gjatë leximit.\" aria-pressed=\"false\"><img src=\"/assets/week06-icons/smartphone.svg\" alt=\"\"><strong>Udhëtarët rilexojnë</strong><small>Hapi 5</small></button></div><p class=\"walk-detail\" role=\"status\">Shoferi kërkon pranimin e një ID-je kërkese. Nuk dërgon numrin e ri të vendeve.</p><div class=\"actions\"><button data-advance>Hapi tjetër</button><button data-play>Luaj rrjedhën</button></div></div><p class=\"small\">Leximi periodik përditëson pamjet. Ai nuk duhet të pranojë kërkesa ose të ulë vende.</p>"
+    },
+    {
+      "id": "kontrata",
+      "title": "Hapi 2 · Vendos kontratën dhe lejet",
+      "body": "<ul><li>Prano ID-në e kërkesës sipas tipit dhe formatit të projektit. Hyrja e pavlefshme refuzohet para ndryshimit.</li><li>Serveri merr përdoruesin nga sesioni dhe pronarin nga udhëtimi. Mos beso role, ownerId ose vende të dërguara nga telefoni.</li><li>Pranimi i lejohet vetëm shoferit pronar. Një udhëtar ose shofer tjetër nuk e ndryshon kërkesën.</li><li>Kthe sukses pas ruajtjes; për gabim jep një mesazh që tregon çfarë mund të bëjë përdoruesi.</li></ul><p class=\"handoff\">Vazhdo kur mund ta tregosh funksionin në server ku bëhen kontrollet, jo vetëm butonin e fshehur.</p>"
+    },
+    {
+      "id": "rasti-1",
+      "title": "Rasti 1 · Pranimi i vlefshëm",
+      "body": "{{scene:1}}<p class=\"phone-caption\">Nis me 2 vende. Shoferi pranon dhe udhëtari rilexon: të dy shohin 1. Përsëritja e së njëjtës ID nuk duhet ta ulë numrin sërish.</p>"
+    },
+    {
+      "id": "prova-lejeve",
+      "title": "Si e provon që kontrollon serveri?",
+      "body": "<ol><li>Në aplikacionin tënd, provo një ID me format të gabuar si shofer pronar. Kontrollo përgjigjen dhe që databaza nuk ndryshoi.</li><li>Provo të njëjtin veprim me sesionin e udhëtarit ose pa hyrje, përmes mjetit të provës së rrugës së serverit.</li><li>Një fushë role ose vende e dërguar nga klienti nuk duhet t’i japë autoritet ose të caktojë kapacitetin.</li></ol><p class=\"handoff\">Mungesa e butonit “Prano” në telefon nuk e provon kontrollin. Provat bëhen vetëm në projektin tënd dhe me llogari testimi.</p>"
+    },
+    {
+      "id": "rasti-2",
+      "title": "Rasti 2 · Serveri refuzon veprimin e palejuar",
+      "body": "{{scene:2}}<p class=\"phone-caption\">Si udhëtar, pranimi refuzohet dhe mbeten 2 vende. Për ID të pavlefshme pritet gabim validimi; pa sesion, kërkohet hyrja.</p>"
+    },
+    {
+      "id": "ruajtja",
+      "title": "Hapi 3 · Mbro statusin dhe vendet së bashku",
+      "body": "<ol><li>Gjej veprimin ekzistues të pranimit; mos krijo një ruajtje të dytë në komponentin e telefonit.</li><li>Gjatë shkrimit, kontrollo që kërkesa nuk është pranuar më parë dhe ka ende vend. Përdor kusht atomik ose bllokim të duhur në transaksion.</li><li>Ruaj statusin dhe uljen e vendeve si një ndryshim të lidhur. Nëse një kusht dështon, mos ruaj gjysmën tjetër.</li><li>Trajto “asnjë rresht nuk ndryshoi” dhe gabimin e databazës; asnjëri nuk është sukses.</li></ol><p class=\"handoff\">Shto kufizimin e përshtatshëm kundër vendeve negative, por mos e trajto atë si zëvendësim të rrjedhës së saktë.</p>"
+    },
+    {
+      "id": "rasti-3",
+      "title": "Rasti 3 · Vendi i fundit, vetëm një fitues",
+      "body": "{{scene:3}}<p class=\"phone-caption\">Nga 1 vend dhe dy kërkesa, vetëm njëra pranohet. Vendet bëhen 0; tjetra mbetet e pakonfirmuar. Pas rileximit, të dy shohin gjendjen aktuale.</p>"
+    },
+    {
+      "id": "paralelizmi",
+      "title": "Si e provon garën realisht?",
+      "body": "<ol><li>Rivendos vetëm të dhënat fiktive të këtij testi: 1 vend, dy ID të ndryshme në pritje.</li><li>Si shofer pronar, nis dy thirrje pranimi pa pritur përgjigjen e së parës. Në funksionin e provës mund t’i presësh bashkë, p.sh. me Promise.all.</li><li>Kontrollo në Network ose në test që thirrjet u mbivendosën. Pastaj lexo gjendjen nga serveri: vetëm 1 e pranuar dhe 0 vende.</li><li>Provo edhe rendin tjetër. Fituesi mund të ndryshojë; numri i pranimeve nuk duhet të ndryshojë.</li></ol><p class=\"handoff\">Dy klikime pasi përgjigjja e parë ka përfunduar nuk provojnë paralelizmin. Demonstrimi i kësaj faqeje është model; prova jote kërkon serverin dhe databazën tënde.</p>"
+    },
+    {
+      "id": "perseritja",
+      "title": "Përsëritja nuk është një rezervim tjetër",
+      "body": "<ul><li>Përsërit pranimin e së njëjtës kërkesë. Statusi dhe numri i vendeve nuk ndryshojnë më.</li><li>Provo edhe me 0 vende: nuk duhet të konfirmohet kërkesë e re.</li><li>Gjatë pritjes, butoni ndihmon të mos klikosh përsëri. Garancia mbetet në server dhe në databazë.</li></ul><p class=\"small\">Një gabim i ruajtjes nuk duhet të japë sukses. Nëse e teston këtë skenar shtesë, shëno si u rikthye gjendja.</p>"
+    },
+    {
+      "id": "hint",
+      "title": "Sugjerime për të gjetur zgjidhjen",
+      "body": "<details><summary>Ku i vendos kontrollet?</summary><p>Gjej Route Handler-in ose Server Action-in që pranon kërkesën. Ndiq hyrjen: sesion → ID → kërkesë → pronar → ndryshim. Kontrolli vetëm në faqen e shfaqur nuk mjafton.</p></details><details><summary>Pse dalin dy pranime edhe pse kam një if?</summary><p>Dy veprime mund të kenë lexuar të njëjtën vlerë para shkrimit. Çfarë e mbron rreshtin e udhëtimit ose kushtin e kapacitetit gjatë ndryshimit?</p></details><details><summary>Si e lidh me Neon?</summary><p>Rishiko javën 10. Me Neon/HTTP mos përdor BEGIN dhe COMMIT si kërkesa të ndara. Një transaction() jo-interaktiv nuk mund të marrë vendime JavaScript mes përgjigjeve. Zgjidh një komandë atomike ose funksion në databazë, ose mënyrën transaksionale që mbështet driver-i yt.</p></details><details><summary>Si e tregoj provën pa dhënë sekrete?</summary><p>Shëno ID-të fiktive, përgjigjet e redaktuara dhe gjendjen pas shkrimit. Mos publiko cookies, tokens, DATABASE_URL ose të dhëna reale nga Network.</p></details>"
+    },
+    {
+      "id": "provat",
+      "title": "Hapi 4 · Çfarë duhet të dalë në raport?",
+      "body": "<ol><li><strong>Rasti 1:</strong> ID-ja, vendet para/pas, përgjigjja dhe rezultati i përsëritjes së së njëjtës kërkesë.</li><li><strong>Rasti 2:</strong> hyrja ose sesioni i provuar, kodi/mesazhi dhe prova që të dhënat nuk ndryshuan.</li><li><strong>Rasti 3:</strong> dy ID-të, si u nisën bashkë, përgjigjet dhe gjendja përfundimtare nga databaza.</li></ol><p class=\"callout\">Kolegu zgjedh ID ose rend tjetër. Parashiko rezultatin dhe trego funksionin që e mbron. Nëse një provë dështon ose nuk e arrin, shkruaje saktë.</p>"
+    },
+    {
+      "id": "dorezimi",
+      "title": "Hapi 5 · Dorëzo dhe lexo feedback-un · minutat 65–90",
+      "body": "<ol><li>Ruaj kodin, testet dhe skemën nëse ndryshoi. Plotëso <a href=\"java-12-model.md\" download=\"java-12.md\">java-12.md</a> në rrënjën e repository-t. Kodi me package.json mund të jetë në rrënjë ose në aplikacioni/.</li><li>GitHub Desktop: <strong>Commit → Push origin</strong>. Kontrollo versionin online.</li><li>Hap formularin e Javës 12 dhe vendos linkun kryesor të repository-t publik. Korrigjimet i bën te i njëjti Issue.</li></ol><p><a class=\"button\" href=\"https://github.com/arbenl/arbenl-mobile-assignments-2026-2027/issues/new?template=mobile-submission.yml&amp;week=Java%2012\">Dorëzo · Java 12</a></p><p class=\"small\">Mos ngarko .env, node_modules ose sekrete. Dorëzimi mund të vazhdojë gjatë javës sipas afatit të profesorit.</p>"
+    },
+    {
+      "id": "pergjigjja",
+      "title": "Çfarë do të thotë përgjigjja e GitHub-it?",
+      "body": "<div class=\"ideas\"><article><span class=\"symbol\" aria-hidden=\"true\">1</span><h3>Hap të njëjtin Issue</h3><p>Gjej “Kontrolli automatik i dorëzimit” nga github-actions[bot].</p></article><article><span class=\"symbol\" aria-hidden=\"true\">2</span><h3>Lexo rreshtat</h3><p>2/2 është kontroll strukturor i raportit dhe package.json, jo provë e sigurisë ose paralelizmit.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">3</span><h3>Korrigjo</h3><p>Commit → Push origin → komento rikontrollo dhe lexo komentin e ri.</p></article></div><p class=\"callout\">Ushtrimi vlerësohet deri në 3 pikë sipas rubrikës. GREEN teknik nuk jep automatikisht notë dhe nuk zëvendëson tri provat në projekt.</p>"
+    },
+    {
+      "id": "perfundimi",
+      "title": "Përfundove kur e provon dhe e shpjegon",
+      "body": "<ul><li>Hyrja e pavlefshme dhe përdoruesi i palejuar nuk ndryshojnë databazën.</li><li>Vetëm shoferi pronar e kryen pranimin.</li><li>Përsëritja e së njëjtës ID nuk konsumon vend tjetër.</li><li>Dy kërkesa të ndryshme për 1 vend japin vetëm 1 pranim.</li><li>Ke raportin me prova reale dhe e ke lexuar feedback-un.</li></ul><div class=\"question\"><h3>A e provon një screenshot me 0 vende se gara u mbrojt?</h3><details><summary>Zbulo përgjigjen</summary><p>Jo. Duhet të dihen kërkesat e nisura, përgjigjet dhe numri i pranimeve të ruajtura.</p></details></div>"
+    }
+  ]
+}
