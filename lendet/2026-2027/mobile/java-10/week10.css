@@ -99,3 +99,48 @@
     color: #111;
   }
 }
+
+.classroom-projector .step > .eyebrow {
+  display: none;
+}
+.poll-example {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 0;
+  margin: 14px 0 10px;
+  list-style: none;
+}
+.poll-example li {
+  margin: 0;
+  padding: 10px 12px;
+  background: #203542;
+  border-top: 3px solid var(--accent);
+  border-radius: 8px;
+  font-size: 18px;
+}
+.poll-example strong,
+.poll-example span {
+  display: block;
+}
+.poll-example strong {
+  color: var(--accent);
+}
+.step .poll-outcome {
+  margin: 8px 0 0;
+}
+@media (max-width: 767px) {
+  .poll-example {
+    grid-template-columns: 1fr;
+  }
+}
+
+.projector #krahasimi-polling > .eyebrow {
+  display: none;
+}
+.projector .poll-example {
+  margin-top: 10px;
+}
+.projector .poll-example li {
+  padding-block: 8px;
+}

@@ -55,3 +55,22 @@ test('a stale driver retry cannot accept an already accepted request twice',()=>
  const retried=transition(accepted,{type:'accept'});
  assert.deepEqual(retried.server,accepted.server);
 });
+
+test('the week 10 classroom path keeps the full lecture and the lab comparison introduces the polling step', async () => {
+  const path = 'lendet/2026-2027/mobile/java-10/';
+  const lecture = await read(path+'prezantimi-ligjerates.html');
+  const lab = await read(path+'prezantimi-ushtrimeve.html');
+  const guide = await read(path+'ushtrimet.html');
+  const classroom = [...lecture.matchAll(/<section class="step" id="([^"]+)" data-classroom-slide>/g)].map(match => match[1]);
+  assert.equal(classroom.length,20);
+  assert.equal([...lecture.matchAll(/<section class="step" id=/g)].length,32);
+  assert.equal(classroom[0],'tema');
+  assert.equal(classroom.at(-1),'mbyllja');
+  assert.ok(classroom.indexOf('zgjedhja') < classroom.indexOf('kalimi-rideshare'));
+  const table = /<table class="sync-comparison"[\s\S]*?<\/table>/;
+  assert.ok(table.test(lecture));
+  assert.equal(lab.match(table)?.[0],lecture.match(table)[0]);
+  assert.match(lab,/id="krahasimi-polling"[^]*?<\/section>\s*<section class="step" id="polling-hapi"/);
+  assert.doesNotMatch(guide,/id="krahasimi-polling"/);
+  assert.match(await read(path+'index.html'),/prezantimi-ligjerates\.html\?pamja=plote/);
+});
