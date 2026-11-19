@@ -18,3 +18,84 @@
 
 /* PostgreSQL explanations keep the same projector typography and weekly accent. */
 .pg-tables{display:grid;grid-template-columns:1fr 1fr;gap:22px}.pg-tables h3{font-size:23px;margin:7px 0 12px}.pg-tables table{font-size:19px}.pg-commands{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.pg-commands>div{padding:14px;background:#203542;border-radius:10px}.pg-commands strong{display:block;font-size:25px;color:var(--accent)}.pg-commands span{display:block;font-size:20px;margin-top:7px}.step .pg-source{font-size:16px;margin:10px 0 0}.pg-code{font-size:21px;line-height:1.4;overflow-wrap:anywhere}.projector .step .pg-source{font-size:15px;margin:8px 0 0}@media(max-width:767px){.pg-tables{grid-template-columns:1fr}.pg-tables>div{min-width:0;overflow-x:auto}.pg-tables table{font-size:16px}.pg-commands{grid-template-columns:1fr 1fr}.pg-code{font-size:16px}.pg-commands strong{font-size:21px}}
+
+/* Comparison slide: aligned columns for the projector, labeled rows on phones. */
+.sync-comparison {
+  table-layout: fixed;
+  font-size: clamp(17px, 1.55vw, 22px);
+  line-height: 1.35;
+}
+.sync-comparison th:first-child {
+  width: 20%;
+}
+.sync-comparison thead th {
+  color: #fff;
+}
+.sync-comparison tbody th {
+  background: #1b2e3d;
+}
+.sync-comparison td {
+  background: #13252f;
+}
+.sync-method {
+  display: none;
+}
+.step .sync-takeaway {
+  font-size: 20px;
+}
+.step .sync-source {
+  font-size: 16px;
+  margin: 10px 0 0;
+}
+.projector .sync-comparison th,
+.projector .sync-comparison td {
+  padding: 8px 12px;
+}
+.projector .step .sync-takeaway {
+  margin: 10px 0 0;
+  padding: 10px 14px;
+}
+.projector .step .sync-source {
+  margin: 8px 0 0;
+}
+@media (max-width: 767px) {
+  .sync-comparison,
+  .sync-comparison tbody {
+    display: block;
+  }
+  .sync-comparison thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .sync-comparison tbody tr {
+    display: grid;
+    margin-bottom: 14px;
+  }
+  .sync-comparison tbody th:first-child {
+    width: auto;
+  }
+  .sync-comparison td {
+    border-top: 0;
+  }
+  .sync-method {
+    display: block;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .step .sync-takeaway {
+    font-size: 18px;
+  }
+}
+@media print {
+  .sync-comparison th,
+  .sync-comparison td,
+  .sync-comparison thead th,
+  .sync-method {
+    background: #fff;
+    color: #111;
+  }
+}
