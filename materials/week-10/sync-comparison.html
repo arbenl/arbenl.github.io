@@ -1,0 +1,37 @@
+<table class="sync-comparison" role="table">
+<caption class="sr-only">Krahasimi i tri mënyrave të sinkronizimit</caption>
+<thead role="rowgroup">
+<tr role="row">
+<th scope="col" role="columnheader">Karakteristika</th>
+<th scope="col" role="columnheader">Polling</th>
+<th scope="col" role="columnheader">SSE (Server-Sent Events)</th>
+<th scope="col" role="columnheader">WebSocket</th>
+</tr>
+</thead>
+<tbody role="rowgroup">
+<tr role="row">
+<th scope="row" role="rowheader">Drejtimi i të dhënave</th>
+<td role="cell"><span class="sync-method" aria-hidden="true">Polling</span>Klienti pyet me interval → serveri përgjigjet.</td>
+<td role="cell"><span class="sync-method" aria-hidden="true">SSE (Server-Sent Events)</span>Serveri → klienti. Klienti dërgon veprime me HTTP më vete.</td>
+<td role="cell"><span class="sync-method" aria-hidden="true">WebSocket</span>Klienti ↔ serveri. Të dy dërgojnë në të njëjtën lidhje.</td>
+</tr>
+<tr role="row">
+<th scope="row" role="rowheader">Ngarkesa në PostgreSQL</th>
+<td role="cell"><span class="sync-method" aria-hidden="true">Polling</span>Rritet nëse çdo kërkesë lexon databazën.</td>
+<td role="cell"><span class="sync-method" aria-hidden="true">SSE (Server-Sent Events)</span>Mund të ulet kur ngjarjet shmangin leximet periodike.</td>
+<td role="cell"><span class="sync-method" aria-hidden="true">WebSocket</span>Varet sa shpesh mesazhet kërkojnë lexime.</td>
+</tr>
+<tr role="row">
+<th scope="row" role="rowheader">Përdorimi në Vercel</th>
+<td role="cell"><span class="sync-method" aria-hidden="true">Polling</span>Kërkesa të zakonshme HTTP.</td>
+<td role="cell"><span class="sync-method" aria-hidden="true">SSE (Server-Sent Events)</span>Rrjedhë HTTP me kufi kohe. Parashiko rilidhjen.</td>
+<td role="cell"><span class="sync-method" aria-hidden="true">WebSocket</span>Mbështetet me Fluid compute. Parashiko rilidhjen.</td>
+</tr>
+<tr role="row">
+<th scope="row" role="rowheader">Kur e zgjedhim?</th>
+<td role="cell"><span class="sync-method" aria-hidden="true">Polling</span>Panel me statistika që ndryshojnë rrallë.</td>
+<td role="cell"><span class="sync-method" aria-hidden="true">SSE (Server-Sent Events)</span>Njoftime ose rezultate sportive live.</td>
+<td role="cell"><span class="sync-method" aria-hidden="true">WebSocket</span>Bisedë, lojëra online ose redaktim i përbashkët.</td>
+</tr>
+</tbody>
+</table>

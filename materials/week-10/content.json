@@ -85,7 +85,7 @@
     {
       "id": "zgjedhja",
       "title": "Cilin mekanizëm zgjedhim?",
-      "body": "<table class=\"sync-comparison\" role=\"table\"><caption class=\"sr-only\">Krahasimi i tri mënyrave të sinkronizimit</caption><thead role=\"rowgroup\"><tr role=\"row\"><th scope=\"col\" role=\"columnheader\">Karakteristika</th><th scope=\"col\" role=\"columnheader\">Polling</th><th scope=\"col\" role=\"columnheader\">SSE (Server-Sent Events)</th><th scope=\"col\" role=\"columnheader\">WebSocket</th></tr></thead><tbody role=\"rowgroup\"><tr role=\"row\"><th scope=\"row\" role=\"rowheader\">Drejtimi i të dhënave</th><td role=\"cell\"><span class=\"sync-method\" aria-hidden=\"true\">Polling</span>Klienti pyet me interval → serveri përgjigjet.</td><td role=\"cell\"><span class=\"sync-method\" aria-hidden=\"true\">SSE (Server-Sent Events)</span>Serveri → klienti. Klienti dërgon veprime me HTTP më vete.</td><td role=\"cell\"><span class=\"sync-method\" aria-hidden=\"true\">WebSocket</span>Klienti ↔ serveri. Të dy dërgojnë në të njëjtën lidhje.</td></tr><tr role=\"row\"><th scope=\"row\" role=\"rowheader\">Ngarkesa në PostgreSQL</th><td role=\"cell\"><span class=\"sync-method\" aria-hidden=\"true\">Polling</span>Rritet nëse çdo kërkesë lexon databazën.</td><td role=\"cell\"><span class=\"sync-method\" aria-hidden=\"true\">SSE (Server-Sent Events)</span>Mund të ulet kur ngjarjet shmangin leximet periodike.</td><td role=\"cell\"><span class=\"sync-method\" aria-hidden=\"true\">WebSocket</span>Varet sa shpesh mesazhet kërkojnë lexime.</td></tr><tr role=\"row\"><th scope=\"row\" role=\"rowheader\">Përdorimi në Vercel</th><td role=\"cell\"><span class=\"sync-method\" aria-hidden=\"true\">Polling</span>Kërkesa të zakonshme HTTP.</td><td role=\"cell\"><span class=\"sync-method\" aria-hidden=\"true\">SSE (Server-Sent Events)</span>Rrjedhë HTTP me kufi kohe. Parashiko rilidhjen.</td><td role=\"cell\"><span class=\"sync-method\" aria-hidden=\"true\">WebSocket</span>Mbështetet me Fluid compute. Parashiko rilidhjen.</td></tr><tr role=\"row\"><th scope=\"row\" role=\"rowheader\">Kur e zgjedhim?</th><td role=\"cell\"><span class=\"sync-method\" aria-hidden=\"true\">Polling</span>Panel me statistika që ndryshojnë rrallë.</td><td role=\"cell\"><span class=\"sync-method\" aria-hidden=\"true\">SSE (Server-Sent Events)</span>Njoftime ose rezultate sportive live.</td><td role=\"cell\"><span class=\"sync-method\" aria-hidden=\"true\">WebSocket</span>Bisedë, lojëra online ose redaktim i përbashkët.</td></tr></tbody></table><p class=\"callout sync-takeaway\"><strong>Në ushtrimin e sotëm zgjedhim polling çdo 5 sekonda.</strong> Një vonesë e vogël është e pranueshme dhe mjafton HTTP.</p><p class=\"small sync-source\"><a href=\"https://vercel.com/i/websocket-vs-server-sent-events\">Vercel · SSE dhe WebSocket</a> · <a href=\"https://vercel.com/changelog/websocket-support-is-now-generally-available\">Mbështetja për WebSocket</a></p>"
+      "body": "<!-- sync-comparison --><p class=\"callout sync-takeaway\"><strong>Në ushtrimin e sotëm zgjedhim polling çdo 5 sekonda.</strong> Një vonesë e vogël është e pranueshme dhe mjafton HTTP.</p><p class=\"small sync-source\"><a href=\"https://vercel.com/i/websocket-vs-server-sent-events\">Vercel · SSE dhe WebSocket</a> · <a href=\"https://vercel.com/changelog/websocket-support-is-now-generally-available\">Mbështetja për WebSocket</a></p>"
     },
     {
       "id": "infrastruktura-teori",
@@ -200,6 +200,12 @@
       "body": "<div class=\"ideas\"><article><span class=\"symbol\" aria-hidden=\"true\">①</span><h3>Udhëtimi</h3><p>ID-ja, shoferi pronar dhe vendet e lira. Përdor modelin ekzistues.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">②</span><h3>Kërkesa</h3><p>ID-ja, udhëtimi, udhëtari dhe statusi: në pritje ose e pranuar.</p></article><article><span class=\"symbol\" aria-hidden=\"true\">③</span><h3>Pamja e lexuar</h3><p>Vendet dhe statusi që ky sesion ka të drejtë të shohë. Leximi nuk pranon kërkesa.</p></article></div><p class=\"handoff\">Mos krijo emra tabelash të rinj nëse këto të dhëna ekzistojnë. Serveri merr identitetin nga sesioni; telefoni dërgon ID-në e udhëtimit ose të kërkesës.</p><p class=\"small\">Për versionin minimal mjafton një lexim në vazhdim dhe anulimi i përgjigjeve të vjetruara. Nëse përdor version numerik, ai vjen nga serveri.</p>"
     },
     {
+      "id": "krahasimi-polling",
+      "title": "Pse përdorim polling çdo 5 sekonda?",
+      "projectorOnly": true,
+      "body": "<!-- sync-comparison --><p class=\"callout sync-takeaway\">Në RideShare, një vonesë e vogël është e pranueshme. Çdo telefon rilexon gjendjen me një kërkesë HTTP.</p><ol class=\"poll-example\" aria-label=\"Shembull me dy telefona\"><li><strong>0 s · Dritoni lexon</strong><span>Ende pa kërkesë.</span></li><li><strong>2 s · Arta kërkon vend</strong><span>Serveri e ruan kërkesën.</span></li><li><strong>5 s · Dritoni rilexon</strong><span>Sheh kërkesën e Artës.</span></li></ol><p class=\"small poll-outcome\">Pasi Dritoni pranon, Arta sheh <strong>“U pranua”</strong> dhe <strong>1 vend të lirë</strong> në leximin e radhës. Koha varet edhe nga rrjeti.</p>"
+    },
+    {
       "id": "polling-hapi",
       "title": "Hapi 3 · Përditëso pa Refresh manual",
       "body": "<p><strong>Ndërto:</strong> një lexim automatik, për shembull çdo 5 sekonda, në të dy ekranet. Përdor të dhënat e përgjigjes për ta rifreskuar ndërfaqen.</p><ul><li>Kontrollo te Network që leximi kthen gjendjen e re; përgjigjja personale nuk duhet të ripërdoret për një sesion tjetër.</li><li>Mos nis një lexim të dytë ndërsa i pari ende pret. Pastro timer-in kur largohesh nga faqja.</li><li>Nëse leximi dështon, ruaj vlerat e fundit dhe trego <strong>“Po rilidhemi”</strong>. Pas rikthimit lexo menjëherë dhe hiqe paralajmërimin vetëm pas një përgjigjeje të suksesshme.</li></ul><p class=\"handoff\">Vazhdo kur një kërkesë e re shfaqet te shoferi pas leximit të radhës, pa prekur Refresh.</p>"
@@ -254,5 +260,27 @@
       "title": "Përfundove kur e provon dhe e shpjegon",
       "body": "<ul><li>Kërkesa dhe pranimi ruhen në Neon.</li><li>Të dy përdoruesit marrin gjendjen e re pa Refresh manual.</li><li>Pranimi i përsëritur nuk e ul numrin përsëri; vendet nuk bëhen negative.</li><li>Dështimi i leximit shënohet dhe rilidhja merr pamjen e re.</li><li>Ke dorëzimin, raportin me tri prova dhe e ke lexuar përgjigjen e GitHub-it.</li></ul><p class=\"question-title\">Pse një timer që lexon çdo 5 sekonda nuk e garanton vetë një rezervim të saktë?</p><details><summary>Zbulo përgjigjen</summary><p>Timer-i vetëm rilexon të dhënat. Lejet, pranimi vetëm një herë dhe numri i vendeve mbrohen nga serveri dhe databaza.</p></details><p class=\"small\">Ushtrim i vlerësuar deri në 3 pikë sipas rubrikës së lëndës. Feedback-u automatik është teknik.</p>"
     }
+  ],
+  "lectureClassroom": [
+    "tema",
+    "baza",
+    "problemi",
+    "kopjet",
+    "postgres-cka",
+    "postgres-nextjs",
+    "postgres-transaksioni",
+    "shkrimi-leximi",
+    "polling",
+    "zgjedhja",
+    "infrastruktura-teori",
+    "pergjigjja-vonuar",
+    "rilidhja-teori",
+    "kalimi-rideshare",
+    "infrastruktura",
+    "rasti-1",
+    "rasti-2",
+    "rasti-3",
+    "demonstrimi",
+    "mbyllja"
   ]
 }
