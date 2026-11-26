@@ -23,6 +23,9 @@
 /* The header, slide frame and controls keep their positions in projector mode. */
 @media screen {
   .projector #main {
+    --slide-title: 36px;
+    --slide-text: 28px;
+    --slide-caption: 24px;
     display: grid;
     height: 100vh;
     height: 100dvh;
@@ -44,8 +47,33 @@
     display: none;
   }
   .projector #main > .step > h2 {
-    font-size: clamp(27px, 3vw, 33px);
-    margin-bottom: 12px;
+    font-size: var(--slide-title);
+    margin-bottom: 10px;
+  }
+  .projector #main > .step :is(p, li, summary, h3, table, .flow strong, .flow span, .question-title):not(.phone *) {
+    font-size: var(--slide-text);
+    line-height: 1.28;
+  }
+  .projector #main > .step p:not(.phone *) {
+    margin-block: 10px;
+  }
+  .projector #main > .step li:not(.phone *) {
+    margin-bottom: 8px;
+  }
+  .projector #main > .step :is(th, td) {
+    padding: 8px 11px;
+  }
+  .projector #main > .step :is(.small, .sources li, .role-title, .infra-nodes small, .deploy-path, .case-links .button):not(.phone *) {
+    font-size: var(--slide-caption);
+  }
+  .projector #main > .step .phone-caption {
+    margin-block: 6px 0;
+  }
+  .projector #main > .step .role-title {
+    margin-bottom: 5px;
+  }
+  .projector #main > .step .infra-nodes strong {
+    font-size: var(--slide-caption);
   }
   .projector #main > .step:focus-visible {
     outline-offset: -4px;
@@ -58,5 +86,36 @@
     min-width: 8ch;
     text-align: center;
     font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Use the width of the projector for the explanation beside the two phones. */
+@media screen and (min-width: 1120px) {
+  .projector #main > .step:has(> .pair) {
+    display: grid;
+    grid-template-columns: minmax(600px, 1.65fr) minmax(0, 1fr);
+    align-content: start;
+    column-gap: 24px;
+  }
+  .projector #main > .step:has(> .pair) > h2 {
+    grid-column: 1 / -1;
+  }
+  .projector #main > .step > .pair {
+    gap: 24px;
+  }
+  .projector #main > .step > .phone-caption {
+    align-self: center;
+    margin: 0;
+    padding-left: 18px;
+    border-left: 4px solid var(--accent);
+    text-align: left;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .projector #main {
+    --slide-title: 30px;
+    --slide-text: 23px;
+    --slide-caption: 21px;
   }
 }
