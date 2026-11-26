@@ -59,7 +59,9 @@ if (controls && slides.length) {
   });
 
   show();
-  if (document.body.dataset.startProjector === 'true' && matchMedia('(min-width:768px)').matches) {
+  const readingView = new URLSearchParams(location.search).get('pamja') === 'lexim';
+  if (!readingView && document.body.dataset.startProjector === 'true' &&
+    matchMedia('(min-width:768px)').matches) {
     mode(true);
   }
 }
